@@ -1,0 +1,286 @@
+% file: heaps.tex
+
+\problemsection{Heaps}
+\label{problem:heaps}
+\marginnote{Heaps are a fundamental data structure used to implement priority queues and support efficient algorithms like heap sort and graph algorithms. This section delves into the properties of heaps, common operations, and their applications in solving various algorithmic problems.}
+
+\section*{Problem Statement}
+
+A **heap** is a specialized tree-based data structure that satisfies the heap property:
+
+\begin{itemize}
+    \item In a **max heap**, for any given node \( C \), if \( P \) is a parent node of \( C \), then the key (value) of \( P \) is greater than or equal to the key of \( C \). This ensures that the largest key is at the root of the heap.
+    \item In a **min heap**, the key of \( P \) is less than or equal to the key of \( C \), ensuring that the smallest key is at the root.
+\end{itemize}
+
+Heaps are commonly implemented as binary heaps, where each node has at most two children. They are widely used in algorithms that require quick access to the largest or smallest element, such as priority queues, heap sort, and graph algorithms like Dijkstra's and Prim's.
+
+\section*{Algorithmic Approach}
+
+Heaps support several fundamental operations efficiently:
+
+\begin{enumerate}
+    \item \textbf{Insertion:} Add a new element to the heap while maintaining the heap property.
+    \item \textbf{Extraction:} Remove and return the root element (maximum in max heap, minimum in min heap) while maintaining the heap property.
+    \item \textbf{Heapify:} Convert an unordered array into a heap.
+\end{enumerate}
+
+These operations are typically performed in \( O(\log N) \) time, where \( N \) is the number of elements in the heap. The heap can be efficiently represented using an array, leveraging the properties of a complete binary tree.
+
+\subsection*{Heap Operations}
+
+\begin{itemize}
+    \item \textbf{Insert Operation:}
+    \begin{itemize}
+        \item Append the new element at the end of the heap.
+        \item Percolate (bubble) the element up by swapping it with its parent until the heap property is restored.
+    \end{itemize}
+    
+    \item \textbf{Extract Operation:}
+    \begin{itemize}
+        \item Remove the root element.
+        \item Replace the root with the last element in the heap.
+        \item Percolate (bubble) the new root down by swapping it with its larger (max heap) or smaller (min heap) child until the heap property is restored.
+    \end{itemize}
+    
+    \item \textbf{Heapify Operation:}
+    \begin{itemize}
+        \item Starting from the last non-leaf node, perform the extract operation to ensure each subtree satisfies the heap property.
+        \item Repeat this process iteratively or recursively for all parent nodes.
+    \end{itemize}
+\end{itemize}
+
+\section*{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:}
+    \begin{itemize}
+        \item Insertion: \( O(\log N) \)
+        \item Extraction: \( O(\log N) \)
+        \item Heapify: \( O(N) \)
+    \end{itemize}
+    
+    \item \textbf{Space Complexity:} \( O(N) \), where \( N \) is the number of elements in the heap. This space is used to store the heap in an array.
+\end{itemize}
+
+\section*{Python Implementation}
+
+\marginnote{Implementing a heap involves maintaining the heap property through insertions and extractions. Below is a Python implementation of a max heap using a list.}
+
+Below is a complete Python implementation of a max heap, including insertion, extraction, and heapify operations:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class MaxHeap:
+    def __init__(self):
+        self.heap = []
+    
+    def parent(self, index):
+        return (index - 1) // 2
+    
+    def left_child(self, index):
+        return 2 * index + 1
+    
+    def right_child(self, index):
+        return 2 * index + 2
+    
+    def insert(self, key):
+        self.heap.append(key)
+        self._heapify_up(len(self.heap) - 1)
+    
+    def extract_max(self):
+        if not self.heap:
+            return None
+        if len(self.heap) == 1:
+            return self.heap.pop()
+        
+        root = self.heap[0]
+        self.heap[0] = self.heap.pop()
+        self._heapify_down(0)
+        return root
+    
+    def _heapify_up(self, index):
+        while index > 0 and self.heap[self.parent(index)] < self.heap[index]:
+            # Swap parent and current node
+            self.heap[self.parent(index)], self.heap[index] = self.heap[index], self.heap[self.parent(index)]
+            index = self.parent(index)
+    
+    def _heapify_down(self, index):
+        largest = index
+        left = self.left_child(index)
+        right = self.right_child(index)
+        
+        if left < len(self.heap) and self.heap[left] > self.heap[largest]:
+            largest = left
+        if right < len(self.heap) and self.heap[right] > self.heap[largest]:
+            largest = right
+        if largest != index:
+            # Swap and continue heapifying
+            self.heap[index], self.heap[largest] = self.heap[largest], self.heap[index]
+            self._heapify_down(largest)
+    
+    def heapify(self, array):
+        self.heap = array[:]
+        start = self.parent(len(self.heap) - 1)
+        for i in range(start, -1, -1):
+            self._heapify_down(i)
+    
+    def display(self):
+        print(self.heap)
+
+# Example usage:
+if __name__ == "__main__":
+    max_heap = MaxHeap()
+    elements = [3, 1, 6, 5, 2, 4]
+    for elem in elements:
+        max_heap.insert(elem)
+    print("Heap after insertions:")
+    max_heap.display()  # Output: [6, 5, 4, 1, 2, 3]
+    
+    print("Extracted max:", max_heap.extract_max())  # Output: 6
+    max_heap.display()  # Output: [5, 2, 4, 1, 3]
+    
+    # Heapify an existing array
+    array = [3, 1, 6, 5, 2, 4]
+    max_heap.heapify(array)
+    print("Heap after heapify:")
+    max_heap.display()  # Output: [6, 5, 4, 1, 2, 3]
+\end{lstlisting}
+\end{fullwidth}
+
+\section*{Explanation}
+
+The provided Python implementation defines a `MaxHeap` class that encapsulates the behavior of a max heap using a list to store elements. Here's a breakdown of the implementation:
+
+\begin{itemize}
+    \item \textbf{Initialization:}
+    \begin{itemize}
+        \item The heap is represented as a list (`self.heap`).
+    \end{itemize}
+    
+    \item \textbf{Helper Methods:}
+    \begin{itemize}
+        \item `parent(index)`: Returns the parent index of a given node.
+        \item `left-child(index)`: Returns the left child index.
+        \item `right-child(index)`: Returns the right child index.
+    \end{itemize}
+    
+    \item \textbf{Insertion (`insert` method):}
+    \begin{itemize}
+        \item Appends the new key to the end of the heap.
+        \item Calls `-heapify-up` to maintain the heap property by swapping the new element with its parent until it's in the correct position.
+    \end{itemize}
+    
+    \item \textbf{Extraction (`extract-max` method):}
+    \begin{itemize}
+        \item Removes and returns the root element (maximum value).
+        \item Replaces the root with the last element in the heap.
+        \item Calls `-heapify-down` to restore the heap property by swapping the new root with its largest child until it's correctly positioned.
+    \end{itemize}
+    
+    \item \textbf{Heapify (`heapify` method):}
+    \begin{itemize}
+        \item Converts an arbitrary array into a heap.
+        \item Starts from the last non-leaf node and calls `-heapify-down` on each node to ensure the heap property is satisfied.
+    \end{itemize}
+    
+    \item \textbf{Display (`display` method):}
+    \begin{itemize}
+        \item Prints the current state of the heap.
+    \end{itemize}
+\end{itemize}
+
+\section*{Why This Approach}
+
+Implementing a heap using a list is efficient in terms of both time and space. The list representation allows for easy access to parent and child nodes through index calculations, enabling efficient insertion and extraction operations with \( O(\log N) \) time complexity. This structure is particularly beneficial for implementing priority queues, where quick access to the highest or lowest priority element is essential.
+
+\section*{Alternative Approaches}
+
+While the array-based implementation is the most common, heaps can also be implemented using tree-based structures with explicit node references. However, this approach typically incurs higher space overhead and less cache-friendly memory access patterns compared to the array-based implementation.
+
+Additionally, Python's `heapq` module provides a built-in heap implementation, which can be used for min heaps. To implement a max heap using `heapq`, one can invert the values (e.g., multiply by \(-1\)) during insertion and extraction.
+
+\section*{Similar Problems to This One}
+
+Heaps are versatile and are used to solve a variety of algorithmic problems. Some similar problems include:
+
+\begin{itemize}
+    \item \textbf{Kth Largest Element in an Array:} Finding the \( k \)-th largest element using a heap.
+    \index{Kth Largest Element}
+    
+    \item \textbf{Merge K Sorted Lists:} Merging multiple sorted lists using a heap to efficiently find the smallest current element.
+    \index{Merge K Sorted Lists}
+    
+    \item \textbf{Top K Frequent Elements:} Identifying the top \( k \) most frequent elements in a dataset using a heap.
+    \index{Top K Frequent Elements}
+    
+    \item \textbf{Sliding Window Maximum:} Finding the maximum value in each sliding window of size \( k \) in an array using a heap.
+    \index{Sliding Window Maximum}
+    
+    \item \textbf{Task Scheduler:} Scheduling tasks with cooldown periods using a heap to prioritize tasks.
+    \index{Task Scheduler}
+    
+    \item \textbf{Find Median from Data Stream:} Maintaining a data stream to efficiently find the median using two heaps.
+    \index{Find Median from Data Stream}
+\end{itemize}
+
+\section*{Things to Keep in Mind and Tricks}
+
+\begin{itemize}
+    \item \textbf{Heap Representation:} Utilize array-based representations for efficient parent and child node access.
+    \index{Heap Representation}
+    
+    \item \textbf{Custom Comparators:} When implementing heaps that require custom ordering (e.g., max heap), consider inverting values or using tuples to control the comparison.
+    \index{Custom Comparators}
+    
+    \item \textbf{Heapify Efficiency:} The heapify operation can be performed in \( O(N) \) time, which is more efficient than inserting elements one by one.
+    \index{Heapify Efficiency}
+    
+    \item \textbf{Use Built-in Libraries:} Leverage Python's `heapq` module for efficient and tested heap implementations, especially for min heaps.
+    \index{Use Built-in Libraries}
+    
+    \item \textbf{Balancing Heaps:} For problems like finding the median, maintaining two heaps (max heap and min heap) can help in balancing and achieving desired access patterns.
+    \index{Balancing Heaps}
+    
+    \item \textbf{Lazy Deletion:} In some heap-based algorithms, it might be beneficial to implement lazy deletion to handle element removals efficiently.
+    \index{Lazy Deletion}
+    
+    \item \textbf{Understanding Heap Properties:} A deep understanding of heap properties and behaviors is crucial for implementing efficient solutions.
+    \index{Understanding Heap Properties}
+\end{itemize}
+
+\section*{Corner and Special Cases to Test When Writing the Code}
+
+\begin{itemize}
+    \item \textbf{Empty Heap:} Ensure that extraction operations handle empty heaps gracefully, possibly by returning `None` or raising appropriate exceptions.
+    \index{Corner Cases}
+    
+    \item \textbf{Single Element Heap:} Verify that operations work correctly when the heap contains only one element.
+    \index{Corner Cases}
+    
+    \item \textbf{Duplicate Elements:} Test heaps with duplicate values to ensure that the heap property is maintained correctly.
+    \index{Corner Cases}
+    
+    \item \textbf{All Elements Same:} A heap where all elements have the same value should maintain the heap property without any issues.
+    \index{Corner Cases}
+    
+    \item \textbf{Large Number of Elements:} Test the heap implementation with a large dataset to assess performance and memory usage.
+    \index{Corner Cases}
+    
+    \item \textbf{Negative Values:} Ensure that heaps correctly handle negative values, especially when implementing max heaps using min heaps with inverted values.
+    \index{Corner Cases}
+    
+    \item \textbf{Non-Comparable Elements:} If implementing heaps that store objects, ensure that all elements are comparable or provide custom comparison logic.
+    \index{Corner Cases}
+    
+    \item \textbf{Heapify with Unordered Arrays:} Test the heapify function with completely unordered arrays to confirm that it correctly builds the heap.
+    \index{Corner Cases}
+    
+    \item \textbf{Repeated Insertions and Extractions:} Perform a sequence of insertions and extractions to ensure that the heap maintains its properties throughout.
+    \index{Corner Cases}
+    
+    \item \textbf{Heap Operations After Exhaustion:} Attempt to extract from the heap after all elements have been removed to ensure proper handling.
+    \index{Corner Cases}
+\end{itemize}
+
+\printindex

@@ -114,37 +114,30 @@ LeetCode link: \href{https://leetcode.com/problems/rotting-oranges/}{Rotting Ora
 
 \section*{Algorithmic Approach}
 
-The \textbf{Rotting Oranges} problem can be effectively addressed using a Breadth-First Search (BFS) algorithm. The key idea is to simulate the spread of rot from all initially rotten oranges simultaneously, tracking the time taken for the rot to reach all fresh oranges.
+The \textbf{Rotting Oranges} problem uses Breadth-First Search (BFS). Here's how it works:
 
-\begin{enumerate}
-    \item \textbf{Initialization:}
-    \begin{itemize}
-        \item Traverse the grid to identify all initially rotten oranges (cells with value \(2\)) and enqueue their positions.
-        \item Count the total number of fresh oranges (cells with value \(1\)).
-    \end{itemize}
-    
-    \item \textbf{BFS Traversal:}
-    \begin{itemize}
-        \item Define the four possible directions of adjacency: up, down, left, and right.
-        \item Initialize a queue with all initially rotten oranges and set the initial time to \(0\).
-        \item While the queue is not empty and there are fresh oranges remaining:
-        \begin{itemize}
-            \item Increment the time counter.
-            \item For each rotten orange in the current level:
-            \begin{itemize}
-                \item Dequeue the orange's position.
-                \item Explore all adjacent cells in the four directions.
-                \item If an adjacent cell contains a fresh orange, rot it by setting its value to \(2\), decrement the fresh orange count, and enqueue its position.
-            \end{itemize}
-        \end{itemize}
-    \end{itemize}
-    
-    \item \textbf{Termination:}
-    \begin{itemize}
-        \item After BFS completion, if all fresh oranges have been rotted, return the time taken.
-        \item If there are still fresh oranges remaining, return \(-1\) to indicate impossibility.
-    \end{itemize}
-\end{enumerate}
+\subsection*{Step 1: Initialization}
+\begin{itemize}
+    \item Traverse the grid to find all initially rotten oranges (value 2)
+    \item Count all fresh oranges (value 1)
+\end{itemize}
+
+\subsection*{Step 2: BFS Traversal}
+Define four possible directions: up, down, left, right.
+
+For each minute of processing:
+\begin{itemize}
+    \item Process all currently rotten oranges
+    \item For each rotten orange:
+    \item Check all four adjacent cells
+    \item If a fresh orange is found, mark it as rotten
+\end{itemize}
+
+\subsection*{Step 3: Termination}
+\begin{itemize}
+    \item If all oranges rot: return elapsed time
+    \item If some oranges can't rot: return -1
+\end{itemize}
 
 \marginnote{Utilizing BFS ensures that the rot spreads level by level, accurately tracking the minimum time required to rot all reachable fresh oranges.}
 
@@ -225,111 +218,49 @@ print(orangesRotting(grid2))  # Output: -1
 \end{lstlisting}
 \end{fullwidth}
 
-\begin{fullwidth}
-\begin{lstlisting}[language=Python]
-from collections import deque
-
-def orangesRotting(grid):
-    rows, cols = len(grid), len(grid[0])
-    rotten = deque()
-    fresh_oranges = 0
-    minutes = 0
-    
-    # Find all rotten oranges and count fresh oranges
-    for r in range(rows):
-        for c in range(cols):
-            if grid[r][c] == 2:
-                rotten.append((r, c))
-            elif grid[r][c] == 1:
-                fresh_oranges += 1
-    
-    # Directions: up, down, left, right
-    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
-    
-    # If there are no fresh oranges, return 0
-    if fresh_oranges == 0:
-        return 0
-    
-    # BFS to spread rot
-    while rotten and fresh_oranges > 0:
-        minutes += 1
-        for _ in range(len(rotten)):
-            x, y = rotten.popleft()
-            
-            for dx, dy in directions:
-                nx, ny = x + dx, y + dy
-                
-                # Check boundaries
-                if nx < 0 or ny < 0 or nx >= rows or ny >= cols:
-                    continue
-                
-                # If the orange is fresh, rot it
-                if grid[nx][ny] == 1:
-                    grid[nx][ny] = 2
-                    fresh_oranges -= 1
-                    rotten.append((nx, ny))
-    
-    return minutes if fresh_oranges == 0 else -1
-\end{lstlisting}
-\end{fullwidth}
-
-This implementation begins by traversing the grid to identify all initially rotten oranges and counting the total number of fresh oranges. It then performs a BFS to simulate the spread of rot minute by minute. At each step, it processes all currently rotten oranges, rotting any adjacent fresh oranges and enqueueing them for the next minute's processing. The process continues until all fresh oranges are rotted or no more oranges can be rotted, in which case \(-1\) is returned.
-
 \section*{Explanation}
 
-The provided Python implementation defines a function \texttt{orangesRotting} which takes a 2D grid as input and returns the minimum number of minutes required for all fresh oranges to rot. Here's a detailed breakdown of the implementation:
+The \texttt{orangesRotting} function takes a 2D grid as input and returns the minimum minutes required for all fresh oranges to rot.
 
+\subsection*{Key Components}
+
+\textbf{Initialization:}
 \begin{itemize}
-    \item \textbf{Initialization:}
-    \begin{itemize}
-        \item Determine the number of rows (\texttt{rows}) and columns (\texttt{cols}) in the grid.
-        \item Initialize a queue (\texttt{rotten}) to store the positions of all initially rotten oranges.
-        \item Initialize a counter (\texttt{fresh\_oranges}) to count the total number of fresh oranges.
-        \item Initialize a variable (\texttt{minutes}) to track the elapsed time.
-    \end{itemize}
-    
-    \item \textbf{Identifying Rotten and Fresh Oranges:}
-    \begin{itemize}
-        \item Traverse the grid using nested loops.
-        \item For each cell:
-        \begin{itemize}
-            \item If the cell contains a rotten orange (\(2\)), enqueue its position.
-            \item If the cell contains a fresh orange (\(1\)), increment the \texttt{fresh\_oranges} counter.
-        \end{itemize}
-    \end{itemize}
-    
-    \item \textbf{Breadth-First Search (BFS):}
-    \begin{itemize}
-        \item Define the four possible directions of adjacency: up, down, left, and right.
-        \item If there are no fresh oranges initially, return \(0\) as no time is needed.
-        \item While the queue is not empty and there are fresh oranges remaining:
-        \begin{itemize}
-            \item Increment the \texttt{minutes} counter.
-            \item For each rotten orange in the current level:
-            \begin{itemize}
-                \item Dequeue the orange's position.
-                \item Explore all adjacent cells in the four directions.
-                \item If an adjacent cell contains a fresh orange:
-                \begin{itemize}
-                    \item Rot the orange by setting its value to \(2\).
-                    \item Decrement the \texttt{fresh\_oranges} counter.
-                    \item Enqueue the position of the newly rotten orange for the next minute's processing.
-                \end{itemize}
-            \end{itemize}
-        \end{itemize}
-    \end{itemize}
-    
-    \item \textbf{Termination:}
-    \begin{itemize}
-        \item After BFS completion:
-        \begin{itemize}
-            \item If all fresh oranges have been rotted (\texttt{fresh\_oranges} == \(0\)), return the elapsed \texttt{minutes}.
-            \item Otherwise, return \(-1\) to indicate that some fresh oranges cannot be rotted.
-        \end{itemize}
-    \end{itemize}
+    \item Get grid dimensions (\texttt{rows}, \texttt{cols})
+    \item Create queue (\texttt{rotten}) for rotten orange positions
+    \item Initialize fresh orange counter
+    \item Initialize time tracker
 \end{itemize}
 
-This approach ensures that the rot spreads uniformly from all initially rotten oranges, accurately tracking the minimum time required to rot all fresh oranges. By using BFS, the algorithm efficiently explores all possible paths of rot spread in a level-by-level manner.
+\textbf{Grid Processing:}
+\begin{itemize}
+    \item Traverse grid once to:
+    \item Record positions of rotten oranges
+    \item Count fresh oranges
+\end{itemize}
+
+\subsection*{BFS Implementation}
+
+\textbf{Main Loop:}
+\begin{itemize}
+    \item Process while queue has elements and fresh oranges exist
+    \item Increment minutes at each level
+    \item Process all oranges at current level before moving to next
+\end{itemize}
+
+\textbf{Orange Processing:}
+\begin{itemize}
+    \item Check four adjacent positions
+    \item Validate grid boundaries
+    \item Convert fresh oranges to rotten
+    \item Update counters and queue
+\end{itemize}
+
+\subsection*{Termination}
+\begin{itemize}
+    \item Return minutes if all oranges rotted
+    \item Return -1 if any fresh oranges remain
+\end{itemize}
 
 \section*{Why this approach}
 
@@ -408,28 +339,28 @@ To ensure robustness and correctness, consider testing the following corner case
     \item \textbf{All Oranges Rotten Initially:} A grid where all oranges are already rotten (\(2\)), expecting a return value of \(0\).
     \index{Corner Cases}
     
-    \item \textbf{No Fresh Oranges:** If there are no fresh oranges to begin with, the function should return \(0\).
+    \item \textbf{No Fresh Oranges:} If there are no fresh oranges to begin with, the function should return \(0\).
     \index{Corner Cases}
     
-    \item \textbf{Single Fresh Orange:** A grid with only one fresh orange adjacent to a rotten orange, expecting a return value of \(1\).
+    \item \textbf{Single Fresh Orange:} A grid with only one fresh orange adjacent to a rotten orange, expecting a return value of \(1\).
     \index{Corner Cases}
     
-    \item \textbf{Isolated Fresh Orange:** A fresh orange that is not adjacent to any rotten oranges, expecting a return value of \(-1\).
+    \item \textbf{Isolated Fresh Orange:} A fresh orange that is not adjacent to any rotten oranges, expecting a return value of \(-1\).
     \index{Corner Cases}
     
-    \item \textbf{All Fresh Oranges:** A grid with only fresh oranges and no rotten oranges, expecting a return value of \(-1\).
+    \item \textbf{All Fresh Oranges:} A grid with only fresh oranges and no rotten oranges, expecting a return value of \(-1\).
     \index{Corner Cases}
     
-    \item \textbf{Large Grid:** A large grid with multiple rotten and fresh oranges to test the algorithm's performance and efficiency.
+    \item \textbf{Large Grid:} A large grid with multiple rotten and fresh oranges to test the algorithm's performance and efficiency.
     \index{Corner Cases}
     
-    \item \textbf{Multiple Isolated Regions:** Multiple regions within the grid where some have fresh oranges that can be rotted and others have fresh oranges that cannot be rotted.
+    \item \textbf{Multiple Isolated Regions:} Multiple regions within the grid where some have fresh oranges that can be rotted and others have fresh oranges that cannot be rotted.
     \index{Corner Cases}
     
-    \item \textbf{Edge Cells Rotting:** Fresh oranges located at the edges or corners of the grid to ensure proper boundary handling.
+    \item \textbf{Edge Cells Rotting:} Fresh oranges located at the edges or corners of the grid to ensure proper boundary handling.
     \index{Corner Cases}
     
-    \item \textbf{Self-Rotating Cells:** Cells that might rotate to themselves inadvertently, ensuring that such scenarios do not affect the outcome.
+    \item \textbf{Self-Rotating Cells:} Cells that might rotate to themselves inadvertently, ensuring that such scenarios do not affect the outcome.
     \index{Corner Cases}
 \end{itemize}
 

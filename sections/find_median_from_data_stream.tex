@@ -1,0 +1,350 @@
+% file: find_median_from_data_stream.tex
+
+\problemsection{Find Median from Data Stream}
+\label{problem:find_median_from_data_stream}
+\marginnote{This problem utilizes two heaps (a max heap and a min heap) to efficiently track the median of a dynamically changing data stream.}
+
+The \textbf{Find Median from Data Stream} problem involves designing a data structure that efficiently supports adding numbers from a data stream and finding the median of the current set of numbers. The median is the middle value in an ordered integer list. If the size of the list is even, the median is the average of the two middle numbers.
+
+\section*{Problem Statement}
+
+Design a class \texttt{MedianFinder} that supports the following two operations:
+
+\begin{itemize}
+    \item \texttt{addNum(num)}: Add an integer number \texttt{num} from the data stream to the data structure.
+    \item \texttt{findMedian()}: Return the median of all elements so far.
+\end{itemize}
+
+\textbf{Note:}
+\begin{itemize}
+    \item The number of elements in the data structure will not exceed \(10^5\).
+\end{itemize}
+
+\textbf{Examples:}
+
+\textit{Example 1:}
+
+\begin{verbatim}
+Input:
+["MedianFinder","addNum","addNum","findMedian","addNum","findMedian"]
+[[],[1],[2],[],[3],[]]
+
+Output:
+[null,null,null,1.5,null,2.0]
+
+Explanation:
+MedianFinder medianFinder = new MedianFinder();
+medianFinder.addNum(1);    // arr = [1]
+medianFinder.addNum(2);    // arr = [1, 2]
+medianFinder.findMedian(); // return 1.5
+medianFinder.addNum(3);    // arr[1, 2, 3]
+medianFinder.findMedian(); // return 2.0
+\end{verbatim}
+
+LeetCode link: \href{https://leetcode.com/problems/find-median-from-data-stream/}{Find Median from Data Stream}\index{LeetCode}
+
+\marginnote{\href{https://leetcode.com/problems/find-median-from-data-stream/}{[LeetCode Link]}\index{LeetCode}}
+\marginnote{\href{https://www.geeksforgeeks.org/find-median-from-a-data-stream/}{[GeeksForGeeks Link]}\index{GeeksForGeeks}}
+\marginnote{\href{https://www.hackerrank.com/challenges/find-the-median/problem}{[HackerRank Link]}\index{HackerRank}}
+\marginnote{\href{https://app.codesignal.com/challenges/find-median-from-data-stream}{[CodeSignal Link]}\index{CodeSignal}}
+\marginnote{\href{https://www.interviewbit.com/problems/find-median-from-data-stream/}{[InterviewBit Link]}\index{InterviewBit}}
+\marginnote{\href{https://www.educative.io/courses/grokking-the-coding-interview/RM8y8Y3nLdY}{[Educative Link]}\index{Educative}}
+\marginnote{\href{https://www.codewars.com/kata/find-median-from-data-stream/train/python}{[Codewars Link]}\index{Codewars}}
+
+\section*{Algorithmic Approach}
+
+The \textbf{Find Median from Data Stream} problem can be efficiently solved using two heaps: a max heap to store the lower half of the numbers and a min heap to store the upper half of the numbers. The key idea is to maintain the heaps in such a way that:
+
+\begin{enumerate}
+    \item The max heap contains the smaller half of the numbers.
+    \item The min heap contains the larger half of the numbers.
+    \item The sizes of the heaps differ by at most one.
+\end{enumerate}
+
+This structure allows for quick retrieval of the median:
+
+\begin{itemize}
+    \item If both heaps have the same number of elements, the median is the average of the top elements of both heaps.
+    \item If one heap has more elements, the median is the top element of that heap.
+\end{itemize}
+
+\marginnote{Utilizing two heaps ensures that insertion and median retrieval operations can be performed in \(O(\log n)\) time, maintaining efficiency even with a large number of elements.}
+
+\section*{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:}
+    \begin{itemize}
+        \item \texttt{addNum}: \(O(\log n)\) due to heap insertion.
+        \item \texttt{findMedian}: \(O(1)\) as it involves accessing the top elements of the heaps.
+    \end{itemize}
+    \item \textbf{Space Complexity:} \(O(n)\), where \(n\) is the number of elements added to the data structure, as all elements are stored in the heaps.
+\end{itemize}
+
+\section*{Python Implementation}
+
+\marginnote{Implementing two heaps (max heap and min heap) allows for efficient addition of numbers and median retrieval. Python's \texttt{heapq} module provides a min heap, so the max heap can be simulated by inserting negated values.}
+
+Below is the complete Python code that implements the \textbf{MedianFinder} class to solve the problem:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+import heapq
+
+class MedianFinder:
+    def __init__(self):
+        # Max heap for the lower half numbers
+        self.small = []
+        # Min heap for the upper half numbers
+        self.large = []
+    
+    def addNum(self, num: int) -> None:
+        # Add to max heap (invert the number for max heap simulation)
+        heapq.heappush(self.small, -num)
+        
+        # Ensure every num in small is <= every num in large
+        if self.small and self.large and (-self.small[0] > self.large[0]):
+            val = -heapq.heappop(self.small)
+            heapq.heappush(self.large, val)
+        
+        # Balance the sizes of the two heaps
+        if len(self.small) > len(self.large) + 1:
+            val = -heapq.heappop(self.small)
+            heapq.heappush(self.large, val)
+        if len(self.large) > len(self.small):
+            val = heapq.heappop(self.large)
+            heapq.heappush(self.small, -val)
+    
+    def findMedian(self) -> float:
+        if len(self.small) > len(self.large):
+            return -self.small[0]
+        return (-self.small[0] + self.large[0]) / 2.0
+
+# Example usage:
+medianFinder = MedianFinder()
+medianFinder.addNum(1)
+medianFinder.addNum(2)
+print(medianFinder.findMedian())  # Output: 1.5
+medianFinder.addNum(3)
+print(medianFinder.findMedian())  # Output: 2.0
+\end{lstlisting}
+\end{fullwidth}
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+import heapq
+
+class MedianFinder:
+    def __init__(self):
+        # Max heap for the lower half numbers
+        self.small = []
+        # Min heap for the upper half numbers
+        self.large = []
+    
+    def addNum(self, num: int) -> None:
+        # Add to max heap (invert the number for max heap simulation)
+        heapq.heappush(self.small, -num)
+        
+        # Ensure every num in small is <= every num in large
+        if self.small and self.large and (-self.small[0] > self.large[0]):
+            val = -heapq.heappop(self.small)
+            heapq.heappush(self.large, val)
+        
+        # Balance the sizes of the two heaps
+        if len(self.small) > len(self.large) + 1:
+            val = -heapq.heappop(self.small)
+            heapq.heappush(self.large, val)
+        if len(self.large) > len(self.small):
+            val = heapq.heappop(self.large)
+            heapq.heappush(self.small, -val)
+    
+    def findMedian(self) -> float:
+        if len(self.small) > len(self.large):
+            return -self.small[0]
+        return (-self.small[0] + self.large[0]) / 2.0
+\end{lstlisting}
+\end{fullwidth}
+
+This implementation uses two heaps to efficiently track the median as new numbers are added:
+
+\begin{itemize}
+    \item \texttt{self.small}: A max heap (simulated using negated values) that stores the smaller half of the numbers.
+    \item \texttt{self.large}: A min heap that stores the larger half of the numbers.
+\end{itemize}
+
+The \texttt{addNum} method adds a new number to the appropriate heap and ensures that the size difference between the heaps does not exceed one, maintaining the balance required for median calculation. The \texttt{findMedian} method retrieves the median based on the current state of the heaps.
+
+\section*{Explanation}
+
+The \textbf{MedianFinder} class is designed to efficiently handle dynamic data streams and provide quick median retrieval. Here's a detailed breakdown of the implementation:
+
+\begin{itemize}
+    \item \textbf{Data Structures:}
+    \begin{itemize}
+        \item \texttt{self.small}: A max heap that stores the lower half of the numbers. Since Python's \texttt{heapq} module only provides a min heap, we simulate a max heap by inserting the negated values.
+        \item \texttt{self.large}: A min heap that stores the upper half of the numbers.
+    \end{itemize}
+    
+    \item \textbf{Adding a Number (\texttt{addNum}):}
+    \begin{enumerate}
+        \item \textbf{Insert into \texttt{self.small}:} Add the negated number to the max heap to maintain the lower half.
+        \item \textbf{Balance Heaps:}
+        \begin{itemize}
+            \item If the largest number in \texttt{self.small} (i.e., the smallest in the negated heap) is greater than the smallest number in \texttt{self.large}, move the number from \texttt{self.small} to \texttt{self.large}.
+            \item Ensure that the sizes of the heaps differ by at most one by moving elements between heaps if necessary.
+        \end{itemize}
+    \end{enumerate}
+    
+    \item \textbf{Finding the Median (\texttt{findMedian}):}
+    \begin{itemize}
+        \item If \texttt{self.small} has more elements, the median is the top element of \texttt{self.small}.
+        \item If both heaps have the same number of elements, the median is the average of the top elements of both heaps.
+    \end{itemize}
+\end{itemize}
+
+This approach ensures that both adding a number and finding the median are performed in \(O(\log n)\) and \(O(1)\) time respectively, making it highly efficient for large data streams.
+
+\section*{Why This Approach}
+
+Using two heaps allows for an efficient way to keep track of the median in a dynamic data stream:
+
+\begin{itemize}
+    \item \textbf{Efficiency:} Both insertion and median retrieval operations are efficient, with \texttt{addNum} operating in \(O(\log n)\) time and \texttt{findMedian} operating in \(O(1)\) time.
+    
+    \item \textbf{Dynamic Updates:} The heap structure adapts dynamically as new numbers are added, ensuring that the median is always accurately maintained.
+    
+    \item \textbf{Balanced Heaps:} By maintaining the size difference between the two heaps to at most one, we ensure that the median can be easily derived from the top elements.
+\end{itemize}
+
+This method is optimal for the problem constraints, handling up to \(10^5\) elements efficiently.
+
+\section*{Alternative Approaches}
+
+An alternative approach to solving the \textbf{Find Median from Data Stream} problem is to use a self-balancing binary search tree (BST) or a skip list to maintain the ordered list of numbers. While this allows for efficient insertion and median retrieval, it generally has higher constant factors compared to the two-heaps method and may be more complex to implement. The two-heaps approach is preferred due to its simplicity and lower time and space overhead.
+
+\section*{Similar Problems to This One}
+
+Similar problems that involve dynamic median finding or maintaining dynamic order statistics include:
+
+\begin{itemize}
+    \item \textbf{Sliding Window Median:} Finding medians in a sliding window over a data stream.
+    \index{Sliding Window Median}
+    
+    \item \textbf{Dynamic Order Statistics:} Maintaining statistics (like median, percentile) on a dynamically changing dataset.
+    \index{Dynamic Order Statistics}
+    
+    \item \textbf{Continuous Median:} Similar to finding the median in a continuous data stream.
+    \index{Continuous Median}
+    
+    \item \textbf{Find Mode from Data Stream:} Tracking the most frequent element in a data stream.
+    \index{Find Mode from Data Stream}
+    
+    \item \textbf{Dynamic Range Queries:} Performing range-based queries on a dynamically updating dataset.
+    \index{Dynamic Range Queries}
+\end{itemize}
+
+These problems share the common theme of maintaining dynamic statistics on a data stream or a dynamic dataset, often requiring efficient data structures like heaps or trees.
+
+\section*{Things to Keep in Mind and Tricks}
+
+\begin{itemize}
+    \item \textbf{Heap Balancing:} Always ensure that the two heaps remain balanced in size to facilitate accurate median calculation.
+    \index{Heap Balancing}
+    
+    \item \textbf{Max Heap Simulation:} Python's \texttt{heapq} module only provides a min heap. To simulate a max heap, insert negated values.
+    \index{Max Heap Simulation}
+    
+    \item \textbf{Efficient Median Retrieval:} By maintaining the heaps such that the median can be directly accessed from the top elements, we ensure constant-time median retrieval.
+    \index{Efficient Median Retrieval}
+    
+    \item \textbf{Handling Even and Odd Counts:} Correctly handling cases where the number of elements is even or odd is crucial for accurate median computation.
+    \index{Handling Even and Odd Counts}
+    
+    \item \textbf{Optimizing Space:} Although both heaps may store all elements, their separation into lower and upper halves optimizes the space usage for median retrieval.
+    \index{Optimizing Space}
+    
+    \item \textbf{Edge Cases:} Consider cases with no elements, one element, or all elements being the same to ensure the algorithm handles them gracefully.
+    \index{Edge Cases}
+    
+    \item \textbf{Thread Safety:} If implementing in a multithreaded environment, ensure that heap operations are thread-safe to prevent race conditions.
+    \index{Thread Safety}
+    
+    \item \textbf{Memory Management:} Be mindful of memory usage when dealing with large data streams, consider implementing size limits if needed.
+    \index{Memory Management}
+    
+    \item \textbf{Numerical Precision:} When calculating averages for even-sized sets, be aware of potential floating-point precision issues.
+    \index{Numerical Precision}
+\end{itemize}
+
+\section*{Corner and Special Cases to Test When Writing the Code}
+
+\begin{itemize}
+    \item \textbf{No Elements Added:} Calling \texttt{findMedian} before any numbers have been added should handle gracefully, possibly by raising an exception or returning a default value.
+    \index{Corner Cases}
+    
+    \item \textbf{Single Element:} After adding only one number, \texttt{findMedian} should return that number.
+    \index{Corner Cases}
+    
+    \item \textbf{Even Number of Elements:} Ensure that the median is correctly calculated as the average of the two middle numbers.
+    \index{Corner Cases}
+    
+    \item \textbf{Odd Number of Elements:} Ensure that the median is correctly identified as the middle number.
+    \index{Corner Cases}
+    
+    \item \textbf{Duplicate Numbers:} Adding multiple identical numbers should not affect the median calculation incorrectly.
+    \index{Corner Cases}
+    
+    \item \textbf{Negative Numbers:} Ensure that the algorithm correctly handles negative integers.
+    \index{Corner Cases}
+    
+    \item \textbf{Large Numbers:} Test with very large integer values to ensure no overflow issues occur.
+    \index{Corner Cases}
+    
+    \item \textbf{High Frequency of Median Retrieval:} Rapidly calling \texttt{findMedian} after numerous \texttt{addNum} operations to test performance.
+    \index{Corner Cases}
+    
+    \item \textbf{Alternating Adds and Finds:} Interleave \texttt{addNum} and \texttt{findMedian} calls to simulate real-time data stream scenarios.
+    \index{Corner Cases}
+    
+    \item \textbf{All Same Elements:} All added numbers are identical, testing whether the median remains consistent.
+    \index{Corner Cases}
+    
+    \item \textbf{Floating Point Results:} Test cases where the median results in a floating-point number to verify precision.
+    \index{Corner Cases}
+    
+    \item \textbf{Maximum Capacity:} Test behavior when reaching the maximum capacity of \(10^5\) elements.
+    \index{Corner Cases}
+    
+    \item \textbf{Sequential vs Random:} Test both sequential and random number insertions to ensure consistent behavior.
+    \index{Corner Cases}
+    
+    \item \textbf{Boundary Values:} Test with minimum and maximum possible integer values to check for overflow handling.
+    \index{Corner Cases}
+\end{itemize}
+
+\section*{Implementation Considerations}
+
+\begin{itemize}
+    \item \textbf{Exception Handling:} Implement proper exception handling for edge cases:
+    \begin{itemize}
+        \item Empty data structure
+        \item Memory allocation failures
+        \item Invalid input values
+    \end{itemize}
+    
+    \item \textbf{Performance Optimization:} Consider implementing:
+    \begin{itemize}
+        \item Lazy rebalancing of heaps
+        \item Caching of median value
+        \item Batch processing for multiple additions
+    \end{itemize}
+    
+    \item \textbf{Memory Efficiency:} Consider:
+    \begin{itemize}
+        \item Implementing size limits
+        \item Memory-efficient heap implementations
+        \item Garbage collection strategies
+    \end{itemize}
+\end{itemize}
+
+\printindex
