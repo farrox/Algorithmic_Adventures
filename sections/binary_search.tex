@@ -1,0 +1,105 @@
+% Filename: binary_search.tex
+
+\problemsection{Binary Search in a Sorted Array}
+\label{problem:Binary_Search}
+
+The **Binary Search** problem demonstrates the power of divide-and-conquer techniques in optimizing search operations. Given a sorted array, the task is to efficiently locate a target value using binary search, achieving logarithmic time complexity.
+
+\section*{Problem Statement}
+You are given an array of integers \texttt{nums}, which is sorted in ascending order, and an integer \texttt{target}. Write a function to search for \texttt{target} in \texttt{nums}. If \texttt{target} exists, return its index. Otherwise, return \texttt{-1}.
+
+\textbf{Input:}
+- \texttt{nums}: A list of integers sorted in ascending order.
+- \texttt{target}: An integer to search for.
+
+\textbf{Output:}
+- An integer representing the index of \texttt{target} if found, otherwise \texttt{-1}.
+
+\textbf{Example 1:}
+\begin{verbatim}
+Input: nums = [-1, 0, 3, 5, 9, 12], target = 9
+Output: 4
+Explanation: 9 exists at index 4 in nums.
+\end{verbatim}
+
+\textbf{Example 2:}
+\begin{verbatim}
+Input: nums = [-1, 0, 3, 5, 9, 12], target = 2
+Output: -1
+Explanation: 2 does not exist in nums, so return -1.
+\end{verbatim}
+
+\textbf{Constraints:}
+- \( 1 \leq \texttt{nums.length} \leq 10^4 \)
+- \( -10^4 \leq \texttt{nums}[i], \texttt{target} \leq 10^4 \)
+- All integers in \texttt{nums} are unique.
+
+\section*{Algorithmic Approach}
+Binary search works by repeatedly dividing the search interval in half:
+1. Start with two pointers, \( \texttt{left} \) and \( \texttt{right} \), representing the bounds of the search interval.
+2. Compute the middle index:
+   \[
+   \texttt{mid} = \texttt{left} + (\texttt{right} - \texttt{left}) // 2
+   \]
+3. Compare \texttt{nums[mid]} with the \texttt{target}:
+   - If \texttt{nums[mid] == target}, return \texttt{mid}.
+   - If \texttt{nums[mid] < target}, search the right half by setting \texttt{left = mid + 1}.
+   - If \texttt{nums[mid] > target}, search the left half by setting \texttt{right = mid - 1}.
+4. Repeat until \texttt{left > right}.
+5. If the loop ends without finding \texttt{target}, return \texttt{-1}.
+
+\subsection*{Complexities}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \( O(\log n) \), where \( n \) is the length of \texttt{nums}.
+    \item \textbf{Space Complexity:} \( O(1) \), as no additional space is used beyond variables.
+\end{itemize}
+
+\section*{Python Implementation}
+The following code implements the binary search algorithm:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def search(nums, target):
+    left, right = 0, len(nums) - 1
+    while left <= right:
+        mid = left + (right - left) // 2
+        if nums[mid] == target:
+            return mid
+        elif nums[mid] < target:
+            left = mid + 1
+        else:
+            right = mid - 1
+    return -1
+
+# Example usage:
+nums = [-1, 0, 3, 5, 9, 12]
+target = 9
+print(search(nums, target))  # Output: 4
+\end{lstlisting}
+\end{fullwidth}
+
+\section*{Why This Approach?}
+Binary search is optimal for sorted arrays due to its logarithmic time complexity. By halving the search space at each step, it minimizes the number of comparisons needed to locate the target.
+
+\section*{Alternative Approaches}
+\begin{itemize}
+    \item **Linear Search:** Iterate through \texttt{nums} from start to end, returning the index of \texttt{target} if found. This approach has \( O(n) \) complexity and is inefficient for large arrays.
+    \item **Recursive Binary Search:** Implement binary search recursively. While elegant, it uses additional stack space, resulting in \( O(\log n) \) space complexity.
+\end{itemize}
+
+\section*{Similar Problems}
+\begin{itemize}
+    \item **Search Insert Position:** Find the index where a target should be inserted in a sorted array.
+    \item **First and Last Position in Sorted Array:** Locate the start and end indices of a target value.
+    \item **Find Minimum in Rotated Sorted Array:** Identify the smallest value in a rotated sorted array.
+\end{itemize}
+
+\section*{Corner and Special Cases to Test}
+\begin{itemize}
+    \item Empty array: \( \texttt{nums} = [] \), \( \texttt{target} = 5 \).
+    \item Single element array: \( \texttt{nums} = [3] \), \( \texttt{target} = 3 \).
+    \item Large arrays with varying \( \texttt{target} \) values.
+\end{itemize}
+
+\section*{Conclusion}
+Binary search is a quintessential algorithm for searching sorted data efficiently. Its simplicity and effectiveness make it a fundamental tool in algorithm design, with widespread applications in data retrieval, game development, and optimization problems.

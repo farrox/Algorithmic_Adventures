@@ -1,0 +1,114 @@
+% Filename: minimum_window_substring.tex
+\problemsection{Minimum Window Substring}
+\label{chap:Minimum_Window_Substring}
+The Minimum Window Substring problem is a classic problem in the realm of string manipulation and searching algorithms.
+
+\section*{Problem Statement}
+Given two strings `s` and `t`, return the minimum window substring of `s` such that every character in `t` (including duplicates) is included in the window. If there is no such substring, return the empty string "".
+
+A substring is a contiguous sequence of characters within the string.
+
+Examples:
+\begin{itemize}
+	\item Input: s = "ADOBECODEBANC", t = "ABC"
+	\item Output: "BANC"
+\end{itemize}
+
+\begin{itemize}
+	\item Input: s = "a", t = "a"
+	\item Output: "a"
+\end{itemize}
+
+\section*{Algorithmic Approach}
+To solve the problem using a sliding window approach, start with two pointers both set at the beginning of `s`. Expand the right pointer to find a valid window that contains all the characters from `t`. Once you have a valid window, increment the left pointer to try and minimize the size of the window without compromising its validity (i.e., it should still contain all the characters from `t`). Repeat this process until all potential windows have been checked. Return the smallest valid window observed during this process.
+
+\section*{Complexities}
+\begin{itemize}
+	\item \textbf{Time Complexity:} The overall time complexity is \(O(n + m)\), where \(n\) is the length of string `s` and \(m\) is the length of string `t`.
+	\item \textbf{Space Complexity:} The space complexity is \(O(m)\) for storing the characters of string `t` in a hash table.
+\end{itemize}
+
+%LeetCode link: \href{https://leetcode.com/problems/minimum-window-substring/}{Minimum Window Substring}
+
+\section*{Python Implementation}
+Below is the complete Python code for solving the Minimum Window Substring problem:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+from collections import Counter
+
+def minWindow(s: str, t: str) -> str:
+    if not t or not s:
+        return ""
+
+    # Dictionary which keeps a count of all the unique characters in t.
+    dict_t = Counter(t)
+
+    # Number of unique characters in t, which need to be present in the desired window.
+    required = len(dict_t)
+
+    # Left and Right pointer
+    l, r = 0, 0
+
+    # Formed is used to keep track of how many unique characters in t are present in the current window in its desired frequency.
+    # e.g. if t is "AABC" then the window must have two A's, one B and one C. Thus formed would be = 3 when all these conditions are met.
+    formed = 0
+
+    # Dictionary which keeps a count of all the unique characters in the current window.
+    window_counts = {}
+
+    # ans tuple of the form (window length, left, right)
+    ans = float("inf"), None, None
+
+    while r < len(s):
+        # Add one character from the right to the window
+        character = s[r]
+        window_counts[character] = window_counts.get(character, 0) + 1
+
+        # If the frequency of the current character added equals to the desired count in t then increment the formed count by 1.
+        if character in dict_t and window_counts[character] == dict_t[character]:
+            formed += 1
+
+        # Try and contract the window till the point where it ceases to be 'desirable'.
+        while l <= r and formed == required:
+            character = s[l]
+
+            # Save the smallest window until now.
+            if r - l + 1 < ans[0]:
+                ans = (r - l + 1, l, r)
+
+            # The character at the position pointed by the `left` pointer is no longer a part of the window.
+            window_counts[character] -= 1
+            if character in dict_t and window_counts[character] < dict_t[character]:
+                formed -= 1
+
+            # Move the left pointer ahead, this would help to look for a new window.
+            l += 1    
+
+        # Keep expanding the window once we are done contracting.
+        r += 1    
+    return "" if ans[0] == float("inf") else s[ans[1]: ans[2] + 1]
+
+# Example usage:
+print(minWindow("ADOBECODEBANC", "ABC"))  # Output: "BANC"
+print(minWindow("a", "a"))                # Output: "a"
+\end{lstlisting}
+
+\end{fullwidth}
+
+This implementation uses a hash table to store the frequency of each character in `t`, then uses a sliding window to find the smallest substring of `s` that contains all the characters of `t`. The hash table helps in quickly checking if the current window contains all the required characters.
+
+\section*{Why this approach}
+This approach is chosen because it efficiently scales with the length of the strings `s` and `t`. Although the worst-case time complexity appears to be \(O(n \cdot m)\), the use of a hash table ensures that the check for the current window can be done in constant time, thus effectively bringing the overall time complexity down to \(O(n + m)\).
+
+\section*{Alternative approaches}
+An alternative approach would be to use a fixed-size character array instead of a hash table to store the frequencies. However, this is only feasible if the character set of `s` and `t` is limited (e.g., ASCII characters only).
+
+\section*{Similar problems to this one}
+Problems like "Longest Substring Without Repeating Characters", "Substring with Concatenation of All Words", and "Permutation in String" involve similar techniques of sliding window and hashing.
+
+\section*{Things to keep in mind and tricks}
+One must take care to handle the counting accurately, especially when a character leaves the window when the left pointer moves. Also, initializing the `ans` tuple with `float("inf")` allows easy checking if no window was found.
+
+\section*{Corner and special cases to test when writing the code}
+It's important to consider cases where `s` is much larger than `t`, cases where `t` has repeated characters, and cases where no valid window is possible. These help in verifying that the window resizing logic is accurate and that the counting logic does not have off-by-one errors.

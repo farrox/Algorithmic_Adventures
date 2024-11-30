@@ -1,0 +1,304 @@
+% file: clone_graph.tex
+
+\problemsection{Clone Graph}
+\label{problem:clone_graph}
+\marginnote{This problem utilizes breadth-first search (BFS) and a hash map to efficiently clone an undirected graph while handling potential cycles.}
+
+The \textbf{Clone Graph} problem revolves around creating an exact replica of a given undirected graph. A graph is composed of nodes connected by undirected edges. The objective is to produce a new graph where the structure—arrangement of nodes and edges—of the original graph is identically maintained.
+
+\section*{Problem Statement}
+The task involves taking a reference to a node in a connected undirected graph and returning a deep copy (clone) of the entire graph. Every node within the graph contains a value (`val`) and a list (`neighbors`) indicating its adjacent nodes.
+
+\begin{verbatim}
+class Node {
+    public int val;
+    public List<Node> neighbors;
+}
+\end{verbatim}
+
+You are required to write a function that receives a node from a graph as input and returns a comprehensive copy of the graph. The duplication must preserve the structure of the original graph perfectly. You must ensure not to alter the original graph. Every node in the created graph must hold the same value as its counterpart in the original graph, and all connecting edges should be cloned to link the corresponding nodes in the copy.
+
+Addressing this problem effectively requires managing potential cycles within the graph to prevent infinite loops during the cloning process. Utilizing a hash table or dictionary is a common strategy to track already cloned nodes during the copying process.
+
+LeetCode link: \href{https://leetcode.com/problems/clone-graph/}{Clone Graph}\index{LeetCode}
+
+\marginnote{\href{https://leetcode.com/problems/clone-graph/}{[LeetCode Link]}\index{LeetCode}}
+\marginnote{\href{https://www.geeksforgeeks.org/clone-a-graph/}{[GeeksForGeeks Link]}\index{GeeksForGeeks}}
+\marginnote{\href{https://www.hackerrank.com/challenges/clone-a-graph/problem}{[HackerRank Link]}\index{HackerRank}}
+\marginnote{\href{https://app.codesignal.com/challenges/clone-graph}{[CodeSignal Link]}\index{CodeSignal}}
+\marginnote{\href{https://www.interviewbit.com/problems/clone-graph/}{[InterviewBit Link]}\index{InterviewBit}}
+\marginnote{\href{https://www.educative.io/courses/grokking-the-coding-interview/RM8y8Y3nLdY}{[Educative Link]}\index{Educative}}
+\marginnote{\href{https://www.codewars.com/kata/clone-graph/train/python}{[Codewars Link]}\index{Codewars}}
+
+\section*{Algorithmic Approach}
+
+\subsection*{Main Concept}
+Cloning a graph typically involves a breadth-first search (BFS) or depth-first search (DFS) traversal while keeping track of copied nodes to avoid infinite loops caused by cycles. A commonly used approach is to maintain a hash map where each original node's reference is mapped to its corresponding cloned node.
+
+\begin{enumerate}
+    \item \textbf{Initialize:} Start by checking if the input node is \texttt{None}. If so, return \texttt{None} as there's nothing to clone.
+    
+    \item \textbf{Hash Map Setup:} Create a hash map (e.g., a dictionary in Python) to store the mapping from original nodes to their cloned counterparts.
+    
+    \item \textbf{BFS Traversal:}
+    \begin{itemize}
+        \item Initialize a queue and enqueue the input node.
+        \item Clone the input node and add it to the hash map.
+        \item While the queue is not empty:
+        \begin{itemize}
+            \item Dequeue a node from the queue.
+            \item Iterate through its neighbors.
+            \item For each neighbor:
+            \begin{itemize}
+                \item If the neighbor hasn't been cloned yet:
+                \begin{itemize}
+                    \item Clone the neighbor.
+                    \item Add the cloned neighbor to the hash map.
+                    \item Enqueue the neighbor for further traversal.
+                \end{itemize}
+                \item Link the cloned neighbor to the current node's clone by appending it to the `neighbors` list.
+            \end{itemize}
+        \end{itemize}
+    \end{itemize}
+\end{enumerate}
+
+This approach ensures that each node is cloned exactly once and that all connections (edges) between nodes are preserved in the cloned graph.
+
+\marginnote{Using BFS ensures that nodes are cloned level by level, effectively handling graphs with cycles and preventing infinite loops.}
+
+\section*{Complexities}
+
+\begin{itemize}
+	\item \textbf{Time Complexity:} \( O(N + E) \), where \( N \) is the number of nodes and \( E \) is the number of edges in the graph. Each node and each edge are visited exactly once during the traversal.
+	\item \textbf{Space Complexity:} \( O(N) \) for the hash map to store cloned nodes and the queue used for BFS traversal.
+\end{itemize}
+
+\newpage % Start Python Implementation on a new page
+\section*{Python Implementation}
+
+\marginnote{Implementing BFS with a hash map efficiently handles graph cloning by ensuring each node is visited and cloned exactly once.}
+
+Below is the complete Python code for the `Solution` class, implementing the `cloneGraph` method to clone a given undirected graph:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+from collections import deque
+
+class Node:
+    def __init__(self, val = 0, neighbors = None):
+        self.val = val
+        self.neighbors = neighbors if neighbors is not None else []
+
+class Solution:
+    def cloneGraph(self, node: 'Node') -> 'Node':
+        if not node:
+            return node
+            
+        # Using a dictionary to keep track of copied nodes
+        cloned_nodes = {node: Node(node.val)}
+        
+        # Use a queue for BFS
+        queue = deque([node])
+        
+        while queue:
+            current = queue.popleft()
+            
+            for neighbor in current.neighbors:
+                if neighbor not in cloned_nodes:
+                    # Clone the neighbor and add it to the queue
+                    cloned_nodes[neighbor] = Node(neighbor.val)
+                    queue.append(neighbor)
+                    
+                # Add the clone of the neighbor to the neighbors of the clone node
+                cloned_nodes[current].neighbors.append(cloned_nodes[neighbor])
+                
+        return cloned_nodes[node]
+\end{lstlisting}
+\end{fullwidth}
+
+\section*{Implementation Details}
+\begin{description}
+    \item[Basic Setup]
+    \begin{itemize}
+        \item Create hash map for node mapping
+        \item Initialize queue/stack for traversal
+        \item Handle base case of null input
+    \end{itemize}
+
+    \item[Node Processing]
+    \begin{itemize}
+        \item Clone current node if not already done
+        \item Add to visited set
+        \item Process neighbors
+    \end{itemize}
+
+    \item[Neighbor Handling]
+    \begin{itemize}
+        \item Create new nodes for unvisited neighbors
+        \item Update connections between nodes
+        \item Add to processing queue/stack
+    \end{itemize}
+\end{description}
+
+\section*{Implementation Approaches}
+
+\subsection*{BFS Implementation}
+\begin{lstlisting}[language=Python]
+def cloneGraph_bfs(self, node):
+    if not node: return None
+    cloned = {node: Node(node.val)}
+    queue = deque([node])
+    while queue:
+        curr = queue.popleft()
+        for neighbor in curr.neighbors:
+            if neighbor not in cloned:
+                cloned[neighbor] = Node(neighbor.val)
+                queue.append(neighbor)
+            cloned[curr].neighbors.append(cloned[neighbor])
+    return cloned[node]
+\end{lstlisting}
+
+\subsection*{DFS Implementation}
+\begin{lstlisting}[language=Python]
+def cloneGraph_dfs(self, node):
+    def dfs(node, visited):
+        if not node: return None
+        if node in visited: return visited[node]
+        clone = Node(node.val)
+        visited[node] = clone
+        clone.neighbors = [dfs(n, visited) for n in node.neighbors]
+        return clone
+    return dfs(node, {})
+\end{lstlisting}
+
+\section*{Edge Cases}
+\begin{description}
+    \item[Empty Graph] Return null for null input
+    \item[Single Node] Create single node with no neighbors
+    \item[Self Loop] Handle node pointing to itself
+    \item[Multiple Cycles] Track visited nodes to prevent infinite loops
+    \item[Large Graph] Consider memory usage for large inputs
+\end{description}
+
+\section*{Common Issues}
+\textbf{Memory Management}
+\begin{itemize}
+    \item Problem: Memory leaks in cyclic graphs
+    \item Solution: Proper visited node tracking
+\end{itemize}
+
+\textbf{Reference Handling}
+\begin{itemize}
+    \item Problem: Shallow vs. deep copying
+    \item Solution: Ensure complete node recreation
+\end{itemize}
+
+\section*{Performance Analysis}
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|l|c|c|}
+        \hline
+        \textbf{Approach} & \textbf{Time} & \textbf{Space} \\
+        \hline
+        BFS & O(V + E) & O(V) \\
+        DFS & O(V + E) & O(V) \\
+        \hline
+    \end{tabular}
+    \caption{Performance Comparison}
+\end{table}
+
+\section*{Similar Problems to This One}
+
+Similar problems that involve graph traversal and manipulation include:
+
+\begin{itemize}
+    \item \textbf{Number of Islands:} Counting distinct islands in a grid.
+    \index{Number of Islands}
+    
+    \item \textbf{Pacific Atlantic Water Flow:} Determining cells from which water can flow to both oceans.
+    \index{Pacific Atlantic Water Flow}
+    
+    \item \textbf{Graph Valid Tree:} Checking if a given graph forms a valid tree.
+    \index{Graph Valid Tree}
+    
+    \item \textbf{Course Schedule:} Determining if it's possible to finish all courses based on prerequisites.
+    \index{Course Schedule}
+    
+    \item \textbf{Alien Dictionary:} Deriving a valid character order from a sorted dictionary of alien words.
+    \index{Alien Dictionary}
+    
+    \item \textbf{Word Ladder:} Finding the shortest transformation sequence from one word to another.
+    \index{Word Ladder}
+    
+    \item \textbf{Word Ladder II:} Finding all shortest transformation sequences from one word to another.
+    \index{Word Ladder II}
+    
+    \item \textbf{Rotting Oranges:} Determining the minimum time required to rot all oranges in a grid.
+    \index{Rotting Oranges}
+    
+    \item \textbf{Rotting Oranges Description:} A detailed explanation of the rotting oranges problem.
+    \index{Rotting Oranges Description}
+    
+    \item \textbf{Clone Graph II:} Variations of the clone graph problem with different constraints.
+    \index{Clone Graph II}
+\end{itemize}
+
+\section*{Things to Keep in Mind and Tricks}
+
+\begin{itemize}
+    \item \textbf{Tracking Cloned Nodes:} Always use a hash map or dictionary to track already cloned nodes to prevent infinite loops and redundant cloning, especially in graphs with cycles.
+    \index{Tracking Cloned Nodes}
+    
+    \item \textbf{Choosing Traversal Method:} Decide between BFS and DFS based on the graph's characteristics and your comfort level. Both methods are effective, but BFS is often preferred for its iterative nature and easier handling of cycles.
+    \index{BFS}
+    \index{DFS}
+    
+    \item \textbf{Handling Edge Cases:} Ensure that your implementation correctly handles edge cases such as an empty graph, a graph with a single node, or graphs with complex cycles.
+    \index{Edge Cases}
+    
+    \item \textbf{Immutable vs. Mutable Graphs:} Be cautious about modifying the original graph. If the problem specifies that the original graph should remain unchanged, ensure that your traversal and cloning processes do not alter it.
+    \index{Immutable vs. Mutable Graphs}
+    
+    \item \textbf{Deep vs. Shallow Copies:} Understand the difference between deep and shallow copies. In this problem, a deep copy is required to ensure that all nodes and their connections are entirely independent of the original graph.
+    \index{Deep Copy}
+    \index{Shallow Copy}
+    
+    \item \textbf{Optimizing Space:} While BFS typically requires additional space for the queue, ensure that your hash map does not grow unnecessarily by only storing necessary mappings.
+    \index{Optimizing Space}
+\end{itemize}
+
+\section*{Corner and Special Cases to Test When Writing the Code}
+
+\begin{itemize}
+    \item \textbf{Empty Graph:} Input node is \texttt{None}. The function should return \texttt{None} without errors.
+    \index{Corner Cases}
+    
+    \item \textbf{Single Node:} Graph consists of a single node with no neighbors. The cloned graph should also consist of a single node with no neighbors.
+    \index{Corner Cases}
+    
+    \item \textbf{Two Nodes with One Edge:} Graph with two nodes connected by a single edge. Ensure that both nodes are cloned correctly and that the connection is preserved.
+    \index{Corner Cases}
+    
+    \item \textbf{Self-Loop:} A node that has an edge to itself. The cloned node should also have a self-loop.
+    \index{Corner Cases}
+    
+    \item \textbf{Multiple Cycles:} Graphs with multiple cycles to ensure that the cloning process correctly handles complex cyclic structures without infinite recursion or duplication.
+    \index{Corner Cases}
+    
+    \item \textbf{Disconnected Graph:} Although the problem specifies a connected graph, test with disconnected graphs to see how the function behaves. It should clone only the connected component that includes the input node.
+    \index{Corner Cases}
+    
+    \item \textbf{Large Graph:} Graphs with a large number of nodes and edges to test the efficiency and performance of the cloning algorithm.
+    \index{Corner Cases}
+    
+    \item \textbf{Graph with Varying Degrees:} Nodes with varying numbers of neighbors to ensure that the neighbors are cloned accurately.
+    \index{Corner Cases}
+    
+    \item \textbf{Immutable Original Graph:} Verify that the original graph remains unchanged after cloning.
+    \index{Corner Cases}
+    
+    \item \textbf{Non-Integer Node Values:} If the graph nodes contain non-integer values, ensure that the cloning process correctly handles different data types.
+    \index{Corner Cases}
+\end{itemize}
+
+\printindex

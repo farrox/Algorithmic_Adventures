@@ -1,0 +1,57 @@
+
+ewpage
+\chapter{Reverse Bits}
+\label{chap:Reverse_Bits}
+
+The "Reverse Bits" problem is a classic exercise in bit manipulation that asks for the reversal of bits in a given 32 bits unsigned integer.
+
+\section*{Problem Statement}
+The task is to reverse the bits of a given 32 bits unsigned integer. The input is provided as an integer, and the output should also be an integer, representing the decimal value of the binary bits reversed.
+
+
+oindent
+LeetCode link: \href{https://leetcode.com/problems/reverse-bits/}{Reverse Bits}
+
+\section*{Algorithmic Approach}
+To reverse the bits in an integer, a bitwise approach is taken, shifting through each bit, and accumulating the result. The key operations involve bitwise shifts and bitwise OR.
+
+\section*{Complexities}
+\begin{itemize}
+	\item \textbf{Time Complexity:} The algorithm runs in \(O(1)\) time, as the number of bits to be processed is constant (32 bits).
+	\item \textbf{Space Complexity:} The space complexity is \(O(1)\), since no extra space is required other than the variables used for the bit manipulations.
+\end{itemize}
+
+
+ewpage % Start Python Implementation on a new page
+\section*{Python Implementation}
+Below is the complete Python code to reverse the bits of a given 32 bits unsigned integer:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class Solution:
+    def reverseBits(self, n: int) -> int:
+        rev = 0
+        for i in range(32):
+            rev = (rev << 1) | (n & 1)
+            n >>= 1
+        return rev
+\end{lstlisting}
+
+\end{fullwidth}
+
+This implementation is straightforward, using a loop to iterate through each of the 32 bits. It initially sets `rev` to 0 and then, for each bit in the input `n`, shifts `rev` one bit to the left, reads the least significant bit of `n`, and adds it to `rev` using a bitwise OR. The input `n` is then shifted one bit to the right to continue the process with the next bit until all bits have been reversed.
+
+\section*{Why this approach}
+Bitwise manipulation is chosen for this problem due to its efficiency in handling binary operations at a low level. Since the problem relates to the individual bits of an integer, using bitwise operators is the most direct and fastest approach.
+
+\section*{Alternative approaches}
+Though the problem could theoretically be solved by converting the integer to a binary string, reversing the string, and then converting back to an integer, this approach would not fulfil the constraints laid out in the problem statement where string manipulation is not allowed.
+
+\section*{Similars problems to this one}
+Variations of bit manipulation problems could include counting set bits, finding single numbers in a duplicate array using XOR, and converting a number to hexadecimal.
+
+\section*{Things to keep in mind and tricks}
+It is essential when performing bitwise operations to consider the size of the integers you are working with, especially when dealing with language-specific peculiarities related to signed and unsigned numbers.
+
+\section*{Corner and special cases to test when writing the code}
+When implementing bitwise operations, testing edge cases including the maximum and minimum values the integer can have, such as 0, 1, \(2^{31} - 1\), and \(2^{31}\) can help ensure that the code correctly handles all possible bit configurations.

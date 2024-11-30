@@ -1,0 +1,247 @@
+% Filename: word_search.tex
+
+\problemsection{Word Search}
+\label{chap:word_search}
+\marginnote{A classic grid traversal problem that elegantly combines DFS with backtracking. Often appears in technical interviews at top tech companies.}
+
+The \textbf{Word Search} problem involves determining whether a given word exists in a 2D grid of characters. The word can be constructed from letters of sequentially adjacent cells, where "adjacent" cells are horizontally or vertically neighboring. The same letter cell may not be used more than once.
+
+\section*{Problem Statement}
+
+Given an `m x n` grid of characters `board` and a string `word`, return `true` if `word` exists in the grid. Otherwise, return `false`.
+
+The word can be constructed from letters of sequentially adjacent cells, where "adjacent" cells are horizontally or vertically neighboring. The same letter cell may not be used more than once.
+
+\textbf{Examples:}
+
+\begin{itemize}
+    \item \textbf{Example 1:}
+    \begin{verbatim}
+    Input: board = [
+      ['A','B','C','E'],
+      ['S','F','C','S'],
+      ['A','D','E','E']
+    ], word = "ABCCED"
+    Output: true
+    Explanation: The word "ABCCED" exists in the grid following the path A → B → C → C → E → D.
+    \end{verbatim}
+
+    \item \textbf{Example 2:}
+    \begin{verbatim}
+    Input: board = [
+      ['A','B','C','E'],
+      ['S','F','C','S'],
+      ['A','D','E','E']
+    ], word = "SEE"
+    Output: true
+    Explanation: The word "SEE" exists in the grid following the path S → E → E.
+    \end{verbatim}
+
+    \item \textbf{Example 3:}
+    \begin{verbatim}
+    Input: board = [
+      ['A','B','C','E'],
+      ['S','F','C','S'],
+      ['A','D','E','E']
+    ], word = "ABCB"
+    Output: false
+    Explanation: The word "ABCB" does not exist in the grid because the same cell cannot be used more than once.
+    \end{verbatim}
+\end{itemize}
+
+LeetCode link: \href{https://leetcode.com/problems/word-search/}{Word Search}\index{LeetCode}
+
+\marginnote{\href{https://leetcode.com/problems/word-search/}{[LeetCode Link]}\index{LeetCode}}
+\marginnote{\href{https://www.geeksforgeeks.org/backtracking-set-3-word-search/}{[GeeksForGeeks Link]}\index{GeeksForGeeks}}
+\marginnote{\href{https://www.hackerrank.com/challenges/word-search/problem}{[HackerRank Link]}\index{HackerRank}}
+\marginnote{\href{https://app.codesignal.com/challenges/word-search}{[CodeSignal Link]}\index{CodeSignal}}
+\marginnote{\href{https://www.interviewbit.com/problems/word-search/}{[InterviewBit Link]}\index{InterviewBit}}
+\marginnote{\href{https://www.educative.io/courses/grokking-the-coding-interview/RM8y8Y3nLdY}{[Educative Link]}\index{Educative}}
+\marginnote{\href{https://www.codewars.com/kata/word-search/train/python}{[Codewars Link]}\index{Codewars}}
+
+\section*{Key Insights}
+Before diving into the solution, understanding these key insights will help develop an optimal approach:
+
+\begin{itemize}
+    \item We only need to check cells that match the first character of our target word
+    \item Once we use a cell, we can't reuse it in the same path
+    \item We can use the board itself to mark visited cells, saving space
+    \item Early termination is crucial for performance
+\end{itemize}
+
+\section*{Solution Strategy}
+The optimal solution combines \textbf{Depth-First Search (DFS)} with \textbf{backtracking}:
+
+\begin{enumerate}
+    \item Find all potential starting points (cells matching word[0])
+    \item For each starting point:
+        \begin{itemize}
+            \item Explore adjacent cells recursively using DFS
+            \item Mark visited cells to avoid reuse
+            \item Backtrack when a path fails
+        \end{itemize}
+    \item Return true if any path succeeds
+\end{enumerate}
+
+\marginnote{The key to efficient backtracking is marking and unmarking cells in-place, avoiding extra space for visited sets.}
+
+\section*{Python Implementation}
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+from typing import List
+
+def exist(board: List[List[str]], word: str) -> bool:
+    if not board or not board[0] or not word:
+        return False
+    
+    ROWS, COLS = len(board), len(board[0])
+    
+    def dfs(row: int, col: int, word_index: int) -> bool:
+        if word_index == len(word):
+            return True
+        if (row < 0 or row >= ROWS or 
+            col < 0 or col >= COLS or 
+            board[row][col] != word[word_index]):
+            return False
+        
+        original_char = board[row][col]
+        board[row][col] = '#'
+        
+        for dx, dy in [(0, 1), (1, 0), (0, -1), (-1, 0)]:
+            if dfs(row + dx, col + dy, word_index + 1):
+                return True
+        
+        board[row][col] = original_char
+        return False
+    
+    return any(
+        dfs(row, col, 0)
+        for row in range(ROWS)
+        for col in range(COLS)
+        if board[row][col] == word[0]
+    )
+
+# Comprehensive test cases
+def test_word_search():
+    assert exist([["A","B","C","E"],
+                  ["S","F","C","S"],
+                  ["A","D","E","E"]], "ABCCED") == True
+    assert exist([["A","B","C","E"],
+                  ["S","F","C","S"],
+                  ["A","D","E","E"]], "SEE") == True
+    assert exist([["A","B","C","E"],
+                  ["S","F","C","S"],
+                  ["A","D","E","E"]], "ABCB") == False
+    assert exist([], "A") == False
+    assert exist([["A"]], "A") == True
+    assert exist([["A"]], "") == False
+\end{lstlisting}
+\end{fullwidth}
+
+\section*{Implementation Details}
+\begin{itemize}
+    \item \textbf{Early Termination:} We check for empty inputs immediately
+    \item \textbf{Space Optimization:} Using '\#' as a visited marker avoids extra space
+    \item \textbf{Direction Array:} Using (dx, dy) pairs makes direction handling cleaner
+    \item \textbf{Pythonic Features:} Using 'any' for concise iteration over starting points
+\end{itemize}
+
+\section*{Common Mistakes to Avoid}
+\begin{itemize}
+    \item \textbf{Forgetting to Backtrack:} Always restore cells to their original state
+    \item \textbf{Unnecessary Checking:} Only start DFS from promising cells
+    \item \textbf{Extra Space:} Avoid creating visited sets/arrays
+    \item \textbf{Missing Edge Cases:} Handle empty boards and words properly
+\end{itemize}
+
+\section*{Interview Tips}
+\begin{itemize}
+    \item Start by explaining the DFS + backtracking approach
+    \item Mention space optimization using in-place marking
+    \item Discuss time complexity: O(N × M × $4^L$) where L is word length
+    \item Consider mentioning potential optimizations:
+        \begin{itemize}
+            \item Pre-checking if all required characters exist
+            \item Starting from less frequent characters
+            \item Using trie for multiple word search
+        \end{itemize}
+\end{itemize}
+
+\section*{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(m \times n \times 4^k)\), where \(m\) is the number of rows, \(n\) is the number of columns in the grid, and \(k\) is the length of the word. This accounts for exploring all possible paths from each cell.
+    \item \textbf{Space Complexity:} \(O(k)\), where \(k\) is the length of the word. This space is used by the recursion stack during the DFS.
+\end{itemize}
+
+\section*{Similar Problems to This One}
+
+There are several other problems that involve searching for patterns or sequences within grids or strings, such as:
+
+\begin{itemize}
+    \item \hyperref[problem:word_search_ii]{Word Search II}\index{Word Search II}
+    \item \hyperref[problem:minimum_window_substring]{Minimum Window Substring}\index{Minimum Window Substring}
+    \item \hyperref[problem:longest_repeating_character_replacement]{Longest Repeating Character Replacement}\index{Longest Repeating Character Replacement}
+    \item \hyperref[problem:palindrome_partitioning]{Palindrome Partitioning}\index{Palindrome Partitioning}
+    \item \hyperref[problem:number_of_islands]{Number of Islands}\index{Number of Islands}
+\end{itemize}
+
+\section*{Things to Keep in Mind and Tricks}
+
+\begin{itemize}
+    \item \textbf{Depth-First Search (DFS):} Utilize DFS to explore all possible paths from a given cell efficiently.
+    \index{Depth-First Search (DFS)}
+    
+    \item \textbf{Backtracking:} Implement backtracking to revert changes (like marking cells as visited) when a path does not lead to a solution.
+    \index{Backtracking}
+    
+    \item \textbf{Boundary Checks:} Always ensure that your indices do not go out of bounds to prevent runtime errors.
+    \index{Boundary Checks}
+    
+    \item \textbf{Early Termination:} Return immediately when a valid path is found to optimize performance.
+    \index{Early Termination}
+    
+    \item \textbf{Handling Visited Cells:} Mark cells as visited during the search and ensure they are unmarked during backtracking.
+    \index{Handling Visited Cells}
+    
+    \item \textbf{Optimizing Search Order:} Explore directions in an order that is likely to lead to a solution faster, such as prioritizing directions based on word patterns.
+    \index{Optimizing Search Order}
+\end{itemize}
+
+\section*{Corner and Special Cases to Test When Writing the Code}
+
+When implementing the `exist` function, it is crucial to test the following edge cases to ensure robustness:
+
+\begin{itemize}
+    \item \textbf{Empty Grid:} `board = []`, `word = "a"` should return `False`.
+    \index{Corner Cases}
+    
+    \item \textbf{Single Cell Grid:} `board = [['A']]`, `word = "A"` should return `True`.
+    \index{Corner Cases}
+    
+    \item \textbf{Single Cell Grid with Mismatch:} `board = [['A']]`, `word = "B"` should return `False`.
+    \index{Corner Cases}
+    
+    \item \textbf{Word Longer Than Grid Cells:} `board = [['A','B'],['C','D']]`, `word = "ABCDE"` should return `False`.
+    \index{Corner Cases}
+    
+    \item \textbf{All Characters the Same:} `board = [['A','A','A'],['A','A','A'],['A','A','A']]`, `word = "AAAA"` should return `True`.
+    \index{Corner Cases}
+    
+    \item \textbf{Word Not Present:} `board = [['A','B','C'],['D','E','F'],['G','H','I']]`, `word = "XYZ"` should return `False`.
+    \index{Corner Cases}
+    
+    \item \textbf{Word with Repeating Characters:} `board = [['A','A','A'],['A','B','A'],['A','A','A']]`, `word = "ABA"` should return `True`.
+    \index{Corner Cases}
+    
+    \item \textbf{Multiple Valid Paths:} `board = [['A','B','C','E'],['S','F','C','S'],['A','D','E','E']]`, `word = "ABCCED"` should return `True`.
+    \index{Corner Cases}
+    
+    \item \textbf{Large Grid with Valid Path:} A large grid where the word exists multiple times.
+    \index{Corner Cases}
+    
+    \item \textbf{Large Grid with No Valid Path:} A large grid where the word does not exist.
+    \index{Corner Cases}
+\end{itemize}
+
+\printindex

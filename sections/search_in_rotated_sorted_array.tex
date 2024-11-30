@@ -1,0 +1,137 @@
+% Filename: search_in_rotated_sorted_array.tex
+
+\problemsection{Search in Rotated Sorted Array}
+\label{problem:Search_in_Rotated_Sorted_Array}
+
+The **Search in Rotated Sorted Array** problem tests your ability to combine binary search with logic to handle shifted or rotated arrays. This is a frequent interview question that evaluates both problem-solving skills and the ability to optimize search operations.
+
+\subsection*{Problem Statement}
+You are given a rotated sorted array \texttt{nums} of unique integers and a target integer \texttt{target}. Return the index of \texttt{target} if it exists in \texttt{nums}; otherwise, return \(-1\).
+
+The array is sorted in ascending order and then rotated at some unknown pivot index \(k\). For example, \([0, 1, 2, 4, 5, 6, 7]\) might become \([4, 5, 6, 7, 0, 1, 2]\). Your task is to search for the \texttt{target} in \(O(\log n)\) time.
+
+\textbf{Example 1:}
+\begin{verbatim}
+Input: nums = [4,5,6,7,0,1,2], target = 0
+Output: 4
+\end{verbatim}
+
+\textbf{Example 2:}
+\begin{verbatim}
+Input: nums = [4,5,6,7,0,1,2], target = 3
+Output: -1
+\end{verbatim}
+
+\textbf{Example 3:}
+\begin{verbatim}
+Input: nums = [1], target = 0
+Output: -1
+\end{verbatim}
+
+\subsection*{Algorithmic Approach}
+The problem is best solved using a modified binary search\sidenote{Binary search ensures \(O(\log n)\) time complexity, making it highly efficient for sorted or partially sorted arrays}.
+
+\textbf{Key Observations:}
+\begin{itemize}
+    \item One half of the array (either left or right) is always sorted\sidenote{This property is a direct result of the array being rotated at a single pivot point}.
+    \item The target can only lie in one of the two halves, depending on its value relative to the sorted half.
+\end{itemize}
+
+The algorithm:
+\begin{enumerate}
+    \item Initialize two pointers, \texttt{left} at the start and \texttt{right} at the end of the array.
+    \item While \texttt{left} \(\leq\) \texttt{right}, calculate the middle index: 
+    \[
+    \text{mid} = \text{left} + \frac{\text{right} - \text{left}}{2}
+    \]
+    \item Check if the middle element is the target. If yes, return \texttt{mid}.
+    \item Determine whether the left half or the right half is sorted:
+    \begin{itemize}
+        \item If the left half is sorted:
+        \begin{itemize}
+            \item Check if the target lies within this range\sidenote{A sorted range is defined as \(\texttt{nums[left]} \leq \texttt{target} < \texttt{nums[mid]}\)}.
+            \item If yes, adjust the \texttt{right} pointer to \(\texttt{mid} - 1\); otherwise, adjust \texttt{left} to \(\texttt{mid} + 1\).
+        \end{itemize}
+        \item If the right half is sorted:
+        \begin{itemize}
+            \item Check if the target lies within this range\sidenote{Similarly, the range is defined as \(\texttt{nums[mid]} < \texttt{target} \leq \texttt{nums[right]}\)}.
+            \item If yes, adjust the \texttt{left} pointer to \(\texttt{mid} + 1\); otherwise, adjust \texttt{right} to \(\texttt{mid} - 1\).
+        \end{itemize}
+    \end{itemize}
+    \item If the loop exits without finding the target, return \(-1\).
+\end{enumerate}
+
+\subsection*{Complexities}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(\log n)\), as the array is halved in each iteration.
+    \item \textbf{Space Complexity:} \(O(1)\), as the algorithm operates in-place without additional memory allocation.
+\end{itemize}
+
+\subsection*{Python Implementation}
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class Solution:
+    def search(self, nums: List[int], target: int) -> int:
+        left, right = 0, len(nums) - 1
+        
+        while left <= right:
+            mid = left + (right - left) // 2
+            
+            # Check if the middle element is the target
+            if nums[mid] == target:
+                return mid
+            
+            # Determine which half is sorted
+            if nums[left] <= nums[mid]:
+                # Left half is sorted
+                if nums[left] <= target < nums[mid]:
+                    right = mid - 1
+                else:
+                    left = mid + 1
+            else:
+                # Right half is sorted
+                if nums[mid] < target <= nums[right]:
+                    left = mid + 1
+                else:
+                    right = mid - 1
+        
+        return -1
+\end{lstlisting}
+\end{fullwidth}
+
+\subsection*{Why This Approach?}
+This approach leverages the sorted property of one half of the array in each iteration to eliminate half of the search space\sidenote{Binary search guarantees logarithmic time complexity by halving the search space repeatedly}. By dynamically adjusting the search range based on the target's position relative to the sorted half, the algorithm maintains \(O(\log n)\) efficiency.
+
+\subsection*{Alternative Approaches}
+\begin{itemize}
+    \item **Linear Search:**  
+    Iterate through the array and check each element. This has \(O(n)\) time complexity and is not suitable for large arrays.
+    \item **Pivot Detection + Binary Search:**  
+    First, identify the pivot point (where the rotation occurs) using binary search, then perform binary search on the relevant segment. While still \(O(\log n)\), this involves two binary search passes, making it less efficient.
+\end{itemize}
+
+\subsection*{Similar Problems}
+\begin{itemize}
+    \item \textbf{Find Minimum in Rotated Sorted Array:} Identify the smallest element in a rotated sorted array.
+    \item \textbf{Search in Rotated Sorted Array II:} Handle duplicates while searching for the target.
+    \item \textbf{Find Peak Element:} Locate a peak element in an array where adjacent elements are distinct.
+\end{itemize}
+
+\subsection*{Things to Keep in Mind and Tricks}
+\begin{itemize}
+    \item Always check if the middle element is the target before further processing\sidenote{This prevents unnecessary checks and guarantees correctness}.
+    \item Handle edge cases like arrays with a single element, no rotation, or extreme rotations (pivot at the first or last element).
+    \item Use integer division (\(\texttt{//}\)) for calculating \texttt{mid} to avoid potential overflow in some languages.
+\end{itemize}
+
+\subsection*{Corner and Special Cases to Test}
+\begin{itemize}
+    \item **Single Element Array:** \([1]\), target = \(1\) or \(2\).
+    \item **No Rotation:** \([1, 2, 3, 4]\), target = \(3\).
+    \item **Full Rotation:** \([1, 2, 3, 4]\), rotated back to \([1, 2, 3, 4]\), target = \(4\).
+    \item **Target Not in Array:** \([4, 5, 6, 7, 0, 1, 2]\), target = \(8\).
+    \item **Extreme Rotation:** \([2, 3, 4, 5, 6, 7, 0, 1]\), target = \(0\).
+\end{itemize}
+
+\subsection*{Conclusion}
+The **Search in Rotated Sorted Array** problem demonstrates how binary search can be adapted to handle more complex scenarios like rotations. By exploiting the partially sorted structure of the array, this algorithm efficiently narrows down the search space, achieving optimal performance. Mastering this problem prepares you to tackle related challenges involving rotated or partially sorted data structures.

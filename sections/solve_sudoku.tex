@@ -1,0 +1,153 @@
+% Filename: solve_sudoku.tex
+
+\problemsection{Solve Sudoku}
+\label{problem:Solve_Sudoku}
+
+The **Solve Sudoku** problem involves completing a partially filled \(9 \times 9\) Sudoku grid by filling empty cells such that the final grid satisfies Sudoku rules. This problem is an excellent example of constraint satisfaction and backtracking.
+
+\subsection*{Problem Statement}
+Write a program to solve a given Sudoku puzzle by filling the empty cells. The Sudoku rules are:
+\begin{itemize}
+    \item Each row must contain the digits \(1\) to \(9\) with no repetitions.
+    \item Each column must contain the digits \(1\) to \(9\) with no repetitions.
+    \item Each of the nine \(3 \times 3\) sub-boxes must contain the digits \(1\) to \(9\) with no repetitions.
+\end{itemize}
+
+Empty cells are represented by \texttt{'.'}.
+
+\textbf{Input:}
+- A \(9 \times 9\) grid \texttt{board}, where each cell contains a digit (\(1\) to \(9\)) or \texttt{'.'}.
+
+\textbf{Output:}
+- The same grid, modified in place to represent the solved Sudoku.
+
+\textbf{Example Input:}
+\begin{verbatim}
+board = [
+    ["5","3",".",".","7",".",".",".","."],
+    ["6",".",".","1","9","5",".",".","."],
+    [".","9","8",".",".",".",".","6","."],
+    ["8",".",".",".","6",".",".",".","3"],
+    ["4",".",".","8",".","3",".",".","1"],
+    ["7",".",".",".","2",".",".",".","6"],
+    [".","6",".",".",".",".","2","8","."],
+    [".",".",".","4","1","9",".",".","5"],
+    [".",".",".",".","8",".",".","7","9"]
+]
+\end{verbatim}
+
+\textbf{Output:}
+The solved grid is:
+\begin{verbatim}
+board = [
+    ["5","3","4","6","7","8","9","1","2"],
+    ["6","7","2","1","9","5","3","4","8"],
+    ["1","9","8","3","4","2","5","6","7"],
+    ["8","5","9","7","6","1","4","2","3"],
+    ["4","2","6","8","5","3","7","9","1"],
+    ["7","1","3","9","2","4","8","5","6"],
+    ["9","6","1","5","3","7","2","8","4"],
+    ["2","8","7","4","1","9","6","3","5"],
+    ["3","4","5","2","8","6","1","7","9"]
+]
+\end{verbatim}
+
+\subsection*{Algorithmic Approach}
+The problem is solved using backtracking:
+\begin{itemize}
+    \item Identify the next empty cell in the grid.
+    \item Try placing digits \(1\) through \(9\) in the empty cell.
+    \item For each digit, check if placing it maintains the validity of the Sudoku rules.
+    \item If valid, recursively attempt to solve the remaining grid.
+    \item Backtrack if placing a digit does not lead to a solution, removing it and trying the next digit.
+    \item Stop when all cells are filled and the grid satisfies the Sudoku rules.
+\end{itemize}
+
+\subsection*{Complexities}
+\begin{itemize}
+    \item \textbf{Time Complexity:} Solving Sudoku is an NP-complete problem. In the worst case, the time complexity can approach \(O(9^{n})\), where \(n\) is the number of empty cells.
+    \item \textbf{Space Complexity:} \(O(n)\) for the recursion stack, where \(n\) is the number of empty cells.
+\end{itemize}
+
+\subsection*{Python Implementation}
+Below is the Python implementation using backtracking:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def solveSudoku(board):
+    def is_valid(row, col, num):
+        # Check the row
+        for i in range(9):
+            if board[row][i] == num:
+                return False
+        # Check the column
+        for i in range(9):
+            if board[i][col] == num:
+                return False
+        # Check the 3x3 sub-box
+        box_row, box_col = 3 * (row // 3), 3 * (col // 3)
+        for i in range(3):
+            for j in range(3):
+                if board[box_row + i][box_col + j] == num:
+                    return False
+        return True
+
+    def backtrack():
+        for i in range(9):
+            for j in range(9):
+                if board[i][j] == ".":
+                    for num in "123456789":
+                        if is_valid(i, j, num):
+                            board[i][j] = num
+                            if backtrack():
+                                return True
+                            board[i][j] = "."  # Backtrack
+                    return False
+        return True
+
+    backtrack()
+
+# Example usage:
+board = [
+    ["5","3",".",".","7",".",".",".","."],
+    ["6",".",".","1","9","5",".",".","."],
+    [".","9","8",".",".",".",".","6","."],
+    ["8",".",".",".","6",".",".",".","3"],
+    ["4",".",".","8",".","3",".",".","1"],
+    ["7",".",".",".","2",".",".",".","6"],
+    [".","6",".",".",".",".","2","8","."],
+    [".",".",".","4","1","9",".",".","5"],
+    [".",".",".",".","8",".",".","7","9"]
+]
+
+solveSudoku(board)
+for row in board:
+    print(row)
+\end{lstlisting}
+\end{fullwidth}
+
+\subsection*{Why This Approach?}
+Backtracking is the most natural approach for constraint satisfaction problems like Sudoku. It systematically explores all possibilities while pruning invalid paths, ensuring correctness and efficiency.
+
+\subsection*{Similar Problems}
+\begin{itemize}
+    \item \textbf{N-Queens Problem:} Place \(n\) queens on an \(n \times n\) chessboard such that no two queens threaten each other.
+    \item \textbf{Magic Square Problem:} Fill a grid such that the sums of rows, columns, and diagonals are equal.
+\end{itemize}
+
+\subsection*{Things to Keep in Mind and Tricks}
+\begin{itemize}
+    \item Use a helper function to check the validity of placing a digit, reducing redundancy in code.
+    \item Test the solution with partially filled grids of varying difficulty to ensure correctness and performance.
+    \item Optimize by filling cells with fewer possibilities first.
+\end{itemize}
+
+\subsection*{Corner and Special Cases to Test}
+\begin{itemize}
+    \item \textbf{Empty Grid:} Input: A grid with all cells empty. Output: A valid Sudoku grid.
+    \item \textbf{Nearly Solved Grid:} Input: A grid with only one cell empty. Output: A completed grid.
+    \item \textbf{Invalid Grid:} Input: A grid that violates Sudoku rules. Output: No solution.
+\end{itemize}
+
+\subsection*{Conclusion}
+The **Solve Sudoku** problem showcases the power of backtracking for solving constraint satisfaction problems. Mastering this technique provides foundational skills for tackling a wide range of combinatorial challenges.

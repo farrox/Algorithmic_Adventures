@@ -1,0 +1,187 @@
+% Filename: binary_tree_vs_binary_search_tree.tex
+
+\problemsection{Binary Tree vs. Binary Search Tree}\marginpar{Understand the key differences and use-cases of Binary Trees and Binary Search Trees (BSTs).}
+
+\textbf{Introduction}
+
+Binary Trees and Binary Search Trees (BSTs) are fundamental data structures in computer science, each serving distinct purposes and offering unique properties. Understanding the differences between them is crucial for selecting the appropriate tree structure based on the problem requirements.
+
+\textbf{Binary Tree}
+
+A **Binary Tree** is a hierarchical data structure in which each node has at most two children, referred to as the left child and the right child. There are no specific ordering constraints on the node values in a binary tree.
+
+\begin{itemize}
+    \item \textbf{Structure}:
+    \begin{itemize}
+        \item Each node has at most two children.
+        \item No inherent ordering of node values.
+    \end{itemize}
+    
+    \item \textbf{Types of Binary Trees}:
+    \begin{enumerate}
+        \item \textbf{Full Binary Tree}: Every node has either 0 or 2 children.
+        \item \textbf{Complete Binary Tree}: All levels are fully filled except possibly the last, which is filled from left to right.
+        \item \textbf{Perfect Binary Tree}: All internal nodes have two children, and all leaves are at the same level.
+        \item \textbf{Skewed Binary Tree}: All nodes have only one child (either left or right), resembling a linked list.
+    \end{enumerate}
+    
+    \item \textbf{Use-Cases}:
+    \begin{itemize}
+        \item Hierarchical data representation (e.g., organizational charts).
+        \item Expression trees in compilers.
+        \item General-purpose tree structures where ordering is not required.
+    \end{itemize}
+\end{itemize}
+
+\textbf{Binary Search Tree (BST)}
+
+A **Binary Search Tree** is a specialized form of a binary tree that maintains a specific order among its nodes. For every node in the BST:
+
+\begin{itemize}
+    \item All nodes in the left subtree have values **less than** the node's value.
+    \item All nodes in the right subtree have values **greater than** the node's value.
+\end{itemize}
+
+This ordering property enables efficient search, insertion, and deletion operations.
+
+\begin{itemize}
+    \item \textbf{Structure}:
+    \begin{itemize}
+        \item Each node has at most two children.
+        \item Maintains an ordered structure based on node values.
+    \end{itemize}
+    
+    \item \textbf{Properties}:
+    \begin{enumerate}
+        \item \textbf{Inorder Traversal}: Yields node values in ascending order.
+        \item \textbf{Efficient Operations}: Search, insertion, and deletion can be performed in \(O(h)\) time, where \(h\) is the height of the tree.
+    \end{enumerate}
+    
+    \item \textbf{Use-Cases}:
+    \begin{itemize}
+        \item Dynamic set operations (e.g., databases, dictionaries).
+        \item Implementing efficient search algorithms.
+        \item Priority queues and heap-based structures.
+    \end{itemize}
+\end{itemize}
+
+\textbf{Key Differences}
+
+\begin{itemize}
+    \item \textbf{Ordering}:
+    \begin{itemize}
+        \item \textbf{Binary Tree}: No specific ordering; nodes can have any value.
+        \item \textbf{BST}: Strict ordering based on node values, enabling efficient search operations.
+    \end{itemize}
+    
+    \item \textbf{Operation Efficiency}:
+    \begin{itemize}
+        \item \textbf{Binary Tree}: Operations like search can degrade to \(O(n)\) time in the worst case.
+        \item \textbf{BST}: Maintains \(O(h)\) time complexity for search, insertion, and deletion, where \(h\) is the tree height.
+    \end{itemize}
+    
+    \item \textbf{Traversal Outcomes}:
+    \begin{itemize}
+        \item \textbf{Binary Tree}: Inorder traversal does not guarantee sorted order.
+        \item \textbf{BST}: Inorder traversal always yields a sorted sequence of values.
+    \end{itemize}
+\end{itemize}
+
+\textbf{When to Use Which}
+
+\begin{itemize}
+    \item Use a **Binary Tree** when:
+    \begin{itemize}
+        \item The data does not require ordering.
+        \item You need a general-purpose tree structure without specific constraints.
+    \end{itemize}
+    
+    \item Use a **Binary Search Tree** when:
+    \begin{itemize}
+        \item You need efficient search, insertion, and deletion operations.
+        \item Maintaining a sorted order of elements is beneficial.
+    \end{itemize}
+\end{itemize}
+
+\textbf{Python Implementation Examples}
+
+\begin{lstlisting}[language=Python, xleftmargin=0.02\textwidth, xrightmargin=0.02\textwidth]
+# Definition for a general Binary Tree node.
+class BinaryTreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+# Definition for a Binary Search Tree node.
+class BSTNode:
+    def __init__(self, val=0):
+        self.val = val
+        self.left = None
+        self.right = None
+
+    # Insert a new value into the BST
+    def insert(self, val):
+        if val < self.val:
+            if self.left:
+                self.left.insert(val)
+            else:
+                self.left = BSTNode(val)
+        elif val > self.val:
+            if self.right:
+                self.right.insert(val)
+            else:
+                self.right = BSTNode(val)
+        # If val == self.val, do not insert duplicates
+
+    # Search for a value in the BST
+    def search(self, val) -> bool:
+        if val == self.val:
+            return True
+        elif val < self.val:
+            return self.left.search(val) if self.left else False
+        else:
+            return self.right.search(val) if self.right else False
+\end{lstlisting}
+
+\textbf{Explanation}
+
+Understanding the differences between Binary Trees and Binary Search Trees is crucial for selecting the appropriate data structure based on the problem's requirements. While both structures consist of nodes with up to two children, their ordering properties and operational efficiencies differ significantly.
+
+\begin{itemize}
+    \item **Binary Tree**: Offers flexibility in structure without enforcing any order among node values. Suitable for scenarios where hierarchical relationships are essential, and ordering is either irrelevant or managed differently.
+    
+    \item **Binary Search Tree (BST)**: Enforces a strict ordering of node values, enabling efficient search, insertion, and deletion operations. Ideal for applications requiring quick access to elements, such as databases and dynamic sets.
+\end{itemize}
+
+By leveraging the appropriate tree structure, you can optimize performance and simplify algorithm implementation for various computational problems.
+
+\textbf{Similar Topics}
+
+Similar topics that complement the understanding of Binary Trees and BSTs include:
+\begin{itemize}
+    \item Tree Traversal Algorithms (Inorder, Preorder, Postorder)
+    \item Balanced Trees (AVL Trees, Red-Black Trees)
+    \item Heaps and Priority Queues
+    \item Tree-based Hashing Structures
+\end{itemize}
+
+\textbf{Things to Keep in Mind and Tricks}
+
+\begin{itemize}
+    \item \textbf{Choosing the Right Tree}: Assess whether your application requires ordered data access. If so, a BST or a balanced variant might be appropriate.
+    \item \textbf{Handling Duplicates}: Decide on a strategy for handling duplicate values in BSTs, such as storing counts or placing duplicates consistently in either the left or right subtree.
+    \item \textbf{Balancing Trees}: For BSTs, consider using self-balancing trees (like AVL or Red-Black Trees) to maintain optimal operation times.
+    \item \textbf{Traversal Utilization}: Utilize different tree traversal methods based on the specific needs of your algorithms (e.g., inorder for BSTs to retrieve sorted data).
+\end{itemize}
+
+\textbf{Corner and Special Cases to Test When Writing the Code}
+
+\begin{itemize}
+    \item \textbf{Empty Trees}: Ensure that functions handle cases where the tree is empty without errors.
+    \item \textbf{Single Node Trees}: Verify that operations work correctly on trees with only one node.
+    \item \textbf{Skewed Trees}: Test with highly unbalanced trees to assess performance and correctness.
+    \item \textbf{Trees with Duplicate Values}: If your implementation allows duplicates, ensure that they are handled consistently.
+    \item \textbf{Large Trees}: Assess the performance and stack usage of recursive functions with large tree sizes.
+    \item \textbf{Balanced vs. Unbalanced Trees}: Compare the performance of operations on balanced versus unbalanced trees to understand the impact of tree structure.
+\end{itemize}

@@ -1,0 +1,102 @@
+% Filename: coin_change.tex
+
+\problemsection{Coin Change}
+\label{problem:Coin_Change}
+
+The **Coin Change** problem is a classic dynamic programming challenge that tests your ability to solve optimization problems involving minimum cost or resources. This problem is widely used to introduce the concepts of state definition, state transitions, and the use of a base case.
+
+\section*{Problem Statement}
+You are given an integer array \texttt{coins} representing coins of different denominations and an integer \texttt{amount} representing a total amount of money. Return the fewest number of coins that you need to make up that amount. If it is not possible to make up the amount, return \texttt{-1}.
+
+\textbf{Input:}
+- \texttt{coins}: A list of integers representing coin denominations.
+- \texttt{amount}: An integer representing the total amount.
+
+\textbf{Output:}
+- An integer representing the minimum number of coins required, or \texttt{-1} if it is not possible.
+
+\textbf{Example 1:}
+\begin{verbatim}
+Input: coins = [1, 2, 5], amount = 11
+Output: 3
+Explanation: 11 = 5 + 5 + 1 (minimum 3 coins)
+\end{verbatim}
+
+\textbf{Example 2:}
+\begin{verbatim}
+Input: coins = [2], amount = 3
+Output: -1
+Explanation: It is not possible to make the amount with the given coins.
+\end{verbatim}
+
+\section*{Algorithmic Approach}
+This problem can be solved using dynamic programming by defining a state and finding an optimal solution iteratively:
+
+\textbf{Steps:}
+1. Define a DP array \texttt{dp} of size \texttt{amount + 1}, where \texttt{dp[i]} represents the minimum number of coins needed to make up the amount \( i \).
+2. Initialize \texttt{dp[0] = 0}, since no coins are needed to make up the amount 0.
+3. For all other amounts, initialize \texttt{dp[i]} to infinity (\texttt{float('inf')}) to represent that it is initially not possible to form that amount.
+4. Iterate over each amount from \( 1 \) to \texttt{amount}, and for each amount, iterate over each coin denomination to update \texttt{dp[i]} using:
+   \[
+   dp[i] = \min(dp[i], dp[i - \texttt{coin}] + 1)
+   \]
+   where \texttt{coin} is a valid denomination that does not exceed \( i \).
+5. Return \texttt{dp[amount]} if it is finite; otherwise, return \texttt{-1}.
+
+\subsection*{Complexities}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \( O(\texttt{amount} \times \texttt{len(coins)}) \), where \texttt{len(coins)} is the number of coin denominations.
+    \item \textbf{Space Complexity:} \( O(\texttt{amount}) \), due to the DP array.
+\end{itemize}
+
+\section*{Python Implementation}
+Below is the Python implementation using the dynamic programming approach:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def coinChange(coins, amount):
+    # Initialize the DP array
+    dp = [float('inf')] * (amount + 1)
+    dp[0] = 0  # Base case: no coins needed for amount 0
+    
+    # Fill the DP array
+    for i in range(1, amount + 1):
+        for coin in coins:
+            if i - coin >= 0:  # Ensure the coin is valid for the current amount
+                dp[i] = min(dp[i], dp[i - coin] + 1)
+    
+    return dp[amount] if dp[amount] != float('inf') else -1
+
+# Example usage:
+coins = [1, 2, 5]
+amount = 11
+print(coinChange(coins, amount))  # Output: 3
+\end{lstlisting}
+\end{fullwidth}
+
+\section*{Why This Approach?}
+This approach efficiently solves the problem by building solutions for smaller amounts and using them to derive solutions for larger amounts. It avoids recomputation by storing intermediate results, making it optimal for this type of problem.
+
+\section*{Alternative Approaches}
+\begin{itemize}
+    \item **Recursive Approach with Memoization:** Use a recursive function to compute the minimum coins for each amount, storing results in a hash map to avoid redundant calculations. This approach is less efficient due to the recursive overhead.
+    \item **Breadth-First Search (BFS):** Treat the problem as a shortest path search in an unweighted graph, where nodes represent amounts and edges represent coin denominations. While conceptually interesting, it can be slower than the DP approach for larger inputs.
+\end{itemize}
+
+\section*{Similar Problems}
+\begin{itemize}
+    \item **Minimum Coin Change (Unlimited Coins):** A variation where you must find the number of ways to make a given amount using unlimited coins.
+    \item **Knapsack Problem:** Involves optimizing the selection of items with weight and value constraints, similar to coin change but with added complexity.
+    \item **Climbing Stairs:** Similar dynamic programming structure but with different state transitions.
+\end{itemize}
+
+\section*{Corner and Special Cases to Test}
+\begin{itemize}
+    \item \( \texttt{coins} = [1], \texttt{amount} = 100 \): Test with only one denomination.
+    \item \( \texttt{coins} = [2], \texttt{amount} = 3 \): Test when it is impossible to form the amount.
+    \item Large amounts: Test performance for \( \texttt{amount} > 10^4 \) with multiple denominations.
+    \item Empty coins array: Verify behavior when no denominations are provided (\texttt{coins} = []).
+\end{itemize}
+
+\section*{Conclusion}
+The Coin Change problem exemplifies the power of dynamic programming in solving optimization problems. By carefully defining the state and transition relation, it demonstrates how intermediate results can be reused to build efficient solutions for complex problems. Mastery of this problem equips you with foundational skills to tackle a wide array of similar challenges.

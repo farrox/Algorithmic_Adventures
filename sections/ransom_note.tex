@@ -1,0 +1,124 @@
+% Filename: ransom_note.tex
+
+\problemsection{Ransom Note}
+\label{problem:Ransom_Note}
+
+The **Ransom Note** problem tests your ability to efficiently compare and manipulate character counts between two strings. The challenge revolves around determining whether one string (the ransom note) can be constructed entirely from the characters available in another string (the magazine). 
+
+\subsection*{Problem Statement}
+Given two strings \texttt{ransomNote} and \texttt{magazine}, determine if \texttt{ransomNote} can be constructed using only the characters from \texttt{magazine}. Each character in \texttt{magazine} can only be used once.
+
+\textbf{Input:}
+- Two strings \texttt{ransomNote} and \texttt{magazine}.
+
+\textbf{Output:}
+- A boolean indicating whether \texttt{ransomNote} can be constructed from \texttt{magazine}.
+
+\textbf{Example 1:}
+\begin{verbatim}
+Input: ransomNote = "a", magazine = "b"
+Output: false
+\end{verbatim}
+
+\textbf{Example 2:}
+\begin{verbatim}
+Input: ransomNote = "aa", magazine = "ab"
+Output: false
+\end{verbatim}
+
+\textbf{Example 3:}
+\begin{verbatim}
+Input: ransomNote = "aa", magazine = "aab"
+Output: true
+\end{verbatim}
+
+\subsection*{Algorithmic Approaches}
+
+\subsection*{Hash Map (Frequency Counting)}
+Count the frequency of each character in both \texttt{ransomNote} and \texttt{magazine}. Compare the counts to determine if \texttt{magazine} has enough of each character to construct \texttt{ransomNote}.
+
+\textbf{Steps:}
+\begin{itemize}
+    \item Use a hash map to count the frequency of characters in \texttt{magazine}.
+    \item Iterate through \texttt{ransomNote}, checking if each character exists in the hash map with sufficient count.
+    \item Decrement the count for each character used. If a character is unavailable or the count is insufficient, return \texttt{false}.
+\end{itemize}
+
+\textbf{Complexity:}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(n + m)\), where \(n\) is the length of \texttt{ransomNote} and \(m\) is the length of \texttt{magazine}.
+    \item \textbf{Space Complexity:} \(O(k)\), where \(k\) is the size of the character set (e.g., \(26\) for lowercase English letters).
+\end{itemize}
+
+\subsection*{Array-Based Frequency Count}
+For fixed-size alphabets like lowercase English letters, use an array of size 26 to track character frequencies.
+
+\textbf{Steps:}
+\begin{itemize}
+    \item Initialize an array of size 26 to store frequencies of characters in \texttt{magazine}.
+    \item Iterate through \texttt{magazine} and update the frequencies.
+    \item Iterate through \texttt{ransomNote}, decrementing the frequency for each character. If a character's count drops below zero, return \texttt{false}.
+\end{itemize}
+
+\textbf{Complexity:}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(n + m)\).
+    \item \textbf{Space Complexity:} \(O(1)\), as the array size is constant.
+\end{itemize}
+
+\subsection*{Python Implementation}
+Below is the implementation using the array-based frequency count:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def canConstruct(ransomNote: str, magazine: str) -> bool:
+    # Frequency array for 26 lowercase English letters
+    freq = [0] * 26
+    
+    # Update frequencies for magazine
+    for char in magazine:
+        freq[ord(char) - ord('a')] += 1
+    
+    # Check if ransomNote can be constructed
+    for char in ransomNote:
+        freq[ord(char) - ord('a')] -= 1
+        if freq[ord(char) - ord('a')] < 0:
+            return False
+    
+    return True
+\end{lstlisting}
+\end{fullwidth}
+
+\subsection*{Why This Approach?}
+The array-based frequency count is highly efficient for problems involving fixed alphabets like lowercase English letters. It provides constant space usage and linear time complexity, making it ideal for large inputs. The algorithm iterates over both strings once, ensuring optimal performance.
+
+\subsection*{Alternative Approaches}
+\begin{itemize}
+    \item \textbf{Hash Map:} Useful for handling larger character sets, such as Unicode, at the cost of increased space complexity.
+    \item \textbf{Sorting:} Sort both strings and compare character counts, but this approach has \(O(n \log n + m \log m)\) time complexity, which is slower than counting-based methods.
+\end{itemize}
+
+\subsection*{Similar Problems}
+\begin{itemize}
+    \item \textbf{Valid Anagram:} Check if two strings are anagrams by comparing their character counts.
+    \item \textbf{Find All Anagrams in a String:} Locate all anagrams of a string within another string using a sliding window and frequency counts.
+    \item \textbf{Minimum Window Substring:} Find the smallest substring of a string containing all characters of another string.
+\end{itemize}
+
+\subsection*{Things to Keep in Mind and Tricks}
+\begin{itemize}
+    \item Use array-based methods for problems involving fixed-size alphabets for their simplicity and efficiency.
+    \item Be cautious with edge cases, such as empty strings or when \texttt{ransomNote} contains characters not present in \texttt{magazine}.
+    \item Ensure the frequency array or hash map is correctly updated to avoid logical errors.
+\end{itemize}
+
+\subsection*{Corner and Special Cases to Test}
+\begin{itemize}
+    \item \textbf{Empty Ransom Note:} \texttt{ransomNote = ""}, \texttt{magazine = "anystring"} (should return \texttt{true}).
+    \item \textbf{Empty Magazine:} \texttt{ransomNote = "a"}, \texttt{magazine = ""} (should return \texttt{false}).
+    \item \textbf{Insufficient Characters:} \texttt{ransomNote = "aa"}, \texttt{magazine = "a"} (should return \texttt{false}).
+    \item \textbf{Exact Match:} \texttt{ransomNote = "abc"}, \texttt{magazine = "abc"} (should return \texttt{true}).
+\end{itemize}
+
+\subsection*{Conclusion}
+The **Ransom Note** problem is a classic example of leveraging frequency counts to efficiently compare two strings. By using hash maps or arrays, this problem can be solved in linear time with minimal space overhead. Mastery of this problem provides a strong foundation for tackling more complex string comparison challenges.

@@ -1,0 +1,60 @@
+\section*{Two Sum}
+\label{sec:Two_Sum}
+The "Two Sum" problem is a classic algorithmic challenge that is frequently presented in coding interviews and assessments. The objective is straightforward: given an array of integers and a target value, one must find the two distinct indices in the array whose corresponding values sum up to the target.
+
+\section*{Problem Statement}
+The task is to identify the indices of two numbers in the given array such that they add up to a specific target. These indices must be returned in any order. Each input is guaranteed to have exactly one solution, and the same element cannot be utilized more than once to achieve the target sum.
+
+Leet code link: \href{https://leetcode.com/problems/two-sum/}{Two Sum}
+
+\section*{Algorithmic Approach}
+The solution to this problem can be approached using a one-pass hash table. During the iteration over the array, you check if each element's complement (target minus the element's value) exists in the hash table. If it doesn't exist, you store the element in the hash table with its index. If it does exist, that means you've found the two numbers which add up to the target value, and you return their indices.
+
+\section*{Complexities}
+\begin{itemize}
+	\item \textbf{Time Complexity:} The time complexity of this algorithm is \(O(n)\) because it involves a single pass through the array of \(n\) elements.
+	\item \textbf{Space Complexity:} The space complexity is also \(O(n)\) due to the additional hash table that is proportional to the number of items stored, which, in the worst case, could be the entire array.
+\end{itemize}
+
+
+ewpage
+\section*{Python Implementation}
+Below is the complete Python code implementing the one-pass hash table solution for the `TwoSum` class:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class TwoSum:
+    def twoSum(self, nums, target):
+        hash_table = {}
+        for i, num in enumerate(nums):
+            complement = target - num
+            if complement in hash_table:
+                return [hash_table[complement], i]
+            hash_table[num] = i
+        return []
+
+# Example usage:
+# nums = [2,7,11,15]
+# target = 9
+# twosum = TwoSum()
+# print(twosum.twoSum(nums, target))  # Output: [0, 1]
+\end{lstlisting}
+
+\end{fullwidth}
+
+This one-pass hash table approach is preferred for its efficiency in both time and space when dealing with large datasets. It avoids the \(O(n^2)\) complexity of the brute force approach, making it scalable for inputs with a high number of elements.
+
+\section*{Why this approach}
+The one-pass hash table approach is chosen for its optimal time complexity. While the brute force method would require nested loops, the hash table allows us to look up complements in constant time, thus, reducing the overall time required to traverse the data.
+
+\section*{Alternative approaches}
+The brute force approach and the two-pass hash table are alternatives but less efficient. Brute force is not ideal due to its \(O(n^2)\) time complexity, and while the two-pass hash table does have \(O(n)\) complexity, it is less efficient than the one-pass variant because it involves two iterations over the array.
+
+\section*{Similar problems to this one}
+Similar problems often involve array manipulation, such as "3Sum", "4Sum", which are essentially extensions of the two sum problem, requiring finding triplets or quadruplets adding up to a target sum.
+
+\section*{Things to keep in mind and tricks}
+In interview scenarios and practice, always consider the trade-offs between time and space complexity. Hash tables are a powerful tool for reducing time complexity at the expense of some space. As a rule of thumb for arrays or lists, think about whether elements could be paired or the significance of their indices.
+
+\section*{Corner and special cases to test when writing the code}
+Test cases should include scenarios with negative numbers, multiple pairs adding up to the target (to ensure only one solution is returned), and large arrays to test for efficiency. Consider edge cases like an empty array or an array with a single element which cannot satisfy the condition.

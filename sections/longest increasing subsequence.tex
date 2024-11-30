@@ -1,0 +1,74 @@
+
+ewpage
+\chapter{Longest Increasing Subsequence}
+\label{chap:Longest_Increasing_Subsequence}
+
+The Longest Increasing Subsequence (LIS) problem is a classic problem in the field of computer science that comes under the dynamic programming category.
+
+\section*{Problem Statement}
+
+The task is to find the length of the longest strictly increasing subsequence in an unsorted array of integers. A subsequence is a sequence that can be derived from the array by deleting some or no elements without changing the order of the remaining elements. A strictly increasing subsequence is one where each element is greater than the one before it.
+
+For example:
+\begin{verbatim}
+    Input: nums = [10, 9, 2, 5, 3, 7, 101, 18]
+    Output: 4
+    Explanation: The longest increasing subsequence is [2, 3, 7, 101], 
+                 therefore the length is 4.
+\end{verbatim}
+
+LeetCode link: \href{https://leetcode.com/problems/longest-increasing-subsequence/}{Longest Increasing Subsequence}
+
+\section*{Algorithmic Approach}
+
+The solution to this problem can be approached by using dynamic programming to construct a table where the \(i\)-th element stores the length of the longest increasing subsequence ending with the \(i\)-th element. Alternatively, one can use patience sorting technique to optimize the time complexity further.
+
+\section*{Complexities}
+\begin{itemize}
+	\item \textbf{Time Complexity:} The total time complexity of the dynamic programming approach is \(O(n^2)\), where \(n\) is the length of the input array. Using a binary search with patience sorting, the time complexity can be improved to \(O(n \log n)\).
+	\item \textbf{Space Complexity:} The space complexity is \(O(n)\) due to the use of an additional array for storing the lengths of the subsequences.
+\end{itemize}
+
+
+ewpage % Start Python Implementation on a new page
+\section*{Python Implementation}
+Below is the complete Python code for the `lengthOfLIS` function to determine the length of the longest increasing subsequence:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class Solution:
+    def lengthOfLIS(self, nums: List[int]) -> int:
+        if not nums:
+            return 0
+        
+        LIS = [1] * len(nums)
+        for i in range(1, len(nums)):
+            for j in range(i):
+                if nums[i] > nums[j]:
+                    LIS[i] = max(LIS[i], LIS[j] + 1)
+        return max(LIS)
+\end{lstlisting}
+
+\end{fullwidth}
+
+This implementation constructs an array `LIS`, initialized with ones. It then iteratively updates the `LIS` array by comparing each element with all the previous elements. If a valid increasing subsequence is found, the `LIS` value is updated. Finally, the maximum value in the `LIS` array is returned, which represents the length of the longest increasing subsequence.
+
+\section*{Why this approach}
+The dynamic programming approach was chosen for its relatively straightforward implementation and reduced time complexity compared to a brute-force solution. It efficiently builds upon solutions to smaller problems, storing intermediate results to avoid redundant calculations.
+
+\section*{Alternative approaches}
+An alternative approach involves the patience sorting technique coupled with binary search, reducing the overall time complexity. This approach takes advantage of the properties of the problem and demonstrates a more complex understanding of the underlying structures.
+
+\section*{Similar problems to this one}
+Variants and extensions of the LIS problem include finding the actual longest increasing subsequence, determining the number of such subsequences, and solving the problem with modifications in the subsequence conditions (e.g., non-decreasing or with a fixed step size).
+
+\section*{Things to keep in mind and tricks}
+- Always consider edge cases such as empty arrays or arrays with all identical elements.
+- Binary search is a significant optimization when the problem constraints allow.
+- It is crucial to thoroughly understand the subproblem overlap in dynamic programming to devise an optimal solution.
+
+\section*{Corner and special cases to test when writing the code}
+- Arrays with only one element (should return 1).
+- Arrays with elements in strictly decreasing order (should return 1).
+- Arrays with all elements identical (should return 1).
+- Long arrays to evaluate performance and ensure that the implementation does not exceed time limits.

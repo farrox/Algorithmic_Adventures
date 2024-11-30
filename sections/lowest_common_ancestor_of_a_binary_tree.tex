@@ -1,0 +1,157 @@
+% Filename: lowest_common_ancestor_of_a_binary_tree.tex
+
+\problemsection{Lowest Common Ancestor of a Binary Tree}\marginpar{Find the lowest common ancestor (LCA) of two nodes in a binary tree using recursive depth-first search.}
+
+\textbf{Problem Statement}
+
+Given a binary tree, find the lowest common ancestor (LCA) of two given nodes in the tree. According to the definition of LCA on Wikipedia: \textit{“The lowest common ancestor is defined between two nodes p and q as the lowest node in T that has both p and q as descendants (where we allow a node to be a descendant of itself).”}
+
+\textbf{Algorithmic Approach}
+
+To solve this problem, we can utilize a recursive depth-first search (DFS) strategy that traverses the tree to locate both nodes and determine their LCA. The approach involves exploring each node's subtrees and identifying the split point where one node resides in one subtree and the other node resides in the other subtree.
+
+\begin{enumerate}
+    \item \textbf{Recursive Depth-First Search (DFS)}:
+    \begin{itemize}
+        \item \textbf{Traverse the Tree}: Start from the root and recursively traverse the left and right subtrees.
+        \item \textbf{Identify LCA}:
+        \begin{enumerate}
+            \item **Base Case**: If the current node is \texttt{NULL}, return \texttt{NULL}. If the current node matches either \texttt{p} or \texttt{q}, return the current node.
+            \item **Recursive Search**: Recursively search for \texttt{p} and \texttt{q} in the left and right subtrees.
+            \item **Determine LCA**: 
+            \begin{itemize}
+                \item If both left and right recursive calls return non-\texttt{NULL} nodes, the current node is the LCA.
+                \item If only one of the recursive calls returns a non-\texttt{NULL} node, propagate that node upward as a potential LCA.
+            \end{itemize}
+        \end{enumerate}
+    \end{itemize}
+\end{enumerate}
+
+\textbf{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity}: \(O(N)\), where \(N\) is the number of nodes in the binary tree. Each node is visited exactly once.
+    \item \textbf{Space Complexity}: \(O(H)\), where \(H\) is the height of the tree, due to the recursive call stack. In the worst case of a skewed tree, the space complexity becomes \(O(N)\).
+\end{itemize}
+
+\textbf{Python Implementation}\marginpar{Implementing a recursive DFS solution to find the lowest common ancestor in a binary tree.}
+
+\begin{lstlisting}[language=Python, xleftmargin=0.02\textwidth, xrightmargin=0.02\textwidth]
+# Definition for a binary tree node.
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+class Solution:
+    def lowestCommonAncestorBinaryTree(self, root: TreeNode, p: TreeNode, q: TreeNode) -> TreeNode:
+        if not root:
+            return None
+        if root == p or root == q:
+            return root
+        
+        left = self.lowestCommonAncestorBinaryTree(root.left, p, q)
+        right = self.lowestCommonAncestorBinaryTree(root.right, p, q)
+        
+        if left and right:
+            return root
+        return left if left else right
+
+# Example usage:
+# Constructing the following binary tree
+#         3
+#        / \
+#       5   1
+#      / \ / \
+#     6  2 0  8
+#       / \
+#      7   4
+
+root = TreeNode(3)
+root.left = TreeNode(5, TreeNode(6), TreeNode(2, TreeNode(7), TreeNode(4)))
+root.right = TreeNode(1, TreeNode(0), TreeNode(8))
+
+p = root.left        # Node with value 5
+q = root.left.right.right  # Node with value 4
+
+solution = Solution()
+lca = solution.lowestCommonAncestorBinaryTree(root, p, q)
+print(lca.val)  # Output: 5
+\end{lstlisting}
+
+\textbf{Explanation}
+
+The function \texttt{lowestCommonAncestorBinaryTree} identifies the lowest common ancestor (LCA) of two nodes in a binary tree by performing a recursive depth-first search (DFS). 
+
+\begin{itemize}
+    \item \textbf{Recursive Traversal}:
+    \begin{itemize}
+        \item **Base Case**: If the current node is \texttt{NULL}, it returns \texttt{NULL}, indicating that neither \texttt{p} nor \texttt{q} is found in this path. If the current node matches either \texttt{p} or \texttt{q}, it returns the current node as a potential LCA.
+        \item **Left and Right Search**: The function recursively searches the left and right subtrees for \texttt{p} and \texttt{q}.
+        \item **Determining LCA**: 
+        \begin{itemize}
+            \item If both left and right recursive calls return non-\texttt{NULL} nodes, it implies that \texttt{p} and \texttt{q} are found in different subtrees, making the current node their LCA.
+            \item If only one side returns a non-\texttt{NULL} node, it propagates that node upwards as a potential LCA.
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\textbf{Why This Approach}
+
+\begin{itemize}
+    \item \textbf{Comprehensive Traversal}: This recursive DFS approach ensures that all paths are explored, guaranteeing that the LCA is accurately identified regardless of the tree's structure.
+    \item \textbf{Simplicity and Elegance}: The recursive nature of the solution aligns naturally with the hierarchical structure of binary trees, resulting in clear and maintainable code.
+    \item \textbf{Flexibility}: Unlike BST-specific approaches, this method works for any binary tree, making it versatile for various applications.
+\end{itemize}
+
+\textbf{Alternative Approaches}
+
+An alternative method involves using parent pointers and storing the ancestors of one node in a set, then traversing the ancestors of the second node to find the first common ancestor. However, this approach requires additional space to store ancestor information and is generally less efficient compared to the recursive DFS method, which utilizes the tree's structure without extra memory overhead.
+
+\textbf{Similar Problems to This One}
+
+Similar tree-related problems include finding the lowest common ancestor in a binary search tree (\hyperref[problem:lowest_common_ancestor_of_a_binary_search_tree]{Lowest Common Ancestor of a Binary Search Tree}), determining if one tree is a subtree of another (\hyperref[problem:subtree_of_another_tree]{Subtree of Another Tree}), and calculating the diameter of a binary tree (\hyperref[problem:binary_tree_diameter]{Diameter of a Binary Tree}).
+
+\textbf{Things to Keep in Mind and Tricks}
+
+\begin{itemize}
+    \item \textbf{Edge Cases}: Consider scenarios where one node is the ancestor of the other, both nodes are the same, or one or both nodes do not exist in the tree.
+    \item \textbf{Recursive Efficiency}: Ensure that the recursion is efficiently handled to prevent unnecessary computations, especially in large trees.
+    \item \textbf{Null Checks}: Always check for \texttt{NULL} nodes to avoid runtime errors during traversal.
+    \item \textbf{Tree Traversal Order}: Understanding different tree traversal orders (preorder, inorder, postorder) can aid in solving various tree-related problems.
+\end{itemize}
+
+\textbf{Corner and Special Cases to Test When Writing the Code}
+
+\begin{itemize}
+    \item \textbf{Both Nodes Are the Same}: When \texttt{p} and \texttt{q} are the same node, the LCA is the node itself.
+    \item \textbf{One Node Is the Ancestor of the Other}: When one node is an ancestor of the other, the ancestor node should be identified as the LCA.
+    \item \textbf{Nodes on Different Subtrees}: When \texttt{p} and \texttt{q} are located in different subtrees, the LCA is the split point where their paths diverge.
+    \item \textbf{Nodes Not Present in the Tree}: Handle cases where one or both nodes are not present in the tree gracefully, possibly by returning \texttt{NULL}.
+    \item \textbf{Empty Tree}: If the tree is empty, there is no LCA to find, and the function should return \texttt{NULL}.
+    \item \textbf{Single Node Tree}: In a tree with only one node, that node is the LCA if it matches one of the target nodes.
+    \item \textbf{Skewed Trees}: Test with left or right skewed trees to ensure the algorithm handles deep recursion correctly without stack overflow issues.
+\end{itemize}
+
+\section*{How It Differs from the Lowest Common Ancestor of a Binary Search Tree}
+
+While both problems aim to find the Lowest Common Ancestor (LCA) of two nodes within a binary tree structure, the presence or absence of Binary Search Tree (BST) properties fundamentally changes the approach and efficiency of the solution.
+
+\begin{center}
+\begin{tabular}{|l|p{6cm}|p{6cm}|}
+\hline
+\textbf{Aspect} & \textbf{Lowest Common Ancestor of a Binary Tree} & \textbf{Lowest Common Ancestor of a Binary Search Tree} \\
+\hline
+\textbf{Tree Structure} & Applies to any binary tree, which does not enforce any specific ordering of node values. & Applies specifically to Binary Search Trees (BSTs), which maintain an ordered structure where left children are less than the node and right children are greater. \\
+\hline
+\textbf{Node Value Constraints} & No constraints on node values; nodes can have any integer values, including duplicates. & Nodes follow BST properties: left subtree nodes have values less than the parent node, and right subtree nodes have values greater than the parent node. \\
+\hline
+\textbf{Algorithmic Approach} & Requires traversing the entire tree since there's no inherent order to exploit. Typically uses Depth-First Search (DFS) with recursion or iterative methods. & Can leverage the ordered nature of BSTs to optimize the search, often resulting in a more efficient solution that doesn't require traversing the entire tree. \\
+\hline
+\textbf{Time Complexity} & \(O(N)\), where \(N\) is the number of nodes in the tree, as it may require visiting all nodes. & \(O(h)\), where \(h\) is the height of the BST. In a balanced BST, this is \(O(\log N)\), but in the worst case (skewed tree), it can degrade to \(O(N)\). \\
+\hline
+\textbf{Space Complexity} & \(O(H)\), where \(H\) is the height of the tree, due to the recursive call stack or iterative stack usage. & \(O(1)\) for the iterative approach and \(O(h)\) for the recursive approach, similar to the general binary tree but often more efficient in practice due to the ordered traversal. \\
+\hline
+\end{tabular}
+\end{center}

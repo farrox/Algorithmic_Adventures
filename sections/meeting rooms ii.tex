@@ -1,0 +1,93 @@
+
+ewpage
+\chapter{Meeting Rooms II}
+\label{chap:Meeting_Rooms_II}
+
+The "Meeting Rooms II" problem is typically asked in technical interviews and coding challenge platforms like LeetCode. The problem focuses on finding the minimum number of conference rooms required to accommodate all meetings based on their start and end times.
+
+\section*{Problem Statement}
+Given an array of meeting time intervals consisting of start and end times \(\left[[s1, e1], [s2, e2], \ldots \right]\) (si < ei), determine the minimum number of conference rooms required to accommodate all meetings.
+
+\textbf{Example:}
+\begin{lstlisting}
+Input: [[0, 30], [5, 10], [15, 20]]
+Output: 2
+
+Explanation:
+- Meeting one can be held in a conference room from time 0 to 30.
+- Meeting two can be held in another room from time 5 to 10 (as it conflicts with meeting one).
+- Meeting three can be held in the conference room used for meeting two after it ends at time 15 to 20.
+Therefore, two conference rooms are the minimum number of rooms required to hold all the meetings without overlapping.
+\end{lstlisting}
+
+\end{fullwidth}
+
+
+LeetCode Link: \href{https://leetcode.com/problems/meeting-rooms-ii/}{Meeting Rooms II}
+
+\section*{Algorithmic Approach}
+The solution to this problem can be approached by using a min-heap to track the end times of meetings currently occupying rooms. By sorting the meetings by their start times and iterating through them, we can assign a room if one is free (i.e., if the current meeting's start time is later than the end time of the earliest meeting) or allocate a new room if no rooms are free.
+
+\section*{Complexities}
+\begin{itemize}
+	\item \textbf{Time Complexity:} The total time complexity is \(O(N \log N)\) mainly due to the sort operation, where \(N\) is the number of meetings.
+	\item \textbf{Space Complexity:} The space complexity is \(O(N)\), as we may need to keep track of end times for all meetings in the worst-case scenario.
+\end{itemize}
+
+
+ewpage % Start Python Implementation on a new page
+\section*{Python Implementation}
+Below is the complete Python code for solving the "Meeting Rooms II" problem:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+import heapq
+
+class Solution(object):
+    def minMeetingRooms(self, intervals):
+        if not intervals:
+            return 0
+        
+        # Initialize a heap.
+        free_rooms = []
+        
+        # Sort the meetings in increasing order of their start time.
+        intervals.sort(key=lambda x: x[0])
+        
+        # Add the first meeting. We have to give a new room to the first meeting.
+        heapq.heappush(free_rooms, intervals[0][1])
+        
+        # For all the remaining meeting rooms
+        for i in intervals[1:]:
+            
+            # If the room due to free up the earliest is free, assign that room to this meeting.
+            if free_rooms[0] <= i[0]:
+                heapq.heappop(free_rooms)
+            
+            # If a new room is to be assigned, then also we add to the heap.
+            # If an old room is allocated, then also we have to add to the heap with updated end time.
+            heapq.heappush(free_rooms, i[1])
+        
+        # The size of the heap tells us the minimum rooms required for all the meetings.
+        return len(free_rooms)
+
+\end{lstlisting}
+
+\end{fullwidth}
+
+This implementation starts by checking if there are any meetings at all. It then sorts the meetings by their start times and initializes a min-heap to keep track of the end times of meetings that are currently happening. By checking against the smallest end time in the heap, we either free up a room or allocate a new room for each incoming meeting.
+
+\section*{Why this approach}
+The heap-based approach is efficient because it keeps the end times in a sorted manner, allowing us to quickly check for room availability. Since the insertion and removal operations in a min-heap take \(O(\log N)\) time where \(N\) is the number of meetings, it ensures that we can manage the rooms with minimal overhead on top of the sorting step. 
+
+\section*{Alternative approaches}
+An alternative approach is using chronological ordering where we separate the start and end times into separate arrays and sort them. We then iterate through them to determine room allocation, incrementing a room count when starting a new meeting and decrementing when a meeting ends.
+
+\section*{Similars problems to this one}
+Similar problems in the domain of interval scheduling and room allocation include car pooling, job scheduling problems, and determining if a person could attend all meetings (the non-overlapping variant of this problem).
+
+\section*{Things to keep in mind and tricks}
+The tricky part of this problem is handling the condition where multiple meetings end and start at the same time. Remember to free up rooms before checking for room availability for new meetings. Also, comparing only end times is sufficient, as the start times are already sorted.
+
+\section*{Corner and special cases to test when writing the code}
+Test cases should include situations where all meetings are non-overlapping, all meetings overlap, and where some meetings start exactly when others end. Edge cases with empty meeting schedules or a single meeting should also be considered.

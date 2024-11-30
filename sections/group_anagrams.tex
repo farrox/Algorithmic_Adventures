@@ -1,0 +1,130 @@
+% Filename: group_anagrams.tex
+
+\problemsection{Group Anagrams}
+\label{problem:Group_Anagrams}
+The "Group Anagrams" problem is an interesting question that requires understanding of hash tables and string manipulation. It is a typical interview question that checks the candidate's ability to handle and classify data based on specific rules, in this case, anagrams.
+    
+\subsection*{Problem Statement}
+Given an array of strings \texttt{strs}, group the anagrams together. You may return the answer in any order.
+
+\textbf{Input:}
+- An array of strings \texttt{strs}.
+
+\textbf{Output:}
+- A list of lists, where each inner list contains strings that are anagrams of each other.
+
+\textbf{Example 1:}
+\begin{verbatim}
+Input: strs = ["eat", "tea", "tan", "ate", "nat", "bat"]
+Output: [["bat"], ["nat", "tan"], ["ate", "eat", "tea"]]
+\end{verbatim}
+
+\textbf{Example 2:}
+\begin{verbatim}
+Input: strs = [""]
+Output: [[""]]
+\end{verbatim}
+
+\textbf{Example 3:}
+\begin{verbatim}
+Input: strs = ["a"]
+Output: [["a"]]
+\end{verbatim}
+
+\subsection*{Algorithmic Approach}
+Anagrams can be identified by their character composition. The two most common approaches involve using sorted strings or frequency counts as keys to group the anagrams.
+
+\subsection*{Sorted String as Key}
+The sorted version of an anagram will always be identical for all its variants. For example, the sorted form of \texttt{"eat"}, \texttt{"tea"}, and \texttt{"ate"} is \texttt{"aet"}. 
+
+\textbf{Steps:}
+\begin{itemize}
+    \item Initialize a hash map to group strings by their sorted version.
+    \item Iterate through \texttt{strs}, and for each string, sort its characters and use the sorted string as the key.
+    \item Append the original string to the list corresponding to its sorted key.
+    \item Return the values of the hash map as the grouped anagrams.
+\end{itemize}
+
+\textbf{Complexity:}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(n \cdot k \log k)\), where \(n\) is the number of strings and \(k\) is the average length of a string. Sorting each string takes \(O(k \log k)\).
+    \item \textbf{Space Complexity:} \(O(n \cdot k)\), for the hash map and the grouped results.
+\end{itemize}
+
+\subsection*{Frequency Count as Key}
+Instead of sorting, use a frequency count of characters as the key. For example, the frequency counts of \texttt{"eat"} and \texttt{"tea"} are identical: \([1, 0, 0, \dots, 1, 1, 0, \dots]\).
+
+\textbf{Steps:}
+\begin{itemize}
+    \item Initialize a hash map to group strings by their frequency count.
+    \item Iterate through \texttt{strs}, and for each string, compute a frequency count for its characters.
+    \item Use the frequency count tuple as the key in the hash map.
+    \item Append the original string to the list corresponding to its frequency count key.
+    \item Return the values of the hash map as the grouped anagrams.
+\end{itemize}
+
+\textbf{Complexity:}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(n \cdot k)\), where \(n\) is the number of strings and \(k\) is the average length of a string. Computing the frequency count takes \(O(k)\).
+    \item \textbf{Space Complexity:} \(O(n \cdot k)\), for the hash map and the grouped results.
+\end{itemize}
+
+\subsection*{Python Implementation}
+Below is the implementation using the frequency count as the key:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+from collections import defaultdict
+from typing import List
+
+def groupAnagrams(strs: List[str]) -> List[List[str]]:
+    anagrams = defaultdict(list)
+
+    for s in strs:
+        # Compute character frequency count
+        freq = [0] * 26  # For lowercase English letters
+        for char in s:
+            freq[ord(char) - ord('a')] += 1
+        
+        # Use tuple of frequency counts as the key
+        anagrams[tuple(freq)].append(s)
+    
+    return list(anagrams.values())
+\end{lstlisting}
+\end{fullwidth}
+
+\subsection*{Why This Approach?}
+Using a frequency count as the key is more efficient than sorting for strings with large lengths. The \(O(k)\) time complexity for generating the frequency count ensures that this approach scales well with long strings. Additionally, hash maps make it easy to group and retrieve anagrams.
+
+\subsection*{Alternative Approaches}
+\begin{itemize}
+    \item \textbf{Sorting-Based Approach:}  
+    While easier to implement, sorting each string increases the time complexity to \(O(k \log k)\) for each string.
+    \item \textbf{Prime Product Key:}  
+    Assign a unique prime number to each character and compute the product of these primes for each string. Use the product as the hash key. However, this method can encounter issues with integer overflow for long strings.
+\end{itemize}
+
+\subsection*{Similar Problems}
+\begin{itemize}
+    \item \textbf{Valid Anagram:} Check if two strings are anagrams by comparing their frequency counts or sorted forms.
+    \item \textbf{Find All Anagrams in a String:} Locate all start indices of substrings in a string that are anagrams of another string.
+    \item \textbf{Palindrome Permutation:} Determine if a string can be rearranged to form a palindrome.
+\end{itemize}
+
+\subsection*{Things to Keep in Mind and Tricks}
+\begin{itemize}
+    \item Use array-based frequency counts for fixed-size alphabets (e.g., lowercase English letters) and hash maps for larger character sets such as Unicode.
+    \item Handle edge cases, such as empty strings or strings with only one character.
+    \item Optimize for large inputs by avoiding unnecessary operations like sorting.
+\end{itemize}
+
+\subsection*{Corner and Special Cases to Test}
+\begin{itemize}
+    \item \textbf{Empty Strings:} Input: \texttt{strs = ["", ""]} (should group all empty strings together).
+    \item \textbf{Single Character Strings:} Input: \texttt{strs = ["a", "b", "a"]} (should group \texttt{"a"} separately from \texttt{"b"}).
+    \item \textbf{Case Sensitivity:} Check if the solution handles lowercase and uppercase letters consistently.
+    \item \textbf{Identical Strings:} Input: \texttt{strs = ["abc", "abc", "bca"]} (should group all strings together).
+\end{itemize}
+
+\subsection*{Conclusion}
+The **Group Anagrams** problem demonstrates the power of hash maps for categorizing strings based on their properties. By leveraging either sorted forms or frequency counts, this problem can be solved efficiently. Mastering this problem equips you with techniques for handling more advanced string grouping and classification challenges.

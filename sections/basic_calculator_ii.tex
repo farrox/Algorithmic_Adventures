@@ -1,0 +1,86 @@
+% Filename: basic_calculator_ii.tex
+
+\problemsection{Basic Calculator II}\marginpar{This problem extends the basic calculator to include multiplication and division.}
+
+\textbf{Problem Description:}  
+Implement a basic calculator to evaluate a simple expression string.
+
+The expression string contains only non-negative integers, \texttt{'+'}, \texttt{'-'}, \texttt{'*'}, \texttt{'/'}, and empty spaces \texttt{' '}. The integer division should truncate toward zero.
+
+You may assume that the given expression is always valid.
+
+\textbf{Example 1:}
+
+\begin{itemize}
+    \item \textbf{Input:} \texttt{"3+2*2"}
+    \item \textbf{Output:} \texttt{7}
+\end{itemize}
+
+\textbf{Example 2:}
+
+\begin{itemize}
+    \item \textbf{Input:} \texttt{" 3/2 "}
+    \item \textbf{Output:} \texttt{1}
+\end{itemize}
+
+\textbf{Example 3:}
+
+\begin{itemize}
+    \item \textbf{Input:} \texttt{" 3+5 / 2 "}
+    \item \textbf{Output:} \texttt{5}
+\end{itemize}
+
+\textbf{Solution Overview:}  
+Use a stack to handle multiplication and division immediately, while addition and subtraction are deferred. Iterate through the string:
+
+\begin{itemize}
+    \item Build the current number if the character is a digit.
+    \item If an operator or the end of the string is reached:
+        \begin{itemize}
+            \item If the previous operator is '+', push the number onto the stack.
+            \item If '-', push the negative number onto the stack.
+            \item If '*', pop the stack, multiply, and push the result.
+            \item If '/', pop the stack, divide, and push the result (truncate toward zero).
+            \item Update the previous operator.
+            \item Reset the current number.
+        \end{itemize}
+\end{itemize}
+
+At the end, sum all numbers in the stack for the final result.
+
+\begin{lstlisting}[language=Python]
+def calculate(s):
+    if not s:
+        return 0
+    s = s.replace(' ', '')
+    stack = []
+    num = 0
+    prev_op = '+'
+    i = 0
+    while i < len(s):
+        char = s[i]
+        if char.isdigit():
+            num = num * 10 + int(char)
+        if char in '+-*/' or i == len(s) - 1:
+            if prev_op == '+':
+                stack.append(num)
+            elif prev_op == '-':
+                stack.append(-num)
+            elif prev_op == '*':
+                stack.append(stack.pop() * num)
+            elif prev_op == '/':
+                temp = stack.pop()
+                if temp < 0:
+                    stack.append(-(-temp // num))
+                else:
+                    stack.append(temp // num)
+            prev_op = char
+            num = 0
+        i += 1
+    return sum(stack)
+
+# Example usage:
+print(calculate("3+2*2"))       # Output: 7
+print(calculate(" 3/2 "))       # Output: 1
+print(calculate(" 3+5 / 2 "))   # Output: 5
+\end{lstlisting}

@@ -1,0 +1,139 @@
+% filename: design_hit_counter_description.tex
+\problemsection{Design Hit Counter}\marginpar{Hit counters are vital for tracking user interactions and monitoring system metrics in real-time applications.}
+
+\textbf{Problem Description:}  
+Design a hit counter that counts the number of hits received in the past 5 minutes (300 seconds). Implement the following operations:
+\begin{itemize}
+    \item \texttt{hit(timestamp)}: Record a hit at the given timestamp.
+    \item \texttt{getHits(timestamp)}: Return the number of hits in the past 5 minutes from the given timestamp.
+\end{itemize}
+
+\textbf{Notes:}
+\begin{itemize}
+    \item Each function call is guaranteed to be monotonically increasing in terms of timestamp (i.e., the timestamps are in non-decreasing order).
+    \item Timestamps are in seconds.
+    \item You may assume that the system will not receive more than $10^4$ hits per second.
+\end{itemize}
+
+\marginpar{Efficient time-based data structures are essential for handling high-frequency events in real-time systems.}
+
+\textbf{Solution Overview:}  
+An efficient approach uses a queue to store the timestamps of hits within the last 5 minutes. For each \texttt{hit} operation, the current timestamp is enqueued. For each \texttt{getHits} operation, we dequeue all timestamps that are older than 300 seconds relative to the current timestamp. The number of elements remaining in the queue represents the number of hits in the past 5 minutes.
+
+To optimize the space complexity, we can combine timestamps that are the same into a single entry with a count of hits at that timestamp. Alternatively, we can use an array or a fixed-size circular buffer to store counts per second.
+
+\textbf{Implementation Details:}  
+Here's an implementation using a queue (or deque) in Python:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+from collections import deque
+
+class HitCounter:
+    def __init__(self):
+        self.hits = deque()
+    
+    def hit(self, timestamp: int) -> None:
+        self.hits.append(timestamp)
+    
+    def getHits(self, timestamp: int) -> int:
+        while self.hits and self.hits[0] <= timestamp - 300:
+            self.hits.popleft()
+        return len(self.hits)
+
+# Example usage:
+# Initialize the hit counter
+counter = HitCounter()
+counter.hit(1)
+counter.hit(2)
+counter.hit(300)
+print(counter.getHits(300))   # Output: 3
+print(counter.getHits(301))   # Output: 2
+\end{lstlisting}
+\end{fullwidth}\marginpar{Using a deque allows efficient addition and removal from both ends, which is ideal for sliding window problems.}
+
+\textbf{Complexities:}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:}
+        \begin{itemize}
+            \item \texttt{hit}: \(O(1)\)
+            \item \texttt{getHits}: \(O(n)\) in the worst case, where \(n\) is the number of hits in the past 5 minutes. However, since the maximum number of hits per second is limited, the operation is efficient on average.
+        \end{itemize}
+    \item \textbf{Space Complexity:} \(O(n)\), where \(n\) is the number of hits in the past 5 minutes.
+\end{itemize}\marginpar{By limiting the data stored to recent hits, we optimize memory usage and ensure scalability.}
+
+\textbf{Alternative Approach:}
+
+To achieve \(O(1)\) time complexity for both \texttt{hit} and \texttt{getHits}, we can use a fixed-size array to store the counts per second.
+
+\begin{itemize}
+    \item Initialize an array (or list) of size 300 (since 5 minutes = 300 seconds).
+    \item Each index in the array represents a timestamp modulo 300.
+    \item For each \texttt{hit}, update the count at the index corresponding to \((\text{timestamp} \mod 300)\).
+    \item For each \texttt{getHits}, sum up the counts in the array where the timestamps are within the 5-minute window.
+\end{itemize}
+
+\textbf{Implementation Using Fixed-Size Array:}
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class HitCounter:
+    def __init__(self):
+        self.times = [0] * 300
+        self.counts = [0] * 300
+    
+    def hit(self, timestamp: int) -> None:
+        idx = timestamp % 300
+        if self.times[idx] != timestamp:
+            self.times[idx] = timestamp
+            self.counts[idx] = 1
+        else:
+            self.counts[idx] += 1
+    
+    def getHits(self, timestamp: int) -> int:
+        total = 0
+        for i in range(300):
+            if timestamp - self.times[i] < 300:
+                total += self.counts[i]
+        return total
+
+# Example usage:
+# Initialize the hit counter
+counter = HitCounter()
+counter.hit(1)
+counter.hit(2)
+counter.hit(300)
+print(counter.getHits(300))   # Output: 3
+print(counter.getHits(301))   # Output: 3
+\end{lstlisting}
+\end{fullwidth}\marginpar{Using a fixed-size array ensures constant-time operations and bounded space complexity.}
+
+\textbf{Complexities of Alternative Approach:}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:}
+        \begin{itemize}
+            \item \texttt{hit}: \(O(1)\)
+            \item \texttt{getHits}: \(O(1)\)
+        \end{itemize}
+    \item \textbf{Space Complexity:} \(O(1)\), since the size of the arrays is fixed at 300.
+\end{itemize}\marginpar{Constant-time operations are ideal for high-throughput systems requiring minimal latency.}
+
+\textbf{Why This Approach?}
+
+Using a fixed-size array optimizes both time and space complexities. It eliminates the need to store every single hit timestamp, which can be memory-intensive if the hit rate is high. The modulo operation effectively cycles through the array, overwriting old data that is no longer within the 5-minute window.
+
+\textbf{Corner Cases to Test:}
+
+\begin{itemize}
+    \item \textbf{No Hits:} Ensure that \texttt{getHits} returns 0 when there are no hits in the past 5 minutes.
+    \item \textbf{Hits Exactly 5 Minutes Ago:} Verify that hits that occurred exactly 300 seconds ago are not counted.
+    \item \textbf{High Frequency of Hits:} Test the system with the maximum allowed hits per second to assess performance.
+    \item \textbf{Hits with Same Timestamps:} Ensure that multiple hits at the same timestamp are counted correctly.
+    \item \textbf{Continuous Operation:} Simulate continuous operation over a long period to verify that the data structure handles timestamp wrapping correctly.
+\end{itemize}\marginpar{Testing edge cases ensures the reliability and robustness of the hit counter implementation.}
+
+\textbf{Conclusion:}
+
+Designing an efficient hit counter requires balancing time and space complexities while handling high-frequency data. By using appropriate data structures like queues or fixed-size arrays, we can achieve constant-time operations and bounded memory usage. Mastery of such problems enhances understanding of time-based data management, which is crucial in real-time analytics, monitoring systems, and rate-limiting applications.\marginpar{Efficient time-based algorithms are essential in scalable system designs.}

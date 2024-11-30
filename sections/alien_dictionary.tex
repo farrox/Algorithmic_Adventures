@@ -1,0 +1,104 @@
+% file: alien_dictionary.tex
+
+\problemsection{Alien Dictionary}
+\label{problem:alien_dictionary}
+The "Alien Dictionary" problem is an intriguing interview question that tests one's ability to infer the ordering of an unknown language's alphabet using its lexicon sorted according to alien linguistic rules. It is implied that the alien language utilizes the same alphabet as English but with a reorganized sequence.
+
+\section*{Problem Statement}
+In the problem, you are given a list of sorted words from an alien language, with each word comprising a sequence of lowercase letters. Your task is to derive and return the ordering of the letters in the alien language as a string. If no valid order exists or if the input list is empty, the expected output is an empty string.
+
+\section*{Example}
+\textbf{Input}:
+words = [
+  "wrt",
+  "wrf",
+  "er",
+  "ett",
+  "rftt"
+]
+
+\textbf{Output}: "wertf"
+
+\textbf{Explanation}:
+Given the list of words from the alien language, we deduce the following order:
+- "t" precedes "f" (wrt -> wrf)
+- "w" precedes "e" (wrt -> er)
+- "r" precedes "t" (wrt -> ett)
+- "e" precedes "r" (er -> ett)
+
+Thereby, the derived order is "wertf".
+
+\section*{Algorithmic Approach}
+The solution to this problem is often tackled using graph theory concepts like directed acyclic graphs (DAGs). We can construct a graph where each vertex represents a character in the alien language, and directed edges define the lexicographic order between characters. Then we perform a topological sort on this graph to find the order of the characters. If we detect a cycle during this process, it would indicate that there is a conflict in the order, and no valid alphabet order can be determined, resulting in an empty string instead.
+
+LeetCode link: \href{https://leetcode.com/problems/alien-dictionary/}{Alien Dictionary}
+
+
+ewpage % Python implementation on a new page
+\section*{Python Implementation}
+Below is the complete Python code that implements a solution to the "Alien Dictionary" problem:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+from collections import defaultdict, deque
+
+def alienOrder(words):
+    # Create a graph (adjacency list)
+    adj_list = defaultdict(set)
+    # Count of how many times a character appears as 'second' in the alien dictionary order
+    in_degree = {char: 0 for word in words for char in word}
+    
+    # Populate the graph and in_degree
+    for first_word, second_word in zip(words, words[1:]):
+        for char1, char2 in zip(first_word, second_word):
+            if char1 != char2:
+                if char2 not in adj_list[char1]:
+                    adj_list[char1].add(char2)
+                    in_degree[char2] += 1
+                break
+        else:
+            # Check if second word is a prefix of the first word
+            if len(second_word) < len(first_word): return ""
+    
+    # Initialize a queue with letters that have in_degree of 0
+    queue = deque([char for char in in_degree if in_degree[char] == 0])
+    alien_alphabet = []
+
+    while queue:
+        char = queue.popleft()
+        alien_alphabet.append(char)
+        # Reduce the in_degree for neighbors and add to queue if it becomes 0
+        for neighbor in adj_list[char]:
+            in_degree[neighbor] -= 1
+            if in_degree[neighbor] == 0:
+                queue.append(neighbor)
+                
+    if len(alien_alphabet) == len(in_degree):
+        return "".join(alien_alphabet)
+    else:
+        return ""  # Cycle or not all letters are connected through edges
+
+# Example usage:
+words = ["wrt", "wrf", "er", "ett", "rftt"]
+print(alienOrder(words))  # Output should be 'wertf'
+\end{lstlisting}
+
+\end{fullwidth}
+
+The provided implementation begins by establishing a graph in the form of an adjacency list.
+
+\section*{Why this approach}
+This approach is very fitting for the "Alien Dictionary" problem because it essentially translates to finding a possible topological ordering of characters given partial order constraints. Utilizing graph traversal and topological sort principles allows us to systematically derive the full order, if one exists, or recognize the impossibility of such an order when a cycle is present in the graph.
+
+\section*{Alternative approaches}
+One could approach the problem with different variations of graph traversal strategies or by examining the pairwise comparisons of consecutive words in a different manner, but any valid solution will likely utilize some form of topological sorting given the nature of the problem.
+
+\section*{Similars problems to this one}
+Problems that also involve deducing orders or hierarchies based on constraints, such as "Course Schedule" where prerequisites dictate a valid order for taking courses, or tasks scheduling problems where dependencies determine task execution order, share a resemblance to the "Alien Dictionary" problem.
+
+\section*{Things to keep in mind and tricks}
+Remember that graph-based algorithms and data structures such as in-degree representation and adjacency lists play a crucial role in implementing the solution. Recognizing a topological sort as the primary technique helps guide the overall strategy.
+
+\section*{Corner and special cases to test when writing the code}
+Edge cases may include scenarios where a word is a prefix of another, or the input list has only one word or characters that don't follow any others. It is essential to account for these to avoid incorrect inferences about the alien language's alphabet order.
+```

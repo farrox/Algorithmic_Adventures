@@ -1,0 +1,156 @@
+\section*{Precomputation}
+\label{sec:Precomputation}
+
+\section*{Introduction}
+
+In algorithmic problem-solving, efficiency is paramount, especially when dealing with large datasets or time-constrained environments such as coding interviews. Precomputation is a powerful technique that involves processing data in advance to facilitate faster query responses or simplify complex operations. By leveraging precomputation, you can transform repetitive calculations into a one-time setup, significantly reducing the overall time complexity of your algorithms.
+
+For problems that involve summation or multiplication of subarrays, precomputation using methods like prefix sums, suffix products, or hashing can be exceptionally useful. These techniques allow you to answer range queries in constant time after an initial linear-time preprocessing phase. Understanding when and how to apply precomputation can lead to more optimized and elegant solutions, making it a valuable tool in your algorithmic arsenal.
+
+In this chapter, we will explore the concept of precomputation, delve into various techniques such as prefix sums and hashing, and examine how these methods can be applied to solve common algorithmic problems efficiently. We will also provide practical Python implementations and discuss the associated time and space complexities to give you a comprehensive understanding of precomputation in action.
+
+\section*{Problem Statement}
+
+\textbf{Find the Number of Subarrays with a Given Sum}
+
+Given an array of integers \texttt{nums} and an integer \texttt{target}, return the number of continuous subarrays whose sum equals to \texttt{target}.
+
+\textbf{Input:} An array \texttt{nums} of integers and an integer \texttt{target}.
+
+\textbf{Output:} An integer representing the number of continuous subarrays whose sum equals \texttt{target}.
+
+\textbf{Example:}
+\begin{verbatim}
+Input: nums = [1,1,1], target = 2
+Output: 2
+Explanation: The subarrays [1,1] starting at index 0 and index 1 both sum to 2.
+\end{verbatim}
+
+% LeetCode link: \href{https://leetcode.com/problems/subarray-sum-equals-k/}{Subarray Sum Equals K}
+
+\section*{Algorithmic Approach}
+
+Precomputation techniques are instrumental in optimizing solutions to problems involving range queries or repetitive calculations. In the context of summation or multiplication of subarrays, precomputing certain values allows for constant-time query responses after an initial linear-time preprocessing phase. Here’s how precomputation can be applied to the "Subarray Sum Equals K" problem:
+
+\begin{itemize}
+    \item \textbf{Prefix Sum}: Calculate the prefix sum array, where each element at index \(i\) represents the sum of all elements from the start of the array up to index \(i\). This allows you to compute the sum of any subarray \texttt{nums[i..j]} in constant time as \texttt{prefix[j] - prefix[i-1]}.
+    
+    \item \textbf{Hashing}: Use a hash map (dictionary) to store the frequency of prefix sums encountered so far. This enables you to quickly determine how many times a particular prefix sum has occurred, which is essential for finding subarrays that sum to the target.
+    
+    \item \textbf{Combining Prefix Sum and Hashing}: As you iterate through the array, compute the current prefix sum and check if \texttt{current\_sum - target} exists in the hash map. If it does, it indicates that there is a subarray ending at the current index with a sum equal to the target. Increment the count accordingly and update the hash map with the current prefix sum.
+\end{itemize}
+
+\section*{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:} The overall time complexity is \(O(n)\), where \(n\) is the number of elements in the array. This is because we traverse the array only once, performing constant-time operations at each step.
+    
+    \item \textbf{Space Complexity:} The space complexity is \(O(n)\) due to the additional space required for the hash map that stores prefix sums.
+\end{itemize}
+
+\section*{Python Implementation}
+
+Below is the Python code to solve the "Subarray Sum Equals K" problem using precomputation with prefix sums and hashing:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+from typing import List
+from collections import defaultdict
+
+def subarraySum(nums: List[int], target: int) -> int:
+    """
+    Returns the number of continuous subarrays whose sum equals to target.
+    
+    Parameters:
+    nums (List[int]): The input array of integers.
+    target (int): The target sum for the subarrays.
+    
+    Returns:
+    int: The number of continuous subarrays summing to target.
+    """
+    count = 0
+    current_sum = 0
+    prefix_sums = defaultdict(int)
+    prefix_sums[0] = 1  # Initialize with prefix sum 0 occurring once.
+    
+    for num in nums:
+        current_sum += num
+        if (current_sum - target) in prefix_sums:
+            count += prefix_sums[current_sum - target]
+        prefix_sums[current_sum] += 1
+    
+    return count
+
+# Example usage:
+nums = [1, 1, 1]
+target = 2
+print(subarraySum(nums, target))  # Output: 2
+\end{lstlisting}
+\end{fullwidth}
+
+\section*{Example Usage and Test Cases}
+
+\begin{lstlisting}[language=Python]
+# Test case 1: General case
+nums = [1, 1, 1]
+target = 2
+print(subarraySum(nums, target))  # Output: 2
+
+# Test case 2: No subarray sums to target
+nums = [1, 2, 3]
+target = 7
+print(subarraySum(nums, target))  # Output: 0
+
+# Test case 3: Multiple subarrays sum to target
+nums = [1, 2, 1, 2, 1]
+target = 3
+print(subarraySum(nums, target))  # Output: 4
+
+# Test case 4: Negative numbers
+nums = [1, -1, 0]
+target = 0
+print(subarraySum(nums, target))  # Output: 3
+\end{lstlisting}
+
+\section*{Why This Approach}
+
+This approach is chosen because it efficiently counts the number of subarrays that sum to the target by leveraging precomputation. The use of prefix sums allows for the quick calculation of subarray sums, while the hash map enables constant-time lookups to determine if a subarray with the required sum exists. This combination ensures that the solution operates in linear time, making it highly efficient for large datasets. Additionally, the in-place nature of the computation means that no additional data structures are needed beyond the hash map, optimizing space usage.
+
+\section*{Similar Problems}
+
+Other problems that benefit from precomputation techniques like prefix sums and hashing include:
+
+\begin{itemize}
+    \item \textbf{Maximum Size Subarray Sum Equals K}: Find the maximum length of a subarray that sums to a given target.
+    \item \textbf{Subarray Product Less Than K}: Determine the number of contiguous subarrays where the product of all the elements is less than a given value.
+    \item \textbf{Count of Range Sum}: Count the number of range sums that lie in a specific interval.
+    \item \textbf{Longest Subarray with Sum at Most K}: Find the length of the longest subarray with a sum that does not exceed the target.
+\end{itemize}
+
+These problems similarly require efficient computation of subarray properties and can be optimized using precomputation strategies.
+
+\section*{Things to Keep in Mind and Tricks}
+
+\begin{itemize}
+    \item \textbf{Initialization}: Always initialize the prefix sum hash map with \texttt{prefix\_sums[0] = 1} to account for subarrays that start from the beginning of the array.
+    
+    \item \textbf{Handling Negative Numbers}: The presence of negative numbers can complicate prefix sum approaches. Ensure that your hash map correctly accounts for all possible prefix sums.
+    
+    \item \textbf{Avoiding Overflows}: In languages with fixed integer sizes, be cautious of potential integer overflows when computing prefix sums. In Python, integers can grow arbitrarily large, so this is less of a concern.
+    
+    \item \textbf{Edge Cases}: Consider edge cases such as empty arrays, arrays with a single element, or scenarios where no subarrays meet the target sum.
+    
+    \item \textbf{Space Optimization}: While prefix sums typically require \(O(n)\) space, some problems may allow for space optimization by using sliding window techniques or other methods.
+\end{itemize}
+
+\section*{Exercises}
+
+\begin{enumerate}
+    \item \textbf{Maximum Size Subarray Sum Equals K}: Given an array of integers and an integer \texttt{k}, find the maximum length of a subarray that sums to \texttt{k}. If there isn't one, return 0 instead.
+    
+    \item \textbf{Subarray Product Less Than K}: Given an array of positive integers \texttt{nums} and an integer \texttt{k}, return the number of contiguous subarrays where the product of all the elements in the subarray is less than \texttt{k}.
+    
+    \item \textbf{Count of Range Sum}: Given an integer array \texttt{nums}, return the number of range sums that lie in \texttt{[lower, upper]}. Range sum \texttt{S(i, j)} is defined as the sum of the elements in \texttt{nums} between indices \texttt{i} and \texttt{j} (i \(\leq\) j), inclusive.
+    
+    \item \textbf{Longest Subarray with Sum at Most K}: Given an array of integers \texttt{nums} and an integer \texttt{k}, find the length of the longest subarray with a sum that does not exceed \texttt{k}.
+\end{enumerate}

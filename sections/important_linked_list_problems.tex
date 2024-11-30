@@ -1,0 +1,130 @@
+% Filename: important_linked_list_problems.tex
+
+\section{Important Linked List Problems}
+
+Linked lists are versatile data structures that serve as the foundation for many complex algorithms and applications. Understanding a variety of linked list problems is crucial for mastering pointer manipulation, recursion, and iterative algorithms. Below is a curated list of important linked list problems, each accompanied by a detailed explanation and a high-level overview of the solution approach.
+
+\problemsection{Merge Two Sorted Lists}\marginpar{This problem is fundamental for understanding how to handle multiple data streams efficiently.}
+
+\textbf{Problem Description:}  
+Given two sorted linked lists, \texttt{l1} and \texttt{l2}, merge them into a single sorted linked list. The merged list should be formed by splicing together the nodes of the first two lists without creating new nodes.
+
+\textbf{Solution Overview:}  
+The optimal approach involves iteratively comparing the heads of both lists and appending the smaller node to a new merged list. A dummy node is often used to simplify edge cases, such as when one list is exhausted before the other. By maintaining a pointer to the last node in the merged list, nodes are efficiently spliced without additional space overhead. This method ensures that the merged list remains sorted and operates in \(O(n + m)\) time complexity, where \(n\) and \(m\) are the lengths of the input lists.\marginpar{Using a dummy node simplifies list manipulation by avoiding conditional checks for the head.}
+
+\problemsection{Remove Nth Node from End of List}\marginpar{This problem emphasizes the importance of two-pointer techniques in linked list manipulations.}
+
+\textbf{Problem Description:}  
+Given the head of a singly linked list and an integer \(n\), remove the \(n\)-th node from the end of the list and return its head. The operation must be performed in one pass through the list.
+
+\textbf{Solution Overview:}  
+A two-pointer technique, often referred to as the "fast and slow pointer" method, is employed to solve this problem efficiently. The fast pointer is moved \(n\) steps ahead of the slow pointer. Subsequently, both pointers traverse the list simultaneously until the fast pointer reaches the end. At this point, the slow pointer will be just before the target node, allowing for its removal by adjusting the next pointer. This approach guarantees a single traversal of the list with \(O(1)\) space complexity.\marginpar{Using two pointers allows simultaneous traversal, ensuring a single-pass solution.}
+
+\problemsection{Intersection of Two Linked Lists}\marginpar{Detecting intersections is crucial for optimizing memory usage and understanding shared resources in data structures.}
+
+\textbf{Problem Description:}  
+Given the heads of two singly linked lists, determine if the two lists intersect and return the intersecting node. Intersection is defined based on reference, not value, meaning the same node is shared between the lists.
+
+\textbf{Solution Overview:}  
+The optimal solution involves traversing both lists to determine their lengths and align their starting points. By calculating the difference in lengths, the longer list's pointer is advanced to match the shorter list's starting position. Then, both pointers move in tandem until they either meet at the intersection node or reach the end of the lists. This method ensures an \(O(n + m)\) time complexity with \(O(1)\) space usage.\marginpar{Aligning list pointers based on length difference facilitates efficient intersection detection.}
+
+\problemsection{Copy List with Random Pointer}\marginpar{This problem introduces the concept of deep copying complex data structures without extra space.}
+
+\textbf{Problem Description:}  
+Given a linked list where each node contains an additional random pointer that can point to any node in the list or null, create a deep copy of the list. The copied list should have nodes with the same values and the same random pointer connections as the original list.
+
+\textbf{Solution Overview:}  
+An efficient approach interleaves the copied nodes with the original nodes. First, each original node is followed by its copy. Then, the random pointers of the copied nodes are set by referencing the original nodes' random pointers. Finally, the intertwined lists are separated to form the original and copied lists independently. This technique ensures \(O(n)\) time complexity and \(O(1)\) space complexity without using additional data structures like hash maps.\marginpar{Interleaving nodes allows for seamless random pointer assignment without extra space.}
+
+\problemsection{Palindrome Linked List}\marginpar{Recognizing palindromic structures aids in optimizing search and validation algorithms.}
+
+\textbf{Problem Description:}  
+Determine whether a singly linked list is a palindrome, meaning it reads the same forwards and backwards.
+
+\textbf{Solution Overview:}  
+The solution involves finding the midpoint of the list using the slow and fast pointer technique. The second half of the list is then reversed in place. By comparing the first half with the reversed second half node by node, the algorithm determines if the list is a palindrome. After the comparison, the list can optionally be restored to its original structure. This method operates in \(O(n)\) time and \(O(1)\) space complexity.\marginpar{Reversing the second half simplifies the comparison process for palindrome verification.}
+
+\problemsection{Reorder List}\marginpar{Reordering lists is a common requirement in scheduling and data rearrangement tasks.}
+
+\textbf{Problem Description:}  
+Reorder a given linked list from \(L_0 \rightarrow L_1 \rightarrow \dots \rightarrow L_n\) to \(L_0 \rightarrow L_n \rightarrow L_1 \rightarrow L_{n-1} \rightarrow \dots\), modifying the list in place without altering node values.
+
+\textbf{Solution Overview:}  
+The algorithm consists of three main steps:  
+1. **Find the Middle:** Use the slow and fast pointer technique to locate the midpoint of the list.  
+2. **Reverse the Second Half:** Reverse the nodes from the midpoint to the end of the list.  
+3. **Merge the Two Halves:** Alternately merge nodes from the first half and the reversed second half to achieve the desired order.  
+This approach ensures the operation is performed in \(O(n)\) time with \(O(1)\) additional space.\marginpar{Separating and reversing halves facilitates the interleaving process for reordering.}
+
+\problemsection{Rotate List}\marginpar{Rotating lists is essential for applications involving circular data flows and periodic scheduling.}
+
+\textbf{Problem Description:}  
+Given the head of a linked list and an integer \(k\), rotate the list to the right by \(k\) places. This means moving the last \(k\) nodes to the beginning of the list.
+
+\textbf{Solution Overview:}  
+To rotate the list, first determine its length and connect the tail to the head to form a circular list. Then, calculate the effective number of rotations by taking \(k\) modulo the length. Finally, traverse the list to the new tail position and break the circle by setting the next pointer to null. This method ensures an \(O(n)\) time complexity with \(O(1)\) space usage.\marginpar{Modulo operation optimizes rotation steps by eliminating full cycles.}
+
+\problemsection{Flatten a Multilevel Doubly Linked List}\marginpar{Flattening structures is crucial for simplifying complex hierarchical data.}
+
+\textbf{Problem Description:}  
+Given a multilevel doubly linked list where nodes may have a child pointer pointing to a separate doubly linked list, flatten the list so that all nodes appear in a single-level, doubly linked list.
+
+\textbf{Solution Overview:}  
+The solution employs a depth-first traversal approach. Starting from the head, traverse the list and whenever a node with a child is encountered, recursively flatten the child list and integrate it between the current node and the next node. Pointers are adjusted accordingly to maintain the doubly linked list structure. This approach ensures all nodes are visited and flattened in \(O(n)\) time with \(O(1)\) additional space by modifying pointers in place.\marginpar{Recursively flattening child lists maintains the original node order in the flattened structure.}
+
+\problemsection{Linked List Cycle II}\marginpar{Identifying cycle origins is important for debugging and optimizing memory usage.}
+
+\textbf{Problem Description:}  
+If a linked list contains a cycle, return the node where the cycle begins. If there is no cycle, return null.
+
+\textbf{Solution Overview:}  
+Using Floyd’s Tortoise and Hare algorithm, first detect the presence of a cycle by moving two pointers at different speeds. Once a cycle is detected (when the two pointers meet), reset one pointer to the head of the list. Move both pointers one step at a time; the point at which they meet again is the start of the cycle. This method operates in \(O(n)\) time and \(O(1)\) space complexity.\marginpar{Resetting one pointer to head aligns the meeting point to the cycle's start.}
+
+\problemsection{Add Two Numbers}\marginpar{Adding numbers represented as linked lists is fundamental in understanding arithmetic operations in data structures.}
+
+\textbf{Problem Description:}  
+Given two non-empty linked lists representing two non-negative integers, where the digits are stored in reverse order, add the two numbers and return the sum as a linked list.
+
+\textbf{Solution Overview:}  
+Traverse both linked lists simultaneously, adding corresponding digits along with any carry from the previous addition. Create new nodes for the resulting sum and handle cases where the linked lists are of different lengths or when an additional carry remains after the final addition. This iterative approach ensures \(O(n)\) time complexity with \(O(n)\) space for the resulting list.\marginpar{Managing carry-over values is essential for accurate arithmetic operations in linked lists.}
+
+\problemsection{Remove Duplicates from Sorted List}\marginpar{Eliminating duplicates ensures data integrity and optimizes storage.}
+
+\textbf{Problem Description:}  
+Given a sorted linked list, delete all duplicates such that each element appears only once.
+
+\textbf{Solution Overview:}  
+Iterate through the linked list, comparing each node with its next node. If duplicates are found (i.e., consecutive nodes with the same value), bypass the duplicate nodes by adjusting the next pointers. This in-place modification ensures \(O(n)\) time complexity with \(O(1)\) additional space.\marginpar{Bypassing duplicates maintains list integrity without additional storage.}
+
+\problemsection{Reverse Nodes in k-Group}\marginpar{Reversing nodes in groups enhances understanding of complex pointer manipulations.}
+
+\textbf{Problem Description:}  
+Reverse the nodes of a linked list \(k\) at a time and return the modified list. Nodes that are not in a complete group of \(k\) should remain in their original order.
+
+\textbf{Solution Overview:}  
+The algorithm processes the list in segments of \(k\) nodes. For each segment, the nodes are reversed by adjusting their next pointers. If the remaining nodes are fewer than \(k\), they are left unchanged. A dummy node is often used to simplify edge cases, and pointers are meticulously managed to ensure the reversed segments are correctly linked. This approach operates in \(O(n)\) time with \(O(1)\) space complexity.\marginpar{Using a dummy node facilitates seamless list manipulations during reversals.}
+
+\problemsection{Swap Nodes in Pairs}\marginpar{Swapping nodes in pairs is a basic operation that builds the foundation for more complex transformations.}
+
+\textbf{Problem Description:}  
+Swap every two adjacent nodes in a linked list and return its head. The swapping must be done by changing node pointers, not by modifying node values.
+
+\textbf{Solution Overview:}  
+Traverse the linked list in pairs, swapping the nodes by adjusting their next pointers. A dummy node is utilized to handle edge cases smoothly. After each swap, pointers are updated to proceed to the next pair. This iterative method ensures all adjacent pairs are swapped with \(O(n)\) time complexity and \(O(1)\) space usage.\marginpar{Swapping pointers rather than values maintains data integrity and follows problem constraints.}
+
+\problemsection{Odd Even Linked List}\marginpar{Grouping elements based on position helps in organizing data efficiently.}
+
+\textbf{Problem Description:}  
+Rearrange a linked list such that all odd-indexed nodes are listed first, followed by the even-indexed nodes. The relative order within the odd and even groups should remain unchanged.
+
+\textbf{Solution Overview:}  
+Maintain two separate pointers for odd and even nodes. Iterate through the list, linking odd nodes together and even nodes together. After the traversal, connect the end of the odd list to the head of the even list. This approach maintains the original relative order and operates in \(O(n)\) time with \(O(1)\) space complexity.\marginpar{Separating and linking odd and even nodes ensures order preservation without extra space.}
+
+\problemsection{LRU Cache Implementation}\marginpar{Implementing an LRU Cache combines linked lists with hash maps for optimal performance.}
+
+\textbf{Problem Description:}  
+Design and implement a data structure for Least Recently Used (LRU) cache. It should support the following operations: \texttt{get} and \texttt{put}.
+
+\textbf{Solution Overview:}  
+An LRU Cache is implemented using a combination of a doubly linked list and a hash map. The linked list maintains the order of usage, with the most recently used items at the front and the least recently used items at the end. The hash map provides \(O(1)\) access to cache entries. When a \texttt{get} or \texttt{put} operation is performed, the corresponding node is moved to the front of the list to mark it as recently used. If the cache exceeds its capacity, the least recently used node is removed from both the linked list and the hash map. This design ensures that both operations run in \(O(1)\) time.\marginpar{Combining linked lists and hash maps provides efficient access and order maintenance for cache operations.}
+

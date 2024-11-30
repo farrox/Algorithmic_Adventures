@@ -1,0 +1,76 @@
+
+\subsection{Sort Colors}
+\label{subsec:Sort_Colors}
+
+The "Sort Colors" problem is a classic example of using the two pointers technique to efficiently sort an array. The challenge is to sort an array of integers where each integer represents a color (0 for red, 1 for white, and 2 for blue) in a specific order without using any built-in sorting functions.
+
+\section*{Problem Statement}
+Given an array \texttt{nums} with \(n\) objects colored red, white, or blue, sort them in-place so that objects of the same color are adjacent, with the colors in the order red, white, and blue. The integers 0, 1, and 2 represent the colors red, white, and blue, respectively.
+
+\textbf{Input:} An array \texttt{nums} where each element is either 0, 1, or 2.
+
+\textbf{Output:} The array \texttt{nums}, sorted in-place such that all 0s come first, followed by all 1s, and then all 2s.
+
+\textbf{Example:}
+\begin{verbatim}
+    Input: nums = [2,0,2,1,1,0]
+    Output: [0,0,1,1,2,2]
+\end{verbatim}
+
+% LeetCode link: \href{https://leetcode.com/problems/sort-colors/}{Sort Colors}
+
+\section*{Algorithmic Approach}
+To solve this problem, the two pointers technique can be effectively used along with a single pass through the array. The algorithm leverages three pointers: \texttt{low}, \texttt{mid}, and \texttt{high}. The \texttt{low} pointer is used to place 0s, the \texttt{high} pointer is used to place 2s, and the \texttt{mid} pointer is used to traverse the array.
+
+\begin{itemize}
+    \item Initialize \texttt{low} to 0, \texttt{mid} to 0, and \texttt{high} to \(n-1\).
+    \item Traverse the array with the \texttt{mid} pointer:
+        \begin{itemize}
+            \item If \texttt{nums[mid]} is 0, swap it with \texttt{nums[low]} and increment both \texttt{low} and \texttt{mid}.
+            \item If \texttt{nums[mid]} is 1, simply increment \texttt{mid}.
+            \item If \texttt{nums[mid]} is 2, swap it with \texttt{nums[high]} and decrement \texttt{high}.
+        \end{itemize}
+    \item Continue this process until \texttt{mid} surpasses \texttt{high}.
+\end{itemize}
+
+This approach sorts the array in a single pass with a time complexity of \(O(n)\) and a space complexity of \(O(1)\), making it highly efficient for this task.
+
+\section*{Python Implementation}
+
+Below is the Python code to implement the "Sort Colors" problem using the two pointers technique:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def sortColors(nums):
+    low, mid, high = 0, 0, len(nums) - 1
+
+    while mid <= high:
+        if nums[mid] == 0:
+            nums[low], nums[mid] = nums[mid], nums[low]
+            low += 1
+            mid += 1
+        elif nums[mid] == 1:
+            mid += 1
+        else:
+            nums[high], nums[mid] = nums[mid], nums[high]
+            high -= 1
+
+# Example usage:
+nums = [2, 0, 2, 1, 1, 0]
+sortColors(nums)
+print(nums)  # Output: [0, 0, 1, 1, 2, 2]
+\end{lstlisting}
+
+\end{fullwidth}
+
+\section*{Why this approach}
+
+The Dutch National Flag problem, which this problem is also known as, is optimally solved by the three-pointer approach described above. This method ensures that all the elements are sorted in a single traversal of the array, adhering to the problem's constraints of in-place sorting without using built-in sorting functions.
+
+\section*{Similar problems to this one}
+
+This approach is similar to problems where elements need to be rearranged based on specific criteria, such as "Partitioning an Array" and "Three-Way Partitioning." These problems also benefit from the efficient use of two or more pointers to achieve the desired order in linear time.
+
+\section*{Things to keep in mind and tricks}
+
+When implementing the two pointers technique, it's crucial to carefully manage the conditions under which the pointers move to avoid infinite loops or missed elements. In this problem, special attention is needed when incrementing or decrementing pointers to ensure no elements are skipped or processed multiple times.

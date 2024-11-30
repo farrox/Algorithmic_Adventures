@@ -1,0 +1,143 @@
+% Filename: three_sum.tex
+
+\problemsection{3Sum}
+\label{problem:3Sum}
+
+The **3Sum** problem is a classic challenge in algorithmic tasks, involving finding all unique triplets in an array that sum up to zero.
+
+\subsection*{Problem Statement}
+Given an array \( \texttt{nums} \) of \( n \) integers, determine whether there are elements \( a, b, c \) in \( \texttt{nums} \) such that \( a + b + c = 0 \) and find all unique triplets in the array that give the sum of zero\sidenote{Refer to the \href{https://leetcode.com/problems/3sum/}{LeetCode 3Sum Problem} for more details.}.
+
+\textbf{Example:}
+
+Given array \texttt{nums} = \([-1, 0, 1, 2, -1, -4]\),
+
+A solution set is:
+\[
+\begin{aligned}
+  &[-1, 0, 1], \\
+  &[-1, -1, 2]
+\end{aligned}
+\]
+\sidenote{This example demonstrates how the algorithm identifies unique triplets that sum to zero, even in the presence of duplicate elements.}
+
+\subsection*{Algorithmic Approach}
+The solution to this problem can be approached by using a sorting-based approach along with the Two Pointers Technique\sidenote{Sorting the array helps in efficiently managing duplicates and navigating the array with two pointers.}. First, sort the array to make it easier to navigate and to avoid duplicate solutions. Iterate through each element \( i \) in the array and for each, apply the Two Pointers Technique to find the other two elements that sum to the negative of \( i \). Manage the two pointers to skip over duplicate values and find the unique triplets that satisfy the condition.
+
+
+
+\subsection*{Python Implementation}
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class Solution:
+    def threeSum(self, nums):
+        """
+        Finds all unique triplets in the array which gives the sum of zero.
+        
+        Parameters:
+        nums (List[int]): The input array of integers.
+        
+        Returns:
+        List[List[int]]: A list of unique triplets that sum up to zero.
+        """
+        res = []
+        nums.sort()
+        
+        for i in range(len(nums)-2):
+            if i > 0 and nums[i] == nums[i-1]:
+                continue
+            left, right = i+1, len(nums)-1
+            while left < right:
+                current_sum = nums[i] + nums[left] + nums[right]
+                if current_sum < 0:
+                    left += 1
+                elif current_sum > 0:
+                    right -= 1
+                else:
+                    res.append([nums[i], nums[left], nums[right]])
+                    while left < right and nums[left] == nums[left+1]:
+                        left += 1
+                    while left < right and nums[right] == nums[right-1]:
+                        right -= 1
+                    left += 1
+                    right -= 1
+        return res
+
+# Example usage:
+nums = [-1, 0, 1, 2, -1, -4]
+solution = Solution()
+print(solution.threeSum(nums))  # Output: [[-1, -1, 2], [-1, 0, 1]]
+\end{lstlisting}
+\end{fullwidth}
+
+\subsection*{Example Usage and Test Cases}
+
+\begin{lstlisting}[language=Python]
+# Test case 1: General case
+nums = [-1, 0, 1, 2, -1, -4]
+print(Solution().threeSum(nums))  # Output: [[-1, -1, 2], [-1, 0, 1]]
+
+# Test case 2: No triplet sums to zero
+nums = [1, 2, 3, 4]
+print(Solution().threeSum(nums))  # Output: []
+
+# Test case 3: Multiple triplets with duplicates
+nums = [-2, 0, 0, 2, 2]
+print(Solution().threeSum(nums))  # Output: [[-2, 0, 2]]
+
+# Test case 4: All elements are zero
+nums = [0, 0, 0, 0]
+print(Solution().threeSum(nums))  # Output: [[0, 0, 0]]
+
+# Test case 5: Mixed positive and negative numbers
+nums = [-4, -1, -1, 0, 1, 2]
+print(Solution().threeSum(nums))  # Output: [[-1, -1, 2], [-1, 0, 1]]
+\end{lstlisting}
+
+\subsection*{Why This Approach}
+
+The Two Pointers Technique combined with a sorting-based approach is chosen for its **efficiency and simplicity**. By leveraging the sorted nature of the array, the algorithm avoids the need for nested loops, reducing the time complexity from \( O(n^3) \) in a brute-force approach to \( O(n^2) \)\sidenote{Linearithmic sorting followed by quadratic traversal results in overall \( O(n^2) \) time complexity}. Additionally, this method ensures that each element is processed only once, making it highly suitable for large datasets\sidenote{Single-pass algorithms are preferable for handling large inputs efficiently}.
+
+\subsection*{Alternative Approaches}
+
+An alternative brute-force approach is to use three nested loops to check every triplet, but this would result in a time complexity of \( O(n^3) \) and is not efficient for larger arrays\sidenote{Such approaches are impractical for large-scale data due to their high time complexity}. Other approaches may involve using a hash set to check for complements\sidenote{Hash-based solutions can offer linear time complexity but may require additional space and careful handling of duplicates}, but care must be taken to still avoid duplicates.
+
+\subsection*{Similar Problems}
+
+Similar problems include:
+\begin{itemize}
+    \item \textbf{2Sum}: Find pairs that sum up to a target value\sidenote{A simpler version of the problem focusing on pairs instead of triplets}.
+    \item \textbf{4Sum}: Find quadruplets that sum up to a target value\sidenote{An extension of the 3Sum problem requiring additional pointer management}.
+    \item \textbf{3Sum Closest}: Find the triplet with a sum closest to a target value\sidenote{Requires tracking the closest sum while iterating}.
+    \item \textbf{3Sum Smaller}: Count the number of triplets with a sum smaller than a target\sidenote{Involves similar traversal logic with conditional counting}.
+\end{itemize}
+These problems can often be approached with similar sorting and two-pointer techniques, or hashing strategies\sidenote{Understanding the core technique facilitates tackling a variety of related challenges}.
+
+\subsection*{Things to Keep in Mind and Tricks}
+\begin{itemize}
+    \item \textbf{Handling Duplicates}: It's crucial to handle duplicates carefully to ensure that only unique triplets are included in the result\sidenote{Skipping over duplicate elements during traversal prevents redundant triplet entries}.
+    \item \textbf{Sorted Array Advantage}: Sorting the array simplifies the process of finding triplets and managing pointers\sidenote{Sorted arrays allow for predictable pointer movements based on sum comparisons}.
+    \item \textbf{Pointer Movement Logic}: Clearly define the conditions under which each pointer should move to ensure optimal traversal\sidenote{Proper management of the left and right pointers is key to maintaining efficiency}.
+    \item \textbf{Edge Cases}: Always consider edge cases such as arrays with all positive or all negative numbers, and arrays with insufficient elements\sidenote{Robust handling of edge cases ensures the algorithm's reliability across diverse inputs}.
+    \item \textbf{Space Optimization}: The two pointers technique allows for solving the problem without additional space\sidenote{In-place algorithms are preferable for optimizing space usage, especially with large datasets}.
+\end{itemize}
+
+\subsection*{Corner and Special Cases to Test When Writing the Code}
+Special cases include:
+\begin{itemize}
+    \item \textbf{All Zeroes}: Arrays where all elements are zero\sidenote{Ensures that the algorithm correctly identifies triplets of zeroes without duplication}.
+    \item \textbf{No Valid Triplets}: Arrays where no three numbers sum to zero\sidenote{Checks the algorithm's ability to return an empty list appropriately}.
+    \item \textbf{Multiple Duplicates}: Arrays with multiple duplicate elements\sidenote{Verifies that the algorithm skips duplicates correctly to avoid redundant triplets}.
+    \item \textbf{Mixed Positive and Negative Numbers}: Arrays containing both positive and negative integers\sidenote{Tests the algorithm's capability to handle a diverse range of input values}.
+    \item \textbf{Single or Two Elements}: Arrays with fewer than three elements\sidenote{The algorithm should handle these gracefully, typically returning an empty list}.
+\end{itemize}
+
+\subsection*{References}
+\begin{itemize}
+    \item [LeetCode Problem:] \sidenote{\href{https://leetcode.com/problems/3sum/}{3Sum}}
+    \item [GeeksforGeeks Article:] \sidenote{\href{https://www.geeksforgeeks.org/two-pointers-technique/}{Two Pointers Technique}}
+    \item [HackerRank Problem:] \sidenote{\href{https://www.hackerrank.com/challenges/two-sum/problem}{Two Sum}}
+\end{itemize}
+
+\subsection*{Conclusion}
+The Two Pointers Technique is an indispensable tool in the array and string manipulation arsenal. By leveraging the inherent order within data structures, it enables the development of efficient and elegant solutions to a wide range of problems\sidenote{Its applicability spans numerous algorithmic challenges, making it a versatile strategy}. Mastering this technique not only enhances problem-solving skills but also prepares you for tackling more complex algorithmic challenges effectively.

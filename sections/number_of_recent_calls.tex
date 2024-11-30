@@ -1,0 +1,159 @@
+% Filename: number_of_recent_calls.tex
+
+\problemsection{Number of Recent Calls}
+\label{problem:number_of_recent_calls}
+\marginnote{Designing efficient data structures to handle real-time data is crucial in many applications, such as monitoring systems and network traffic analysis.}
+
+The \textbf{Number of Recent Calls} problem requires designing a class named \texttt{RecentCounter} to track the number of recent requests within a time frame of 3000 milliseconds. A request is represented by a single integer which indicates the time of the request in milliseconds. The class should support the following operations:
+
+\begin{itemize}
+    \item \texttt{RecentCounter()}: Initializes the \texttt{RecentCounter} object.
+    \item \texttt{ping(int t)}: Records a new request at time \texttt{t} and returns the number of requests that occurred in the past 3000 milliseconds, including the request just made at time \texttt{t}.
+\end{itemize}
+
+\section*{Problem Statement}
+LeetCode link: \href{https://leetcode.com/problems/number-of-recent-calls/}{933. Number of Recent Calls}\index{LeetCode}
+
+\marginnote{\href{https://leetcode.com/problems/number-of-recent-calls/}{[LeetCode Link]}\index{LeetCode}}
+\marginnote{\href{https://www.geeksforgeeks.org/design-hit-counter/}{[GeeksForGeeks Link]}\index{GeeksForGeeks}}
+\marginnote{\href{https://www.hackerrank.com/challenges/design-hit-counter/problem}{[HackerRank Link]}\index{HackerRank}}
+\marginnote{\href{https://app.codesignal.com/challenges/number-of-recent-calls}{[CodeSignal Link]}\index{CodeSignal}}
+\marginnote{\href{https://www.interviewbit.com/problems/design-hit-counter/}{[InterviewBit Link]}\index{InterviewBit}}
+\marginnote{\href{https://www.educative.io/courses/grokking-the-coding-interview/RM8y8Y3nLdY}{[Educative Link]}\index{Educative}}
+\marginnote{\href{https://www.codewars.com/kata/design-hit-counter/train/python}{[Codewars Link]}\index{Codewars}}
+
+\section*{Algorithmic Approach}
+To keep track of the requests, we can use a **queue** to store the timestamps of all requests. When a new request comes in at time \texttt{t}, we add it to the queue. Then, we remove all requests from the front of the queue that are older than \texttt{t - 3000} milliseconds, because we only need to consider requests within the last 3000 milliseconds. Finally, we return the size of the queue, which represents the number of recent requests within the required time frame.\marginnote{Using a queue ensures that we only retain relevant requests, optimizing both time and space complexities.}
+
+\section*{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:} The time complexity of the \texttt{ping} operation is \texttt{O(1)} amortized. Each request is added to the queue exactly once and removed at most once.
+    \item \textbf{Space Complexity:} The space complexity is \texttt{O(n)}, where \texttt{n} is the maximum number of requests that can appear within the time frame of 3000 milliseconds at any given time.
+\end{itemize}
+
+\newpage % Start Python Implementation on a new page
+\section*{Python Implementation}
+\marginnote{Implementing the \texttt{RecentCounter} class using a queue ensures efficient tracking of recent requests with optimal time and space usage.}
+
+Below is the complete Python code implementation for the \texttt{RecentCounter} class:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+from collections import deque
+
+class RecentCounter:
+
+    def __init__(self):
+        self.requests = deque()
+
+    def ping(self, t: int) -> int:
+        self.requests.append(t)
+        while self.requests and self.requests[0] < t - 3000:
+            self.requests.popleft()
+        return len(self.requests)
+
+# Example Usage:
+# obj = RecentCounter()
+# param_1 = obj.ping(t)
+
+# Test Cases:
+# Example 1:
+# obj = RecentCounter()
+# print(obj.ping(1))   # Output: 1
+# print(obj.ping(100)) # Output: 2
+# print(obj.ping(3001))# Output: 3
+# print(obj.ping(3002))# Output: 3
+
+# Example 2:
+# obj = RecentCounter()
+# print(obj.ping(0))   # Output: 1
+# print(obj.ping(3000))# Output: 2
+# print(obj.ping(3001))# Output: 3
+\end{lstlisting}
+\end{fullwidth}
+
+The implementation utilizes Python's `deque` from the `collections` module to efficiently add and remove timestamps. The `ping` method appends the current timestamp to the queue and then removes any timestamps that are older than `t - 3000` milliseconds. Finally, it returns the number of timestamps remaining in the queue, representing the number of recent calls.
+
+\section*{Explanation}
+The \texttt{RecentCounter} class maintains a queue of timestamps, each representing a request. The \texttt{ping} method performs the following steps:
+
+\begin{enumerate}
+    \item \textbf{Append Current Request:}
+    \begin{itemize}
+        \item The current timestamp \texttt{t} is appended to the queue.
+    \end{itemize}
+    
+    \item \textbf{Remove Outdated Requests:}
+    \begin{itemize}
+        \item Continuously remove requests from the front of the queue that are older than \texttt{t - 3000} milliseconds.
+    \end{itemize}
+    
+    \item \textbf{Return Recent Request Count:}
+    \begin{itemize}
+        \item The length of the queue after removals represents the number of recent requests within the last 3000 milliseconds.
+    \end{itemize}
+\end{enumerate}
+
+\section*{Why This Approach}
+This approach is chosen due to its **efficiency** and **simplicity**. By using a queue, we ensure that only relevant requests (those within the last 3000 milliseconds) are stored, optimizing both time and space. The operations of adding to the queue and removing outdated requests are both efficient, with each operation taking constant time on average.
+
+\section*{Alternative Approaches}
+An alternative approach could involve keeping an array or list of all requests and iterating over it every time to count how many fall within the last 3000 milliseconds. However, this would result in a higher time complexity for the \texttt{ping} method, as it would require iterating over potentially many more elements than necessary.
+
+\begin{itemize}
+    \item \textbf{Pros:} Simpler to implement using basic list operations.
+    \item \textbf{Cons:} Inefficient for large numbers of requests, leading to increased time complexity.
+\end{itemize}
+
+Another alternative could involve using a sliding window technique with two pointers to track the start and end of the relevant time frame. While this can also achieve similar time complexities, using a queue is more intuitive and straightforward in this context.
+
+\marginnote{Sliding window techniques are powerful for handling range-based queries efficiently.}
+
+\section*{Similar Problems to This One}
+There are several other problems that involve processing requests over a sliding time window or maintaining counts within specific constraints, such as:
+\begin{itemize}
+    \item \hyperref[problem:design_hit_counter]{Design Hit Counter}\index{Design Hit Counter}
+    \item \hyperref[problem:sliding_window_maximum]{Sliding Window Maximum}\index{Sliding Window Maximum}
+    \item \hyperref[problem:log_system]{Log System}\index{Log System}
+\end{itemize}
+
+\section*{Things to Keep in Mind and Tricks}
+\begin{itemize}
+    \item \textbf{Efficient Data Structures:} Utilizing appropriate data structures like queues can significantly optimize the performance of your solution.
+    \index{Efficient Data Structures}
+    
+    \item \textbf{Sliding Window Concept:} Understanding the sliding window concept helps in solving a variety of range-based and time-constrained problems.
+    \index{Sliding Window Concept}
+    
+    \item \textbf{Amortized Analysis:} Recognize that although some operations might take longer individually, the overall time complexity remains optimal when considering all operations together.
+    \index{Amortized Analysis}
+    
+    \item \textbf{Edge Case Handling:} Always account for edge cases, such as the first request or requests that exactly hit the boundary of the time frame.
+    \index{Edge Case Handling}
+\end{itemize}
+
+\section*{Corner and Special Cases to Test When Implementing}
+When implementing the \texttt{RecentCounter} class, it is crucial to test the following edge cases to ensure robustness:
+
+\begin{itemize}
+    \item \textbf{First Ping:} Ensure that the queue correctly handles the first request.
+    \index{Corner Cases}
+    
+    \item \textbf{Ping at Boundary Time:} Test a ping that is exactly at \texttt{t - 3000} milliseconds to verify inclusivity.
+    \index{Corner Cases}
+    
+    \item \textbf{Multiple Pings with Same Timestamp:} Although the problem states that each \texttt{ping} call has a strictly larger \texttt{t}, ensure that the implementation can handle pings with the same timestamp if extended.
+    \index{Corner Cases}
+    
+    \item \textbf{Rapid Succession of Pings:} Simulate a scenario with a large number of pings in a short period to test the efficiency of the queue operations.
+    \index{Corner Cases}
+    
+    \item \textbf{Long Duration Between Pings:} Test with pings that are spaced out by more than 3000 milliseconds to ensure old requests are properly removed.
+    \index{Corner Cases}
+    
+    \item \textbf{Maximum Input Values:} Verify that the implementation can handle the maximum possible values of \texttt{t} as defined by the problem constraints.
+    \index{Corner Cases}
+\end{itemize}
+
+\printindex

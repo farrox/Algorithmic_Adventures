@@ -1,0 +1,229 @@
+% file: queue_reconstruction_by_height.tex
+
+\problemsection{Reconstruct Queue by Height}
+\label{problem:reconstruct_queue_by_height}
+\marginnote{This problem utilizes a greedy algorithm to efficiently reconstruct the queue based on height and position constraints.}
+
+The \textbf{Reconstruct Queue by Height} problem involves arranging people in a queue based on their heights and the number of people in front of them who are taller. The challenge is to place each person such that the tallest individuals stand in front, and among those with the same height, the one with fewer taller people in front stands earlier.
+
+\section*{Problem Statement}
+
+LeetCode link: \href{https://leetcode.com/problems/queue-reconstruction-by-height/}{Queue Reconstruction by Height}\index{LeetCode}
+
+\marginnote{\href{https://leetcode.com/problems/queue-reconstruction-by-height/}{[LeetCode Link]}\index{LeetCode}}
+\marginnote{\href{https://www.geeksforgeeks.org/queue-reconstruction-by-height/}{[GeeksForGeeks Link]}\index{GeeksForGeeks}}
+\marginnote{\href{https://www.hackerrank.com/challenges/queue-reconstruction/problem}{[HackerRank Link]}\index{HackerRank}}
+\marginnote{\href{https://app.codesignal.com/challenges/queue-reconstruction}{[CodeSignal Link]}\index{CodeSignal}}
+\marginnote{\href{https://www.interviewbit.com/problems/queue-reconstruction-by-height/}{[InterviewBit Link]}\index{InterviewBit}}
+\marginnote{\href{https://www.educative.io/courses/grokking-the-coding-interview/RM8y8Y3nLdY}{[Educative Link]}\index{Educative}}
+\marginnote{\href{https://www.codewars.com/kata/queue-reconstruction-by-height/train/python}{[Codewars Link]}\index{Codewars}}
+
+\section*{Algorithmic Approach}
+
+\subsection*{Main Concept}
+The main idea to solve this problem is to sort the people by their heights in descending order. If two individuals have the same height, sort them by the ascending order of the number of people in front of them (the \( k \) value). Then, we iterate through this sorted list and place each person at the index specified by their \( k \) value.
+
+This strategy works because by placing the taller individuals first, we ensure that when we place smaller individuals, they do not affect the count of taller individuals in front of the ones already placed.
+
+\marginnote{Sorting by height ensures that taller people are placed first, maintaining the required constraints when inserting shorter individuals.}
+
+\section*{Complexities}
+
+\begin{itemize}
+	\item \textbf{Time Complexity:} \( O(n^2) \), where \( n \) is the number of people. Sorting takes \( O(n\log n) \) time, and insertion takes \( O(k) \) time for each person where \( k \) could be at most \( n \), resulting in a total time complexity of \( O(n^2) \).
+	\item \textbf{Space Complexity:} \( O(n) \) for storing the output. Sorting is done in-place, and the additional space used is only for the output queue.
+\end{itemize}
+
+\newpage % Start Python Implementation on a new page
+\section*{Python Implementation}
+
+\marginnote{Multiple implementation approaches demonstrate different trade-offs between readability, efficiency, and functionality.}
+
+Below are three implementations: the standard solution, an optimized version, and a solution that includes visualization:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+from typing import List, Tuple
+from collections import defaultdict
+
+class Solution:
+    def reconstructQueue(self, people: List[List[int]]) -> List[List[int]]:
+        """Standard solution with clear implementation."""
+        # Sort people by descending height and ascending k value
+        people.sort(key=lambda x: (-x[0], x[1]))
+        queue = []
+        # Place each person to the queue based on their k value
+        for person in people:
+            queue.insert(person[1], person)
+        return queue
+
+    def reconstructQueueOptimized(self, people: List[List[int]]) -> List[List[int]]:
+        """Optimized solution using bucket sort for same heights."""
+        if not people:
+            return []
+
+        # Group people by height
+        height_groups = defaultdict(list)
+        heights = set()
+        
+        for h, k in people:
+            height_groups[h].append(k)
+            heights.add(h)
+        
+        # Sort heights in descending order
+        heights = sorted(heights, reverse=True)
+        
+        # Initialize result array
+        n = len(people)
+        result = [None] * n
+        positions = list(range(n))
+        
+        # Place people from tallest to shortest
+        for height in heights:
+            ks = sorted(height_groups[height])
+            for k in ks:
+                pos = positions.pop(k)
+                result[pos] = [height, k]
+        
+        return result
+
+    def reconstructQueueWithVisualization(self, 
+            people: List[List[int]]) -> Tuple[List[List[int]], List[str]]:
+        """Returns both the solution and step-by-step visualization."""
+        people.sort(key=lambda x: (-x[0], x[1]))
+        queue = []
+        steps = []
+        
+        for person in people:
+            queue.insert(person[1], person)
+            steps.append(f"Insert {person} at position {person[1]}: {queue}")
+            
+        return queue, steps
+
+# Comprehensive test cases
+def test_queue_reconstruction():
+    solution = Solution()
+    
+    # Basic test
+    people = [[7,0], [4,4], [7,1], [5,0], [6,1], [5,2]]
+    assert solution.reconstructQueue(people) == \
+           [[5,0], [7,0], [5,2], [6,1], [4,4], [7,1]]
+    
+    # Edge cases
+    assert solution.reconstructQueue([]) == []
+    assert solution.reconstructQueue([[1,0]]) == [[1,0]]
+    
+    # Visualization example
+    people = [[7,0], [4,4], [7,1], [5,0], [6,1], [5,2]]
+    result, steps = solution.reconstructQueueWithVisualization(people)
+    for step in steps:
+        print(step)
+\end{lstlisting}
+\end{fullwidth}
+
+\section*{Visual Explanation}
+\begin{figure}[h]
+    \centering
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        Step & Person [h,k] & Action & Queue State \\
+        \hline
+        1 & [7,0] & Insert at 0 & [[7,0]] \\
+        2 & [7,1] & Insert at 1 & [[7,0], [7,1]] \\
+        3 & [6,1] & Insert at 1 & [[7,0], [6,1], [7,1]] \\
+        4 & [5,0] & Insert at 0 & [[5,0], [7,0], [6,1], [7,1]] \\
+        5 & [5,2] & Insert at 2 & [[5,0], [7,0], [5,2], [6,1], [7,1]] \\
+        6 & [4,4] & Insert at 4 & [[5,0], [7,0], [5,2], [6,1], [4,4], [7,1]] \\
+        \hline
+    \end{tabular}
+    \caption{Step-by-step reconstruction of queue for input [[7,0], [4,4], [7,1], [5,0], [6,1], [5,2]]}
+    \label{fig:queue_reconstruction}
+\end{figure}
+
+\section*{Implementation Variants}
+\begin{itemize}
+    \item \textbf{Standard Solution:}
+        \begin{itemize}
+            \item Simple and readable
+            \item Good for interviews
+            \item O(n²) time complexity
+        \end{itemize}
+    \item \textbf{Optimized Solution:}
+        \begin{itemize}
+            \item Uses bucket sort for same heights
+            \item Better memory usage
+            \item More complex implementation
+        \end{itemize}
+    \item \textbf{Visualization Solution:}
+        \begin{itemize}
+            \item Includes step-by-step tracking
+            \item Useful for debugging
+            \item Higher space complexity
+        \end{itemize}
+\end{itemize}
+
+\section*{Common Optimization Techniques}
+\begin{itemize}
+    \item \textbf{Bucket Sort:} Group people by height for faster processing
+    \item \textbf{Position Tracking:} Maintain available positions list
+    \item \textbf{Early Termination:} Stop when all positions are filled
+    \item \textbf{Memory Reuse:} Modify input array when possible
+\end{itemize}
+
+\section*{Real-World Applications}
+\begin{itemize}
+    \item \textbf{Event Scheduling:} Arranging events with precedence constraints
+    \item \textbf{Resource Allocation:} Organizing resources with dependencies
+    \item \textbf{Network Packet Ordering:} Reconstructing packet sequences
+    \item \textbf{Process Scheduling:} Managing process execution order
+\end{itemize}
+
+\section*{Explanation}
+
+After sorting the list of people based on the criteria, we initialize an empty queue. We then iterate over the sorted list of people and insert each person into the queue at the index given by their \( k \) value. Since the list is sorted, when we are inserting a person, all the people who are taller (or equal in height and lower in \( k \)-value) have already been placed, which satisfies the required condition of the \( k \) value representing the correct count of taller individuals in front.
+
+\section*{Why This Approach}
+
+This greedy approach is chosen because it simplifies the problem. Once the people are sorted in the required order, the solution is straightforward to assemble. By sorting the people by height first, we ensure that everyone placed before a given person is either taller or the same height, which is a critical part of the given conditions. Using insertion based on the \( k \) value then guarantees the relative order for individuals of the same height.
+
+\section*{Alternative Approaches}
+
+An alternative approach would be to start with an empty list and iterate over the people array, finding the correct position for each person based on their \( k \) value. This could do away with the need for sorting, but finding the correct position for each individual would be inefficient, leading to a similar or worse time complexity.
+
+\section*{Similar Problems to This One}
+
+Similar problems involve ordering or scheduling with constraints, such as the classic interval scheduling problem, inserting intervals, or the task scheduler problem where tasks need to be scheduled based on cooldown periods (LeetCode 621).
+
+\section*{Things to Keep in Mind and Tricks}
+
+It's crucial to do the sorting correctly, adhering to the problem's constraints. After sorting, it's just careful insertion. It's also worth noting that inserting elements at arbitrary positions in a list (or array) is not the most efficient operation due to the potential need for shifting elements. Still, in this case, it's acceptable given the problem's constraints.
+
+\section*{Corner and Special Cases to Test When Writing the Code}
+
+\begin{itemize}
+    \item \textbf{Smallest and Largest Values:} Test with the smallest and largest possible values for heights and \( k \).
+    \index{Corner Cases}
+    
+    \item \textbf{Multiple People with Same Height:} Ensure that the sorting and insertion handle multiple people with the same height but different \( k \) values correctly.
+    \index{Corner Cases}
+    
+    \item \textbf{Empty Input Array:} Test how the function behaves when given an empty input array.
+    \index{Corner Cases}
+    
+    \item \textbf{Multiple Insertions at Front:} Test cases that require multiple insertions at the front of the queue to ensure correct ordering.
+    \index{Corner Cases}
+    
+    \item \textbf{Single Person:} `people = [[height, k]]` should return the same single-person list.
+    \index{Corner Cases}
+    
+    \item \textbf{All People with k=0:} Everyone has no one in front; ensure that taller people are first.
+    \index{Corner Cases}
+    
+    \item \textbf{Maximum Jump Length:} Ensure that the function can handle cases where \( k \) equals the current queue length.
+    \index{Corner Cases}
+    
+    \item \textbf{Large Number of People:} Test with a large number of people to ensure the algorithm handles them efficiently within time constraints.
+    \index{Corner Cases}
+\end{itemize}
+
+\printindex

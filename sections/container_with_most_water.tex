@@ -1,0 +1,82 @@
+
+\problemsection{Container With Most Water}
+\label{chap:Container_With_Most_Water}
+The "Container With Most Water" problem, often referred to as "Max Area," is a classic problem that challenges us to find the two lines that together with the x-axis forms a container that could hold the maximum amount of water.
+
+\section*{Problem Statement}
+You are given an array \texttt{height} which represents the height of \( n \) vertical lines drawn on the x-axis at positions \([0, 1, 2, \ldots, n-1]\). Each line is drawn between the x-axis and the point \((x, \texttt{height}[x])\).
+
+The goal is to select two lines that form a container along with the x-axis, such that it contains the most water. The container cannot be slanted, and \( n \) must be at least 2.
+
+\textbf{Input:} An array of non-negative integers \texttt{height}.
+
+\textbf{Output:} The maximum volume of water a container can store.
+
+\textbf{Example:}
+
+\begin{verbatim}
+    Input: height = [1, 8, 6, 2, 5, 4, 8, 3, 7]
+    Output: 49
+    Explanation: The max area of water (blue section) the container can contain is 49.
+
+    Input: height = [1, 1]
+    Output: 1
+\end{verbatim}
+
+% \href{https://leetcode.com/problems/container-with-most-water/}{LeetCode Link}
+
+\section*{Algorithmic Approach}
+We can solve this problem with a two-pointer approach. The two pointers are initialized at both ends of the array, and we move the pointer pointing to the shorter line towards the other pointer. This is because if we moved the pointer at the taller line, the height of the container would remain the same or decrease, and the width would also decrease, necessarily resulting in a smaller area.
+
+\section*{Complexities}
+\begin{itemize}
+	\item \textbf{Time Complexity:} The two-pointer approach effectively scans the array once, giving a time complexity of \( O(n) \).
+	\item \textbf{Space Complexity:} Since the approach uses only a constant amount of extra space, the space complexity is \( O(1) \).
+\end{itemize}
+
+
+ewpage % Start Python Implementation on a new page
+\section*{Python Implementation}
+Below is the complete Python code that employs the two-pointer technique to solve the problem:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class Solution:
+    def maxArea(self, height):
+        max_water = 0
+        left, right = 0, len(height) - 1
+        
+        while left < right:
+            width = right - left
+            max_water = max(max_water, min(height[left], height[right]) * width)
+            
+            if height[left] < height[right]:
+                left += 1
+            else:
+                right -= 1
+                
+        return max_water
+\end{lstlisting}
+
+\end{fullwidth}
+
+This implementation finds the maximum area by iterating through the array only once. The pointers move towards each other, and after each step, the maximum area is updated if a larger area is found.
+
+\section*{Why this approach}
+The two-pointer approach was chosen for its efficiency, both in terms of time and space complexity. By constraining the container's vertical boundaries to the heights in the array, and then moving inward, we ensure that we only consider potentially larger areas without having to check each possible pair of lines.
+
+\section*{Alternative approaches}
+A brute force solution could be used, where one would check every possible pair of lines. However, this approach would have a time complexity of \( O(n^2) \), making it inefficient for larger input sizes.
+
+\section*{Similars problems to this one}
+There are other problems involving arrays and two-pointer techniques such as "Two Sum", "3Sum", "Trapping Rain Water", and others that deal with similar ideas of using pointers to navigate and compute values based on the array elements.
+
+\section*{Things to keep in mind and tricks}
+- Remember that moving the pointer at the taller line inward will never yield a larger area.
+- The width between the lines decreases with every move, so only consider moves that might increase the height to possibly increase the area.
+  
+\section*{Corner and special cases to test when writing the code}
+- Arrays with all elements being the same value (e.g., [1, 1, 1, 1]).
+- Arrays with only two elements.
+- Arrays with large differences in height values.
+- Cases where the maximum area is formed by lines that are not the furthest apart.

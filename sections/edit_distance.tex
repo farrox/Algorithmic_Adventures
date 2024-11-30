@@ -1,0 +1,145 @@
+% Filename: edit_distance.tex
+
+\problemsection{Edit Distance}
+\label{problem:edit_distance}
+\marginnote{A fundamental dynamic programming problem that demonstrates optimal substructure and is widely used in spell checkers, DNA sequence alignment, and natural language processing.}
+
+\section*{Problem Statement}
+Given two strings \texttt{word1} and \texttt{word2}, find the minimum number of operations needed to convert \texttt{word1} into \texttt{word2}. The allowed operations are:
+\begin{itemize}
+    \item Insert a character
+    \item Delete a character
+    \item Replace a character
+\end{itemize}
+
+\textbf{Examples:}
+\begin{verbatim}
+Input:  word1 = "horse", word2 = "ros"
+Output: 3
+Explanation: 
+1. horse → rorse (replace 'h' with 'r')
+2. rorse → rose  (delete 'r')
+3. rose  → ros   (delete 'e')
+
+Input:  word1 = "intention", word2 = "execution"
+Output: 5
+\end{verbatim}
+
+\section*{Key Insights}
+\begin{itemize}
+    \item If characters match, no operation needed
+    \item If characters differ, we have three choices:
+        \begin{itemize}
+            \item Insert: 1 + distance(i, j-1)
+            \item Delete: 1 + distance(i-1, j)
+            \item Replace: 1 + distance(i-1, j-1)
+        \end{itemize}
+    \item Base cases: empty string requires length operations
+\end{itemize}
+
+\section*{Dynamic Programming Approach}
+The problem exhibits:
+\begin{itemize}
+    \item \textbf{Optimal Substructure:} Solution built from optimal solutions of subproblems
+    \item \textbf{Overlapping Subproblems:} Same subproblems computed multiple times
+    \item \textbf{State Definition:} dp[i][j] = minimum operations to convert word1[0:i] to word2[0:j]
+\end{itemize}
+
+\marginnote{The DP table represents the minimum operations needed for prefixes of both strings, building up to the final solution.}
+
+\section*{Implementation}
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class Solution:
+    def minDistance(self, word1: str, word2: str) -> int:
+        # Handle edge cases
+        if not word1 and not word2:
+            return 0
+        if not word1:
+            return len(word2)
+        if not word2:
+            return len(word1)
+            
+        m, n = len(word1), len(word2)
+        # Initialize DP table
+        dp = [[0] * (n + 1) for _ in range(m + 1)]
+        
+        # Base cases: converting to/from empty string
+        for i in range(m + 1):
+            dp[i][0] = i  # deletions
+        for j in range(n + 1):
+            dp[0][j] = j  # insertions
+            
+        # Fill DP table
+        for i in range(1, m + 1):
+            for j in range(1, n + 1):
+                if word1[i-1] == word2[j-1]:
+                    dp[i][j] = dp[i-1][j-1]  # no operation needed
+                else:
+                    dp[i][j] = 1 + min(
+                        dp[i-1][j],    # deletion
+                        dp[i][j-1],    # insertion
+                        dp[i-1][j-1]   # replacement
+                    )
+        
+        return dp[m][n]
+
+# Test cases
+def test_edit_distance():
+    solution = Solution()
+    
+    # Basic cases
+    assert solution.minDistance("horse", "ros") == 3
+    assert solution.minDistance("intention", "execution") == 5
+    
+    # Edge cases
+    assert solution.minDistance("", "") == 0
+    assert solution.minDistance("a", "") == 1
+    assert solution.minDistance("", "a") == 1
+    
+    # Same strings
+    assert solution.minDistance("hello", "hello") == 0
+    
+    # Completely different strings
+    assert solution.minDistance("abc", "def") == 3
+\end{lstlisting}
+\end{fullwidth}
+
+\section*{Complexity Analysis}
+\begin{itemize}
+    \item \textbf{Time Complexity:} O(mn) where m, n are lengths of input strings
+    \item \textbf{Space Complexity:} O(mn) for the DP table
+    \item \textbf{Space Optimization:} Can be reduced to O(min(m,n)) using rolling arrays
+\end{itemize}
+
+\section*{Common Pitfalls}
+\begin{itemize}
+    \item Forgetting to handle empty string cases
+    \item Incorrect base case initialization
+    \item Not considering all three operations at each step
+    \item Off-by-one errors in string indices
+\end{itemize}
+
+\section*{Interview Tips}
+\begin{itemize}
+    \item Start with a small example to illustrate the approach
+    \item Draw the DP table to explain state transitions
+    \item Mention space optimization possibilities
+    \item Discuss real-world applications:
+        \begin{itemize}
+            \item Spell checkers
+            \item DNA sequence alignment
+            \item Natural language processing
+            \item Fuzzy string matching
+        \end{itemize}
+\end{itemize}
+
+\section*{Related Problems}
+\begin{itemize}
+    \item One Edit Distance
+    \item Delete Distance
+    \item Longest Common Subsequence
+    \item Regular Expression Matching
+\end{itemize}
+
+\printindex

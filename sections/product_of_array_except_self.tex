@@ -1,0 +1,99 @@
+
+
+\problemsection{Product of Array Except Self}
+\label{problem:Product_of_Array_Except_Self}
+
+The "Product of Array Except Self" problem is a classic problem in the realm of algorithm and data structure problems often encountered on platforms like LeetCode.
+
+\section*{Problem Statement}
+Given an array \texttt{nums} of \(n\) integers where \(n > 1\), return an array \texttt{output} such that \texttt{output[i]} is equal to the product of all the elements of \texttt{nums} except \texttt{nums[i]}.
+
+Given the constraints, it's guaranteed that the product of the array elements is within the range of a 32-bit signed integer.
+
+% LeetCode link: \href{https://leetcode.com/problems/product-of-array-except-self/}{Product of Array Except Self}
+
+\section*{Examples}
+Example 1:
+
+Input: \( [1,2,3,4] \)
+
+Output: \( [24,12,8,6] \)
+
+Explanation: By calculating the product of all elements except for the one at the current index, you would get:
+\begin{itemize}
+	\item For index \( 0 \): \( (2 \times 3 \times 4) = 24 \)
+	\item For index \( 1 \): \( (1 \times 3 \times 4) = 12 \)
+	\item For index \( 2 \): \( (1 \times 2 \times 4) = 8 \)
+	\item For index \( 3 \): \( (1 \times 2 \times 3) = 6 \)
+\end{itemize}
+
+\textbf{Note}:
+\begin{itemize}
+	\item You cannot use division in solving this problem.
+	\item You should try to solve the problem in \(O(n)\) time complexity.
+\end{itemize}
+
+\section*{Algorithmic Approach}
+To solve this problem, we utilize two arrays to store the prefix and suffix products of every element. We then multiply these prefix and suffix products to obtain the final output.
+
+\section*{Complexities}
+\begin{itemize}
+	\item \textbf{Time Complexity:} The total time complexity of the solution is \(O(n)\) as we are iterating through the array a constant number of times.
+	\item \textbf{Space Complexity:} The space complexity is \(O(n)\) due to the extra space taken up by the prefix and suffix arrays.
+\end{itemize}
+
+\section*{Python Implementation}
+Below is the complete Python code for solving the "Product of Array Except Self" problem without using division and with linear time complexity:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class Solution:
+    def productExceptSelf(self, nums):
+        length = len(nums)
+        
+        # Initialize arrays for left and right products
+        left_products = [0]*length
+        right_products = [0]*length
+        output = [0]*length
+        
+        # left_products[i] contains the product of all elements to the left of i
+        left_products[0] = 1
+        for i in range(1, length):
+            left_products[i] = nums[i - 1] * left_products[i - 1]
+        
+        # right_products[i] contains the product of all elements to the right of i
+        right_products[length - 1] = 1
+        for i in reversed(range(length - 1)):
+            right_products[i] = nums[i + 1] * right_products[i + 1]
+        
+        # Construct the output array
+        for i in range(length):
+            output[i] = left_products[i] * right_products[i]
+        
+        return output
+\end{lstlisting}
+\end{fullwidth}
+
+By precalculating the product of elements to the left and right of every element, we can construct the output array without the use of division.
+
+\section*{Why this approach}
+This approach is chosen because it adheres to the constraints of not using division and maintains a linear time complexity. By keeping track of the products to the left and right separately, we can multiply these values together to get the desired result for each index.
+
+\section*{Alternative approaches}
+An alternative approach could have been directly calculating the total product and then dividing it by the current element, but the problem explicitly forbids the use of division. Additionally, using extra passes and division might have exceeded the desired linear time complexity.
+
+\section*{Similar problems to this one}
+Similar problems may include other array transformation challenges that involve prefix sums or products, or problems that require the efficient computation of cumulative properties without using direct division, such as "Maximum Product Subarray" or "Trapping Rain Water."
+
+\section*{Things to keep in mind and tricks}
+- Precomputation of cumulative quantities can lead to efficient algorithms.
+- When division is not allowed, consider the use of prefix and suffix arrays to maintain state.
+- Always consider the constraints and desired time complexity when designing a solution.
+- Remember to check for edge cases, such as an array containing zeros or negative numbers.
+
+\section*{Corner and special cases to test when writing the code}
+While testing, consider arrays with:
+- A single zero, multiple zeros, and no zeros.
+- Negative numbers, as they can affect the product sign.
+- Large lengths to ensure that the time complexity is indeed linear.
+- Edge cases, such as an empty array or an array with a single element.

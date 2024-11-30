@@ -1,0 +1,103 @@
+
+ewpage
+
+\chapter{Reorder List}
+\label{chap:reorder_list}
+
+\section*{Problem Statement}
+
+Given a singly linked list, the task is to reorder it in a specific pattern such that the first element is followed by the last, the second by the second last, and so on. The reordering should be done in-place with the goal of achieving the new sequence without altering the node values.
+
+LeetCode link: \href{https://leetcode.com/problems/reorder-list}{Reorder List}
+
+\section*{Algorithmic Approach}
+
+To achieve the reordering, we can follow these steps:
+\begin{enumerate}
+    \item Find the middle of the linked list using the slow and fast pointer approach (Tortoise and Hare algorithm). 
+    \item Reverse the second part of the list after the middle.
+    \item Merge the two parts of the list by alternating nodes from each part.
+\end{enumerate}
+
+\section*{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity}: The algorithm consists of three main operations which all run in linear time. Finding the middle requires $O(n)$ time. Reversing the second half of the list also takes $O(n)$ and the final merge operation is $O(n)$. Therefore, the total time complexity is $O(n)$.
+    \item \textbf{Space Complexity}: Since the algorithm uses a constant amount of extra space and works in-place, the space complexity is $O(1)$.
+\end{itemize}
+
+
+ewpage
+\section*{Python Implementation}
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+def reorderList(head):
+    if not head:
+        return
+    
+    # Step 1: Find the middle of the list
+    slow, fast = head, head
+    while fast and fast.next:
+        slow = slow.next
+        fast = fast.next.next
+
+    # Step 2: Reverse the second half
+    prev, curr = None, slow
+    while curr:
+        next_temp = curr.next
+        curr.next = prev
+        prev = curr
+        curr = next_temp
+
+    # Step 3: Merge the two halves
+    first, second = head, prev
+    while second.next:
+        first_next, second_next = first.next, second.next
+        first.next = second
+        second.next = first_next
+        first = first_next
+        second = second_next
+\end{lstlisting}
+
+\end{fullwidth}
+
+\section*{Explanation}
+
+The provided Python code demonstrates a function that reorders a linked list according to the given pattern. It defines a `ListNode` class for the linked-list node and then implements the `reorderList` function.
+
+\section*{Why this approach}
+
+This approach offers an optimal solution in terms of time and space complexity. It cleverly utilizes the process of finding the middle, reversing the second half, and then merging to reorder the list without the need for additional data structures.
+
+\section*{Alternative approaches}
+
+An alternative brute-force approach could involve using an array to store the nodes of the list and then reconstructing the list in the reordered pattern. However, this approach would not satisfy the space complexity requirement of using only constant extra space.
+
+\section*{Similars problems to this one}
+
+Similar problems that involve manipulating linked lists are "Reverse Linked List", "Palindrome Linked List", and "Split Linked List in Parts". These problems require understanding of linked list operations like reversal, merge, and traversal.
+
+\section*{Things to keep in mind and tricks}
+
+Key points to remember:
+\begin{itemize}
+    \item Handling edge cases where the linked list is short.
+    \item Careful manipulation of node pointers to avoid losing track of next nodes and causing a cycle in the list.
+    \item Ensuring that the last node of the newly ordered list points to `None` to mark the list's end.
+\end{itemize}
+
+\section*{Corner and special cases to test when writing the code}
+
+Test cases should include:
+\begin{itemize}
+    \item A list with only one node (no reordering needed).
+    \item A list with two nodes (simple swap).
+    \item A list with an odd number of nodes (the middle node remains in its original position).
+    \item Very long lists to ensure the solution handles large input efficiently.
+\end{itemize}

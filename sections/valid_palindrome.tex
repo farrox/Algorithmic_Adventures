@@ -1,0 +1,120 @@
+% Filename: valid_palindrome.tex
+
+\problemsection{Valid Palindrome}
+\label{problem:Valid_Palindrome}
+
+The **Valid Palindrome** problem tests your ability to process and manipulate strings efficiently while applying basic string traversal techniques. A string is considered a palindrome if it reads the same forward and backward after ignoring non-alphanumeric characters and case differences.
+
+\subsection*{Problem Statement}
+Given a string \texttt{s}, determine if it is a palindrome, considering only alphanumeric characters and ignoring case.
+
+\textbf{Input:}
+- A string \texttt{s}.
+
+\textbf{Output:}
+- A boolean indicating whether \texttt{s} is a valid palindrome.
+
+\textbf{Example 1:}
+\begin{verbatim}
+Input: s = "A man, a plan, a canal: Panama"
+Output: true
+\end{verbatim}
+
+\textbf{Example 2:}
+\begin{verbatim}
+Input: s = "race a car"
+Output: false
+\end{verbatim}
+
+\textbf{Example 3:}
+\begin{verbatim}
+Input: s = ""
+Output: true
+\end{verbatim}
+
+\subsection*{Algorithmic Approach}
+
+A common and efficient way to solve this problem is by using the two-pointer technique. This method involves placing two pointers, one at the start and the other at the end of the string, and moving them toward each other while verifying that the characters they point to are equal.
+
+\textbf{Steps:}
+\begin{itemize}
+    \item Initialize two pointers, \texttt{left} at the start of the string and \texttt{right} at the end.
+    \item While \texttt{left} is less than \texttt{right}:
+    \begin{itemize}
+        \item Skip non-alphanumeric characters by advancing \texttt{left} or decrementing \texttt{right}.
+        \item Compare the characters at \texttt{left} and \texttt{right}, ignoring case\sidenote{Use built-in functions like \texttt{str.lower()} to handle case insensitivity}.
+        \item If the characters do not match, return \texttt{false}.
+        \item Otherwise, move \texttt{left} and \texttt{right} inward.
+    \end{itemize}
+    \item If the loop completes without mismatches, return \texttt{true}.
+\end{itemize}
+
+\subsection*{Complexities}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(n)\), where \(n\) is the length of the string. Each character is processed at most once.
+    \item \textbf{Space Complexity:} \(O(1)\), as no additional space is required apart from a few pointers.
+\end{itemize}
+
+\subsection*{Python Implementation}
+Below is an efficient implementation of the two-pointer technique:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def isPalindrome(s: str) -> bool:
+    left, right = 0, len(s) - 1
+    
+    while left < right:
+        # Skip non-alphanumeric characters
+        while left < right and not s[left].isalnum():
+            left += 1
+        while left < right and not s[right].isalnum():
+            right -= 1
+        
+        # Compare characters, ignoring case
+        if s[left].lower() != s[right].lower():
+            return False
+        
+        # Move pointers inward
+        left += 1
+        right -= 1
+    
+    return True
+\end{lstlisting}
+\end{fullwidth}
+
+\subsection*{Why This Approach?}
+The two-pointer technique is optimal for this problem as it processes the string in a single pass, ensuring linear time complexity. By avoiding the creation of additional strings or arrays, it also achieves constant space complexity. The approach effectively handles edge cases such as non-alphanumeric characters and empty strings.
+
+\subsection*{Alternative Approaches}
+\begin{itemize}
+    \item **Preprocessed String:**  
+    Create a filtered version of the string containing only lowercase alphanumeric characters, then check if this filtered string is equal to its reverse. This approach is simple but less efficient due to the need for additional memory and processing\sidenote{Constructing a new string requires \(O(n)\) time and space}.
+    \item **Recursive Check:**  
+    Use recursion to compare characters at the start and end of the string while skipping non-alphanumeric characters. This is less practical due to the risk of stack overflow for large strings.
+\end{itemize}
+
+\subsection*{Similar Problems}
+\begin{itemize}
+    \item \textbf{Valid Palindrome II:} Check if a string can be a palindrome after removing at most one character.
+    \item \textbf{Longest Palindromic Substring:} Find the longest substring that is a palindrome.
+    \item \textbf{Palindrome Permutation:} Determine if a string can be rearranged to form a palindrome.
+\end{itemize}
+
+\subsection*{Things to Keep in Mind and Tricks}
+\begin{itemize}
+    \item **Handling Non-Alphanumeric Characters:** Use Python’s \texttt{str.isalnum()} method to check if a character is alphanumeric.
+    \item **Case Insensitivity:** Convert characters to lowercase using \texttt{str.lower()} for comparison\sidenote{Avoid manually checking ASCII values for simplicity}.
+    \item **Edge Cases:** Consider empty strings and strings with only non-alphanumeric characters, as these are valid palindromes.
+\end{itemize}
+
+\subsection*{Corner and Special Cases to Test}
+\begin{itemize}
+    \item **Empty String:** Input: \texttt{""} (should return \texttt{true}).
+    \item **Only Non-Alphanumeric Characters:** Input: \texttt{"!!!"} (should return \texttt{true}).
+    \item **Mixed Alphanumeric and Special Characters:** Input: \texttt{"A man, a plan, a canal: Panama"} (should return \texttt{true}).
+    \item **Single Character:** Input: \texttt{"a"} (should return \texttt{true}).
+    \item **Case Insensitivity:** Input: \texttt{"RaceCar"} (should return \texttt{true}).
+\end{itemize}
+
+\subsection*{Conclusion}
+The **Valid Palindrome** problem demonstrates how simple string traversal techniques, such as the two-pointer approach, can efficiently solve challenges involving character comparisons. Mastering this problem builds a strong foundation for tackling more complex problems involving strings and character manipulations.

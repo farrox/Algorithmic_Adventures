@@ -1,0 +1,91 @@
+
+ewpage
+\chapter{Alien Dictionary}
+\label{chap:alien_dictionary}
+
+\section*{Problem Statement}
+Sorting a list of words in an alien language according to the given order requires understanding the lexicographical rules of that language. This task involves constructing a graph representation to determine the order of characters. The problem involves a topological sort on a directed graph where an edge from character `u` to character `v` means `u` comes before `v` in the alien language.
+
+LeetCode link: \href{https://leetcode.com/problems/alien-dictionary/}{Alien Dictionary}
+
+\section*{Algorithmic Approach}
+The following steps describe the algorithm to solve the problem:
+\begin{enumerate}
+	\item Create a graph (adjacency list) representing the ordering of characters.
+	\item Populate the graph with the correct edges by comparing adjacent words.
+	\item Perform a topological sort to determine the order of characters.
+	\item Detect cycles during the topological sort (which would mean that the given dictionary order is invalid).
+	\item Return the lexicographically sorted order of the alphabet as per the alien language rules.
+\end{enumerate}
+
+\section*{Complexities}
+\begin{itemize}
+	\item \textbf{Time Complexity:} The time complexity is \(O(C)\), where \(C\) is the total length of all the words in the input list, because each adjacent pair of words is compared only once.
+	\item \textbf{Space Complexity:} The space complexity is \(O(1)\) or \(O(U + min(U^2, N))\), where \(U\) is the total number of unique characters and \(N\) is the total length of all the words. The space is bounded because the number of English characters is limited to 26.
+\end{itemize}
+
+
+ewpage
+\section*{Python Implementation}
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def alienOrder(words):
+    # Create an adjacency list for the graph
+    adj = {c: set() for word in words for c in word}
+    
+    # Populate the graph
+    for i in range(len(words) - 1):
+        w1, w2 = words[i], words[i + 1]
+        min_len = min(len(w1), len(w2))
+        if len(w1) > len(w2) and w1[:min_len] == w2[:min_len]:
+            return ""  # The first word is a prefix of the second word, but longer
+        for j in range(min_len):
+            if w1[j] != w2[j]:
+                adj[w1[j]].add(w2[j])
+                break
+    
+    # Perform a topological sort
+    visited = {}  # False = visited, True = current path
+    res = []
+    
+    def dfs(c):
+        if c in visited:
+            return visited[c]
+        visited[c] = True
+        for neigh in adj[c]:
+            if dfs(neigh):
+                return True
+        visited[c] = False
+        res.append(c)
+    
+    for c in adj:
+        if dfs(c):
+            return ""
+    
+    return "".join(res[::-1])
+\end{lstlisting}
+
+\end{fullwidth}
+
+\section*{Explanation}
+The implementation uses a depth-first search (DFS) based topological sort. By iterating through each character of each word, we are able to build our graph with directed edges from earlier characters to later characters according to the alien language rules. If at any point during our DFS we encounter a node that is already in our current path, this indicates a cycle, and it is impossible to return a valid ordering.
+
+\section*{Why this approach}
+The topological sorting approach is suitable because it naturally represents the relative ordering constraints between characters. Since the problem can be represented as a graph of dependencies, topological sort is the standard algorithm to extract linear ordering from such constraints.
+
+\section*{Alternative approaches}
+An alternative approach could involve comparing all pairs of words using a modified comparison function based on the given alien alphabet order. While this approach would also give a valid sort, it has a higher time complexity compared to using a graph.
+
+\section*{Similar problems to this one}
+Similar problems often involve determining an order from a set of constraints, such as "Course Schedule" which can also be solved using topological sorting.
+
+\section*{Things to keep in mind and tricks}
+- Constructing the graph correctly is crucial, including handling the edge case where one word is a prefix of another.
+- Detecting cycles is a key part of the topological sort process in this context.
+
+\section*{Corner and special cases to test when writing the code}
+- Cases where one word is a prefix of another, which should return an empty string.
+- Cases with cycles in the graph, which should also return an empty string.
+- Inputs where every word is the same should return that word.
+- Inputs with unrelated words, where the characters do not establish a particular order between them.

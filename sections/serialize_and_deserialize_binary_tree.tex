@@ -1,0 +1,203 @@
+% Filename: serialize_and_deserialize_binary_tree.tex
+
+\problemsection{Serialize and Deserialize Binary Tree}\marginpar{Convert a binary tree to a string and back using traversal-based serialization and deserialization methods.}
+
+\textbf{Problem Statement}
+
+Design an algorithm to serialize and deserialize a binary tree. Serialization is the process of converting a binary tree into a string representation, and deserialization is the reverse process of reconstructing the binary tree from the string. The serialized string should uniquely represent the original binary tree structure and node values.
+
+\textbf{Algorithmic Approach}
+
+To serialize and deserialize a binary tree effectively, we can utilize **Breadth-First Search (BFS)** or **Depth-First Search (DFS)** traversal methods. Here, we'll focus on the BFS approach using level-order traversal, which is intuitive and handles trees with varying structures, including those with missing nodes.
+
+\begin{enumerate}
+    \item \textbf{Serialization (Tree to String)}:
+    \begin{itemize}
+        \item **Level-Order Traversal**: Traverse the tree level by level using a queue.
+        \item **Handling Null Nodes**: Represent null (absent) children with a sentinel value (e.g., `\#`) to preserve the tree structure.
+        \item **String Construction**: Append node values to the serialized string, separated by commas.
+    \end{itemize}
+    
+    \item \textbf{Deserialization (String to Tree)}:
+    \begin{itemize}
+        \item **String Splitting**: Split the serialized string by commas to retrieve node values.
+        \item **Reconstruction Using Queue**: Use a queue to keep track of nodes whose children are to be assigned.
+        \item **Node Assignment**: Iterate through the split values, creating child nodes or assigning nulls based on the sentinel values.
+    \end{itemize}
+\end{enumerate}
+
+\textbf{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity}: \(O(N)\), where \(N\) is the number of nodes in the binary tree. Both serialization and deserialization processes visit each node exactly once.
+    \item \textbf{Space Complexity}: \(O(N)\), due to the storage required for the serialized string and the queue used during traversal.
+\end{itemize}
+
+\textbf{Python Implementation}\marginpar{Implementing BFS-based serialization and deserialization for binary trees.}
+
+\begin{lstlisting}[language=Python, xleftmargin=0.02\textwidth, xrightmargin=0.02\textwidth]
+from collections import deque
+
+# Definition for a binary tree node.
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+class Codec:
+    def serialize(self, root: TreeNode) -> str:
+        """Encodes a tree to a single string using level-order traversal."""
+        if not root:
+            return ""
+        
+        serialized = []
+        queue = deque([root])
+        
+        while queue:
+            node = queue.popleft()
+            if node:
+                serialized.append(str(node.val))
+                queue.append(node.left)
+                queue.append(node.right)
+            else:
+                serialized.append("#")
+        
+        # Remove trailing "#" to optimize the serialized string
+        while serialized and serialized[-1] == "#":
+            serialized.pop()
+        
+        return ','.join(serialized)
+    
+    def deserialize(self, data: str) -> TreeNode:
+        """Decodes your encoded data to tree using level-order traversal."""
+        if not data:
+            return None
+        
+        values = data.split(',')
+        root = TreeNode(int(values[0]))
+        queue = deque([root])
+        index = 1
+        
+        while queue and index < len(values):
+            node = queue.popleft()
+            
+            # Process left child
+            if index < len(values) and values[index] != "#":
+                node.left = TreeNode(int(values[index]))
+                queue.append(node.left)
+            index += 1
+            
+            # Process right child
+            if index < len(values) and values[index] != "#":
+                node.right = TreeNode(int(values[index]))
+                queue.append(node.right)
+            index += 1
+        
+        return root
+
+# Example usage:
+# Constructing the following binary tree
+#         1
+#        / \
+#       2   3
+#          / \
+#         4   5
+
+root = TreeNode(1)
+root.left = TreeNode(2)
+root.right = TreeNode(3, TreeNode(4), TreeNode(5))
+
+codec = Codec()
+serialized = codec.serialize(root)
+print("Serialized Tree:", serialized)  # Output: "1,2,3,#,#,4,5"
+
+deserialized_root = codec.deserialize(serialized)
+
+# Function to print level-order traversal of the tree
+def print_level_order(node):
+    if not node:
+        print("Empty Tree")
+        return
+    queue = deque([node])
+    result = []
+    while queue:
+        current = queue.popleft()
+        if current:
+            result.append(str(current.val))
+            queue.append(current.left)
+            queue.append(current.right)
+        else:
+            result.append("#")
+    # Remove trailing "#" for clean output
+    while result and result[-1] == "#":
+        result.pop()
+    print("Deserialized Tree Level-Order:", ','.join(result))
+
+print_level_order(deserialized_root)  # Output: "1,2,3,#,#,4,5"
+\end{lstlisting}
+
+\textbf{Explanation}
+
+The `Codec` class provides two primary methods: `serialize` and `deserialize`. 
+
+\begin{itemize}
+    \item \textbf{Serialization}:
+    \begin{itemize}
+        \item **Level-Order Traversal**: The `serialize` method performs a level-order traversal of the binary tree using a queue (`deque`).
+        \item **Handling Null Nodes**: When a node is `None`, it appends a sentinel value (`\#`) to the serialized list to indicate the absence of a child, preserving the tree structure.
+        \item **String Construction**: After traversal, it joins the list into a comma-separated string. Trailing sentinel values are removed to optimize the string.
+    \end{itemize}
+    
+    \item \textbf{Deserialization}:
+    \begin{itemize}
+        \item **String Splitting**: The `deserialize` method splits the serialized string by commas to retrieve node values.
+        \item **Reconstruction Using Queue**: It initializes the root node and uses a queue to keep track of nodes whose children need to be assigned.
+        \item **Node Assignment**: Iterates through the split values, creating left and right child nodes or assigning `None` based on the sentinel values. This reconstructs the original binary tree structure.
+    \end{itemize}
+\end{itemize}
+
+\textbf{Why This Approach}
+
+\begin{itemize}
+    \item \textbf{Efficiency}: Both serialization and deserialization operations run in linear time relative to the number of nodes, ensuring scalability for large trees.
+    \item \textbf{Simplicity and Clarity}: The BFS-based approach is straightforward, making the implementation easy to understand and maintain.
+    \item \textbf{Preservation of Structure}: By including sentinel values for null nodes, the serialized string accurately captures the tree's structure, ensuring faithful deserialization.
+\end{itemize}
+
+\textbf{Alternative Approaches}
+
+An alternative method involves using **Depth-First Search (DFS)**, such as preorder traversal with null markers, to serialize and deserialize the tree. While DFS can also achieve linear time complexity, BFS is often preferred for its intuitive handling of tree levels and straightforward reconstruction process. Additionally, DFS may require managing recursion depth, which can be a limitation for very deep trees.
+
+\textbf{Similar Problems to This One}
+
+Similar tree-related problems include:
+\begin{itemize}
+    \item \hyperref[problem:construct_binary_tree_from_preorder_and_inorder_traversal]{Construct Binary Tree from Preorder and Inorder Traversal}
+    \item \hyperref[problem:binary_tree_maximum_path_sum]{Binary Tree Maximum Path Sum}
+    \item \hyperref[problem:subtree_of_another_tree]{Subtree of Another Tree}
+    \item \hyperref[problem:lowest_common_ancestor_of_a_binary_tree]{Lowest Common Ancestor of a Binary Tree}
+\end{itemize}
+
+\textbf{Things to Keep in Mind and Tricks}
+
+\begin{itemize}
+    \item \textbf{Handling Null Nodes}: Use a consistent sentinel value (e.g., `\#`) to represent null nodes during serialization to maintain tree structure integrity.
+    \item \textbf{Traversal Choice}: Choose BFS for a level-order approach or DFS for a depth-based approach based on the specific requirements and constraints of the problem.
+    \item \textbf{Optimizing Serialized String}: Remove trailing sentinel values to optimize the serialized string without losing necessary structural information.
+    \item \textbf{Hashmaps for Efficiency}: When reconstructing trees, using hashmaps to store inorder indices can significantly speed up node lookups and assignments.
+    \item \textbf{Edge Cases}: Always consider edge cases such as empty trees, single-node trees, and highly unbalanced trees to ensure robustness.
+\end{itemize}
+
+\textbf{Corner and Special Cases to Test When Writing the Code}
+
+\begin{itemize}
+    \item \textbf{Empty Tree}: Both preorder and inorder lists are empty. The function should return `None`.
+    \item \textbf{Single Node Tree}: Preorder and inorder lists contain only one element. The function should correctly create a single-node tree.
+    \item \textbf{Left-Skewed Tree}: All nodes have only left children. Verify that the tree is constructed correctly without missing nodes.
+    \item \textbf{Right-Skewed Tree}: All nodes have only right children. Ensure accurate tree reconstruction.
+    \item \textbf{Balanced Tree}: A perfectly balanced tree to confirm that both left and right subtrees are constructed accurately.
+    \item \textbf{Invalid Traversals}: Preorder and inorder lists that do not correspond to the same tree. The function should handle such cases gracefully, potentially by returning an error or `None`.
+    \item \textbf{Large Tree}: Test with a large number of nodes to assess the performance and recursion depth handling.
+    \item \textbf{Duplicate Values}: If duplicates are allowed, ensure that the function correctly identifies the positions of duplicate elements in the inorder list.
+\end{itemize}

@@ -1,0 +1,143 @@
+% Filename: insert_delete_getrandom.tex
+
+\problemsection{Insert Delete GetRandom O(1)}
+\label{problem:Insert_Delete_GetRandom}
+
+The **Insert Delete GetRandom O(1)** problem is a classic design challenge that tests your ability to efficiently manage a dynamic collection of elements while performing insertions, deletions, and random retrievals in constant time. This problem requires designing a data structure that supports the following operations in \(O(1)\) average time:
+
+\begin{itemize}
+    \item \textbf{Insert}: Add an element to the collection if it does not already exist.
+    \item \textbf{Delete}: Remove an element from the collection if it exists.
+    \item \textbf{GetRandom}: Retrieve a random element from the collection, where each element has an equal probability of being chosen.
+\end{itemize}
+
+\subsection*{Problem Statement}
+Design a data structure that supports the operations \texttt{insert}, \texttt{delete}, and \texttt{getRandom} in constant average time.
+
+\textbf{Input:}
+- A sequence of operations to be performed on the data structure.
+
+\textbf{Output:}
+- The result of each operation, depending on the operation type.
+
+\textbf{Example 1:}
+\begin{verbatim}
+Input:
+["RandomizedSet", "insert", "insert", "getRandom", "remove", "getRandom"]
+[[], [1], [2], [], [1], []]
+Output:
+[null, true, true, 1 or 2, true, 2]
+\end{verbatim}
+
+\textbf{Example 2:}
+\begin{verbatim}
+Input:
+["RandomizedSet", "insert", "insert", "insert", "getRandom"]
+[[], [1], [2], [3], []]
+Output:
+[null, true, true, true, 1 or 2 or 3]
+\end{verbatim}
+
+\subsection*{Algorithmic Approach}
+To achieve \(O(1)\) time complexity for all operations, the data structure combines:
+\begin{itemize}
+    \item A \textbf{hash map} to store elements and their indices in an array for efficient lookup and deletion\sidenote{Hash maps provide constant-time lookup and updates}.
+    \item A \textbf{dynamic array (list)} to store the actual elements, allowing \(O(1)\) access by index and efficient appending.
+\end{itemize}
+
+\textbf{Operations:}
+\begin{itemize}
+    \item \textbf{Insert:}
+    \begin{itemize}
+        \item Check if the element already exists in the hash map.
+        \item If not, append it to the array and add its index to the hash map.
+    \end{itemize}
+    \item \textbf{Delete:}
+    \begin{itemize}
+        \item Check if the element exists in the hash map.
+        \item If it does, swap it with the last element in the array, update the hash map, and remove the last element.
+    \end{itemize}
+    \item \textbf{GetRandom:}
+    \begin{itemize}
+        \item Use Python’s \texttt{random.choice()} or a similar function to select a random element from the array.
+    \end{itemize}
+\end{itemize}
+
+\subsection*{Complexities}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(1)\) for all operations, on average.
+    \item \textbf{Space Complexity:} \(O(n)\), where \(n\) is the number of elements in the data structure.
+\end{itemize}
+
+\subsection*{Python Implementation}
+Below is the Python implementation of the \texttt{RandomizedSet} data structure:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+import random
+
+class RandomizedSet:
+    def __init__(self):
+        self.data = []  # Dynamic array to store elements
+        self.index_map = {}  # Hash map to store element indices
+
+    def insert(self, val: int) -> bool:
+        if val in self.index_map:
+            return False  # Element already exists
+        self.index_map[val] = len(self.data)
+        self.data.append(val)
+        return True
+
+    def remove(self, val: int) -> bool:
+        if val not in self.index_map:
+            return False  # Element does not exist
+        # Swap the element with the last element in the array
+        last_element = self.data[-1]
+        idx_to_remove = self.index_map[val]
+        self.data[idx_to_remove] = last_element
+        self.index_map[last_element] = idx_to_remove
+        # Remove the last element
+        self.data.pop()
+        del self.index_map[val]
+        return True
+
+    def getRandom(self) -> int:
+        return random.choice(self.data)
+\end{lstlisting}
+\end{fullwidth}
+
+\subsection*{Why This Approach?}
+This approach leverages the hash map for fast element lookup and the array for efficient random access. By swapping the element to be removed with the last element in the array, the deletion operation avoids \(O(n)\) complexity caused by shifting elements.
+
+\subsection*{Alternative Approaches}
+\begin{itemize}
+    \item **Linked List with Hash Map:**  
+    Use a linked list for storage and a hash map to store node references. This allows for efficient insertions and deletions but complicates the \texttt{getRandom} operation.
+    \item **Heap-Based Approach:**  
+    Maintain a heap for \texttt{getRandom} operation. However, the constant-time guarantee for insertion and deletion is lost.
+\end{itemize}
+
+\subsection*{Similar Problems}
+\begin{itemize}
+    \item \textbf{Design a Data Structure That Supports Insert, Delete, and GetRandom Duplicates Allowed:} Extend the data structure to handle duplicate elements.
+    \item \textbf{LRU Cache:} Use a hash map with a doubly linked list to efficiently manage cache replacement.
+    \item \textbf{Randomized Collection:} Handle duplicates while maintaining constant-time operations.
+\end{itemize}
+
+\subsection*{Things to Keep in Mind and Tricks}
+\begin{itemize}
+    \item Always ensure that the hash map and array are updated consistently during insert and delete operations.
+    \item Random access is only efficient with arrays; avoid using linked lists for random retrieval.
+    \item Edge cases such as inserting duplicate values or deleting non-existent elements should be handled carefully.
+\end{itemize}
+
+\subsection*{Corner and Special Cases to Test}
+\begin{itemize}
+    \item \textbf{Empty Data Structure:} Test \texttt{getRandom} when the structure is empty.
+    \item \textbf{Single Element:} Test all operations with a single element in the structure.
+    \item \textbf{Insert and Delete Same Element:} Insert an element, delete it, and try \texttt{getRandom}.
+    \item \textbf{Large Input:} Stress test the structure with a large number of operations.
+\end{itemize}
+
+\subsection*{Conclusion}
+The **Insert Delete GetRandom O(1)** problem showcases the power of combining data structures like hash maps and arrays to achieve constant-time operations. Mastering this problem equips you with design strategies for solving dynamic data manipulation challenges efficiently.

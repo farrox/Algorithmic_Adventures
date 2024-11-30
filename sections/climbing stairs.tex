@@ -1,0 +1,68 @@
+
+ewpage
+\chapter{Climbing Stairs}
+\label{chap:Climbing_Stairs}
+The "Climbing Stairs" problem is a great example to introduce the concept of dynamic programming due to its optimal substructure property where the total number of ways to reach a particular step is dependent only on the number of ways to reach the previous two steps.
+
+\section*{Problem Statement}
+Given a non-negative integer \(n\), the task is to find the number of distinct ways you can climb to the top of a staircase with \(n\) steps, where you can take either one step or two steps at a time.
+
+LeetCode link: \href{https://leetcode.com/problems/climbing-stairs/}{Climbing Stairs}
+
+\section*{Algorithmic Approach}
+The problem can be approached with dynamic programming by breaking it down into smaller subproblems. The total number of ways to reach the \(i\)-th step is the sum of ways to reach the \((i-1)\)-th step and the \((i-2)\)-th step.
+
+\section*{Complexities}
+\begin{itemize}
+	\item \textbf{Time Complexity:} The iterative dynamic programming solution has a time complexity of \(O(n)\) as we calculate the number of ways for each step once, up to the \(n\)-th step.
+	\item \textbf{Space Complexity:} The space complexity is \(O(n)\) if we store the number of ways for all steps up to \(n\). This can be optimized to \(O(1)\) by only keeping track of the last two steps at any time.
+\end{itemize}
+
+
+ewpage % Start Python Implementation on a new page
+\section*{Python Implementation}
+Below is the complete Python code for the `climbStairs` function that calculates the number of distinct ways to climb to the top of a staircase with \(n\) steps:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class Solution:
+    def climbStairs(self, n: int) -> int:
+        if n <= 2:
+            return n
+        one_step_before, two_steps_before = 2, 1
+        all_ways = 0
+        for step in range(3, n + 1):
+            all_ways = one_step_before + two_steps_before
+            two_steps_before = one_step_before
+            one_step_before = all_ways
+        return all_ways
+
+# Example Usage
+# Create an instance of the Solution class
+solution = Solution()
+
+# Input: n = 2
+print(solution.climbStairs(2))  # Output: 2
+
+# Input: n = 3
+print(solution.climbStairs(3))  # Output: 3
+\end{lstlisting}
+
+\end{fullwidth}
+
+This implementation uses an iterative approach to compute the number of ways in a bottom-up fashion. The space optimization is achieved by not using an array to store intermediate results for each step.
+
+\section*{Why this approach}
+The dynamic programming approach is chosen because it provides an efficient way to solve this problem, avoiding redundant calculations. It systematically builds up the solution by solving each subproblem only once.
+
+\section*{Alternative approaches}
+An alternative approach could use recursion with memoization, but this might be less efficient due to a larger stack depth and potentially higher memory usage.
+
+\section*{Similar problems to this one}
+Other dynamic programming problems with optimal substructure and overlapping subproblems, such as the Fibonacci sequence, 'House Robber', and 'Minimum Path Sum' problems, share similarities with the Climbing Stairs problem.
+
+\section*{Things to keep in mind and tricks}
+One trick is to realize that this problem is essentially a Fibonacci sequence where the number of ways to climb \(n\) steps is the \(n\)-th Fibonacci number. The iterative approach with two variables is akin to maintaining the last two numbers of the Fibonacci sequence to generate the next number.
+
+\section*{Corner and special cases to test when writing the code}
+Some corner cases to consider while writing the code could be when \(n = 1\), where there's only one way to reach the top, and when \(n\) is large, nearing the upper bound of the constraints. These cases help ensure that the implementation handles small and large inputs efficiently.

@@ -1,0 +1,183 @@
+% Filename: all_o_one_data_structure.tex
+
+\problemsection{All O(1) Data Structure}
+\label{problem:All_O_One_Data_Structure}
+
+The **All O(1) Data Structure** problem is a challenging design problem that requires implementing a data structure to manage key-value pairs while efficiently supporting operations to increment, decrement, retrieve the maximum key, and retrieve the minimum key. The goal is to ensure all operations run in \(O(1)\) time on average.
+
+\subsection*{Problem Statement}
+Design a data structure that supports the following operations:
+\begin{itemize}
+    \item \textbf{Inc(key):} Increment the count of \texttt{key} by \(1\). If \texttt{key} does not exist, add it with a count of \(1\).
+    \item \textbf{Dec(key):} Decrement the count of \texttt{key} by \(1\). If the count becomes \(0\), remove \texttt{key}.
+    \item \textbf{GetMaxKey():} Retrieve a key with the maximum count. If no keys exist, return an empty string.
+    \item \textbf{GetMinKey():} Retrieve a key with the minimum count. If no keys exist, return an empty string.
+\end{itemize}
+
+\textbf{Input:}
+- A sequence of operations on the data structure.
+
+\textbf{Output:}
+- The results of \texttt{GetMaxKey()} and \texttt{GetMinKey()} operations.
+
+\textbf{Example 1:}
+\begin{verbatim}
+Input:
+["AllOne", "inc", "inc", "getMaxKey", "getMinKey", "dec", "getMaxKey", "getMinKey"]
+[[], ["hello"], ["hello"], [], [], ["hello"], [], []]
+Output:
+[null, null, null, "hello", "hello", null, "", ""]
+\end{verbatim}
+
+\subsection*{Algorithmic Approach}
+The problem is solved by combining a hash map for fast key lookups and a doubly linked list to manage keys grouped by their counts. Each node in the linked list represents a count, and it maintains a set of keys with that count.
+
+\textbf{Data Structure Design:}
+\begin{itemize}
+    \item \textbf{Hash Map (key\_map):} Maps keys to their corresponding nodes in the linked list.
+    \item \textbf{Doubly Linked List:} Maintains nodes representing counts in ascending order. Each node contains a set of keys with that count.
+    \item \textbf{Helper Methods:}
+    \begin{itemize}
+        \item Add a new count node to the list when needed.
+        \item Remove a count node if its set of keys becomes empty.
+    \end{itemize}
+\end{itemize}
+
+\textbf{Operations:}
+\begin{itemize}
+    \item \textbf{Inc(key):}
+    \begin{itemize}
+        \item If \texttt{key} exists, move it to the next count node.
+        \item If \texttt{key} does not exist, add it to the node with count \(1\).
+        \item Update the hash map and the doubly linked list as necessary.
+    \end{itemize}
+    \item \textbf{Dec(key):}
+    \begin{itemize}
+        \item If \texttt{key}'s count is \(1\), remove it entirely.
+        \item Otherwise, move it to the previous count node.
+        \item Update the hash map and the doubly linked list as necessary.
+    \end{itemize}
+    \item \textbf{GetMaxKey():} Retrieve any key from the set of keys in the last node of the doubly linked list.
+    \item \textbf{GetMinKey():} Retrieve any key from the set of keys in the first node of the doubly linked list.
+\end{itemize}
+
+\subsection*{Complexities}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(1)\) for all operations, as the hash map and doubly linked list provide efficient lookups, insertions, and deletions.
+    \item \textbf{Space Complexity:} \(O(n)\), where \(n\) is the number of unique keys.
+\end{itemize}
+
+\subsection*{Python Implementation}
+Below is the Python implementation of the All O(1) Data Structure:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class Node:
+    def __init__(self, count):
+        self.count = count
+        self.keys = set()
+        self.prev = None
+        self.next = None
+
+class AllOne:
+    def __init__(self):
+        self.key_map = {}  # Maps key to its count node
+        self.head = Node(0)  # Dummy head node
+        self.tail = Node(0)  # Dummy tail node
+        self.head.next = self.tail
+        self.tail.prev = self.head
+
+    def _add_node(self, new_node, prev_node):
+        """Add a new node after the given prev_node."""
+        new_node.next = prev_node.next
+        new_node.prev = prev_node
+        prev_node.next.prev = new_node
+        prev_node.next = new_node
+
+    def _remove_node(self, node):
+        """Remove a node from the doubly linked list."""
+        node.prev.next = node.next
+        node.next.prev = node.prev
+
+    def inc(self, key: str):
+        """Increment the count of a key."""
+        if key in self.key_map:
+            node = self.key_map[key]
+            next_node = node.next
+            if next_node.count != node.count + 1:
+                next_node = Node(node.count + 1)
+                self._add_node(next_node, node)
+            next_node.keys.add(key)
+            self.key_map[key] = next_node
+            node.keys.remove(key)
+            if not node.keys:
+                self._remove_node(node)
+        else:
+            if self.head.next.count != 1:
+                new_node = Node(1)
+                self._add_node(new_node, self.head)
+            self.head.next.keys.add(key)
+            self.key_map[key] = self.head.next
+
+    def dec(self, key: str):
+        """Decrement the count of a key."""
+        if key in self.key_map:
+            node = self.key_map[key]
+            if node.count == 1:
+                del self.key_map[key]
+                node.keys.remove(key)
+                if not node.keys:
+                    self._remove_node(node)
+            else:
+                prev_node = node.prev
+                if prev_node.count != node.count - 1:
+                    prev_node = Node(node.count - 1)
+                    self._add_node(prev_node, node.prev)
+                prev_node.keys.add(key)
+                self.key_map[key] = prev_node
+                node.keys.remove(key)
+                if not node.keys:
+                    self._remove_node(node)
+
+    def getMaxKey(self) -> str:
+        """Return any key with the maximum count."""
+        return next(iter(self.tail.prev.keys)) if self.tail.prev != self.head else ""
+
+    def getMinKey(self) -> str:
+        """Return any key with the minimum count."""
+        return next(iter(self.head.next.keys)) if self.head.next != self.tail else ""
+\end{lstlisting}
+\end{fullwidth}
+
+\subsection*{Why This Approach?}
+This approach achieves constant time complexity for all operations by combining a hash map for fast key lookups with a doubly linked list for maintaining count order. The design ensures that both maximum and minimum keys can be retrieved efficiently.
+
+\subsection*{Alternative Approaches}
+\begin{itemize}
+    \item **Priority Queue:** Use a priority queue to manage counts. However, this approach has \(O(\log n)\) complexity for insertion and deletion.
+    \item **Balanced BST:** Use a balanced binary search tree to maintain counts. This also has \(O(\log n)\) complexity and is less efficient than the hash map + linked list combination.
+\end{itemize}
+
+\subsection*{Similar Problems}
+\begin{itemize}
+    \item \textbf{LFU Cache (Least Frequently Used):} Manage a cache based on frequency counts.
+    \item \textbf{Design a Data Structure with Expiry:} Implement a data structure to handle key-value pairs with expiration times.
+\end{itemize}
+
+\subsection*{Things to Keep in Mind and Tricks}
+\begin{itemize}
+    \item Ensure the doubly linked list is updated consistently during insertions and deletions to avoid dangling pointers.
+    \item Handle edge cases such as empty data structures when retrieving maximum or minimum keys.
+    \item Use dummy head and tail nodes to simplify boundary conditions in the linked list.
+\end{itemize}
+
+\subsection*{Corner and Special Cases to Test}
+\begin{itemize}
+    \item **Empty Data Structure:** Test \texttt{GetMaxKey()} and \texttt{GetMinKey()} when the data structure is empty.
+    \item **Single Key:** Test all operations when there is only one key in the data structure.
+    \item **Increment and Decrement:** Test incrementing and decrementing the same key multiple times.
+    \item **Capacity Stress Test:** Test with a large number of keys and operations.
+\end{itemize}
+
+\subsection*{Conclusion}
+The **All O(1) Data Structure** problem demonstrates the power of combining hash maps and doubly linked lists to achieve constant time operations for complex

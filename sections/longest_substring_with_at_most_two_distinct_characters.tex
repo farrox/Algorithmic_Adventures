@@ -1,0 +1,226 @@
+% Filename: longest_substring_with_at_most_two_distinct_characters.tex
+
+\problemsection{Longest Substring with At Most Two Distinct Characters}
+\label{chap:longest_substring_with_at_most_two_distinct_characters}
+\marginnote{This problem exemplifies the sliding window technique, a powerful method for handling substring constraints efficiently.}
+
+The \textbf{Longest Substring with At Most Two Distinct Characters} problem requires finding the length of the longest substring in a given string that contains no more than two distinct characters. This problem effectively demonstrates the application of the sliding window technique to manage dynamic constraints within substrings.
+
+\section*{Problem Statement}
+
+Given a string \texttt{s}, find the length of the longest substring that contains at most two distinct characters.
+
+\textbf{Input:} A string \texttt{s}.
+
+\textbf{Output:} The length of the longest substring containing at most two distinct characters.
+
+\textbf{Examples:}
+
+\begin{itemize}
+    \item \textbf{Example 1:}
+    \begin{verbatim}
+    Input: s = "eceba"
+    Output: 3
+    Explanation: The substring is "ece" with length 3.
+    \end{verbatim}
+
+    \item \textbf{Example 2:}
+    \begin{verbatim}
+    Input: s = "ccaabbb"
+    Output: 5
+    Explanation: The substring is "aabbb" with length 5.
+    \end{verbatim}
+\end{itemize}
+
+LeetCode link: \href{https://leetcode.com/problems/longest-substring-with-at-most-two-distinct-characters/}{Longest Substring with At Most Two Distinct Characters}\index{LeetCode}
+
+\marginnote{\href{https://leetcode.com/problems/longest-substring-with-at-most-two-distinct-characters/}{[LeetCode Link]}\index{LeetCode}}
+\marginnote{\href{https://www.geeksforgeeks.org/longest-substring-containing-two-unique-characters/}{[GeeksForGeeks Link]}\index{GeeksForGeeks}}
+\marginnote{\href{https://www.hackerrank.com/challenges/longest-substring/problem}{[HackerRank Link]}\index{HackerRank}}
+\marginnote{\href{https://app.codesignal.com/challenges/longest-substring-two-distinct}{[CodeSignal Link]}\index{CodeSignal}}
+\marginnote{\href{https://www.interviewbit.com/problems/longest-substring-with-at-most-two-distinct-characters/}{[InterviewBit Link]}\index{InterviewBit}}
+\marginnote{\href{https://www.educative.io/courses/grokking-the-coding-interview/RM8y8Y3nLdY}{[Educative Link]}\index{Educative}}
+\marginnote{\href{https://www.codewars.com/kata/longest-substring-with-at-most-two-distinct-characters/train/python}{[Codewars Link]}\index{Codewars}}
+
+\section*{Algorithmic Approach}
+
+To solve this problem, we utilize the sliding window technique. This method involves maintaining a window that can expand and contract based on the number of distinct characters it contains. By using a hash map to keep track of character frequencies within the window, we can efficiently manage and update the window's constraints.
+
+\begin{enumerate}
+    \item \textbf{Initialize Pointers and Data Structures:}
+    \begin{itemize}
+        \item `start` and `end` pointers to define the current window.
+        \item A hash map `char-count` to store the frequency of each character within the window.
+    \end{itemize}
+    
+    \item \textbf{Expand the Window:}
+    \begin{itemize}
+        \item Increment the `end` pointer to include a new character.
+        \item Update the frequency of the new character in `char-count`.
+    \end{itemize}
+    
+    \item \textbf{Contract the Window When Necessary:}
+    \begin{itemize}
+        \item If the number of distinct characters in `char-count` exceeds two, increment the `start` pointer to exclude characters from the beginning of the window.
+        \item Update the frequency of the excluded character in `char-count`. If its frequency drops to zero, remove it from the map.
+    \end{itemize}
+    
+    \item \textbf{Update the Maximum Length:}
+    \begin{itemize}
+        \item After each expansion (and possible contraction), update the `max-length` if the current window size is larger than the previously recorded maximum.
+    \end{itemize}
+\end{enumerate}
+
+This approach ensures that we traverse the string only once, achieving an optimal \(O(n)\) time complexity.
+
+\marginnote{The sliding window technique is particularly effective for problems involving contiguous sequences with dynamic constraints.}
+
+\section*{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(n)\), where \(n\) is the length of the string. Each character is processed at most twice (once by `end` and once by `start`).
+    \item \textbf{Space Complexity:} \(O(1)\), since the hash map `char-count` stores at most three distinct characters at any given time (to account for the condition before contraction).
+\end{itemize}
+
+\section*{Python Implementation}
+
+\marginnote{Implementing the sliding window requires careful management of pointers and character frequencies to ensure efficiency.}
+
+Below is the complete Python code for solving the "Longest Substring with At Most Two Distinct Characters" problem using the sliding window technique:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def length_of_longest_substring_two_distinct(s):
+    from collections import defaultdict
+    
+    char_count = defaultdict(int)
+    max_length = 0
+    start = 0
+    
+    for end in range(len(s)):
+        char_count[s[end]] += 1
+        
+        # Shrink the window until we have at most two distinct characters
+        while len(char_count) > 2:
+            char_count[s[start]] -= 1
+            if char_count[s[start]] == 0:
+                del char_count[s[start]]
+            start += 1
+        
+        # Update max_length if the current window is larger
+        current_window_length = end - start + 1
+        if current_window_length > max_length:
+            max_length = current_window_length
+    
+    return max_length
+
+# Example usage:
+# s = "eceba"
+# print(length_of_longest_substring_two_distinct(s))  # Output: 3
+# s = "ccaabbb"
+# print(length_of_longest_substring_two_distinct(s))  # Output: 5
+\end{lstlisting}
+\end{fullwidth}
+
+This implementation maintains a hash map `char-count` to record the frequency of each character within the current window defined by `start` and `end` pointers. By expanding the window and adjusting the `start` pointer as needed, the algorithm efficiently finds the longest valid substring.
+
+\section*{Explanation}
+
+The `length-of-longest-substring-two-distinct` function efficiently finds the longest substring with at most two distinct characters by leveraging the sliding window technique. Here's a detailed breakdown of the implementation:
+
+\begin{itemize}
+    \item \textbf{Initialization:}
+    \begin{itemize}
+        \item Hash Map: `char-count` is a `defaultdict` that keeps track of the frequency of each character within the current window.
+        \item Pointers: `start` marks the beginning of the window, while `end` is the current position being evaluated.
+        \item Maximum Length: `max-length` stores the length of the longest valid substring found.
+    \end{itemize}
+    
+    \item \textbf{Iteration:}
+    \begin{itemize}
+        \item Expanding the Window: For each character `s[end]`, increment its count in `char-count`.
+        \item Checking Constraints: If the number of distinct characters in `char-count` exceeds two, enter a loop to shrink the window from the start.
+            \begin{itemize}
+                \item Decrement the count of `s[start]`.
+                \item If the count of `s[start]` drops to zero, remove it from `char-count`.
+                \item Increment `start` to move the window forward.
+            \end{itemize}
+        \item Updating Maximum Length: After ensuring the window contains at most two distinct characters, calculate the current window length (`end - start + 1`) and update `max-length` if necessary.
+    \end{itemize}
+    
+    \item \textbf{Result:}
+    \begin{itemize}
+        \item After iterating through the entire string, return `max-length` as the length of the longest valid substring.
+    \end{itemize}
+\end{itemize}
+
+\section*{Why This Approach}
+
+The sliding window technique is chosen for its efficiency in handling dynamic constraints within contiguous sequences. By maintaining a window that adapts based on the number of distinct characters, the algorithm ensures that each character is processed only a constant number of times, achieving optimal \(O(n)\) time complexity.
+
+\section*{Alternative Approaches}
+
+An alternative approach could involve brute force, where all possible substrings are examined, and the number of distinct characters is counted for each. However, this method would have a time complexity of \(O(n^3)\), making it impractical for longer strings.
+
+Another approach could use two pointers without a hash map, but managing the counts and ensuring at most two distinct characters would become cumbersome and less efficient.
+
+The sliding window technique remains the most efficient and straightforward method for this problem.
+
+\section*{Similar Problems to This One}
+
+There are several other problems that involve finding substrings or sequences with specific constraints, such as:
+
+\begin{itemize}
+    \item \hyperref[problem:longest_substring_with_at_most_k_distinct_characters]{Longest Substring with At Most K Distinct Characters}\index{Longest Substring with At Most K Distinct Characters}
+    \item \hyperref[problem:longest_substring_without_repeating_characters]{Longest Substring Without Repeating Characters}\index{Longest Substring Without Repeating Characters}
+    \item \hyperref[problem:minimum_window_substring]{Minimum Window Substring}\index{Minimum Window Substring}
+    \item \hyperref[problem:longest_repeating_character_replacement]{Longest Repeating Character Replacement}\index{Longest Repeating Character Replacement}
+\end{itemize}
+
+\section*{Things to Keep in Mind and Tricks}
+
+\begin{itemize}
+    \item \textbf{Sliding Window Technique:} Utilize two pointers to define the current window and adjust them based on constraints.
+    \index{Sliding Window Technique}
+    
+    \item \textbf{Hash Map for Frequency Counts:} Use a hash map to keep track of character frequencies within the window for efficient constraint checking.
+    \index{Hash Map for Frequency Counts}
+    
+    \item \textbf{Dynamic Window Adjustment:} Expand the window by moving the `end` pointer and contract it by moving the `start` pointer when constraints are violated.
+    \index{Dynamic Window Adjustment}
+    
+    \item \textbf{Edge Case Handling:} Always consider edge cases such as empty strings, single-character strings, and strings with all identical characters.
+    \index{Edge Case Handling}
+    
+    \item \textbf{Optimizing Updates:} Update the maximum length only after ensuring the current window meets the constraints to avoid unnecessary calculations.
+    \index{Optimizing Updates}
+\end{itemize}
+
+\section*{Corner and Special Cases to Test When Writing the Code}
+
+When implementing the `length-of-longest-substring-two-distinct` function, it is crucial to test the following edge cases to ensure robustness:
+
+\begin{itemize}
+    \item \textbf{Empty String:} `s = ""` should return `0`.
+    \index{Corner Cases}
+    
+    \item \textbf{Single Character:} `s = "a"` should return `1`.
+    \index{Corner Cases}
+    
+    \item \textbf{All Characters the Same:} `s = "aaaaa"` should return `5`.
+    \index{Corner Cases}
+    
+    \item \textbf{All Characters Unique:} `s = "abcdef"` should return `2`.
+    \index{Corner Cases}
+    
+    \item \textbf{Multiple Valid Substrings:} `s = "abaccc"` should return `4` for the substring `"accc"`.
+    \index{Corner Cases}
+    
+    \item \textbf{Strings with Exactly Two Distinct Characters:} `s = "aabbcc"` should return `4` for substrings like `"aabb"` or `"bbcc"`.
+    \index{Corner Cases}
+    
+    \item \textbf{Large Input Size:} Test with a very large string to ensure that the implementation performs efficiently without exceeding memory limits.
+    \index{Corner Cases}
+\end{itemize}
+
+\printindex

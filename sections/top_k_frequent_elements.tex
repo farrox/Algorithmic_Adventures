@@ -1,0 +1,217 @@
+% Filename: top_k_frequent_elements.tex
+
+\problemsection{Top K Frequent Elements}
+\label{problem:top_k_frequent_elements}
+\marginnote{Identifying the most frequent elements in a dataset is a common task in data analysis, machine learning, and software engineering.}
+
+The \textbf{Top K Frequent Elements} problem involves finding the `k` most frequent elements in a given array of integers. This problem tests your ability to efficiently count element frequencies and retrieve the top `k` elements based on these frequencies.
+
+\section*{Problem Statement}
+Given an integer array `nums` and an integer `k`, return the `k` most frequent elements. You may return the answer in any order.
+
+\textbf{Note:} 
+\begin{itemize}
+    \item You may assume that `k` is always valid, \(1 \leq k \leq\) the number of unique elements in the array.
+    \item Your algorithm's time complexity must be better than \(O(n \log n)\), where \(n\) is the array's size.
+\end{itemize}
+
+\textbf{Example 1:}
+
+\begin{verbatim}
+Input: nums = [1,1,1,2,2,3], k = 2
+Output: [1,2]
+Explanation: 1 appears three times, 2 appears twice, and 3 appears once. The top 2 frequent elements are 1 and 2.
+\end{verbatim}
+
+\textbf{Example 2:}
+
+\begin{verbatim}
+Input: nums = [1], k = 1
+Output: [1]
+Explanation: 1 appears once. It is the top 1 frequent element.
+\end{verbatim}
+
+LeetCode link: \href{https://leetcode.com/problems/top-k-frequent-elements/}{347. Top K Frequent Elements}\index{LeetCode}
+
+\marginnote{\href{https://leetcode.com/problems/top-k-frequent-elements/}{[LeetCode Link]}\index{LeetCode}}
+\marginnote{\href{https://www.geeksforgeeks.org/top-k-frequent-elements-in-an-array/}{[GeeksForGeeks Link]}\index{GeeksForGeeks}}
+\marginnote{\href{https://www.hackerrank.com/challenges/top-k-frequent-elements/problem}{[HackerRank Link]}\index{HackerRank}}
+\marginnote{\href{https://app.codesignal.com/challenges/top-k-frequent-elements}{[CodeSignal Link]}\index{CodeSignal}}
+\marginnote{\href{https://www.interviewbit.com/problems/top-k-frequent-elements/}{[InterviewBit Link]}\index{InterviewBit}}
+\marginnote{\href{https://www.educative.io/courses/grokking-the-coding-interview/RM8y8Y3nLdY}{[Educative Link]}\index{Educative}}
+\marginnote{\href{https://www.codewars.com/kata/top-k-frequent-elements/train/python}{[Codewars Link]}\index{Codewars}}
+
+\section*{Algorithmic Approach}
+To efficiently find the top `k` frequent elements, we can follow these steps:
+
+\begin{enumerate}
+    \item \textbf{Frequency Counting:}
+    \begin{itemize}
+        \item Traverse the array and count the frequency of each element using a hash map (dictionary).
+    \end{itemize}
+    
+    \item \textbf{Bucket Sort:}
+    \begin{itemize}
+        \item Create an array of buckets where the index represents frequency, and each bucket at index `i` contains elements that appear `i` times.
+    \end{itemize}
+    
+    \item \textbf{Collect Top K Elements:}
+    \begin{itemize}
+        \item Iterate through the buckets starting from the highest frequency, and collect elements until `k` elements have been gathered.
+    \end{itemize}
+\end{enumerate}
+
+This approach ensures that the time complexity remains \(O(n)\), as both frequency counting and bucket sorting are linear operations.
+
+\marginnote{Bucket sort is particularly effective here because the maximum frequency cannot exceed the length of the array, allowing us to use a fixed-size array for buckets.}
+
+\section*{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(n)\), where \(n\) is the number of elements in the array. Both the frequency counting and the bucket sort operations run in linear time.
+    \item \textbf{Space Complexity:} \(O(n)\), due to the additional space required for the frequency map and the bucket array.
+\end{itemize}
+
+\newpage % Start Python Implementation on a new page
+\section*{Python Implementation}
+\marginnote{Implementing the algorithm with bucket sort ensures optimal performance by avoiding unnecessary sorting operations.}
+
+Below is the complete Python code for the `topKFrequent` function to find the top `k` frequent elements in an array:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+from collections import defaultdict
+
+class Solution:
+    def topKFrequent(self, nums: List[int], k: int) -> List[int]:
+        # Step 1: Frequency Counting
+        frequency_map = defaultdict(int)
+        for num in nums:
+            frequency_map[num] += 1
+        
+        # Step 2: Bucket Sort
+        max_freq = max(frequency_map.values())
+        buckets = [[] for _ in range(max_freq + 1)]
+        for num, freq in frequency_map.items():
+            buckets[freq].append(num)
+        
+        # Step 3: Collect Top K Elements
+        result = []
+        for freq in range(max_freq, 0, -1):
+            for num in buckets[freq]:
+                result.append(num)
+                if len(result) == k:
+                    return result
+
+# Example Usage:
+# solution = Solution()
+# print(solution.topKFrequent([1,1,1,2,2,3], 2))  # Output: [1,2]
+# print(solution.topKFrequent([1], 1))            # Output: [1]
+\end{lstlisting}
+\end{fullwidth}
+
+This implementation performs the following steps:
+\begin{enumerate}
+    \item \textbf{Frequency Counting:} Uses a `defaultdict` to count how many times each element appears in `nums`.
+    \item \textbf{Bucket Sort:} Creates buckets where each bucket at index `i` contains elements that appear `i` times.
+    \item \textbf{Collect Top K Elements:} Iterates through the buckets in reverse order (from highest to lowest frequency) and collects elements until `k` elements have been gathered.
+\end{enumerate}
+
+\section*{Explanation}
+The `topKFrequent` function efficiently identifies the top `k` most frequent elements in an array by leveraging a combination of frequency counting and bucket sort. Here's a detailed breakdown of the implementation:
+
+\begin{itemize}
+    \item \textbf{Frequency Counting:}
+    \begin{itemize}
+        \item Utilize a `defaultdict` to map each unique element in `nums` to its frequency.
+        \item Traverse the `nums` array, incrementing the count for each element.
+    \end{itemize}
+    
+    \item \textbf{Bucket Sort:}
+    \begin{itemize}
+        \item Determine the maximum frequency present in the frequency map.
+        \item Initialize a list of empty lists (`buckets`) where the index represents the frequency.
+        \item Iterate through the frequency map and append each element to the corresponding bucket based on its frequency.
+    \end{itemize}
+    
+    \item \textbf{Collect Top K Elements:}
+    \begin{itemize}
+        \item Initialize an empty `result` list to store the top `k` elements.
+        \item Iterate through the `buckets` list in reverse order, starting from the highest frequency.
+        \item For each bucket, append its elements to the `result` list until `k` elements have been collected.
+        \item Return the `result` list containing the top `k` frequent elements.
+    \end{itemize}
+\end{itemize}
+
+\section*{Why This Approach}
+This approach was chosen due to its efficiency in both time and space complexity. By combining frequency counting with bucket sort, we avoid the need to sort the entire array, which would have resulted in a higher time complexity of \(O(n \log n)\). Instead, this method maintains a linear time complexity of \(O(n)\), making it highly suitable for large datasets.
+
+\section*{Alternative Approaches}
+An alternative approach involves using a heap (priority queue) to keep track of the top `k` frequent elements. Here's how it works:
+
+\begin{enumerate}
+    \item \textbf{Frequency Counting:} Similar to the primary approach, use a hash map to count frequencies.
+    \item \textbf{Min-Heap Construction:} Iterate through the frequency map and maintain a min-heap of size `k`. If the heap size exceeds `k`, remove the smallest frequency element.
+    \item \textbf{Extracting Results:} The heap will contain the top `k` frequent elements.
+\end{enumerate}
+
+\begin{itemize}
+    \item \textbf{Pros:} More intuitive for those familiar with heap operations; can be easier to implement in some languages.
+    \item \textbf{Cons:} Slightly higher time complexity of \(O(n \log k)\) compared to the primary approach's \(O(n)\).
+\end{itemize}
+
+While the heap approach is effective, the bucket sort method provides a better time complexity, making it more optimal for scenarios with large input sizes.
+
+\marginnote{Heaps are powerful data structures for maintaining dynamic sets of elements with priority-based ordering.}
+
+\section*{Similar Problems to This One}
+There are several other problems that involve frequency counting and retrieving elements based on their counts, such as:
+\begin{itemize}
+    \item \hyperref[problem:frequency_sort]{Frequency Sort}\index{Frequency Sort}
+    \item \hyperref[problem:find_all_duplicates]{Find All Duplicates in an Array}\index{Find All Duplicates in an Array}
+    \item \hyperref[problem:group_anagrams]{Group Anagrams}\index{Group Anagrams}
+    \item \hyperref[problem:top_k_frequent_words]{Top K Frequent Words}\index{Top K Frequent Words}
+\end{itemize}
+
+\section*{Things to Keep in Mind and Tricks}
+\begin{itemize}
+    \item \textbf{Efficient Counting:} Utilize hash maps or fixed-size arrays for counting element frequencies to optimize performance.
+    \index{Efficient Counting}
+    
+    \item \textbf{Bucket Sort Advantage:} When the range of frequencies is limited, bucket sort can provide linear time solutions.
+    \index{Bucket Sort Advantage}
+    
+    \item \textbf{Heap Utilization:} Heaps can be useful for maintaining a dynamic set of top `k` elements, especially when dealing with streams of data.
+    \index{Heap Utilization}
+    
+    \item \textbf{Edge Case Handling:} Always account for scenarios where multiple elements have the same frequency or where the array contains only one unique element.
+    \index{Edge Case Handling}
+\end{itemize}
+
+\section*{Corner and Special Cases to Test When Writing the Code}
+When implementing the `topKFrequent` function, it is crucial to test the following edge cases to ensure robustness:
+
+\begin{itemize}
+    \item \textbf{Single Element Array:} `nums = [1]`, `k = 1` should return `[1]`.
+    \index{Corner Cases}
+    
+    \item \textbf{All Elements Same:} `nums = [1,1,1,1]`, `k = 1` should return `[1]`.
+    \index{Corner Cases}
+    
+    \item \textbf{Multiple Elements with Same Frequency:} `nums = [1,1,2,2,3,3]`, `k = 2` could return `[1,2]`, `[1,3]`, or `[2,3]`.
+    \index{Corner Cases}
+    
+    \item \textbf{Large Value of K:} `nums = [1,2,3,4,5,6,7,8,9,10]`, `k = 5` should return the top 5 frequent elements, which could be any if all frequencies are equal.
+    \index{Corner Cases}
+    
+    \item \textbf{Empty Array:} `nums = []`, `k = 0` should handle gracefully, possibly returning an empty list.
+    \index{Corner Cases}
+    
+    \item \textbf{Large Input Size:} Test with a very large array to ensure that the implementation performs efficiently without exceeding memory limits.
+    \index{Corner Cases}
+    
+    \item \textbf{Negative Numbers:} `nums` containing negative integers should be handled correctly.
+    \index{Corner Cases}
+\end{itemize}
+
+\printindex

@@ -1,0 +1,137 @@
+% Filename: longest_increasing_subsequence.tex
+
+\problemsection{Longest Increasing Subsequence}
+\label{problem:Longest_Increasing_Subsequence}
+
+The **Longest Increasing Subsequence** (LIS) problem is a foundational challenge in dynamic programming and optimization. It involves identifying the longest subsequence of an array in which all elements are in strictly increasing order. This problem is significant due to its applicability in real-world scenarios, such as scheduling, data analysis, and sequence prediction.
+
+\section*{Problem Statement}
+Given an integer array \texttt{nums}, return the length of the longest strictly increasing subsequence.
+
+\textbf{Input:}
+- \texttt{nums}: An array of integers.
+
+\textbf{Output:}
+- An integer representing the length of the LIS.
+
+\textbf{Example 1:}
+\begin{verbatim}
+Input: nums = [10, 9, 2, 5, 3, 7, 101, 18]
+Output: 4
+Explanation: The LIS is [2, 3, 7, 101], and its length is 4.
+\end{verbatim}
+
+\textbf{Example 2:}
+\begin{verbatim}
+Input: nums = [0, 1, 0, 3, 2, 3]
+Output: 4
+Explanation: The LIS is [0, 1, 2, 3], and its length is 4.
+\end{verbatim}
+
+\textbf{Example 3:}
+\begin{verbatim}
+Input: nums = [7, 7, 7, 7, 7, 7, 7]
+Output: 1
+Explanation: The LIS is [7], and its length is 1.
+\end{verbatim}
+
+\section*{Algorithmic Approach}
+The problem can be approached using:
+1. A **Dynamic Programming (DP)** approach with \(O(n^2)\) complexity.
+2. An optimized approach using **Binary Search**, reducing complexity to \(O(n \log n)\).
+
+\subsection*{Dynamic Programming Approach (\(O(n^2)\))}
+\textbf{Key Idea:}
+Use a DP array \(dp[i]\), where \(dp[i]\) represents the length of the longest increasing subsequence ending at index \(i\). For each element \(nums[i]\), compare it with all previous elements \(nums[j]\) (\(j < i\)):
+\[
+dp[i] = \max(dp[i], dp[j] + 1) \text{ if } nums[j] < nums[i]
+\]
+
+\textbf{Steps:}
+1. Initialize \(dp[i] = 1\) for all \(i\), since the minimum LIS at any index is the element itself.
+2. Iterate through the array, updating \(dp[i]\) for each \(i\).
+3. The result is the maximum value in the \(dp\) array.
+
+\subsection*{Binary Search Approach (\(O(n \log n)\))}
+\textbf{Key Idea:}
+Maintain an array \(sub\), where \(sub[i]\) is the smallest possible value that can end a subsequence of length \(i+1\). For each element in \texttt{nums}, use binary search to find its position in \(sub\):
+- If the element is greater than all elements in \(sub\), append it.
+- Otherwise, replace the first element in \(sub\) that is greater than or equal to the current element.
+
+\textbf{Why This Works:}
+Although \(sub\) does not store the actual subsequences, its length at the end of processing equals the length of the LIS.
+
+\subsection*{Complexities}
+\begin{itemize}
+    \item \textbf{Dynamic Programming:} \(O(n^2)\) time, \(O(n)\) space.
+    \item \textbf{Binary Search:} \(O(n \log n)\) time, \(O(n)\) space.
+\end{itemize}
+
+\section*{Python Implementation}
+Below are implementations for both approaches.
+
+\subsection*{Dynamic Programming Approach (\(O(n^2)\))}
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def lengthOfLIS(nums):
+    n = len(nums)
+    dp = [1] * n
+    for i in range(n):
+        for j in range(i):
+            if nums[i] > nums[j]:
+                dp[i] = max(dp[i], dp[j] + 1)
+    return max(dp)
+
+# Example usage:
+nums = [10, 9, 2, 5, 3, 7, 101, 18]
+print(lengthOfLIS(nums))  # Output: 4
+\end{lstlisting}
+\end{fullwidth}
+
+\subsection*{Binary Search Approach (\(O(n \log n)\))}
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+from bisect import bisect_left
+
+def lengthOfLIS(nums):
+    sub = []
+    for num in nums:
+        pos = bisect_left(sub, num)
+        if pos == len(sub):
+            sub.append(num)
+        else:
+            sub[pos] = num
+    return len(sub)
+
+# Example usage:
+nums = [10, 9, 2, 5, 3, 7, 101, 18]
+print(lengthOfLIS(nums))  # Output: 4
+\end{lstlisting}
+\end{fullwidth}
+
+\section*{Why These Approaches?}
+The DP approach is intuitive and provides a clear understanding of the LIS structure. The binary search approach demonstrates the power of optimization in reducing time complexity.
+
+\section*{Alternative Approaches}
+\begin{itemize}
+    \item **Recursive with Memoization:** Recursively find the LIS for each element and store results to avoid redundant calculations.
+    \item **Segment Tree or Fenwick Tree:** Use advanced data structures to handle updates and queries efficiently.
+\end{itemize}
+
+\section*{Similar Problems}
+\begin{itemize}
+    \item **Longest Common Subsequence (LCS):** Finds the longest subsequence common to two sequences.
+    \item **Maximum Sum Increasing Subsequence:** Maximizes the sum instead of the length.
+    \item **Longest Decreasing Subsequence:** Similar to LIS but focuses on decreasing order.
+\end{itemize}
+
+\section*{Corner and Special Cases to Test}
+\begin{itemize}
+    \item \( \texttt{nums} = [1] \): Single element.
+    \item \( \texttt{nums} = [5, 4, 3, 2, 1] \): Strictly decreasing sequence.
+    \item \( \texttt{nums} = [1, 1, 1, 1] \): All elements are the same.
+    \item Large \( \texttt{nums} \): Ensure scalability for \( n > 10^3 \).
+\end{itemize}
+
+\section*{Conclusion}
+The Longest Increasing Subsequence problem is a cornerstone in algorithm design, offering insights into optimization and dynamic programming techniques. By mastering both the DP and binary search approaches, you gain valuable tools for solving a wide range of sequence-related challenges.

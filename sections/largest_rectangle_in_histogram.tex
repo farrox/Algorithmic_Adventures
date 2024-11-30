@@ -1,0 +1,67 @@
+% Filename: largest_rectangle_in_histogram.tex
+
+\problemsection{Largest Rectangle in Histogram}\marginpar{This problem uses a stack to find the largest rectangle in a histogram.}
+
+\textbf{Problem Description:}
+
+Given an array of integers \texttt{heights} representing the histogram's bar heights where the width of each bar is 1, return the area of the largest rectangle in the histogram.
+
+\textbf{Example 1:}
+
+\begin{itemize}
+    \item \textbf{Input:} \texttt{heights = [2,1,5,6,2,3]}
+    \item \textbf{Output:} \texttt{10}
+    \item \textbf{Explanation:} The largest rectangle has an area of 10 units, formed by the bars of heights 5 and 6.
+\end{itemize}
+
+\textbf{Example 2:}
+
+\begin{itemize}
+    \item \textbf{Input:} \texttt{heights = [2,4]}
+    \item \textbf{Output:} \texttt{4}
+\end{itemize}
+
+\textbf{Solution Overview:}
+
+Use a stack to keep track of indices of bars in the histogram. Iterate through the array:
+
+\begin{itemize}
+    \item For each bar at index \( i \):
+        \begin{itemize}
+            \item If the stack is empty or the current bar is taller than the bar at the stack's top index, push \( i \) onto the stack.
+            \item Otherwise, while the current bar is shorter than the bar at the stack's top index:
+                \begin{itemize}
+                    \item Pop the top index from the stack.
+                    \item Calculate the area with the popped bar as the smallest bar.
+                    \item Update the maximum area if necessary.
+                \end{itemize}
+            \item Repeat until the stack is empty or the current bar is taller than the bar at the stack's top index.
+        \end{itemize}
+\end{itemize}
+
+After processing all bars, pop any remaining bars from the stack and calculate areas similarly.
+
+\textbf{Code Implementation:}
+
+\begin{lstlisting}[language=Python]
+def largestRectangleArea(heights):
+    stack = []  # Stack to store indices
+    max_area = 0
+    i = 0
+    while i <= len(heights):
+        # Use 0 height for the bar beyond the last one
+        h = 0 if i == len(heights) else heights[i]
+        if not stack or h >= heights[stack[-1]]:
+            stack.append(i)
+            i += 1
+        else:
+            top = stack.pop()
+            width = i if not stack else i - stack[-1] - 1
+            area = heights[top] * width
+            max_area = max(max_area, area)
+    return max_area
+
+# Example usage:
+print(largestRectangleArea([2,1,5,6,2,3]))  # Output: 10
+print(largestRectangleArea([2,4]))          # Output: 4
+\end{lstlisting}

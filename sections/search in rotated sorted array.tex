@@ -1,0 +1,74 @@
+
+ewpage
+
+\chapter{Search in Rotated Sorted Array}
+\label{chap:Search_in_Rotated_Sorted_Array}
+The "Search in Rotated Sorted Array" problem involves finding the index of a target value within an array that has been both sorted and rotated. A challenge here is to maintain a logarithmic O(log n) search time, indicating the need for a modified binary search approach, despite the array's rotation.
+
+\section*{Problem Statement}
+
+Given an array \( nums \) that is originally sorted in ascending order and then possibly rotated, we need to find and return the index of a target value \( target \) in \( nums \). If the target value is not found within the array, we should return -1.
+
+The problem exemplifies a scenario where a sorted array like \([0,1,2,4,5,6,7]\) is rotated at a pivot unknown beforehand, resulting in an array like \([4,5,6,7,0,1,2]\). Despite the rotation, we need to ensure the search algorithm is efficient with a runtime complexity of O(log n).
+
+LeetCode Link: \href{https://leetcode.com/problems/search-in-rotated-sorted-array/}{Search in Rotated Sorted Array}
+
+\section*{Algorithmic Approach}
+
+To solve the problem, we can start by examining the array and determining how it might have been rotated. By comparing the middle element to the end of the array, we can decide which half is in proper ascending order and whether the target lies in that half. If not, we then search the other half accordingly. This approach is a subtle variation of the traditional binary search method, which is only performant on sorted arrays.
+
+\section*{Complexities}
+\begin{itemize}
+	\item \textbf{Time Complexity:} Since the algorithm still fundamentally follows a binary search pattern, the time complexity is \( O(\log n) \), where \( n \) is the number of elements in the input array.
+	\item \textbf{Space Complexity:} The algorithm operates in constant space, hence space complexity is \( O(1) \).
+\end{itemize}
+
+
+ewpage % Start Python Implementation on a new page
+\section*{Python Implementation}
+
+The following Python code implements the search function for finding the target in a rotated sorted array:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class Solution(object):
+    def search(self, nums, target):
+        left, right = 0, len(nums) - 1
+        while left <= right:
+            mid = (left + right) // 2
+            if nums[mid] == target:
+                return mid
+            
+            # Left sorted portion
+            if nums[left] <= nums[mid]:
+                if nums[left] <= target <= nums[mid]:
+                    right = mid - 1
+                else:
+                    left = mid + 1
+            # Right sorted portion
+            else:
+                if nums[mid] <= target <= nums[right]:
+                    left = mid + 1
+                else:
+                    right = mid - 1
+        return -1
+\end{lstlisting}
+
+\end{fullwidth}
+
+By maintaining two pointers, `left` and `right`, that define the search space, the algorithm effectively halves this space at every step, discarding the half that can be confidently asserted to not contain the target.
+
+\section*{Why this approach}
+This binary search approach was chosen due to its logarithmic time complexity, which aligns with the requirements of achieving \( O(\log n) \) runtime. The problem's constraint that the array is originally sorted, even though it might be rotated, allows us to perform a modified binary search and makes this approach both elegant and efficient.
+
+\section*{Alternative approaches}
+An alternative brute force approach would involve a linear search through the array to find the target, but this would not meet the logarithmic time complexity requirement. Another alternative could involve first finding the pivot point where the array is rotated and then performing a regular binary search in the appropriate subarray, but this is more complex and unnecessary.
+
+\section*{Similar problems to this one}
+Similar problems that use binary search with a twist include "Find Minimum in Rotated Sorted Array", "Search in Rotated Sorted Array II" (where elements may be duplicated), and "Find Peak Element".
+
+\section*{Things to keep in mind and tricks}
+When implementing the binary search for this problem, it's crucial to carefully handle the conditionals within the while loop to avoid off-by-one errors. Deciding when to move the `left` or `right` pointer requires a clear understanding of the sorted portions of the array after its rotation.
+
+\section*{Corner and special cases to test when writing the code}
+Special cases that are essential to test include arrays with just one element, arrays where the target is the pivot point, and arrays where the target does not exist. Additionally, one should test cases where the target is at the beginning or end of the array.

@@ -1,0 +1,110 @@
+\problemsection{Two Sum}
+\label{problem:TwoSum}
+
+The **Two Sum** problem is a classic algorithmic challenge that tests a candidate's ability to work with arrays and hash tables effectively. It focuses on finding two numbers in an array that add up to a specified target, with an emphasis on optimizing time and space complexity.
+
+\subsection*{Problem Statement}
+Given an array of integers \texttt{nums} and an integer \texttt{target}, return the indices of the two numbers such that they add up to the target. Assume that there is exactly one solution, and you may not use the same element twice.
+
+\textbf{Input:} 
+- An array \texttt{nums} of integers.
+- An integer \texttt{target}.
+
+\textbf{Output:} 
+- A list of two indices \texttt{[i, j]} such that \texttt{nums[i] + nums[j] = target}.
+
+\textbf{Example 1:}
+\begin{verbatim}
+Input: nums = [2, 7, 11, 15], target = 9
+Output: [0, 1]
+Explanation: nums[0] + nums[1] = 2 + 7 = 9
+\end{verbatim}
+
+\textbf{Example 2:}
+\begin{verbatim}
+Input: nums = [3, 2, 4], target = 6
+Output: [1, 2]
+\end{verbatim}
+
+\textbf{Example 3:}
+\begin{verbatim}
+Input: nums = [3, 3], target = 6
+Output: [0, 1]
+\end{verbatim}
+
+\subsection*{Algorithmic Approach}
+The **Two Sum** problem can be efficiently solved using a hash map to store the complement of each number as we iterate through the array.
+
+\begin{enumerate}
+    \item Initialize an empty hash map to store numbers and their indices.
+    \item Traverse the array:
+    \begin{itemize}
+        \item For each number \( \text{num} \), calculate its complement: \( \text{complement} = \text{target} - \text{num} \).
+        \item Check if the complement exists in the hash map:
+        \begin{itemize}
+            \item If yes, return the current index and the index of the complement.
+            \item Otherwise, add the current number and its index to the hash map.
+        \end{itemize}
+    \end{itemize}
+\end{enumerate}
+
+\textbf{Key Insight:} The hash map allows for constant time \( O(1) \) lookups for the complement, making the algorithm highly efficient.
+
+\subsection*{Complexities}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \( O(n) \), where \( n \) is the length of the array. Each element is processed once, and hash map operations (insert and lookup) are \( O(1) \) on average.
+    \item \textbf{Space Complexity:} \( O(n) \), for the hash map storing at most \( n \) elements.
+\end{itemize}
+
+\subsection*{Python Implementation}
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class Solution:
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        num_map = {}  # Dictionary to store numbers and their indices
+        
+        for i, num in enumerate(nums):
+            complement = target - num
+            if complement in num_map:
+                return [num_map[complement], i]
+            num_map[num] = i
+\end{lstlisting}
+\end{fullwidth}
+
+This implementation initializes an empty dictionary to store numbers and their indices. It iterates through the array, calculating the complement of each number. If the complement is found in the dictionary, the function returns the indices. Otherwise, it adds the current number and its index to the dictionary.
+
+\subsection*{Why This Approach}
+This approach is chosen for its efficiency, leveraging a hash map to achieve \( O(n) \) time complexity. The alternative brute-force method, which involves checking all pairs of numbers, has \( O(n^2) \) time complexity and is impractical for large input sizes.
+
+\subsection*{Alternative Approaches}
+\begin{itemize}
+    \item \textbf{Brute-Force:} Iterate through all pairs of numbers and check if their sum equals the target. This method has \( O(n^2) \) time complexity.
+    \item \textbf{Two-Pointer Technique:} If the array is sorted, use two pointers to find the pair. This approach has \( O(n) \) time complexity but requires sorting first, making the overall complexity \( O(n \log n) \).
+\end{itemize}
+
+\subsection*{Similar Problems to This One}
+\begin{itemize}
+    \item \textbf{3Sum:} Find all unique triplets in an array that sum to zero.
+    \item \textbf{4Sum:} Find all unique quadruplets in an array that sum to a target.
+    \item \textbf{Two Sum II:} Given a sorted array, find the indices of two numbers that add up to a target.
+    \item \textbf{Subarray Sum Equals K:} Find the number of subarrays that sum to \( k \).
+\end{itemize}
+
+\subsection*{Things to Keep in Mind and Tricks}
+\begin{itemize}
+    \item Ensure that the problem constraints allow for the modification of the array or the use of additional space.
+    \item Handle edge cases such as arrays with duplicate numbers or very small input sizes.
+    \item Use a hash map to optimize time complexity when working with unsorted arrays.
+    \item For sorted arrays, consider the two-pointer approach if additional space is restricted.
+\end{itemize}
+
+\subsection*{Corner and Special Cases to Test When Writing the Code}
+\begin{itemize}
+    \item \textbf{Duplicate Numbers:} Ensure the algorithm correctly identifies pairs involving duplicate values, e.g., \( [3, 3] \) with target \( 6 \).
+    \item \textbf{Single Element Array:} Test cases with less than two elements, e.g., \( [1] \) or an empty array.
+    \item \textbf{No Valid Pairs:} Arrays where no two numbers add up to the target, e.g., \( [1, 2, 3] \) with target \( 10 \).
+    \item \textbf{Negative Numbers:} Ensure the algorithm works with arrays containing negative values.
+\end{itemize}
+
+\subsection*{Conclusion}
+The **Two Sum** problem is a cornerstone question in algorithm design, providing a foundation for mastering hash maps and efficient array traversal techniques. By understanding and implementing the hash map-based approach, you gain insights into optimizing time complexity and handling edge cases effectively. Mastering this problem prepares you to tackle more advanced variations and similar array challenges with confidence.

@@ -1,0 +1,370 @@
+% Filename: sliding_window_technique.tex
+
+\section{Sliding Window Technique}
+
+\subsection*{Introduction to Sliding Window}
+
+The sliding window technique is a powerful method used to solve various subarray and substring problems\sidenote{Sliding window method}. This approach involves maintaining a subset of items within a given range or "window" and moving this window across the data structure to achieve the desired result. The sliding window can be of fixed or variable length depending on the problem requirements.
+
+\subsection*{Historical Context of Sliding Window Technique}
+
+The concept of the sliding window has roots in both computer science and signal processing\sidenote{Historical context}. In signal processing, sliding windows are used for smoothing data and calculating moving averages, which are crucial for analyzing time-series data. In computer science, the sliding window technique gained prominence for its efficiency in solving problems related to strings and arrays, particularly in scenarios where maintaining a dynamic subset of data is essential.
+
+\subsection*{How the Sliding Window Technique Works}
+
+In a sliding window, two pointers are used to represent the boundaries of the window\sidenote{Two pointers}. Typically, both pointers start at the beginning of the data structure. The window is expanded or contracted by moving these pointers to explore different parts of the data.
+
+The key idea is that the two pointers move in the same direction and never overtake each other\sidenote{Pointers move in same direction}. This ensures that each value is only visited at most twice, resulting in a time complexity of \(O(n)\)\sidenote{Time complexity is \(O(n)\)}.
+
+\begin{itemize}
+    \item \textbf{Fixed-length Window:} In problems where the window size is fixed, one pointer advances while the other remains static until the window is fully formed, then both pointers move together.
+    \item \textbf{Variable-length Window:} For problems where the window size can change, both pointers move independently to expand or contract the window based on specific conditions.
+\end{itemize}
+
+% Uncomment the following block if the image is available
+% \begin{figure}[h]
+%     \centering
+%     \includegraphics[width=0.8\textwidth]{sliding_window_diagram.png}
+%     \caption{Illustration of the Sliding Window Technique}
+%     \label{fig:sliding_window}
+% \end{figure}
+
+% If the figure is not available, consider removing the reference or ensuring the figure is included.
+% For demonstration purposes, we'll comment out the reference.
+% \textbf{Figure \ref{fig:sliding_window}} illustrates how a sliding window moves across an array, adjusting its size based on the problem's constraints.
+
+\subsection*{Applications of Sliding Window Technique}
+
+The sliding window technique is versatile and can be applied to a variety of problems\sidenote{Versatile technique}. Here are a few common applications:
+
+\problemsection{Maximum Sum Subarray of Size \(k\)}
+
+\paragraph*{Problem Statement}
+
+Given an array of integers \texttt{arr} and a number \(k\), find the maximum sum of any contiguous subarray of length \(k\).
+
+\textbf{Input:} An array \texttt{arr} of integers and an integer \(k\).
+
+\textbf{Output:} An integer representing the maximum sum of a contiguous subarray of size \(k\).
+
+\textbf{Example:}
+\begin{verbatim}
+Input: arr = [2, 1, 5, 1, 3, 2], k = 3
+Output: 9
+Explanation: Subarrays of size 3 are [2,1,5], [1,5,1], [5,1,3], [1,3,2]. \\
+The maximum sum is 9 from [2,1,5].
+\end{verbatim}
+
+\paragraph*{Algorithmic Approach}
+
+The sliding window technique can be effectively applied to solve the "Maximum Sum Subarray of Size \(k\)" problem in linear time\sidenote{Linear time complexity}. Here's how the approach works:
+
+\begin{enumerate}
+    \item \textbf{Initialize the Window:}
+    \begin{itemize}
+        \item Calculate the sum of the first \(k\) elements to form the initial window\sidenote{Initial window sum}.
+        \item Store this sum as the current maximum sum\sidenote{Current maximum}.
+    \end{itemize}
+    
+    \item \textbf{Slide the Window:}
+    \begin{itemize}
+        \item Iterate through the array starting from the \(k^{th}\) element.
+        \item For each new element, add it to the current window sum and subtract the element that is no longer in the window\sidenote{Update window sum}.
+        \item Compare the updated window sum with the current maximum sum and update the maximum if necessary.
+    \end{itemize}
+    
+    \item \textbf{Result:}
+    \begin{itemize}
+        \item After traversing the entire array, the current maximum sum will be the answer\sidenote{Final result}.
+    \end{itemize}
+\end{enumerate}
+
+This method ensures that each element is visited only once after the initial window setup, maintaining an overall time complexity of \(O(n)\).
+
+\paragraph*{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(n)\)\sidenote{Linear time}
+    \item \textbf{Space Complexity:} \(O(1)\)\sidenote{Constant space}
+\end{itemize}
+
+\paragraph*{Python Implementation}
+
+Below is the Python code to solve the "Maximum Sum Subarray of Size \(k\)" problem using the sliding window technique:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def max_sum_subarray(arr, k):
+    """
+    Finds the maximum sum of any contiguous subarray of size k.
+    
+    Parameters:
+    arr (List[int]): The input array of integers.
+    k (int): The size of the subarray.
+    
+    Returns:
+    int: The maximum sum of a contiguous subarray of size k.
+    """
+    n = len(arr)
+    if n < k:
+        return "Invalid"  # Handle cases where k is larger than array size
+    
+    # Calculate the sum of the first window
+    window_sum = sum(arr[:k])
+    max_sum = window_sum
+
+    # Slide the window over the array
+    for i in range(k, n):
+        window_sum += arr[i] - arr[i - k]  # Add new element and remove the first element of the previous window
+        max_sum = max(max_sum, window_sum)  # Update max_sum if current window_sum is greater
+    
+    return max_sum
+
+# Example usage:
+arr = [2, 1, 5, 1, 3, 2]
+k = 3
+print(max_sum_subarray(arr, k))  # Output: 9
+\end{lstlisting}
+\end{fullwidth}
+
+\paragraph*{Example Usage and Test Cases}
+
+Here are some test cases to test the function:
+
+\begin{lstlisting}[language=Python]
+# Test case 1: General case
+arr = [2, 1, 5, 1, 3, 2]
+k = 3
+print(max_sum_subarray(arr, k))  # Output: 9
+
+# Test case 2: All elements are the same
+arr = [1, 1, 1, 1, 1]
+k = 2
+print(max_sum_subarray(arr, k))  # Output: 2
+
+# Test case 3: k equals array size
+arr = [5, 2, 3]
+k = 3
+print(max_sum_subarray(arr, k))  # Output: 10
+
+# Test case 4: k is larger than array size
+arr = [1, 2]
+k = 3
+print(max_sum_subarray(arr, k))  # Output: "Invalid"
+
+# Test case 5: Array with negative numbers
+arr = [-1, -2, -3, -4]
+k = 2
+print(max_sum_subarray(arr, k))  # Output: -3
+\end{lstlisting}
+
+\paragraph*{Why This Approach}
+
+This sliding window approach is chosen because it optimizes both time and space complexities while maintaining simplicity and efficiency\sidenote{Optimal approach}. By calculating the sum of the initial window and then updating it as the window slides, we avoid redundant computations that a brute-force approach would entail. This ensures that the algorithm runs in linear time, making it highly suitable for large datasets. Additionally, the constant space usage means that the memory footprint remains minimal, further enhancing performance\sidenote{Minimal memory footprint}.
+
+\problemsection{Longest Substring with At Most \(k\) Distinct Characters}
+
+\paragraph*{Problem Statement}
+
+A more complex problem is finding the length of the longest substring with at most \(k\) distinct characters. Given a string \(s\) and an integer \(k\), the task is to determine the longest substring that contains at most \(k\) distinct characters.
+
+\textbf{Input:} A string \(s\) and an integer \(k\).
+
+\textbf{Output:} An integer representing the length of the longest substring with at most \(k\) distinct characters.
+
+\textbf{Example:}
+\begin{verbatim}
+Input: s = "eceba", k = 2
+Output: 3
+Explanation: 
+
+The longest substring with at most 2 distinct characters is "ece".
+\end{verbatim}
+
+\paragraph*{Algorithmic Approach}
+
+The sliding window technique can be utilized to efficiently solve the "Longest Substring with At Most \(k\) Distinct Characters" problem in linear time\sidenote{Linear time complexity}. Here's the step-by-step approach:
+
+\begin{enumerate}
+    \item \textbf{Initialize Variables:}
+    \begin{itemize}
+        \item Use two pointers, \texttt{left} and \texttt{right}, to define the sliding window\sidenote{Two pointers}.
+        \item Use a dictionary \texttt{char\_count} to store the frequency of characters within the window\sidenote{Character frequency tracking}.
+        \item Initialize \texttt{max\_length} to keep track of the longest valid substring found.
+    \end{itemize}
+    
+    \item \textbf{Expand the Window:}
+    \begin{itemize}
+        \item Iterate through the string with the \texttt{right} pointer, adding each character to \texttt{char\_count} and updating its frequency.
+    \end{itemize}
+    
+    \item \textbf{Contract the Window:}
+    \begin{itemize}
+        \item If the number of distinct characters in \texttt{char\_count} exceeds \(k\), move the \texttt{left} pointer to the right, decrementing the frequency of the character being removed\sidenote{Contract the window}.
+        \item If a character's frequency drops to zero, remove it from \texttt{char\_count}.
+        \item Continue contracting until the number of distinct characters is at most \(k\).
+    \end{itemize}
+    
+    \item \textbf{Update Maximum Length:}
+    \begin{itemize}
+        \item After each contraction, update \texttt{max\_length} with the size of the current window if it is larger than the previously recorded maximum.
+    \end{itemize}
+    
+    \item \textbf{Result:}
+    \begin{itemize}
+        \item After iterating through the string, \texttt{max\_length} will hold the length of the longest valid substring.
+    \end{itemize}
+\end{enumerate}
+
+\paragraph*{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(n)\)\sidenote{Linear time}
+    \item \textbf{Space Complexity:} \(O(k)\)\sidenote{Space proportional to k}
+\end{itemize}
+
+\paragraph*{Python Implementation}
+
+Below is the Python code to solve the "Longest Substring with At Most \(k\) Distinct Characters" problem using the sliding window technique:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def length_of_longest_substring_k_distinct(s, k):
+    """
+    Finds the length of the longest substring with at most k distinct characters.
+    
+    Parameters:
+    s (str): The input string.
+    k (int): The maximum number of distinct characters allowed in the substring.
+    
+    Returns:
+    int: The length of the longest valid substring.
+    """
+    from collections import defaultdict
+    n = len(s)
+    left = 0
+    max_length = 0
+    char_count = defaultdict(int)
+    
+    for right in range(n):
+        char_count[s[right]] += 1
+        
+        # Ensure there are at most k distinct characters in the window
+        while len(char_count) > k:
+            char_count[s[left]] -= 1
+            if char_count[s[left]] == 0:
+                del char_count[s[left]]
+            left += 1
+            
+        max_length = max(max_length, right - left + 1)
+    
+    return max_length
+
+# Example usage:
+s = "eceba"
+k = 2
+print(length_of_longest_substring_k_distinct(s, k))  # Output: 3
+\end{lstlisting}
+\end{fullwidth}
+
+\paragraph*{Example Usage and Test Cases}
+
+Here are some test cases to test the function:
+
+\begin{lstlisting}[language=Python]
+# Test case 1: General case
+s = "eceba"
+k = 2
+print(length_of_longest_substring_k_distinct(s, k))  # Output: 3
+
+# Test case 2: All characters are the same
+s = "aaaaa"
+k = 1
+print(length_of_longest_substring_k_distinct(s, k))  # Output: 5
+
+# Test case 3: k is zero
+s = "abc"
+k = 0
+print(length_of_longest_substring_k_distinct(s, k))  # Output: 0
+
+# Test case 4: Empty string
+s = ""
+k = 3
+print(length_of_longest_substring_k_distinct(s, k))  # Output: 0
+
+# Test case 5: k greater than number of distinct characters
+s = "abc"
+k = 5
+print(length_of_longest_substring_k_distinct(s, k))  # Output: 3
+\end{lstlisting}
+
+\paragraph*{Why This Approach}
+
+This sliding window approach is optimal for this problem as it allows us to efficiently track and update the current substring without repeating characters. By maintaining a window defined by two pointers and a dictionary to store character counts, we ensure that each character is processed only once, resulting in a linear time complexity.
+
+\paragraph*{Complexity Analysis}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(n)\)
+    \item \textbf{Space Complexity:} \(O(min(m, n))\), where \(m\) is the size of the character set and \(n\) is the length of the string
+\end{itemize}
+
+\paragraph*{Similar Problems}
+
+Other problems that can be efficiently solved using the sliding window technique include:
+
+\begin{itemize}
+    \item \textbf{Minimum Window Substring}: Finding the smallest substring containing all characters of another string.
+    \item \textbf{Longest Repeating Character Replacement}: Finding the longest substring with at most \(k\) character replacements.
+    \item \textbf{Sliding Window Maximum}: Finding the maximum value in each sliding window of size \(k\).
+\end{itemize}
+
+\paragraph*{Things to Keep in Mind and Tricks}
+
+\begin{itemize}
+    \item \textbf{Edge Cases}: Consider empty strings, strings with all identical characters, and strings where all characters are unique.
+    \item \textbf{Character Frequency Tracking}: Use hash maps or arrays (for limited character sets) to efficiently track frequencies.
+    \item \textbf{Window Adjustment}: Properly move the `left` pointer to ensure no duplicates within the window.
+    \item \textbf{Optimizing Maximum Length Tracking}: Continuously update the maximum length as the window expands.
+\end{itemize}
+
+\paragraph*{Exercises}
+
+\begin{enumerate}
+    \item \textbf{Minimum Window Substring}: Given two strings \(s\) and \(t\), find the minimum window in \(s\) which will contain all the characters in \(t\).
+    
+    \item \textbf{Longest Subarray with Given Sum}: Given an array of integers and a sum, find the length of the longest contiguous subarray that sums to the given value.
+    
+    \item \textbf{Sliding Window Maximum}: Given an array of integers and a window size \(k\), find the maximum value in each sliding window.
+    
+    \item \textbf{Longest Repeating Character Replacement}: Given a string and an integer \(k\), find the length of the longest substring containing all repeating letters you can get after performing at most \(k\) character replacements.
+    
+    \item \textbf{Subarray Sum Equals K}: Given an array of integers and an integer \(k\), find the total number of continuous subarrays whose sum equals to \(k\).
+\end{enumerate}
+
+\paragraph*{Questions for Reflection}
+
+\begin{itemize}
+    \item How does the sliding window technique differ from the two pointers technique, and when should each be used?
+    \item What modifications would you make to handle cases where \(t\) contains special or non-alphanumeric characters?
+    \item How can you optimize the sliding window approach for cases with very large input sizes?
+    \item Can the sliding window technique be combined with other techniques like hashing or dynamic programming to solve more complex problems?
+\end{itemize}
+
+\paragraph*{References}
+
+\begin{itemize}
+    \item LeetCode Problem: \href{https://leetcode.com/problems/sliding-window-maximum/}{Sliding Window Maximum}
+    \item LeetCode Problem: \href{https://leetcode.com/problems/minimum-window-substring/}{Minimum Window Substring}
+    \item GeeksforGeeks Article: \href{https://www.geeksforgeeks.org/sliding-window-technique/}{Sliding Window Technique}
+    \item HackerRank Problem: \href{https://www.hackerrank.com/challenges/maximum-subarray/problem}{Maximum Subarray Problem}
+    \item Coursera Course: \href{https://www.coursera.org/learn/algorithms-divide-conquer}{Algorithms: Divide and Conquer}
+\end{itemize}
+
+\subsection*{Conclusion}
+
+The sliding window technique is a fundamental tool in the programmer's toolkit\sidenote{Fundamental tool}. By efficiently managing a subset of data within a "window" and moving this window across the dataset, many complex problems can be solved in linear time. Understanding and mastering this technique will greatly enhance your ability to tackle array and string problems effectively\sidenote{Mastering the technique}.
+
+Throughout this section, we explored the principles of the sliding window technique, detailed its application in solving specific problems, and provided Python implementations to solidify understanding. By practicing these concepts and applying them to various scenarios, you can harness the full potential of the sliding window technique and improve the efficiency of your algorithms\sidenote{Enhancing algorithmic efficiency}.
+
+As you delve deeper into algorithmic challenges, remember that the sliding window technique is versatile and can be adapted to a wide range of problems. Mastering this technique will not only aid in solving array and string problems but also pave the way for tackling more advanced algorithmic concepts in your programming journey\sidenote{Versatile adaptation}.

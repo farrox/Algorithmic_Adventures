@@ -1,0 +1,151 @@
+% Filename: maximum_depth_of_binary_tree.tex
+
+\problemsection{Maximum Depth of Binary Tree}\marginpar{Determine the maximum depth of a binary tree using recursion or iteration.}
+
+\textbf{Problem Statement}
+
+This problem involves finding the maximum depth (or height) of a binary tree. The maximum depth is the number of nodes along the longest path from the root node down to the farthest leaf node.
+
+\textbf{Algorithmic Approach}
+
+To solve this problem, you can use either a recursive approach or an iterative approach using level-order traversal. Below, both methods are described:
+
+\begin{enumerate}
+    \item \textbf{Recursive Approach (Depth-First Search)}:
+    \begin{itemize}
+        \item \textbf{Base Case}: If the current node is \texttt{NULL}, return 0.
+        \item \textbf{Recursive Case}: 
+        \begin{enumerate}
+            \item Recursively find the maximum depth of the left subtree.
+            \item Recursively find the maximum depth of the right subtree.
+            \item The maximum depth at the current node is the greater of the two depths plus one (for the current node).
+        \end{enumerate}
+    \end{itemize}
+    
+    \item \textbf{Iterative Approach (Breadth-First Search)}:
+    \begin{itemize}
+        \item Use a queue to perform level-order traversal.
+        \item Initialize the depth to 0.
+        \item While the queue is not empty:
+        \begin{enumerate}
+            \item Increment the depth.
+            \item For each node at the current level, enqueue its non-\texttt{NULL} left and right children.
+        \end{enumerate}
+    \end{itemize}
+\end{enumerate}
+
+\textbf{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity}: The time complexity is \(O(n)\), where \(n\) is the number of nodes in the tree. Each node is visited exactly once.
+    \item \textbf{Space Complexity}: 
+    \begin{itemize}
+        \item \textbf{Recursive Approach}: \(O(h)\), where \(h\) is the height of the tree, due to the call stack.
+        \item \textbf{Iterative Approach}: \(O(w)\), where \(w\) is the maximum width of the tree, since at most \(w\) nodes are stored in the queue at any time.
+    \end{itemize}
+\end{itemize}
+
+\textbf{Python Implementation}\marginpar{Implementing both recursive and iterative solutions for flexibility.}
+
+\begin{lstlisting}[language=Python, xleftmargin=0.02\textwidth, xrightmargin=0.02\textwidth]
+# Definition for a binary tree node.
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+# Recursive Approach
+def maxDepthRecursive(root: TreeNode) -> int:
+    if not root:
+        return 0
+    else:
+        left_depth = maxDepthRecursive(root.left)
+        right_depth = maxDepthRecursive(root.right)
+        return max(left_depth, right_depth) + 1
+
+# Iterative Approach
+from collections import deque
+
+def maxDepthIterative(root: TreeNode) -> int:
+    if not root:
+        return 0
+    queue = deque([root])
+    depth = 0
+    while queue:
+        depth += 1
+        level_length = len(queue)
+        for _ in range(level_length):
+            node = queue.popleft()
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+    return depth
+
+# Example usage:
+# Constructing the following binary tree
+#       3
+#      / \
+#     9  20
+#        / \
+#       15  7
+root = TreeNode(3)
+root.left = TreeNode(9)
+root.right = TreeNode(20, TreeNode(15), TreeNode(7))
+
+print(maxDepthRecursive(root))  # Output: 3
+print(maxDepthIterative(root))  # Output: 3
+\end{lstlisting}
+
+\textbf{Explanation}
+
+The function \texttt{maxDepth} (both recursive and iterative versions) calculates the maximum depth of a binary tree by exploring all nodes. 
+
+\begin{itemize}
+    \item \textbf{Recursive Approach}: 
+    \begin{itemize}
+        \item The function calls itself on the left and right children of the current node.
+        \item It computes the depth of each subtree and returns the greater of the two, adding one to account for the current node.
+    \end{itemize}
+    
+    \item \textbf{Iterative Approach}:
+    \begin{itemize}
+        \item Utilizes a queue to perform a level-order traversal.
+        \item For each level, it increments the depth and enqueues the children of all nodes at that level.
+    \end{itemize}
+\end{itemize}
+
+\textbf{Why This Approach}
+
+\begin{itemize}
+    \item \textbf{Recursive Approach}: Mirrors the natural recursive structure of trees, making the implementation straightforward and intuitive.
+    \item \textbf{Iterative Approach}: Useful for environments with limited stack space or when avoiding recursion. It also provides a clear separation of tree levels.
+\end{itemize}
+
+\textbf{Alternative Approaches}
+
+An alternative method involves using Depth-First Search (DFS) iteratively with a stack instead of recursion. While similar in purpose to the recursive approach, this method can be more memory-efficient in certain scenarios and avoids potential stack overflow issues in deep trees.
+
+\textbf{Similar Problems to This One}
+
+Similar tree-related problems include finding the minimum depth of a binary tree (\textit{Minimum Depth of Binary Tree}), determining if a tree is balanced (\textit{Balanced Binary Tree}), and calculating the diameter of a binary tree (\textit{Diameter of Binary Tree}).
+
+\textbf{Things to Keep in Mind and Tricks}
+
+\begin{itemize}
+    \item \textbf{Base Cases Are Crucial}: Always handle cases where the tree or subtree is empty to prevent unnecessary computations and potential errors.
+    \item \textbf{Choosing the Right Traversal}: Decide between depth-first and breadth-first approaches based on the specific requirements and constraints of the problem.
+    \item \textbf{Space Optimization}: Be mindful of the space complexity, especially when dealing with very deep or very wide trees.
+    \item \textbf{Understanding Tree Properties}: A solid grasp of tree properties and traversal methods enhances problem-solving efficiency.
+\end{itemize}
+
+\textbf{Corner and Special Cases to Test When Writing the Code}
+
+\begin{itemize}
+    \item \textbf{Empty Tree}: A tree with no nodes should return a depth of 0.
+    \item \textbf{Single Node}: A tree with only one node should return a depth of 1.
+    \item \textbf{Unbalanced Tree}: Trees that are skewed to the left or right should correctly return the depth corresponding to the longest path.
+    \item \textbf{Full Binary Tree}: Trees where every node has two children should return a depth that reflects the number of levels.
+    \item \textbf{Large Tree}: Testing with a large number of nodes ensures that the implementation handles deep recursion or large queues efficiently.
+\end{itemize}

@@ -1,0 +1,126 @@
+\section{Index as a Hash Key}
+\label{sec:IndexAsHashKey}
+
+In scenarios where space complexity is a constraint, such as when the interviewer explicitly asks for \( O(1) \) additional space, it is often possible to use the input array itself as a hash table. By manipulating the values at specific indices based on the array's structure, we can encode additional information without allocating extra memory\sidenote{This approach leverages the input array's indices and values, effectively treating the array as both data and metadata}.
+
+\subsection*{When to Use Index as a Hash Key}
+This technique is particularly effective when:
+\begin{itemize}
+    \item The array contains values within a known range, such as 1 to \( N \), where \( N \) is the length of the array.
+    \item Modifying the array values directly does not violate the problem's constraints.
+    \item Additional space is limited to \( O(1) \), and hash maps or auxiliary arrays cannot be used.
+    \item The goal is to identify properties like presence, frequency, or missing numbers within the array\sidenote{This method is commonly employed in problems involving unique elements or specific numerical ranges}.
+\end{itemize}
+
+\subsection*{Common Applications of Index-as-Hash Techniques}
+
+\begin{enumerate}
+    \item \textbf{Presence Indication:} Negating the value at an index to indicate the presence of a number.
+        \begin{itemize}
+            \item Example: For an array with values 1 to \( N \), negate the value at index \( \text{num} - 1 \) when \( \text{num} \) is encountered\sidenote{Negating a value marks the corresponding index as "visited" or "present"}.
+        \end{itemize}
+
+    \item \textbf{Counting or Tracking:} Incrementing values at indices to track frequency.
+        \begin{itemize}
+            \item Example: Use modular arithmetic to encode additional counts into the array values.
+        \end{itemize}
+
+    \item \textbf{Identifying Missing or Duplicate Values:} Analyzing the final state of the array to determine missing or duplicate elements.
+        \begin{itemize}
+            \item Example: If the value at index \( i \) is positive, the number \( i+1 \) is missing\sidenote{Positive values indicate indices that were not marked during traversal}.
+        \end{itemize}
+\end{enumerate}
+
+\problemsection{First Missing Positive}
+\label{problem:first_missing_positive}
+The **First Missing Positive** problem exemplifies the use of the input array as a hash table.
+
+\textbf{Problem Statement:}  
+Given an unsorted integer array \( \text{nums} \), find the smallest missing positive integer.
+
+\textbf{Input:} \( \text{nums} = [3, 4, -1, 1] \)  
+\textbf{Output:} \( 2 \)  
+\textbf{Explanation:} The numbers 1 and 3 are present, but 2 is missing.
+
+\subsection*{Algorithmic Approach}
+To solve this problem in \( O(n) \) time and \( O(1) \) additional space, we can use the following approach:
+
+\begin{enumerate}
+    \item \textbf{Normalize the Array:} Replace any negative numbers and zeros with a placeholder value outside the range (e.g., \( N+1 \)), where \( N \) is the length of the array\sidenote{This ensures that only relevant numbers are processed in the subsequent steps}.
+    
+    \item \textbf{Mark Indices:} For each number \( \text{num} \) in the array:
+        \begin{itemize}
+            \item Calculate the target index \( \text{abs}(\text{num}) - 1 \).
+            \item Negate the value at the target index to mark it as "present" (if the value is within the range 1 to \( N \))\sidenote{Using the absolute value ensures that previously marked indices are not skipped}.
+        \end{itemize}
+    
+    \item \textbf{Identify the Missing Positive:} Traverse the array again. The first index \( i \) with a positive value indicates that the number \( i+1 \) is missing\sidenote{Positive values at indices correspond to unmarked indices, revealing missing numbers}.
+\end{enumerate}
+
+\subsection*{Python Implementation}
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def firstMissingPositive(nums: List[int]) -> int:
+    """
+    Finds the smallest missing positive integer in an unsorted array.
+
+    Parameters:
+    nums (List[int]): Input list of integers.
+
+    Returns:
+    int: The smallest missing positive integer.
+    """
+    n = len(nums)
+    
+    # Step 1: Normalize the array
+    for i in range(n):
+        if nums[i] <= 0 or nums[i] > n:
+            nums[i] = n + 1
+    
+    # Step 2: Mark indices
+    for num in nums:
+        if 1 <= abs(num) <= n:
+            idx = abs(num) - 1
+            nums[idx] = -abs(nums[idx])
+    
+    # Step 3: Identify the missing positive
+    for i in range(n):
+        if nums[i] > 0:
+            return i + 1
+    
+    # If all numbers from 1 to n are present
+    return n + 1
+
+# Example usage:
+nums = [3, 4, -1, 1]
+print(firstMissingPositive(nums))  # Output: 2
+\end{lstlisting}
+\end{fullwidth}
+
+\subsection*{Why This Approach}
+This method achieves \( O(n) \) time complexity by traversing the array multiple times and avoids additional memory allocation by reusing the input array. By marking indices through negation, we efficiently track the presence of elements within the range \( 1 \) to \( N \) without requiring auxiliary data structures.
+
+\subsection*{Complexity Analysis}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \( O(n) \)\sidenote{The algorithm processes each element a constant number of times}.
+    \item \textbf{Space Complexity:} \( O(1) \)\sidenote{No additional data structures are used; the input array itself is modified in-place}.
+\end{itemize}
+
+\subsection*{Similar Problems}
+Other problems that can be solved using the index-as-hash technique include:
+\begin{itemize}
+    \item \textbf{Find All Numbers Disappeared in an Array:} Identify all missing numbers in the range \( 1 \) to \( N \).
+    \item \textbf{Find the Duplicate Number:} Locate the duplicate element in an array of \( N+1 \) integers where each integer is in the range \( 1 \) to \( N \).
+    \item \textbf{Cyclic Sort Problems:} Use the index-as-hash approach to sort an array of consecutive integers in \( O(n) \) time.
+\end{itemize}
+
+\subsection*{Things to Keep in Mind}
+\begin{itemize}
+    \item Ensure that the array values remain within the range \( 1 \) to \( N \) for the technique to work correctly\sidenote{Handle out-of-range values by replacing them with placeholders}.
+    \item Use absolute values when marking indices to avoid conflicts caused by previously negated values.
+    \item Avoid using this technique if the array values cannot be modified, as this violates the problem constraints.
+    \item Always check edge cases, such as empty arrays or arrays containing only negative numbers.
+\end{itemize}
+
+\subsection*{Conclusion}
+Using the index of an array as a hash key is an elegant space-efficient technique that leverages the array's structure to store metadata alongside the data itself. This approach is particularly effective in problems involving presence, frequency, or range queries. By mastering this technique, you can solve a wide range of problems with optimal time and space complexity, making it a valuable addition to your algorithmic toolkit.

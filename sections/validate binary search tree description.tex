@@ -1,0 +1,72 @@
+
+ewpage
+\chapter{Validate Binary Search Tree}
+\label{chap:validate_binary_search_tree}
+
+\section*{Problem Statement}
+
+Given a binary tree, the task is to determine if it is a valid binary search tree (BST). A binary search tree is a rooted binary tree, where each node contains a key (value), and satisfies the following properties:
+
+\begin{enumerate}
+    \item The left subtree of a node contains only nodes with keys less than the node's key.
+    \item The right subtree of a node contains only nodes with keys greater than the node's key.
+    \item Both the left and right subtrees must also be binary search trees.
+\end{enumerate}
+
+LeetCode link: \href{https://leetcode.com/problems/validate-binary-search-tree/}{Validate Binary Search Tree}
+
+\section*{Algorithmic Approach}
+
+To determine if a binary tree is a valid BST, an in-depth traversal of the tree is performed. During this traversal, we maintain the range (min, max) for each node's value based on the properties of BST. For the root node, the range is initially infinite (-$\infty$, $\infty$). As we traverse to the left, the maximum of the range becomes the value of the current node, and as we traverse to the right, the minimum becomes the value of the current node. If at any node, the value does not fit within the range, the tree is not a valid BST.
+
+\section*{Complexities}
+
+The time complexity of this algorithm is O(n), where n is the number of nodes in the binary tree. This is because each node is visited exactly once. The space complexity is O(h), where h is the height of the tree, due to the recursion stack during the depth-first traversal.
+
+
+ewpage
+
+\section*{Python Implementation}
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def isValidBST(root):
+    def validate(node, low=float('-inf'), high=float('inf')):
+        # An empty tree is a valid BST
+        if not node:
+            return True
+        # The current node's value must be between low and high.
+        if node.val <= low or node.val >= high:
+            return False
+        # Recursively check the subtrees while narrowing the range for each node
+        return (validate(node.left, low, node.val) and
+                validate(node.right, node.val, high))
+                
+    return validate(root)
+\end{lstlisting}
+
+\end{fullwidth}
+
+\section*{Explanation}
+This algorithm uses recursion to traverse the tree in a depth-first manner. The function `validate` is a helper function that takes three parameters: the current `node`, a `low` range, and a `high` range. If the node is null, we return `True` as an empty tree is a BST by definition. Then, we check if the current node's value is between `low` and `high`. If it is not, the tree cannot be a BST and we return `False`. If the current node's value is within the range, we recursively call the validate function for the left and right subtrees, while updating the range to `low` and `node.val` for the left subtree, and `node.val` and `high` for the right subtree, respectively. Lastly, the `isValidBST` function initiates the validation process from the root with the full possible range.
+
+\section*{Why this approach}
+The approach of validating each node in the context of its allowable range ensures that we catch any violations of the BST properties as soon as they occur. This makes for a very efficient solution that doesn't require any additional data structures, such as arrays.
+
+\section*{Alternative approaches}
+An alternative approach would be to perform an in-order traversal and store the values in an array. The tree is a valid BST if the resulting array is sorted in ascending order. However, this requires O(n) additional space and can be less efficient.
+
+\section*{Similar problems to this one}
+Problems like \textit{Find Mode in Binary Search Tree}, \textit{Kth Smallest Element in a BST}, or \textit{Binary Tree Inorder Traversal} all revolve around the traversal of a BST and can be solved using similar techniques.
+
+\section*{Things to keep in mind and tricks}
+It is important to consider the upper and lower limits for the values in the nodes, especially with languages that have larger than 32-bit integer ranges. Avoid using hardcoded constants for comparison when possible.
+
+\section*{Corner and special cases to test when writing the code}
+Include test cases with just one node, complete trees, and trees that are not balanced. Also, consider cases where the tree value might exceed a 32-bit signed integer range if relevant to the language of choice.

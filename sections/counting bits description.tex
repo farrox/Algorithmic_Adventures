@@ -1,0 +1,57 @@
+
+ewpage
+\chapter{Counting Bits}
+\label{chap:counting_bits}
+
+The problem is to find the number of 1's in the binary representation of every number within a given range. The result should be an array containing the counts for all numbers from 0 to the input number.
+
+\section*{Problem Statement}
+
+Leet code link: \href{https://leetcode.com/problems/counting-bits/}{Counting Bits Problem}
+
+\section*{Algorithmic Approach}
+
+We will leverage the patterns of the binary representation to find the number of 1 bits for each number. This property can be described as follows: For any number \( x \), the number of 1 bits in \( x \) is one more than the number of 1 bits in \( x \& (x-1) \), which removes the lowest-set bit from \( x \).
+
+
+An efficient approach is to use the previously calculated results to calculate the new result in a dynamic programming fashion. Given a number, if we right shift it by one bit and then add the last bit, it will give us the count of 1's in the number. 
+
+\section*{Complexities}
+\begin{itemize}
+	\item Time Complexity: \(O(n)\) - where \(n\) is the input number. We traverse once from 0 to \(n\) and use previously computed values.
+	\item Space Complexity: \(O(n)\) - to store the result for each number from 0 to \(n\).
+\end{itemize}
+
+
+ewpage 
+\section*{Python Implementation}
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def countBits(num):
+    count_bits = [0] * (num + 1)
+    for i in range(1, num + 1):
+        count_bits[i] = count_bits[i >> 1] + (i & 1)
+    return count_bits
+\end{lstlisting}
+
+\end{fullwidth}
+
+\section*{Explanation}
+In the code, we initialize an array called \texttt{count\_bits} to store the counts of 1's for each number. We start a loop from 1 to \texttt{num} (since the count for 0 is always 0). Inside the loop, we right shift the current number by 1 to get the count of the previous number and add the last bit of the current number.
+
+
+\section*{Why this approach}
+This approach makes use of dynamic programming principles to build up the solution as it progresses, avoiding redundant work and reaching an optimal time complexity. It utilizes the relation between bit patterns of consecutive numbers and previously calculated results.
+
+\section*{Alternative approaches}
+A brute-force approach might be to check each bit of every number in the range [0, num], but this would result in a worse time complexity and wouldn't fulfill the O(n) requirement.
+
+\section*{Similar problems to this one}
+Problems related to bit manipulation, such as finding a single number in a list where every other number appears twice, can be seen as similar since both involve understanding and manipulating binary representations.
+
+\section*{Things to keep in mind and tricks}
+Remember that right shifting a number by one bit is equivalent to dividing it by two. The least significant bit can be obtained by bitwise AND operation with 1.
+
+\section*{Corner and special cases to test when writing the code}
+Ensure to test cases with `num` as 0 and also large values close to the upper constraint. It's also useful to check if each number's count of 1's correctly accumulates from the previous number's count.

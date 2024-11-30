@@ -1,0 +1,274 @@
+% Filename: sort_colors.tex
+
+\problemsection{Sort Colors}
+\label{problem:sort_colors}
+\marginnote{Sort Colors is a classic algorithm problem that requires arranging elements in a specific order with optimal time and space complexity.}
+
+The \textbf{Sort Colors} problem involves sorting an array containing only three distinct values in ascending order. This problem is a variant of the Dutch National Flag problem and tests your ability to implement an efficient in-place sorting algorithm with linear time complexity.
+
+\section*{Problem Statement}
+Given an array of integers `nums` with `n` elements where each element is either `0`, `1`, or `2`, sort the array in-place so that all `0`s come first, followed by all `1`s, and then all `2`s.
+
+You must solve this problem without using the library's sort function and with a one-pass algorithm using constant extra space.
+
+\textbf{Examples:}
+
+\begin{itemize}
+	\item \textbf{Example 1:}
+	\begin{verbatim}
+	Input: nums = [2,0,2,1,1,0]
+	Output: [0,0,1,1,2,2]
+	Explanation: After sorting, the array becomes [0,0,1,1,2,2].
+	\end{verbatim}
+
+	\item \textbf{Example 2:}
+	\begin{verbatim}
+	Input: nums = [2,0,1]
+	Output: [0,1,2]
+	Explanation: After sorting, the array becomes [0,1,2].
+	\end{verbatim}
+
+	\item \textbf{Example 3:}
+	\begin{verbatim}
+	Input: nums = [0]
+	Output: [0]
+	Explanation: The array is already sorted.
+	\end{verbatim}
+\end{itemize}
+
+LeetCode link: \href{https://leetcode.com/problems/sort-colors/}{Sort Colors}\index{LeetCode}
+
+\marginnote{\href{https://leetcode.com/problems/sort-colors/}{[LeetCode Link]}\index{LeetCode}}
+\marginnote{\href{https://www.geeksforgeeks.org/sort-an-array-of-0s-1s-and-2s/}{[GeeksForGeeks Link]}\index{GeeksForGeeks}}
+\marginnote{\href{https://www.hackerrank.com/challenges/sort-colors/problem}{[HackerRank Link]}\index{HackerRank}}
+\marginnote{\href{https://app.codesignal.com/challenges/sort-colors}{[CodeSignal Link]}\index{CodeSignal}}
+\marginnote{\href{https://www.interviewbit.com/problems/sort-colors/}{[InterviewBit Link]}\index{InterviewBit}}
+\marginnote{\href{https://www.educative.io/courses/grokking-the-coding-interview/RM8y8Y3nLdY}{[Educative Link]}\index{Educative}}
+\marginnote{\href{https://www.codewars.com/kata/sort-colors/train/python}{[Codewars Link]}\index{Codewars}}
+
+\section*{Algorithmic Approach}
+Quickly sorting an array with only three distinct values can be efficiently achieved using the **Dutch National Flag algorithm**. This approach employs three pointers to partition the array into three sections: elements less than the pivot, equal to the pivot, and greater than the pivot.
+
+\begin{enumerate}
+    \item \textbf{Initialize Pointers:}
+    \begin{itemize}
+        \item `low` - the boundary for the next `0`.
+        \item `mid` - the current element under consideration.
+        \item `high` - the boundary for the next `2`.
+    \end{itemize}
+    
+    \item \textbf{Traverse the Array:}
+    \begin{itemize}
+        \item If `nums[mid]` is `0`:
+        \begin{itemize}
+            \item Swap `nums[low]` and `nums[mid]`.
+            \item Increment both `low` and `mid`.
+        \end{itemize}
+        
+        \item If `nums[mid]` is `1`:
+        \begin{itemize}
+            \item Increment `mid`.
+        \end{itemize}
+        
+        \item If `nums[mid]` is `2`:
+        \begin{itemize}
+            \item Swap `nums[mid]` and `nums[high]`.
+            \item Decrement `high`.
+        \end{itemize}
+    \end{itemize}
+    
+    \item \textbf{Continue Until Mid Exceeds High:}
+    \begin{itemize}
+        \item The algorithm terminates when `mid` > `high`, ensuring all elements are correctly partitioned.
+    \end{itemize}
+\end{enumerate}
+
+This method ensures a single-pass traversal with constant space, achieving the desired \(O(n)\) time complexity.
+
+\marginnote{The Dutch National Flag algorithm effectively handles multiple partitions in a single traversal, making it ideal for this problem.}
+
+\section*{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(n)\), where \(n\) is the number of elements in the array. The array is traversed only once.
+    \item \textbf{Space Complexity:} \(O(1)\), as the sorting is done in-place without requiring additional memory.
+\end{itemize}
+
+\newpage % Start Python Implementation on a new page
+\section*{Python Implementation}
+\marginnote{Implementing the Dutch National Flag algorithm ensures an efficient in-place sort with linear time complexity.}
+
+Below is the complete Python code for the `sortColors` function to sort an array using the Dutch National Flag algorithm:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class Solution:
+    def sortColors(self, nums: List[int]) -> None:
+        """
+        Do not return anything, modify nums in-place instead.
+        """
+        low, mid, high = 0, 0, len(nums) - 1
+        
+        while mid <= high:
+            if nums[mid] == 0:
+                nums[low], nums[mid] = nums[mid], nums[low]
+                low += 1
+                mid += 1
+            elif nums[mid] == 1:
+                mid += 1
+            else:
+                nums[mid], nums[high] = nums[high], nums[mid]
+                high -= 1
+
+# Example Usage:
+# solution = Solution()
+# nums = [2,0,2,1,1,0]
+# solution.sortColors(nums)
+# print(nums)  # Output: [0,0,1,1,2,2]
+# nums = [2,0,1]
+# solution.sortColors(nums)
+# print(nums)  # Output: [0,1,2]
+\end{lstlisting}
+\end{fullwidth}
+
+This implementation follows the Dutch National Flag algorithm:
+\begin{enumerate}
+    \item \textbf{Initialization:}
+    \begin{itemize}
+        \item `low` points to the next position for `0`.
+        \item `mid` is the current element under consideration.
+        \item `high` points to the next position for `2`.
+    \end{itemize}
+    
+    \item \textbf{Traversal and Partitioning:}
+    \begin{itemize}
+        \item Traverse the array with the `mid` pointer.
+        \item Swap elements based on their value relative to the pivot (`1` in this case).
+    \end{itemize}
+    
+    \item \textbf{Termination:}
+    \begin{itemize}
+        \item The loop terminates when `mid` exceeds `high`, ensuring all elements are sorted.
+    \end{itemize}
+\end{enumerate}
+
+\section*{Explanation}
+The `sortColors` function efficiently sorts the array by categorizing elements into three distinct groups: `0`s, `1`s, and `2`s. Here's a detailed breakdown of the implementation:
+
+\begin{itemize}
+    \item \textbf{Initialization:}
+    \begin{itemize}
+        \item `low` is initialized to `0` and represents the boundary for the next `0`.
+        \item `mid` is initialized to `0` and is used to traverse the array.
+        \item `high` is initialized to `len(nums) - 1` and represents the boundary for the next `2`.
+    \end{itemize}
+    
+    \item \textbf{Traversal and Partitioning:}
+    \begin{itemize}
+        \item \textbf{Case 1:} If `nums[mid] == 0`
+        \begin{itemize}
+            \item Swap `nums[low]` and `nums[mid]` to move the `0` to its correct position.
+            \item Increment both `low` and `mid` to continue traversal.
+        \end{itemize}
+        
+        \item \textbf{Case 2:} If `nums[mid] == 1`
+        \begin{itemize}
+            \item The `1` is already in the correct position; simply increment `mid`.
+        \end{itemize}
+        
+        \item \textbf{Case 3:} If `nums[mid] == 2`
+        \begin{itemize}
+            \item Swap `nums[mid]` and `nums[high]` to move the `2` to its correct position.
+            \item Decrement `high` to reduce the range of unsorted elements.
+            \item Do not increment `mid` here because the swapped element needs to be evaluated.
+        \end{itemize}
+    \end{itemize}
+    
+    \item \textbf{Termination:}
+    \begin{itemize}
+        \item The loop continues until `mid` surpasses `high`, ensuring all elements are sorted.
+    \end{itemize}
+\end{itemize}
+
+\section*{Why This Approach}
+This approach is chosen for its efficiency and simplicity. By using three pointers (`low`, `mid`, and `high`), the algorithm effectively partitions the array into three sections in a single pass. This ensures a linear time complexity of \(O(n)\) and constant space complexity of \(O(1)\), making it highly optimal for large datasets.
+
+\section*{Alternative Approaches}
+An alternative method to solve this problem is **Counting Sort**, which involves counting the occurrences of each element and then overwriting the original array based on these counts.
+
+\begin{itemize}
+    \item \textbf{Counting Sort:}
+    \begin{itemize}
+        \item \textbf{Pros:}
+        \begin{itemize}
+            \item Simple to implement.
+            \item Directly counts the frequency of each element.
+        \end{itemize}
+        
+        \item \textbf{Cons:}
+        \begin{itemize}
+            \item Requires additional space proportional to the range of input values.
+            \item Less efficient in scenarios with a large range of elements.
+        \end{itemize}
+    \end{itemize}
+    
+    While Counting Sort is effective for this problem due to the limited range of input values (`0`, `1`, `2`), the Dutch National Flag algorithm provides an in-place solution without requiring additional memory, making it more space-efficient.
+\end{itemize}
+
+\section*{Similar Problems to This One}
+There are several other problems that involve sorting or categorizing elements based on specific criteria, such as:
+\begin{itemize}
+    \item \hyperref[problem:dutch_national_flag]{Dutch National Flag Problem}\index{Dutch National Flag Problem}
+    \item \hyperref[problem:partition_array]{Partition Array}\index{Partition Array}
+    \item \hyperref[problem:counting_sort]{Counting Sort}\index{Counting Sort}
+    \item \hyperref[problem:three_way_partitioning]{Three Way Partitioning}\index{Three Way Partitioning}
+\end{itemize}
+
+\section*{Things to Keep in Mind and Tricks}
+\begin{itemize}
+    \item \textbf{Three-Pointer Technique:} Utilizing three pointers (`low`, `mid`, `high`) allows for efficient in-place sorting without additional space.
+    \index{Three-Pointer Technique}
+    
+    \item \textbf{Avoiding Unnecessary Swaps:} Only swap when necessary to minimize the number of operations and enhance performance.
+    \index{Avoiding Unnecessary Swaps}
+    
+    \item \textbf{Understanding Edge Cases:} Always consider arrays with all elements the same, already sorted arrays, and arrays with only one type of element.
+    \index{Understanding Edge Cases}
+    
+    \item \textbf{In-Place Sorting:} Achieving the desired sort without using extra space is crucial for optimizing space complexity.
+    \index{In-Place Sorting}
+    
+    \item \textbf{Pivot Selection in Related Problems:} While not directly applicable here, understanding pivot selection is beneficial for other sorting algorithms like Quick Sort.
+    \index{Pivot Selection}
+\end{itemize}
+
+\section*{Corner and Special Cases to Test When Writing the Code}
+When implementing the `sortColors` function, it is crucial to test the following edge cases to ensure robustness:
+
+\begin{itemize}
+    \item \textbf{Empty Array:} `nums = []` should handle gracefully, possibly returning an empty array `[]`.
+    \index{Corner Cases}
+    
+    \item \textbf{Single Element:} `nums = [1]` should return `[1]`.
+    \index{Corner Cases}
+    
+    \item \textbf{All Elements the Same:} `nums = [2,2,2,2]` should return `[2,2,2,2]`.
+    \index{Corner Cases}
+    
+    \item \textbf{Already Sorted Array:} `nums = [0,1,2,2,1,0]` should return `[0,0,1,1,2,2]`.
+    \index{Corner Cases}
+    
+    \item \textbf{Reverse Sorted Array:} `nums = [2,2,1,1,0,0]` should return `[0,0,1,1,2,2]`.
+    \index{Corner Cases}
+    
+    \item \textbf{Array with No `0`s or `2`s:} `nums = [1,1,1,1]` should return `[1,1,1,1]`.
+    \index{Corner Cases}
+    
+    \item \textbf{Mixed Elements with Duplicates:} `nums = [0,2,1,2,1,0]` should return `[0,0,1,1,2,2]`.
+    \index{Corner Cases}
+    
+    \item \textbf{Large Input Size:} Test with a very large array to ensure that the implementation performs efficiently without exceeding memory limits.
+    \index{Corner Cases}
+\end{itemize}
+
+\printindex

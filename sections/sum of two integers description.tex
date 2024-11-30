@@ -1,0 +1,83 @@
+
+ewpage
+\chapter{Sum of Two Integers Without Using Plus or Minus Operators}
+\label{chap:sum_without_plus_minus}
+
+The problem's objective is to calculate the sum of two integers without using the `+` or `-` arithmetic operators. To address this challenge, we utilize bitwise operations that are fundamental to how computers perform addition at a low level.
+
+\section*{Problem Statement}
+
+Given two integers $a$ and $b$, we are tasked with implementing the function \texttt{getSum(a, b)} that returns the sum of $a$ and $b$ without using `+` or `-` operators.
+
+\textit{LeetCode link:} \href{https://leetcode.com/problems/sum-of-two-integers/}{Sum of Two Integers}
+
+\section*{Algorithmic Approach}
+
+To achieve our goal, we use the following bitwise operations:
+\begin{itemize}
+    \item \textbf{AND} (\&), which can be used to determine carries in addition.
+    \item \textbf{XOR} (\textasciicircum), which can be used to perform addition without considering carries.
+    \item \textbf{Left Shift} (<<), which can be used to propagate carries.
+\end{itemize}
+
+The algorithm can be described in the following steps:
+\begin{enumerate}
+    \item Compute the carry by performing an AND operation between $a$ and $b$, and shift the result to the left by one bit.
+    \item Compute the partial sum by performing an XOR operation between $a$ and $b$.
+    \item Continue this process, treating the carry as the new $b$ and the partial sum as the new $a$, until there is no carry.
+\end{enumerate}
+
+\section*{Complexities}
+
+\begin{itemize}
+    \item The \textbf{time complexity} is $O(1)$ because the number of operations is constant and does not depend on the size of the input numbers, assuming a constant bit-size (such as the 32-bit integers mentioned in the problem statement).
+    \item The \textbf{space complexity} is also $O(1)$ since we are using a fixed amount of extra space.
+\end{itemize}
+
+
+ewpage
+\section*{Python Implementation}
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def getSum(a, b):
+    # 32 bits integer max
+    MAX = 0x7FFFFFFF
+    # 32 bits interger min
+    MIN = 0x80000000
+    # mask to get last 32 bits
+    mask = 0xFFFFFFFF
+    
+    while b != 0:
+        # ^ get different bits and & gets double 1s, << moves carry
+        a, b = (a ^ b) & mask, ((a & b) << 1) & mask
+        
+    # if a is negative, do a mask to get a 32 bits complement positive number
+    return a if a <= MAX else ~(a ^ mask)
+\end{lstlisting}
+
+\end{fullwidth}
+
+\section*{Explanation}
+
+The function \texttt{getSum} repeatedly uses XOR to calculate the sum without carries and AND followed by left shift to calculate the carry until the carry is zero. When the carry is zero, the XOR result is the final sum.
+
+\section*{Why This Approach}
+
+Bitwise operations are a natural fit for this problem because they are essentially the same processes a computer uses internally to perform arithmetic. They are fast and efficient.
+
+\section*{Alternative Approaches}
+
+An alternative approach involves simulating the full adder logic used in digital circuits, which constitutes the XOR, AND, and OR gates to produce the sum and carry out. However, bitwise operation remains more concise for this problem.
+
+\section*{Similar Problems to This One}
+
+An analogous problem is to subtract two integers without using `+` or `-`. This involves complementary operations using bit manipulation.
+
+\section*{Things to Keep in Mind and Tricks}
+
+It is essential to apply a mask to ensure we only consider the proper number of bits, especially to handle negative numbers in languages like Python that do not have fixed integer sizes.
+
+\section*{Corner and Special Cases to Test When Writing the Code}
+
+Since the sum may not exceed the range of a 32-bit signed integer, it is critical to test the function with values close to the top and bottom bounds, such as $2^{31} - 1$ (the maximum positive 32-bit signed integer) and $-2^{31}$ (the minimum negative 32-bit signed integer). Additionally, it is also crucial to test the algorithm with zero and with one of the operands being zero to ensure that these cases are correctly handled.

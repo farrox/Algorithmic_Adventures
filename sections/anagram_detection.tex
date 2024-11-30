@@ -1,0 +1,142 @@
+% Filename: anagram_detection.tex
+
+\problemsection{Anagram Detection}
+\label{problem:Anagram_Detection}
+
+The **Anagram Detection** problem is a fundamental challenge that tests your ability to efficiently manipulate and compare strings. Two strings are considered anagrams if they can be rearranged to form each other. This means the strings must contain the same characters with the same frequencies, but in any order.
+
+\subsection*{Problem Statement}
+Given two strings \texttt{s1} and \texttt{s2}, determine whether \texttt{s2} is an anagram of \texttt{s1}.
+
+\textbf{Input:}
+- Two strings \texttt{s1} and \texttt{s2}.
+
+\textbf{Output:}
+- A boolean indicating whether \texttt{s2} is an anagram of \texttt{s1}.
+
+\textbf{Example 1:}
+\begin{verbatim}
+Input: s1 = "listen", s2 = "silent"
+Output: true
+\end{verbatim}
+
+\textbf{Example 2:}
+\begin{verbatim}
+Input: s1 = "hello", s2 = "world"
+Output: false
+\end{verbatim}
+
+\textbf{Example 3:}
+\begin{verbatim}
+Input: s1 = "anagram", s2 = "nagaram"
+Output: true
+\end{verbatim}
+
+\subsection*{Algorithmic Approaches}
+Several approaches can be used to solve the anagram detection problem efficiently:
+
+\subsection*{Sorting-Based Approach}
+Sort both strings and compare them. If the sorted versions of the strings are identical, they are anagrams.
+
+\textbf{Steps:}
+\begin{itemize}
+    \item Sort \texttt{s1} and \texttt{s2}.
+    \item Compare the sorted versions.
+    \item Return \texttt{true} if they are identical, otherwise \texttt{false}.
+\end{itemize}
+
+\textbf{Complexity:}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(n \log n)\), due to sorting.
+    \item \textbf{Space Complexity:} \(O(n)\), for storing the sorted strings.
+\end{itemize}
+
+\textbf{Drawback:} Sorting can be unnecessarily slow for large strings when faster methods are available.
+
+\subsection*{Hash Map (Frequency Counting)}
+Count the frequency of each character in both strings using a hash map and compare the frequency tables.
+
+\textbf{Steps:}
+\begin{itemize}
+    \item Use a hash map to count character frequencies for \texttt{s1}.
+    \item Subtract the frequency counts based on \texttt{s2}.
+    \item If all counts return to zero, the strings are anagrams.
+\end{itemize}
+
+\textbf{Complexity:}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(n)\), for counting characters.
+    \item \textbf{Space Complexity:} \(O(1)\) (constant space for fixed alphabet size).
+\end{itemize}
+
+\subsection*{Array-Based Frequency Count}
+Use an array of size 26 (for lowercase English letters) to track character frequencies. This is more memory-efficient than a hash map for fixed alphabets.
+
+\textbf{Steps:}
+\begin{itemize}
+    \item Initialize an array of size 26 to zero.
+    \item Increment counts based on \texttt{s1} and decrement counts based on \texttt{s2}.
+    \item Check if all values in the array are zero.
+\end{itemize}
+
+\textbf{Complexity:}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(n)\).
+    \item \textbf{Space Complexity:} \(O(1)\), for the array.
+\end{itemize}
+
+\subsection*{Python Implementation}
+Here is an implementation using the array-based frequency count:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def isAnagram(s1: str, s2: str) -> bool:
+    if len(s1) != len(s2):
+        return False
+    
+    # Frequency array for 26 lowercase English letters
+    freq = [0] * 26
+    
+    # Update frequency counts for both strings
+    for c1, c2 in zip(s1, s2):
+        freq[ord(c1) - ord('a')] += 1
+        freq[ord(c2) - ord('a')] -= 1
+    
+    # Check if all frequencies are zero
+    return all(f == 0 for f in freq)
+\end{lstlisting}
+\end{fullwidth}
+
+\subsection*{Why This Approach?}
+The array-based frequency count is chosen for its efficiency in both time and space. By leveraging a fixed-size array, it avoids the overhead of sorting or using a hash map. The constant-time updates to the frequency array ensure that the algorithm scales well with the input size.
+
+\subsection*{Alternative Approaches}
+\begin{itemize}
+    \item \textbf{Hash Map Frequency Count:} Handles larger character sets, such as Unicode, at the cost of increased memory usage.
+    \item \textbf{Prime Product Method:} Assign a unique prime number to each character and compute the product of these primes for both strings. If the products match, the strings are anagrams\sidenote{This method is unique but can encounter issues with integer overflow for long strings}.
+\end{itemize}
+
+\subsection*{Similar Problems}
+\begin{itemize}
+    \item \textbf{Find All Anagrams in a String:} Locate all start indices of anagrams of one string in another.
+    \item \textbf{Group Anagrams:} Group a list of strings into sets of anagrams.
+    \item \textbf{Palindrome Permutation:} Check if a string can be rearranged into a palindrome.
+\end{itemize}
+
+\subsection*{Things to Keep in Mind and Tricks}
+\begin{itemize}
+    \item Ensure both strings are the same length before performing any checks.
+    \item Use array-based methods for fixed character sets (e.g., English letters) and hash maps for larger alphabets or Unicode.
+    \item Optimize for edge cases, such as empty strings or strings with only one character.
+\end{itemize}
+
+\subsection*{Corner and Special Cases to Test}
+\begin{itemize}
+    \item \textbf{Empty Strings:} Both \texttt{s1} and \texttt{s2} are empty (should return \texttt{true}).
+    \item \textbf{Different Lengths:} Strings with different lengths (should return \texttt{false}).
+    \item \textbf{Identical Strings:} Strings that are identical (should return \texttt{true}).
+    \item \textbf{Case Sensitivity:} Strings with different cases (depends on problem constraints, e.g., \texttt{"A"} and \texttt{"a"}).
+\end{itemize}
+
+\subsection*{Conclusion}
+The **Anagram Detection** problem highlights the importance of efficiently comparing strings while considering character frequencies. By leveraging sorting, hash maps, or frequency arrays, this problem can be solved with varying levels of efficiency. Mastering this challenge lays the groundwork for tackling more advanced string manipulation problems.

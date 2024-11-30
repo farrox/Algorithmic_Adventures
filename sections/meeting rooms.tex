@@ -1,0 +1,103 @@
+
+ewpage
+\chapter{Meeting Rooms}
+\label{chap:Meeting_Rooms}
+
+
+
+\section*{Problem Statement}
+
+\subsection*{Meeting Rooms (Variant I)}
+Given an array of meeting time intervals where each interval consists of a start and end time \([\text{{s}}_i,\text{{e}}_i]\) (with \(\text{{s}}_i < \text{{e}}_i\)), determine if a person could attend all meetings without any overlaps. 
+
+\textbf{Examples:}
+\begin{itemize}
+	\item \textbf{Input:} \(\text{[[0,30],[5,10],[15,20]]}\) \\
+	\textbf{Output:} \text{false}
+	\item \textbf{Input:} \(\text{[[7,10],[2,4]]}\) \\
+	\textbf{Output:} \text{true}
+\end{itemize}
+
+\subsection*{Meeting Rooms II (Variant II)}
+Given an array of meeting time intervals where each interval consists of start and end times \([\text{{s}}_i,\text{{e}}_i]\), find the minimum number of conference rooms required to accommodate all meetings. 
+
+\textbf{Examples:}
+\begin{itemize}
+	\item \textbf{Input:} \(\text{[[0,30],[5,10],[15,20]]}\) \\
+	\textbf{Output:} 2
+	\item \textbf{Input:} \(\text{[[7,10],[2,4]]}\) \\
+	\textbf{Output:} 1
+\end{itemize}
+
+For both variations, a typical solution involves sorting the intervals by their start times to efficiently process the interval overlaps. Variant I may only need a single pass after sorting, while Variant II often requires a priority queue (min-heap) to actively manage room end times to calculate the minimum rooms required.
+
+\section*{Algorithmic Approach}
+
+\subsection*{Variant I (Can Attend All Meetings)}
+The most common approach is to sort the intervals by their start times. After sorting, we iterate over the intervals and check if the current start time is less than the previous end time, indicating an overlap.
+
+\subsection*{Variant II (Minimum Number of Conference Rooms)}
+For this variant, after sorting by start times, we use a min-heap to keep track of the end times of meetings currently using a room. We iterate over the sorted intervals, and whenever we find that a room is freed up (the current meeting's start time is greater than or equal to the minimum end time in the heap), we reuse that room (by updating the heap). Otherwise, if no room is available, we allocate a new room.
+
+\section*{Complexities}
+\begin{itemize}
+	\item \textbf{Time Complexity:}
+	\begin{itemize}
+		\item \textbf{Variant I:} \(O(n \log n)\) due to the sorting of intervals.
+		\item \textbf{Variant II:} \(O(n \log n)\) for sorting the intervals, plus \(O(n \log n)\) for managing the heap, resulting in \(O(n \log n)\) overall.
+	\end{itemize}
+	\item \textbf{Space Complexity:}
+	\begin{itemize}
+		\item \textbf{Variant I:} \(O(1)\) if we sort the intervals in place.
+		\item \textbf{Variant II:} \(O(n)\) for storing the min-heap.
+	\end{itemize}
+\end{itemize}
+
+
+ewpage % Start Python Implementation on a new page
+\section*{Python Implementation}
+
+The Python implementations for Variant I and II of the Meeting Rooms problem are as follows:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+# Variant I: Can Attend All Meetings
+def canAttendMeetings(intervals):
+    intervals.sort(key=lambda x: x[0])
+    for i in range(1, len(intervals)):
+        if intervals[i][0] < intervals[i-1][1]:
+            return False
+    return True
+
+# Variant II: Minimum Number of Conference Rooms
+def minMeetingRooms(intervals):
+    if not intervals:
+        return 0
+    free_rooms = []
+    intervals.sort(key=lambda x: x[0])
+    heapq.heappush(free_rooms, intervals[0][1])
+    
+    for i in intervals[1:]:
+        if free_rooms[0] <= i[0]:
+            heapq.heappop(free_rooms)
+        heapq.heappush(free_rooms, i[1])
+    
+    return len(free_rooms)
+\end{lstlisting}
+
+\end{fullwidth}
+
+\section*{Why this approach}
+The approaches above leverage the efficient time complexity of sorting algorithms and the convenient properties of min-heaps for managing simultaneous events. Sorting helps in dealing with the chronology of events, which is essential for both problems. The heap is an excellent structure for dynamically keeping track of the meeting rooms' end times, which is crucial for determining room availability in real-time.
+
+\section*{Alternative approaches}
+For Variant I, an alternative approach could involve a sweep line algorithm with events for starting and ending of meetings. For Variant II, one could potentially use a chronologically ordered list or another data structure that allows efficient insertion and extraction of the smallest element, but a heap is typically the most suitable due to its \(O(\log n)\) operations.
+
+\section*{Similar problems to this one}
+Problems involving intervals or scheduling, such as "Car Pooling", "Merge Intervals", and "Insert Interval", share similarities with the Meeting Rooms problems, as they also require thoughtful handling of overlapping intervals or managing start and end events.
+
+\section*{Things to keep in mind and tricks}
+When working with intervals, it's vital to consider ordering by start times and being aware of the endpoints' handling. A common mistake is not considering edge cases where intervals end and start at the same time. For heap operations, make sure to understand how Python's heapq module functions, particularly the fact that it only provides a min-heap implementation.
+
+\section*{Corner and special cases to test when writing the code}
+Some special cases to consider are intervals that are contained within each other, intervals that have the same start or end times, and also when there are no intervals or only one interval. Thorough testing should include these edge cases to ensure robustness.

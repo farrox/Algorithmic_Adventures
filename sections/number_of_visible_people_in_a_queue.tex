@@ -1,0 +1,86 @@
+\problemsection{Number of Visible People in a Queue}
+\label{problem:Number_of_Visible_People_in_a_Queue}
+
+The "Number of Visible People in a Queue" problem is a challenging algorithmic question that involves determining how many people each person in a queue can see to their right. This problem requires a good understanding of stack data structures and the right-to-left traversal technique to efficiently compute the visibility for each person in the queue.
+
+\section*{Problem Statement}
+
+You are given an array \texttt{heights} of distinct integers where \texttt{heights[i]} represents the height of the \(i\)th person in a queue. A person can see another person to their right in the queue if everybody in between is shorter than both of them. More formally, the \(i\)th person can see the \(j\)th person if \(i < j\) and \(\min(\texttt{heights}[i], \texttt{heights}[j]) > \max(\texttt{heights}[i+1], \texttt{heights}[i+2], ..., \texttt{heights}[j-1])\).
+
+\textbf{Input:} An array \texttt{heights} of distinct integers representing the heights of people in a queue.
+
+\textbf{Output:} An array \texttt{answer} where each element represents the number of people the \(i\)th person can see to their right in the queue.
+
+\textbf{Example:}
+\begin{verbatim}
+    Input: heights = [10,6,8,5,11,9]
+    Output: [3,1,2,1,1,0]
+    Explanation: 
+    - Person 0 can see person 1, 2, and 4.
+    - Person 1 can see person 2.
+    - Person 2 can see person 3 and 4.
+    - Person 3 can see person 4.
+    - Person 4 can see person 5.
+    - Person 5 can see no one since nobody is to the right.
+\end{verbatim}
+
+% LeetCode link: \href{https://leetcode.com/problems/number-of-visible-people-in-a-queue/}{Number of Visible People in a Queue}
+
+\section*{Algorithmic Approach}
+
+The optimal solution to this problem involves traversing the array from right to left while using a stack to keep track of people who can still see others. The idea is to determine, for each person, how many people they can see to their right by processing each person in reverse order.
+
+\begin{itemize}
+    \item Start by initializing an empty stack and an array \texttt{answer} filled with zeros.
+    \item Traverse the \texttt{heights} array from the last person to the first.
+    \item For each person, count how many shorter people they can see by popping from the stack until encountering someone taller.
+    \item The number of people popped from the stack before encountering a taller person is the number of people the current person can see.
+    \item Push the current person onto the stack and move to the previous person in the queue.
+\end{itemize}
+
+\section*{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:} The time complexity is \(O(n)\) because each person in the queue is processed once, and each height is pushed and popped from the stack at most once.
+    \item \textbf{Space Complexity:} The space complexity is \(O(n)\) for the stack used to track people visible to the current person.
+\end{itemize}
+
+\section*{Python Implementation}
+
+Below is the Python code to implement the "Number of Visible People in a Queue" problem using the right-to-left traversal and stack technique:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def canSeePersonsCount(heights):
+    n = len(heights)
+    answer = [0] * n
+    stack = []
+    
+    for i in range(n - 1, -1, -1):
+        while stack and heights[i] > heights[stack[-1]]:
+            stack.pop()
+            answer[i] += 1
+        if stack:
+            answer[i] += 1
+        stack.append(i)
+    
+    return answer
+
+# Example usage:
+heights = [10, 6, 8, 5, 11, 9]
+print(canSeePersonsCount(heights))  # Output: [3, 1, 2, 1, 1, 0]
+\end{lstlisting}
+
+\end{fullwidth}
+
+\section*{Why this approach}
+
+This approach is effective because it uses a stack to efficiently determine the number of people each person can see by maintaining a dynamic list of people who are visible. By processing from right to left, we ensure that we can immediately determine visibility without having to revisit any previously processed people.
+
+\section*{Similar problems to this one}
+
+Similar problems that involve determining visibility or next greater elements using a stack include "Daily Temperatures" and "Next Greater Element II." These problems also require processing elements based on their relative order or size.
+
+\section*{Things to keep in mind and tricks}
+
+When solving visibility problems like this, it is crucial to ensure that the stack is used to track people or elements in the correct order. Additionally, handle edge cases where no one is visible by ensuring that the stack is correctly initialized and processed.

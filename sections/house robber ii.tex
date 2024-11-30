@@ -1,0 +1,80 @@
+
+ewpage
+\chapter{House Robber II}
+\label{chap:House_Robber_II}
+
+The "House Robber II" problem is a classical example of a dynamic programming challenge that deals with optimizing decisions over a circular arrangement of houses. Specifically, it is an extension of the "House Robber" problem with an added twist: the houses are arranged in a circle, which brings an additional constraint— one cannot rob the first and last house simultaneously.
+
+\section*{Problem Statement}
+In the "House Robber II" problem, you are presented with an array of non-negative integers representing the amount of money stashed in each house. Since the houses are arranged in a circle, the first and last houses are considered adjacent. Your task is to determine the maximum amount of money you can rob without alerting the police, which will happen if two adjacent houses are robbed on the same night.
+
+\textbf{Example:}
+
+\begin{verbatim}
+    Input: nums = [2,3,2]
+    Output: 3
+    Explanation: Robbing house 1 (money = 2) and then robbing house 3 (money = 2) would alert the police. Therefore, the optimal strategy is to rob house 2 (money = 3) for the maximum amount of 3.
+\end{verbatim}
+
+LeetCode link: \href{https://leetcode.com/problems/house-robber-ii/}{https://leetcode.com/problems/house-robber-ii/}
+
+\section*{Algorithmic Approach}
+To solve this problem, we adopt a dynamic programming approach that breaks down the problem into subproblems. Since the first and last houses are adjacent, we can consider two separate cases: one in which we include the first house and exclude the last, and the other in which we exclude the first house and include the last. We then solve each case using the same dynamic programming approach as in the "House Robber" problem and take the maximum of the two cases as our final answer.
+
+\section*{Complexities}
+\begin{itemize}
+	\item \textbf{Time Complexity:} The time complexity of this approach is \(O(n)\), where \(n\) is the number of houses. This is because we solve the dynamic programming subproblem for the houses twice—once excluding the first house and once excluding the last house.
+	\item \textbf{Space Complexity:} The space complexity is \(O(1)\), assuming we are using an iterative approach and only storing a constant number of variables to keep track of the running maximum amounts that can be robbed.
+\end{itemize}
+
+
+ewpage % Start Python Implementation on a new page
+\section*{Python Implementation}
+
+
+Below is the complete Python code for solving the "House Robber II" problem. The \texttt{rob} function handles the circular arrangement by considering two separate cases and calling the \texttt{rob\_linear} helper function on each.
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def rob(nums):
+    def rob_linear(nums):
+        rob1, rob2 = 0, 0
+        for n in nums:
+            new_rob = max(rob1 + n, rob2)
+            rob1 = rob2
+            rob2 = new_rob
+        return rob2
+    
+    if len(nums) == 1:
+        return nums[0]
+    
+    return max(rob_linear(nums[:-1]), rob_linear(nums[1:]))
+
+# Example usage:
+nums = [2, 3, 2]
+print(rob(nums))  # Output: 3
+
+nums = [1, 2, 3, 1]
+print(rob(nums))  # Output: 4
+\end{lstlisting}
+
+\end{fullwidth}
+
+
+The code begins by handling the edge case where there is only one house. For the general case, it calculates the maximum possible loot by considering two scenarios: excluding the first house or excluding the last house, treating the houses as if they are in a straight line rather than a circle. The \texttt{rob\_linear} function iterates through the \texttt{nums} array, using the variables \texttt{rob1} and \texttt{rob2} to keep track of the maximum loot from the previous two houses and updating the maximum loot at each step.
+
+
+\section*{Why this approach}
+This dynamic programming approach was chosen for its efficiency in dealing with the overlapping subproblems characteristic of the House Robber problems. By reusing solutions to subproblems, we avoid repeated calculations and achieve optimal runtime complexity. 
+
+\section*{Alternative approaches}
+An alternative approach might use recursion with memoization to solve the subproblems, but this typically requires additional space for the memoization table and might not be as efficient as the iterative approach in terms of space complexity.
+
+\section*{Similar problems to this one}
+Other dynamic programming problems with a focus on optimizing choices given constraints, such as the "House Robber" problem (the original version for a linear set of houses) and "Coin Change 2", share similarities with the “House Robber II” problem.
+
+\section*{Things to keep in mind and tricks}
+One thing to keep in mind when approaching this type of problem is the importance of identifying the substructure of the problem. Breaking down the circle into two separate linear problems is key. Also, beware of edge cases, such as when there is only one house. 
+
+\section*{Corner and special cases to test when writing the code}
+Always test your implementation with corner cases, such as arrays with only one or two houses, and with special cases where the maximum loot might be obtained by skipping one or two houses in between.

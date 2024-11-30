@@ -1,0 +1,268 @@
+% Filename: substring_with_concatenation_of_all_words.tex
+
+\problemsection{Substring with Concatenation of All Words}
+\label{chap:substring_with_concatenation_of_all_words}
+\marginnote{This problem effectively utilizes the sliding window technique combined with hash maps to manage word frequencies within substrings.}
+
+The \textbf{Substring with Concatenation of All Words} problem involves finding all starting indices of substring(s) in a given string \texttt{s} that is a concatenation of each word in a given list \texttt{words} exactly once and without any intervening characters. This problem tests your ability to efficiently manage and traverse substrings while handling dynamic constraints.
+
+\section*{Problem Statement}
+
+Given a string \texttt{s} and an array of strings \texttt{words}, return all starting indices of substring(s) in \texttt{s} that is a concatenation of each word in \texttt{words} exactly once, in any order, and without any intervening characters.
+
+You can return the answer in any order.
+
+\textbf{Note:}
+\begin{itemize}
+    \item All words in \texttt{words} are of the same length.
+    \item The concatenated substring must contain all words exactly once.
+\end{itemize}
+
+\textbf{Examples:}
+
+\begin{itemize}
+    \item \textbf{Example 1:}
+    \begin{verbatim}
+    Input: s = "barfoothefoobarman", words = ["foo","bar"]
+    Output: [0,9]
+    Explanation: Substrings starting at index 0 and 9 are "barfoo" and "foobar" respectively.
+    \end{verbatim}
+
+    \item \textbf{Example 2:}
+    \begin{verbatim}
+    Input: s = "wordgoodgoodgoodbestword", words = ["word","good","best","word"]
+    Output: []
+    Explanation: There is no substring that contains all words exactly once.
+    \end{verbatim}
+
+    \item \textbf{Example 3:}
+    \begin{verbatim}
+    Input: s = "barfoofoobarthefoobarman", words = ["bar","foo","the"]
+    Output: [6,9,12]
+    Explanation: Substrings starting at indices 6, 9, and 12 are "foobarthe", "barthefoo", and "thefoobar" respectively.
+    \end{verbatim}
+\end{itemize}
+
+LeetCode link: \href{https://leetcode.com/problems/substring-with-concatenation-of-all-words/}{Substring with Concatenation of All Words}\index{LeetCode}
+
+\marginnote{\href{https://leetcode.com/problems/substring-with-concatenation-of-all-words/}{[LeetCode Link]}\index{LeetCode}}
+\marginnote{\href{https://www.geeksforgeeks.org/find-all-the-starting-indices-of-pattern-in-a-string/}{[GeeksForGeeks Link]}\index{GeeksForGeeks}}
+\marginnote{\href{https://www.hackerrank.com/challenges/find-all-substrings-of-a-given-string/problem}{[HackerRank Link]}\index{HackerRank}}
+\marginnote{\href{https://app.codesignal.com/challenges/substring-concatenation}{[CodeSignal Link]}\index{CodeSignal}}
+\marginnote{\href{https://www.interviewbit.com/problems/subarray-with-equal-0s-and-1s/}{[InterviewBit Link]}\index{InterviewBit}}
+\marginnote{\href{https://www.educative.io/courses/grokking-the-coding-interview/RM8y8Y3nLdY}{[Educative Link]}\index{Educative}}
+\marginnote{\href{https://www.codewars.com/kata/substring-concatenation/train/python}{[Codewars Link]}\index{Codewars}}
+
+\section*{Algorithmic Approach}
+
+To solve this problem, we utilize the **sliding window** technique combined with **hash maps** to manage word frequencies within substrings. The approach involves the following steps:
+
+\begin{enumerate}
+    \item \textbf{Preprocessing:}
+    \begin{itemize}
+        \item Calculate the length of each word (\texttt{word\_length}).
+        \item Determine the number of words (\texttt{num\_words}).
+        \item Compute the total length of the concatenated substring (\texttt{total\_length}).
+        \item Create a hash map (\texttt{word\_count}) to store the frequency of each word in \texttt{words}.
+    \end{itemize}
+    
+    \item \textbf{Sliding Window Traversal:}
+    \begin{itemize}
+        \item Iterate through the string \texttt{s} with a window size of \texttt{total\_length}.
+        \item For each window, extract substrings of length \texttt{word\_length} and check if they exist in \texttt{word\_count}.
+        \item Maintain a temporary hash map (\texttt{seen}) to track the frequency of words within the current window.
+        \item If all words match the required frequencies, record the starting index.
+    \end{itemize}
+    
+    \item \textbf{Optimizations:}
+    \begin{itemize}
+        \item Slide the window in increments of \texttt{word\_length} to align with word boundaries.
+        \item Early termination of window checks if a word exceeds the required frequency.
+    \end{itemize}
+\end{enumerate}
+
+This method ensures that the entire string is traversed efficiently, checking only relevant substrings and maintaining optimal time and space complexities.
+
+\marginnote{Efficient window management and frequency tracking are crucial for maintaining the desired constraints within the sliding window.}
+
+\section*{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(n \times m)\), where \(n\) is the length of the string \texttt{s} and \(m\) is the number of words. This is because we slide the window across the string and, for each window, we check all words.
+    \item \textbf{Space Complexity:} \(O(k)\), where \(k\) is the number of unique words in \texttt{words}. This space is used by the hash maps to store word frequencies.
+\end{itemize}
+
+\section*{Python Implementation}
+
+\marginnote{Implementing the sliding window with hash maps ensures efficient tracking of word frequencies and window constraints.}
+
+Below is the complete Python code for solving the **"Substring with Concatenation of All Words"** problem using the sliding window technique:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+from typing import List
+from collections import defaultdict
+
+def find_substring(s: str, words: List[str]) -> List[int]:
+    if not s or not words:
+        return []
+    
+    word_length = len(words[0])
+    num_words = len(words)
+    total_length = word_length * num_words
+    word_count = defaultdict(int)
+    
+    for word in words:
+        word_count[word] += 1
+    
+    result = []
+    
+    for i in range(word_length):
+        left = i
+        count = 0
+        seen = defaultdict(int)
+        
+        for j in range(i, len(s) - word_length + 1, word_length):
+            word = s[j:j + word_length]
+            if word in word_count:
+                seen[word] += 1
+                count += 1
+                
+                while seen[word] > word_count[word]:
+                    left_word = s[left:left + word_length]
+                    seen[left_word] -= 1
+                    count -= 1
+                    left += word_length
+                
+                if count == num_words:
+                    result.append(left)
+            else:
+                seen.clear()
+                count = 0
+                left = j + word_length
+    
+    return result
+
+# Example usage:
+# s = "barfoothefoobarman"
+# words = ["foo","bar"]
+# print(find_substring(s, words))  # Output: [0, 9]
+# s = "wordgoodgoodgoodbestword"
+# words = ["word","good","best","word"]
+# print(find_substring(s, words))  # Output: []
+\end{lstlisting}
+\end{fullwidth}
+
+This implementation leverages the sliding window technique to efficiently traverse the string \texttt{s} while managing word frequencies using hash maps. Here's a step-by-step breakdown:
+
+\section*{Explanation}
+
+The `find-substring` function efficiently identifies all starting indices of substrings in \texttt{s} that are concatenations of each word in \texttt{words} exactly once. Here's a detailed breakdown of the implementation:
+
+\begin{itemize}
+    \item \textbf{Initialization:}
+    \begin{itemize}
+        \item **Edge Cases:** If either \texttt{s} or \texttt{words} is empty, return an empty list.
+        \item **Word Metrics:** Calculate the length of each word (\texttt{word\_length}), the number of words (\texttt{num\_words}), and the total length of the concatenated substring (\texttt{total\_length}).
+        \item **Word Count Map:** Create a hash map (\texttt{word\_count}) to store the frequency of each word in \texttt{words}.
+    \end{itemize}
+    
+    \item \textbf{Sliding Window Traversal:}
+    \begin{itemize}
+        \item **Iterate Over Possible Starting Points:** Loop through the string with an offset of \texttt{word\_length} to align with word boundaries.
+        \item **Initialize Pointers and Counters:** For each starting offset, initialize `left` to mark the beginning of the window, `count` to track the number of valid words found, and `seen` to count the frequency of words within the current window.
+        \item **Expand the Window:** Slide the window by moving the `j` pointer in increments of \texttt{word\_length}.
+            \begin{itemize}
+                \item Extract the current word from \texttt{s} using slicing.
+                \item If the word exists in \texttt{word\_count}, increment its count in \texttt{seen} and the overall `count`.
+                \item **Handle Excess Frequencies:** If a word's frequency in \texttt{seen} exceeds its required frequency in \texttt{word\_count}, shrink the window from the left by decrementing the frequency of the leftmost word and moving the `left` pointer forward.
+                \item **Record Valid Substrings:** If `count` equals \texttt{num\_words}, append the current `left` index to the result list.
+            \end{itemize}
+        \item **Reset on Invalid Words:** If the current word is not in \texttt{word\_count}, clear the \texttt{seen} map, reset `count`, and move the `left` pointer beyond the current word.
+    \end{itemize}
+    
+    \item \textbf{Result Compilation:} After traversing the string, return the list of starting indices where valid concatenations are found.
+\end{itemize}
+
+\section*{Why This Approach}
+
+This approach is chosen for its efficiency and ability to handle the problem's constraints effectively. By using the sliding window technique:
+
+\begin{itemize}
+    \item **Optimal Time Complexity:** The algorithm runs in \(O(n \times m)\) time, where \(n\) is the length of the string and \(m\) is the number of words, ensuring scalability even for large inputs.
+    \item **Space Efficiency:** Utilizing hash maps to track word frequencies allows for constant-time look-ups and updates, maintaining a space complexity of \(O(k)\), where \(k\) is the number of unique words.
+    \item **Single Pass Traversal:** The sliding window ensures that each character is processed only a limited number of times, avoiding redundant computations.
+\end{itemize}
+
+\section*{Alternative Approaches}
+
+An alternative approach to solving this problem is the **Brute Force** method, where you check every possible substring of length \texttt{total\_length} and verify if it contains all the words in \texttt{words} with the correct frequencies. However, this method has a time complexity of \(O(n \times m \times l)\), where \(l\) is the length of each word, making it highly inefficient for large inputs.
+
+Another approach could involve using **Trie Data Structures** to manage word look-ups more efficiently, but integrating it with the sliding window technique complicates the implementation without significant performance gains for this specific problem.
+
+The sliding window technique combined with hash maps remains the most optimal and straightforward method for this problem.
+
+\marginnote{Choosing the right algorithmic strategy is crucial for optimizing both time and space complexities.}
+
+\section*{Similar Problems to This One}
+
+There are several other problems that involve finding substrings or sequences with specific constraints, such as:
+
+\begin{itemize}
+    \item \hyperref[problem:longest_substring_with_at_most_k_distinct_characters]{Longest Substring with At Most K Distinct Characters}\index{Longest Substring with At Most K Distinct Characters}
+    \item \hyperref[problem:longest_substring_without_repeating_characters]{Longest Substring Without Repeating Characters}\index{Longest Substring Without Repeating Characters}
+    \item \hyperref[problem:minimum_window_substring]{Minimum Window Substring}\index{Minimum Window Substring}
+    \item \hyperref[problem:longest_repeating_character_replacement]{Longest Repeating Character Replacement}\index{Longest Repeating Character Replacement}
+    \item \hyperref[problem:word_break]{Word Break}\index{Word Break}
+\end{itemize}
+
+\section*{Things to Keep in Mind and Tricks}
+
+\begin{itemize}
+    \item \textbf{Sliding Window Technique:} Utilize two pointers to define the current window and adjust them based on the constraints.
+    \index{Sliding Window Technique}
+    
+    \item \textbf{Hash Map for Frequency Counts:} Use a hash map to keep track of character frequencies within the window for efficient constraint checking.
+    \index{Hash Map for Frequency Counts}
+    
+    \item \textbf{Dynamic Window Adjustment:} Expand the window by moving the `end` pointer and contract it by moving the `start` pointer when constraints are violated.
+    \index{Dynamic Window Adjustment}
+    
+    \item \textbf{Edge Case Handling:} Always consider edge cases such as empty strings, single-character strings, and strings with all identical characters.
+    \index{Edge Case Handling}
+    
+    \item \textbf{Optimizing Updates:} Update the maximum length only after ensuring the current window meets the constraints to avoid unnecessary calculations.
+    \index{Optimizing Updates}
+\end{itemize}
+
+\section*{Corner and Special Cases to Test When Writing the Code}
+
+When implementing the `find-substring` function, it is crucial to test the following edge cases to ensure robustness:
+
+\begin{itemize}
+    \item \textbf{Empty String:} `s = ""`, `words = ["a"]` should return `[]`.
+    \index{Corner Cases}
+    
+    \item \textbf{Single Word:} `s = "a"`, `words = ["a"]` should return `[0]`.
+    \index{Corner Cases}
+    
+    \item \textbf{All Words Present Multiple Times:} `s = "barfoofoobarthefoobarman"`, `words = ["bar","foo","the"]` should return `[6,9,12]`.
+    \index{Corner Cases}
+    
+    \item \textbf{Words with Overlapping:} `s = "wordgoodgoodgoodbestword"`, `words = ["word","good","best","word"]` should return `[]`.
+    \index{Corner Cases}
+    
+    \item \textbf{Words Not Present:} `s = "lingmindraboofooowingdingbarrwingmonkeypoundcake"`, `words = ["fooo","barr","wing","ding","wing"]` should return `[13]`.
+    \index{Corner Cases}
+    
+    \item \textbf{Words with Different Lengths:} Although the problem assumes all words are the same length, test cases with varying lengths should be handled gracefully.
+    \index{Corner Cases}
+    
+    \item \textbf{Large Input Size:} Test with a very large string and a large number of words to ensure that the implementation performs efficiently without exceeding memory limits.
+    \index{Corner Cases}
+    
+    \item \textbf{Identical Words:} `s = "aaaaaa"`, `words = ["aa","aa"]` should return `[0,1,2]`.
+    \index{Corner Cases}
+\end{itemize}
+
+\printindex

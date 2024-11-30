@@ -1,0 +1,193 @@
+
+
+\problemsection{Remove Nth Node From End of List}
+\label{problem:remove_nth_node_from_end_of_list}
+\marginnote{Removing nodes from linked lists is a common operation in various algorithmic problems.}
+
+The \textbf{Remove Nth Node From End of List} problem requires modifying a linked list by removing a specific node located a certain distance from the end.\marginnote{This problem tests your ability to manipulate linked lists efficiently using pointer techniques.}
+
+\section*{Problem Statement}
+Given the head of a linked list, the task is to remove the \(n\)-th node from the end of the list and return its head.
+
+\marginnote{\href{https://leetcode.com/problems/remove-nth-node-from-end-of-list/}{[LeetCode Link]}\index{LeetCode}}
+\marginnote{\href{https://www.geeksforgeeks.org/remove-nth-node-from-end-of-list/}{[GeeksForGeeks Link]}\index{GeeksForGeeks}}
+\marginnote{\href{https://www.hackerrank.com/challenges/remove-nth-node-from-end-of-list/problem}{[HackerRank Link]}\index{HackerRank}}
+\marginnote{\href{https://app.codesignal.com/challenges/remove-nth-node-from-end-of-list}{[CodeSignal Link]}\index{CodeSignal}}
+\marginnote{\href{https://www.interviewbit.com/problems/remove-nth-node-from-end-of-list/}{[InterviewBit Link]}\index{InterviewBit}}
+\marginnote{\href{https://www.educative.io/courses/grokking-the-coding-interview/RM8y8Y3nLdY}{[Educative Link]}\index{Educative}}
+\marginnote{\href{https://www.codewars.com/kata/remove-nth-node-from-end-of-list/train/python}{[Codewars Link]}\index{Codewars}}
+
+\section*{Algorithmic Approach}
+
+The general approach for solving this problem is to use the **two-pointer technique**. Here is the step-by-step process:
+
+\begin{enumerate}
+    \item \textbf{Initialize Two Pointers:}
+    \begin{itemize}
+        \item Create two pointers, `fast` and `slow`, both initialized to the head of the list.
+    \end{itemize}
+    
+    \item \textbf{Advance the Fast Pointer:}
+    \begin{itemize}
+        \item Move the `fast` pointer forward by `n` nodes. This creates a gap of `n` nodes between `fast` and `slow`.
+    \end{itemize}
+    
+    \item \textbf{Handle Edge Case:}
+    \begin{itemize}
+        \item If the `fast` pointer reaches the end after the initial advancement, it indicates that the node to be removed is the head. In this case, return `head.next`.
+    \end{itemize}
+    
+    \item \textbf{Move Both Pointers:}
+    \begin{itemize}
+        \item Move both `fast` and `slow` pointers forward simultaneously until the `fast` pointer reaches the last node.
+        \item At this point, the `slow` pointer will be just before the target node.
+    \end{itemize}
+    
+    \item \textbf{Remove the Target Node:}
+    \begin{itemize}
+        \item Modify the `next` pointer of the `slow` node to skip the target node by pointing it to `slow.next.next`.
+    \end{itemize}
+    
+    \item \textbf{Return the Modified List:}
+    \begin{itemize}
+        \item Return the head of the modified linked list.
+    \end{itemize}
+\end{enumerate}
+
+\section*{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:} The time complexity of this algorithm is \(O(L)\), where \(L\) is the length of the linked list, as we traverse the list at most twice.
+    \item \textbf{Space Complexity:} The space complexity is \(O(1)\) because only two extra pointers are used, regardless of the size of the input list.
+\end{itemize}
+
+\section*{Python Implementation}
+\marginnote{Implementing the two-pointer technique ensures an efficient solution with optimal space usage.}
+
+Below is the Python code that implements the aforementioned approach:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+class Solution:
+    def removeNthFromEnd(self, head: ListNode, n: int) -> ListNode:
+        # Initialize two pointers
+        fast = slow = head 
+        # Advance fast by n nodes
+        for _ in range(n):
+            fast = fast.next
+        
+        # Edge case: removing the first node
+        if not fast:
+            return head.next
+        
+        # Advance both pointers until fast reaches the last node
+        while fast.next:
+            fast = fast.next
+            slow = slow.next
+        
+        # Skip the target node
+        slow.next = slow.next.next
+        return head
+
+# Example Usage:
+# Constructing the linked list: 1 -> 2 -> 3 -> 4 -> 5
+head = ListNode(1, ListNode(2, ListNode(3, ListNode(4, ListNode(5)))))
+solution = Solution()
+new_head = solution.removeNthFromEnd(head, 2)
+
+# Function to print the linked list
+def print_linked_list(head):
+    elems = []
+    while head:
+        elems.append(str(head.val))
+        head = head.next
+    print(" -> ".join(elems))
+
+print_linked_list(new_head)  # Output: 1 -> 2 -> 3 -> 5
+
+# Handling Edge Cases:
+# Single node
+head_single = ListNode(1)
+new_head_single = solution.removeNthFromEnd(head_single, 1)
+print_linked_list(new_head_single)  # Output: 
+
+# Two nodes
+head_two = ListNode(1, ListNode(2))
+new_head_two = solution.removeNthFromEnd(head_two, 1)
+print_linked_list(new_head_two)  # Output: 1
+\end{lstlisting}
+\end{fullwidth}
+
+\section*{Explanation}
+The `removeNthFromEnd` function efficiently removes the \(n\)-th node from the end of a singly linked list using the **two-pointer technique**. Here's a detailed breakdown of the implementation:
+
+\begin{itemize}
+    \item \textbf{Initialization:}
+    \begin{itemize}
+        \item **Fast and Slow Pointers:** Both `fast` and `slow` pointers are initialized to the head of the list.
+    \end{itemize}
+    
+    \item \textbf{Advancing the Fast Pointer:}
+    \begin{itemize}
+        \item **Offsetting Fast Pointer:** The `fast` pointer is moved `n` nodes ahead. This creates a gap of `n` nodes between `fast` and `slow`.
+    \end{itemize}
+    
+    \item \textbf{Handling Edge Cases:}
+    \begin{itemize}
+        \item **Removing the Head:** If the `fast` pointer reaches `None` after the initial advancement, it indicates that the node to remove is the head. In this case, the head is updated to `head.next`.
+    \end{itemize}
+    
+    \item \textbf{Moving Both Pointers:}
+    \begin{itemize}
+        \item **Simultaneous Traversal:** Both `fast` and `slow` pointers are moved one node at a time until `fast.next` is `None`. At this point, `slow` points to the node just before the target node.
+    \end{itemize}
+    
+    \item \textbf{Removing the Target Node:}
+    \begin{itemize}
+        \item **Skipping the Node:** The `next` pointer of the `slow` node is updated to skip the target node by pointing to `slow.next.next`.
+    \end{itemize}
+    
+    \item \textbf{Returning the Modified List:}
+    \begin{itemize}
+        \item **Final Head:** The function returns the head of the modified linked list, which now has the specified node removed.
+    \end{itemize}
+\end{itemize}
+
+\section*{Why This Approach}
+The two-pointer technique is chosen for this problem as it allows removing the \(n\)-th node from the end in a single pass through the list. Specifically, this approach eliminates the need to compute the length of the list beforehand, which would require an extra pass. This technique is both efficient and space-optimized, with \(O(L)\) time complexity and \(O(1)\) space complexity.\marginnote{The two-pointer technique is versatile and can be applied to various linked list problems, such as detecting cycles or finding the middle node.}
+
+\section*{Alternative Approaches}
+An alternative method involves calculating the length of the linked list first and then removing the \(L - n + 1\)-th node from the start. However, this requires two passes over the list: one to determine the length and another to locate and remove the target node. While straightforward, this approach is less efficient in terms of time compared to the two-pointer technique.\marginnote{Using extra space can lead to higher memory usage, which may not be desirable in certain applications.}
+
+\section*{Similar Problems to This One}
+\begin{itemize}
+    \item \hyperref[problem:detect_cycle]{Detect Cycle in a Linked List}\index{Detect Cycle in a Linked List}
+    \item \hyperref[problem:find_middle_of_linked_list]{Find Middle of a Linked List}\index{Find Middle of a Linked List}
+    \item \hyperref[problem:reverse_linked_list]{Reverse Linked List}\index{Reverse Linked List}
+\end{itemize}
+
+\section*{Things to Keep in Mind and Tricks}
+\begin{itemize}
+    \item \textbf{Edge Cases:} Always consider scenarios where the linked list has only one node, or where the node to be removed is the head itself.\index{Edge Cases}
+    \item \textbf{Pointer Management:} Carefully manage pointer movements to avoid null reference errors or unintentional list breaks.\index{Pointer Management}
+    \item \textbf{Two-Pointer Technique:} This technique is effective for finding the end of the list relative to the target node.\index{Two-Pointer Technique}
+    \item \textbf{In-Place Modifications:} Strive to perform operations without using extra space to optimize memory usage.\index{In-Place Modifications}
+\end{itemize}
+
+\section*{Corner and Special Cases to Test When Writing the Code}
+\begin{itemize}
+    \item \textbf{Empty List:} \texttt{head = None, n = 1}\index{Corner Cases}
+    \item \textbf{Single Node:} \texttt{head = [1], n = 1}\index{Corner Cases}
+    \item \textbf{Two Nodes:} \texttt{head = [1, 2], n = 1}\index{Corner Cases}
+    \item \textbf{n Equals List Length:} Removing the first node, e.g., \texttt{head = [1, 2, 3], n = 3}\index{Corner Cases}
+    \item \textbf{n is Zero or Negative:} Invalid values for \(n\), to test error handling (if applicable).\index{Corner Cases}
+    \item \textbf{n Greater Than List Length:} To test the function's behavior when \(n\) exceeds the list length.\index{Corner Cases}
+    \item \textbf{Multiple Removals:} Sequential removals to test the function's robustness.\index{Corner Cases}
+\end{itemize}
+
+\printindex

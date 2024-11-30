@@ -1,0 +1,172 @@
+% Filename: valid_anagram.tex
+
+\problemsection{Valid Anagram}
+\label{problem:valid_anagram}
+\marginnote{An anagram involves rearranging the letters of a word to form a new word, testing your ability to manipulate and count character frequencies efficiently.}
+
+\section*{Problem Statement}
+Given two strings `s` and `t`, write a function to determine if `t` is an anagram of `s`. An Anagram is a word or phrase formed by rearranging the letters of another word or phrase, typically using all the original letters exactly once.
+
+For example, the word "anagram" can be rearranged into "nag a ram".
+
+Note: Two empty strings are considered to be anagrams of each other.
+
+\marginnote{\href{https://leetcode.com/problems/valid-anagram/}{[LeetCode Link]}\index{LeetCode}}
+\marginnote{\href{https://www.geeksforgeeks.org/check-whether-two-strings-are-anagram-of-each-other/}{[GeeksForGeeks Link]}\index{GeeksForGeeks}}
+\marginnote{\href{https://www.hackerrank.com/challenges/game-of-thrones/problem}{[HackerRank Link]}\index{HackerRank}}
+\marginnote{\href{https://app.codesignal.com/challenges/valid-anagram}{[CodeSignal Link]}\index{CodeSignal}}
+\marginnote{\href{https://www.interviewbit.com/problems/anagram/}{[InterviewBit Link]}\index{InterviewBit}}
+\marginnote{\href{https://www.educative.io/courses/grokking-the-coding-interview/RM8y8Y3nLdY}{[Educative Link]}\index{Educative}}
+\marginnote{\href{https://www.codewars.com/kata/valid-anagram/train/python}{[Codewars Link]}\index{Codewars}}
+
+\subsection*{Examples}
+
+\textbf{Example 1:}
+
+\begin{verbatim}
+Input: s = "anagram", t = "nagaram"
+Output: true
+\end{verbatim}
+
+\textbf{Example 2:}
+
+\begin{verbatim}
+Input: s = "rat", t = "car"
+Output: false
+\end{verbatim}
+
+\section*{Algorithmic Approach}
+To determine if one string is an anagram of another, we can count the occurrences of each letter in both strings and then compare these counts. This can be accomplished with a hash table or an array of fixed size if the strings only consist of lowercase alphabetic characters.\marginnote{Using fixed-size arrays for counting can optimize both time and space when dealing with a limited set of characters.}
+
+\section*{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:} The time complexity of the algorithm is \(O(n)\), where \(n\) is the length of the input strings, because we have to count each letter in both strings.
+    \item \textbf{Space Complexity:} The space complexity is \(O(1)\) because the additional space used by the algorithm depends only on the size of the alphabet used in the strings and not on the length of the strings themselves.
+\end{itemize}
+
+\newpage % Start Python Implementation on a new page
+\section*{Python Implementation}
+\marginnote{Implementing character frequency counting with fixed-size arrays ensures optimal performance for anagram detection.}
+
+Below is the complete Python code for the `isAnagram` function to check if one string is an anagram of another:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class Solution:
+    def isAnagram(self, s: str, t: str) -> bool:
+        if len(s) != len(t):
+            return False
+        
+        count = [0] * 26  # Since the problem statement mentions only lowercase alphabets
+        
+        for char in s:  
+            count[ord(char) - ord('a')] += 1
+        for char in t:
+            count[ord(char) - ord('a')] -= 1
+        
+        for c in count:
+            if c != 0:
+                return False
+                
+        return True
+
+# Example Usage:
+# solution = Solution()
+# print(solution.isAnagram("anagram", "nagaram"))  # Output: True
+# print(solution.isAnagram("rat", "car"))          # Output: False
+\end{lstlisting}
+\end{fullwidth}
+
+This implementation counts the frequency of each character in the string `s` and `t` by incrementing and decrementing the value at the respective indices in the `count` array. After processing both strings, if all elements in the `count` array are zeros, the strings are anagrams; otherwise, they aren't.
+
+\section*{Explanation}
+The `isAnagram` function efficiently checks if two strings are anagrams by leveraging a fixed-size array to count character occurrences. Here's a detailed breakdown of the implementation:
+
+\begin{itemize}
+    \item \textbf{Initial Length Check:}
+    \begin{itemize}
+        \item If the lengths of `s` and `t` are different, they cannot be anagrams. The function immediately returns `False`.
+    \end{itemize}
+    
+    \item \textbf{Character Frequency Counting:}
+    \begin{itemize}
+        \item Counting in `s`: Iterate through each character in `s`, and increment the corresponding index in the `count` array.
+        \item Counting in `t`: Iterate through each character in `t`, and decrement the corresponding index in the `count` array.
+    \end{itemize}
+    
+    \item \textbf{Verification:}
+    \begin{itemize}
+        \item After processing both strings, iterate through the `count` array. If any element is not zero, it indicates a mismatch in character frequencies, and the function returns `False`.
+        \item If all elements are zero, the strings are anagrams, and the function returns `True`.
+    \end{itemize}
+\end{itemize}
+
+\section*{Why This Approach}
+This approach was chosen due to its efficiency in both time and space complexity. By utilizing an array of fixed size to count character occurrences instead of a hash table, we ensure constant time operations for updating counts, which significantly reduces the overhead and maintains linear time complexity with respect to the size of the input.
+
+\section*{Alternative Approaches}
+An alternative approach involves sorting both strings and comparing them to check for equality. Although intuitive, this method has a higher time complexity of \(O(n \log n)\), where \(n\) is the length of the strings due to the sorting operation.
+
+\begin{itemize}
+    \item \textbf{Pros:} Simple to implement using built-in sorting functions.
+    \item \textbf{Cons:} Less efficient for large strings due to the higher time complexity.
+\end{itemize}
+
+Another alternative could involve using a hash table (like Python's `collections.Counter`) to count character frequencies. While this method is also \(O(n)\) in time complexity, it may have slightly higher constant factors due to the overhead of hash table operations compared to fixed-size array indexing.
+
+\marginnote{Using fixed-size arrays for counting is often faster than hash tables when dealing with a limited set of characters.}
+
+\section*{Similar Problems to This One}
+There are several other problems that involve checking for permutations, rearrangements, or matching character frequencies, such as:
+\begin{itemize}
+    \item \hyperref[problem:find_permutation]{Find All Anagrams in a String}\index{Find All Anagrams in a String}
+    \item \hyperref[problem:minimum_window_substring]{Minimum Window Substring}\index{Minimum Window Substring}
+    \item \hyperref[problem:permutation_in_string]{Permutation in String}\index{Permutation in String}
+\end{itemize}
+
+\section*{Things to Keep in Mind and Tricks}
+\begin{itemize}
+    \item \textbf{Efficient Counting:} When dealing with a limited set of characters (like lowercase English letters), using fixed-size arrays for counting is more efficient than hash tables.
+    \index{Efficient Counting}
+    
+    \item \textbf{Early Termination:} If the lengths of the two strings differ, they cannot be anagrams. Perform this check upfront to save unnecessary computations.
+    \index{Early Termination}
+    
+    \item \textbf{ASCII Values:} Leveraging ASCII values allows for direct indexing into the counting array, enhancing performance.
+    \index{ASCII Values}
+    
+    \item \textbf{Edge Case Handling:} Always consider and handle edge cases such as empty strings or strings with all identical characters.
+    \index{Edge Case Handling}
+\end{itemize}
+
+\section*{Corner and Special Cases to Test When Writing the Code}
+When implementing the `isAnagram` function, it is crucial to test the following edge cases to ensure robustness:
+
+\begin{itemize}
+    \item \textbf{Empty Strings:} Both `s` and `t` are empty. They should be considered anagrams.
+    \index{Corner Cases}
+    
+    \item \textbf{Different Lengths:} One string is longer than the other. The function should immediately return `False`.
+    \index{Corner Cases}
+    
+    \item \textbf{Single Character Strings:} `s = "a"`, `t = "a"` should return `True`, while `s = "a"`, `t = "b"` should return `False`.
+    \index{Corner Cases}
+    
+    \item \textbf{All Identical Characters:} `s = "aaa"`, `t = "aaa"` should return `True`, whereas `s = "aaa"`, `t = "aaab"` should return `False`.
+    \index{Corner Cases}
+    
+    \item \textbf{Unicode Characters:} If the problem allows, test strings with Unicode or non-alphabetic characters to ensure the function handles them correctly.
+    \index{Corner Cases}
+    
+    \item \textbf{Case Sensitivity:} Depending on the problem constraints, ensure that the function correctly handles uppercase and lowercase letters if they are considered distinct.
+    \index{Corner Cases}
+    
+    \item \textbf{Strings with Spaces:} If spaces are allowed within the strings, verify how they are handled in the anagram check.
+    \index{Corner Cases}
+    
+    \item \textbf{Large Strings:} Test with very long strings to ensure that the function performs efficiently without timing out.
+    \index{Corner Cases}
+\end{itemize}
+
+\printindex

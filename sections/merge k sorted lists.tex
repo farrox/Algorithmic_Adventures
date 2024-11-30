@@ -1,0 +1,82 @@
+\chapter{Merge k Sorted Lists}
+\label{chap:Merge_k_Sorted_Lists}
+The "Merge k Sorted Lists" problem is a classic algorithm problem that is often asked in coding interviews. The problem challenges the solver to efficiently combine multiple sorted data streams into a single sorted data stream, which has practical applications in various domains such as merging time-series data from multiple sources or combining sorted log files.
+
+\section*{Problem Statement}
+You are given an array of \(k\) linked-lists lists, each linked-list is sorted in ascending order. Your task is to merge all the \(k\) sorted linked-lists into one sorted linked-list and return it.
+
+\textbf{Example:}
+
+Consider the following \(k\) sorted linked lists:
+
+List 1: \(1 \rightarrow 4 \rightarrow 5\)
+
+List 2: \(1 \rightarrow 3 \rightarrow 4\)
+
+List 3: \(2 \rightarrow 6\)
+
+The merged list should be:
+
+\(1 \rightarrow 1 \rightarrow 2 \rightarrow 3 \rightarrow 4 \rightarrow 4 \rightarrow 5 \rightarrow 6\)
+
+\textbf{Input:} The input consists of an array of \(k\) pointers to the head nodes of each of the \(k\) sorted linked lists.
+
+\textbf{Output:} The output should be the head of the single sorted linked list that is the result of merging the \(k\) sorted lists.
+
+LeetCode link: \href{https://leetcode.com/problems/merge-k-sorted-lists/}{https://leetcode.com/problems/merge-k-sorted-lists/}
+
+\section*{Algorithmic Approach}
+The solution to this problem can be approached by using a min-heap or a priority queue to efficiently manage the current smallest nodes from each linked list. This method takes advantage of the fact that the heads of each linked list are the smallest elements remaining in each list, so we can perform a similar operation to a merge in merge sort by always selecting the smallest head node.
+
+\section*{Complexities}
+\begin{itemize}
+	\item \textbf{Time Complexity:} The total time complexity is \(O(N \log k)\), where \(N\) is the total number of nodes and \(k\) is the number of linked lists.
+	\item \textbf{Space Complexity:} The space complexity is \(O(k)\) for storing the pointers in the heap at any given time.
+\end{itemize}
+
+
+ewpage % Start Python Implementation on a new page
+\section*{Python Implementation}
+Below is the complete Python code for the `Solution` class, which implements the `mergeKLists` method to merge \(k\) sorted linked lists using a min-heap for efficient retrieval of the smallest node at any step:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+from Queue import PriorityQueue
+
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+class Solution:
+    def mergeKLists(self, lists):
+        head = point = ListNode(0)
+        pq = PriorityQueue()
+        for l in lists:
+            if l:
+                pq.put((l.val, l))
+        while not pq.empty():
+            val, node = pq.get()
+            point.next = ListNode(val)
+            point = point.next
+            node = node.next
+            if node:
+                pq.put((node.val, node))
+        return head.next
+\end{lstlisting}
+
+\end{fullwidth}
+
+This implementation initially sets up a dummy head and a point reference to track the merged list. The `PriorityQueue` is used to store the tuple `(val, node)` for each head of the linked lists. It ensures the heap property such that the smallest value is always at the top. By continuously extracting the smallest and inserting the next element from the same list, the algorithm merges all lists into one sorted linked list.
+
+\section*{Why this approach}
+The min-heap approach was chosen for its optimal time complexity considering the need to frequently find and remove the smallest element from a collection of sorted arrays. This method is efficient because it maintains a heap of only \(k\) elements representing the heads of each list, and thus the extract-min and insert operations are \(O(\log k)\).
+
+\section*{Alternative approaches}
+Alternative approaches include the brute force method, which involves collecting all nodes into an array, sorting it, and then creating a new sorted list. Another approach is to compare nodes one by one or use divide and conquer to merge lists in pairs.
+
+\section*{Similars problems to this one}
+Similar problems include "Merge Two Sorted Lists" and "Sort List," where the principles of merging or handling sorted data structures are central to the solution.
+
+\section*{Things to keep in mind and tricks}
+Keep

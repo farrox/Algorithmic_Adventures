@@ -1,0 +1,244 @@
+% Filename: queues.tex
+
+\chapter{Queues}
+\label{chap:Queues}
+
+A **queue** is a linear collection of elements that are maintained in a sequence and can be modified by the addition of elements at one end of the sequence (enqueue operation) and the removal of elements from the other end (dequeue operation). This First-In-First-Out (FIFO) property makes queues essential in various computing scenarios where order of processing is crucial.\sidenote{Understanding queues is fundamental for designing systems that require ordered task management and processing.}
+
+\section{Introduction}
+
+Queues are fundamental data structures in computer science, analogous to real-world queues such as lines at a supermarket or tasks waiting to be processed. They provide an efficient way to manage ordered data, ensuring that elements are processed in the exact sequence they arrive. Understanding queues is essential for implementing algorithms that require ordered processing, such as breadth-first search (BFS) in graph traversal, task scheduling, and handling asynchronous data streams.\sidenote{Queues help maintain order and fairness in processing tasks, which is critical in both software and hardware systems.}
+
+\section{Types of Queues}
+
+Queues come in various forms, each tailored to specific use cases:
+
+\subsection*{1. Simple Queue}
+A basic FIFO queue where elements are added at the rear (enqueue) and removed from the front (dequeue).
+
+\subsection*{2. Circular Queue}
+A variation of the simple queue where the end of the queue wraps around to the beginning, effectively utilizing the available space and preventing overflow in fixed-size implementations.\sidenote{Circular queues optimize space usage by reusing vacant positions created by dequeued elements.}
+
+\subsection*{3. Priority Queue}
+A queue where each element has a priority assigned to it. Elements with higher priorities are dequeued before those with lower priorities, regardless of their insertion order.
+
+\subsection*{4. Double-Ended Queue (Deque)}
+A queue that allows insertion and removal of elements from both ends, supporting both FIFO and LIFO (Last-In-First-Out) operations.\sidenote{Deques provide greater flexibility in managing elements, enabling more complex data manipulations.}
+
+\section{Basic Operations}
+
+Queues support a set of fundamental operations:
+
+\subsection*{1. Enqueue}
+\textbf{Description:} Add an element to the rear of the queue.
+
+\subsection*{2. Dequeue}
+\textbf{Description:} Remove and return the element from the front of the queue.\sidenote{Dequeue operations must handle cases where the queue is empty to prevent errors.}
+
+\subsection*{3. Peek/Front}
+\textbf{Description:} Retrieve the front element without removing it from the queue.
+
+\subsection*{4. IsEmpty}
+\textbf{Description:} Check whether the queue is empty.
+
+\subsection*{5. Size}
+\textbf{Description:} Return the number of elements in the queue.
+
+\section{Implementations of Queues}
+
+Queues can be implemented using various underlying data structures, each with its own advantages and trade-offs.
+
+\subsection*{1. Array-Based Implementation}
+Utilizes a fixed-size or dynamically resizing array to store elements. While offering \(O(1)\) access time, it can suffer from inefficiencies due to shifting elements during dequeue operations unless implemented as a circular array.\sidenote{Circular arrays prevent the overhead of shifting by treating the array as a ring buffer.}
+
+\subsection*{2. Linked List-Based Implementation}
+Employs a singly or doubly linked list where each node points to the next (and possibly previous) node. This implementation allows for efficient \(O(1)\) enqueue and dequeue operations without the need for shifting elements.
+
+\subsection*{3. Using Built-In Data Structures}
+Many programming languages provide built-in data structures that can be leveraged to implement queues efficiently. For example, Python’s `collections.deque` offers an optimized double-ended queue with \(O(1)\) time complexity for append and pop operations from both ends.\sidenote{Leveraging built-in structures can simplify implementation and improve performance due to optimized underlying code.}
+
+\section{Complexities of Operations}
+
+Understanding the time and space complexities of queue operations is crucial for selecting the appropriate implementation based on the application’s requirements.
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{Operation} & \textbf{Array-Based Queue} & \textbf{Linked List-Based Queue} & \textbf{Built-In (e.g., deque)} \\
+\hline
+Enqueue            & \(O(1)\) amortized         & \(O(1)\)                        & \(O(1)\)                    \\
+\hline
+Dequeue            & \(O(n)\) (unless circular)& \(O(1)\)                        & \(O(1)\)                    \\
+\hline
+Peek/Front         & \(O(1)\)                   & \(O(1)\)                        & \(O(1)\)                    \\
+\hline
+IsEmpty            & \(O(1)\)                   & \(O(1)\)                        & \(O(1)\)                    \\
+\hline
+Size               & \(O(1)\)                   & \(O(1)\)                        & \(O(1)\)                    \\
+\hline
+\end{tabular}
+\end{center}
+
+\section{Python Implementations}
+
+Below are examples of different ways to implement a queue in Python.
+
+\subsection*{1. Using a List}
+A simple but less efficient approach due to \(O(n)\) dequeue operations.
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class Queue:
+    def __init__(self):
+        self.queue = []
+    
+    def enqueue(self, item):
+        self.queue.append(item)
+    
+    def dequeue(self):
+        if not self.isEmpty():
+            return self.queue.pop(0)
+        raise IndexError("Dequeue from empty queue")
+    
+    def peek(self):
+        if not self.isEmpty():
+            return self.queue[0]
+        raise IndexError("Peek from empty queue")
+    
+    def isEmpty(self):
+        return len(self.queue) == 0
+    
+    def size(self):
+        return len(self.queue)
+
+# Example usage:
+q = Queue()
+q.enqueue(1)
+q.enqueue(2)
+q.enqueue(3)
+print(q.dequeue())  # Output: 1
+print(q.peek())     # Output: 2
+\end{lstlisting}
+\end{fullwidth}\sidenote{Using a list for queues can lead to performance issues for large datasets due to the linear time complexity of dequeue operations.}
+
+\subsection*{2. Using a Linked List}
+Efficient \(O(1)\) enqueue and dequeue operations.
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+class LinkedListQueue:
+    def __init__(self):
+        self.head = None
+        self.tail = None
+    
+    def enqueue(self, item):
+        new_node = Node(item)
+        if self.tail:
+            self.tail.next = new_node
+        self.tail = new_node
+        if not self.head:
+            self.head = new_node
+    
+    def dequeue(self):
+        if self.isEmpty():
+            raise IndexError("Dequeue from empty queue")
+        removed = self.head.data
+        self.head = self.head.next
+        if not self.head:
+            self.tail = None
+        return removed
+    
+    def peek(self):
+        if self.isEmpty():
+            raise IndexError("Peek from empty queue")
+        return self.head.data
+    
+    def isEmpty(self):
+        return self.head is None
+    
+    def size(self):
+        count = 0
+        current = self.head
+        while current:
+            count +=1
+            current = current.next
+        return count
+
+# Example usage:
+llq = LinkedListQueue()
+llq.enqueue(1)
+llq.enqueue(2)
+llq.enqueue(3)
+print(llq.dequeue())  # Output: 1
+print(llq.peek())     # Output: 2
+\end{lstlisting}
+\end{fullwidth}\sidenote{Linked lists allow for dynamic memory usage, making them suitable for queues with unpredictable sizes.}
+
+\subsection*{3. Using \texttt{collections.deque}}
+Leveraging Python’s optimized double-ended queue.
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+from collections import deque
+
+class DequeQueue:
+    def __init__(self):
+        self.queue = deque()
+    
+    def enqueue(self, item):
+        self.queue.append(item)
+    
+    def dequeue(self):
+        if not self.isEmpty():
+            return self.queue.popleft()
+        raise IndexError("Dequeue from empty queue")
+    
+    def peek(self):
+        if not self.isEmpty():
+            return self.queue[0]
+        raise IndexError("Peek from empty queue")
+    
+    def isEmpty(self):
+        return len(self.queue) == 0
+    
+    def size(self):
+        return len(self.queue)
+
+# Example usage:
+dq = DequeQueue()
+dq.enqueue('a')
+dq.enqueue('b')
+dq.enqueue('c')
+print(dq.dequeue())  # Output: 'a'
+print(dq.peek())     # Output: 'b'
+\end{lstlisting}
+\end{fullwidth}\sidenote{Using \texttt{deque} provides efficient \(O(1)\) time complexity for both enqueue and dequeue operations, making it ideal for performance-critical applications.}
+
+\section{Applications of Queues}
+
+Queues are employed in a variety of applications where order and sequence are paramount:
+
+\subsection*{1. Breadth-First Search (BFS)}
+In graph and tree traversals, BFS uses a queue to explore nodes level by level, ensuring that nodes are processed in the order they are discovered.\sidenote{BFS is essential for finding the shortest path in unweighted graphs.}
+
+\subsection*{2. Task Scheduling}
+Operating systems use queues to manage tasks, processes, and threads, ensuring that tasks are handled in the order they arrive.\sidenote{Efficient task scheduling improves system responsiveness and resource utilization.}
+
+\subsection*{3. Buffering}
+Queues are used in buffering data streams, such as in IO buffers, network packet handling, and print queues, to manage data flow efficiently.\sidenote{Buffers prevent data loss and manage data bursts by regulating the flow between producers and consumers.}
+
+\subsection*{4. Real-Time Data Processing}
+In scenarios like live data feeds, queues help manage incoming data in a controlled and sequential manner.\sidenote{Queues ensure that data is processed in the order it arrives, maintaining consistency and reliability.}
+
+\subsection*{5. Simulation Systems}
+Queues model real-world systems like customer service lines, traffic management, and event scheduling, allowing for analysis and optimization.\sidenote{Simulations using queues help in predicting system behavior under various conditions.}
+
+\section{Important Queue Problems}
+
+Queues are not only fundamental in theory but also play a significant role in solving practical problems. Mastering these problems enhances one's ability to implement efficient algorithms and design robust systems. Below is a curated list of important queue-related problems, each accompanied by a detailed explanation and a high-level overview of the solution approach.
+

@@ -1,0 +1,181 @@
+% Filename: add_two_numbers.tex
+
+\problemsection{Add Two Numbers}
+\label{problem:add_two_numbers}
+\marginnote{Adding numbers using linked lists is a fundamental algorithmic problem that combines arithmetic operations with data structure manipulation.}
+
+The \textbf{Add Two Numbers} problem is a classic example of manipulating linked lists in an algorithmic context. It combines the simplicity of arithmetic addition with the complexity of data structure traversal.\marginnote{This problem is frequently encountered in technical interviews and serves as a foundation for more complex linked list operations.}
+
+\section*{Problem Statement}
+You are given two non-empty linked lists representing two non-negative integers. The digits are stored in reverse order, and each of their nodes contains a single digit. Add the two numbers and return the sum as a linked list. You may assume the two numbers do not contain any leading zero, except the number \(0\) itself.
+
+\marginnote{\href{https://leetcode.com/problems/add-two-numbers/}{[LeetCode Link]}\index{LeetCode}}
+\marginnote{\href{https://www.geeksforgeeks.org/add-two-numbers-represented-by-linked-lists/}{[GeeksForGeeks Link]}\index{GeeksForGeeks}}
+\marginnote{\href{https://www.hackerrank.com/challenges/add-two-numbers/problem}{[HackerRank Link]}\index{HackerRank}}
+\marginnote{\href{https://app.codesignal.com/challenges/add-two-numbers}{[CodeSignal Link]}\index{CodeSignal}}
+\marginnote{\href{https://www.interviewbit.com/problems/add-two-numbers-as-lists/}{[InterviewBit Link]}\index{InterviewBit}}
+\marginnote{\href{https://www.educative.io/courses/grokking-the-coding-interview/RM8y8Y3nLdY}{[Educative Link]}\index{Educative}}
+\marginnote{\href{https://www.codewars.com/kata/add-two-numbers-as-lists/train/python}{[Codewars Link]}\index{Codewars}}
+
+\subsection*{Examples}
+
+\textbf{Example 1:}
+
+\begin{verbatim}
+    Input: l1 = [2,4,3], l2 = [5,6,4]
+    Output: [7,0,8]
+    Explanation: 342 + 465 = 807.
+\end{verbatim}
+
+\textbf{Example 2:}
+
+\begin{verbatim}
+    Input: l1 = [0], l2 = [0]
+    Output: [0]
+\end{verbatim}
+
+\textbf{Example 3:}
+
+\begin{verbatim}
+    Input: l1 = [9,9,9,9,9,9,9], l2 = [9,9,9,9]
+    Output: [8,9,9,9,0,0,0,1]
+\end{verbatim}
+
+\section*{Algorithmic Approach}
+The solution to this problem is straightforward and simulates the addition process you would perform by hand.\marginnote{This approach ensures that each digit is processed correctly, handling carries seamlessly.}
+
+\begin{enumerate}
+    \item \textbf{Initialize Pointers and Variables:}
+    \begin{itemize}
+        \item Create a dummy node to serve as the starting point of the resulting linked list.
+        \item Initialize a `current` pointer to track the end of the merged list.
+        \item Initialize a `carry` variable to handle sums exceeding 9.
+    \end{itemize}
+    
+    \item \textbf{Traverse Both Lists Simultaneously:}
+    \begin{itemize}
+        \item While either of the linked lists has nodes left, or there is a carry value:
+        \begin{itemize}
+            \item Extract the current values from both lists. If a list has been fully traversed, use 0 as its value.
+            \item Calculate the sum of the values along with the carry.
+            \item Update the carry for the next iteration using division and modulus operations.
+            \item Create a new node with the calculated digit and append it to the merged list.
+            \item Move the `current` pointer forward.
+            \item Advance the pointers of both input lists if possible.
+        \end{itemize}
+    \end{itemize}
+    
+    \item \textbf{Handle Remaining Carry:}
+    \begin{itemize}
+        \item After the main loop, if there is a remaining carry, create a new node with this value and append it to the merged list.
+    \end{itemize}
+\end{enumerate}
+
+\section*{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(max(n, m))\), where \(n\) and \(m\) are the lengths of the two linked lists. Each node is visited exactly once.
+    \item \textbf{Space Complexity:} \(O(max(n, m))\), as the space required for the resulting linked list depends on the size of the larger input list.
+\end{itemize}
+
+\section*{Python Implementation}
+\marginnote{Implementing the two-pointer technique ensures that the algorithm runs efficiently without unnecessary memory usage.}
+
+Below is the complete Python code that implements the aforementioned approach:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+# Definition for singly-linked list.
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+class Solution:
+    def addTwoNumbers(self, l1: ListNode, l2: ListNode) -> ListNode:
+        dummy = ListNode()
+        current = dummy
+        carry = 0
+        
+        while l1 or l2 or carry:
+            val1 = (l1.val if l1 else 0)
+            val2 = (l2.val if l2 else 0)
+            carry, out = divmod(val1 + val2 + carry, 10)
+            
+            current.next = ListNode(out)
+            current = current.next
+            
+            l1 = (l1.next if l1 else None)
+            l2 = (l2.next if l2 else None)
+        
+        return dummy.next
+\end{lstlisting}
+\end{fullwidth}
+
+This implementation starts by initializing a dummy node and a `current` pointer. It then iterates through both linked lists, adding corresponding digits and managing the carry. If one list is longer than the other, the remaining digits are added along with the carry. Finally, any leftover carry is appended as a new node.
+
+\section*{Explanation}
+The `addTwoNumbers` function efficiently adds two numbers represented by linked lists by leveraging the **two-pointer technique**. Here's a detailed breakdown of the implementation:
+
+\begin{itemize}
+    \item \textbf{Initialization:}
+    \begin{itemize}
+        \item **Dummy Node:** A dummy node is created to simplify edge cases, such as when the resulting list is longer than both input lists.
+        \item **Current Pointer:** The `current` pointer tracks the end of the merged list.
+        \item **Carry Variable:** The `carry` variable holds any overflow value when the sum of two digits exceeds 9.
+    \end{itemize}
+    
+    \item \textbf{Adding Corresponding Digits:}
+    \begin{itemize}
+        \item **Value Extraction:** The values from the current nodes of both lists are extracted. If a list has been fully traversed, 0 is used as its value.
+        \item **Sum Calculation:** The sum of the two values along with any existing carry is calculated.
+        \item **Carry Update:** The `divmod` function is used to determine the new carry and the digit to be placed in the current node.
+        \item **Node Creation:** A new node with the calculated digit is created and appended to the merged list.
+        \item **Pointer Advancement:** Both input list pointers and the `current` pointer are moved forward.
+    \end{itemize}
+    
+    \item \textbf{Handling Remaining Carry:}
+    \begin{itemize}
+        \item After the main loop, if there is a remaining carry, a new node with this value is appended to the merged list.
+    \end{itemize}
+    
+    \item \textbf{Returning the Result:}
+    \begin{itemize}
+        \item The function returns the next node of the dummy node, effectively skipping the dummy node and providing the head of the merged linked list.
+    \end{itemize}
+\end{itemize}
+
+\section*{Why This Approach}
+The **two-pointer technique** is chosen for its efficiency and simplicity. By traversing both lists simultaneously and managing the carry during the traversal, the algorithm ensures that each digit is processed correctly in a single pass.\marginnote{This approach avoids the need to first determine the lengths of the lists, thereby optimizing the runtime.}
+
+\section*{Alternative Approaches}
+An alternative approach involves first determining the lengths of both linked lists, aligning the pointers accordingly, and then performing the addition. However, this method requires two passes through the lists: one to calculate their lengths and another to perform the addition. This increases the time complexity compared to the two-pointer technique.\marginnote{While feasible, this approach is less efficient and more complex to implement.}
+
+\section*{Similar Problems to This One}
+\begin{itemize}
+    \item \hyperref[problem:merge_k_sorted_lists]{Merge k Sorted Lists}\index{Merge k Sorted Lists}
+    \item \hyperref[problem:linked_list_cycle]{Linked List Cycle}\index{Linked List Cycle}
+    \item \hyperref[problem:reverse_linked_list]{Reverse Linked List}\index{Reverse Linked List}
+    \item \hyperref[problem:detect_cycle]{Detect Cycle in a Linked List}\index{Detect Cycle in a Linked List}
+\end{itemize}
+
+\section*{Things to Keep in Mind and Tricks}
+\begin{itemize}
+    \item \textbf{Edge Cases:} Always consider scenarios where one or both linked lists are empty, or where the resulting sum has an extra digit due to a final carry.\index{Edge Cases}
+    \item \textbf{Pointer Management:} Carefully manage the advancement of pointers to prevent null reference errors or infinite loops.\index{Pointer Management}
+    \item \textbf{Carry Handling:} Ensure that the carry is correctly propagated throughout the addition process, especially in cases where multiple consecutive digits result in a carry.\index{Carry Handling}
+    \item \textbf{Dummy Node Usage:} Utilizing a dummy node simplifies the logic by avoiding the need to handle the head of the merged list separately.\index{Dummy Node Usage}
+\end{itemize}
+
+\section*{Corner and Special Cases to Test When Implementing}
+\begin{itemize}
+    \item \textbf{Both Lists Empty:} \texttt{l1 = None, l2 = None}\index{Corner Cases}
+    \item \textbf{One List Empty:} \texttt{l1 = [0], l2 = [1, 2, 3]}\index{Corner Cases}
+    \item \textbf{Different Lengths:} \texttt{l1 = [2,4,3], l2 = [5,6]}\index{Corner Cases}
+    \item \textbf{All Digits Result in Carry:} \texttt{l1 = [9,9,9], l2 = [1,1,1]}\index{Corner Cases}
+    \item \textbf{Single Node Lists:} \texttt{l1 = [5], l2 = [5]}\index{Corner Cases}
+    \item \textbf{Large Numbers:} Test with very long linked lists to ensure performance and correctness.\index{Corner Cases}
+    \item \textbf{Multiple Carry Overlaps:} \texttt{l1 = [9,9,9,9], l2 = [9,9,9,9]}\index{Corner Cases}
+\end{itemize}
+
+\printindex

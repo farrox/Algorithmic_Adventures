@@ -1,0 +1,180 @@
+% Filename: binary_tree_right_side_view.tex
+
+\problemsection{Binary Tree Right Side View}\marginpar{View a binary tree from the right side using BFS or DFS.}
+
+\textbf{Problem Statement}
+
+This problem involves determining the right side view of a binary tree. The right side view consists of the nodes visible when the tree is viewed from the right side. Specifically, you need to return a list of node values that are visible at each level of the tree from top to bottom.
+
+\textbf{Algorithmic Approach}
+
+To solve this problem, you can use either an iterative approach with Breadth-First Search (BFS) or a recursive approach with Depth-First Search (DFS). Below, both methods are described:
+
+\begin{enumerate}
+    \item \textbf{Iterative Approach (Breadth-First Search)}:
+    \begin{itemize}
+        \item \textbf{Use a Queue}: Utilize a queue to perform level-order traversal.
+        \item \textbf{Level-by-Level Traversal}:
+        \begin{enumerate}
+            \item Initialize the queue with the root node.
+            \item While the queue is not empty:
+            \begin{enumerate}
+                \item Determine the number of nodes at the current level (size of the queue).
+                \item Iterate through all nodes at this level:
+                \begin{enumerate}
+                    \item Dequeue a node from the queue.
+                    \item If it's the last node in the current level, add its value to the result list.
+                    \item Enqueue its non-\texttt{NULL} left and right children.
+                \end{enumerate}
+            \end{enumerate}
+        \end{enumerate}
+    \end{itemize}
+    
+    \item \textbf{Recursive Approach (Depth-First Search)}:
+    \begin{itemize}
+        \item \textbf{Use a Helper Function}: Create a helper function that takes a node and its current depth as arguments.
+        \item \textbf{Traverse the Tree}:
+        \begin{enumerate}
+            \item If the node is \texttt{NULL}, return.
+            \item If the current depth equals the size of the result list, append the node's value to the result list.
+            \item Recursively traverse the right subtree first, then the left subtree, incrementing the depth by one.
+        \end{enumerate}
+    \end{itemize}
+\end{enumerate}
+
+\textbf{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity}: The time complexity is \(O(n)\), where \(n\) is the number of nodes in the tree. Each node is visited exactly once.
+    \item \textbf{Space Complexity}: 
+    \begin{itemize}
+        \item \textbf{Iterative Approach (BFS)}: \(O(n)\), as in the worst case, the queue will hold all nodes at the last level.
+        \item \textbf{Recursive Approach (DFS)}: \(O(h)\), where \(h\) is the height of the tree, due to the call stack.
+    \end{itemize}
+\end{itemize}
+
+\textbf{Python Implementation}\marginpar{Implementing both BFS and DFS solutions for flexibility.}
+
+\begin{lstlisting}[language=Python, xleftmargin=0.02\textwidth, xrightmargin=0.02\textwidth]
+# Definition for a binary tree node.
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+# Iterative Approach (BFS)
+from collections import deque
+
+def rightSideViewBFS(root: TreeNode) -> list:
+    if not root:
+        return []
+    result = []
+    queue = deque([root])
+    while queue:
+        level_size = len(queue)
+        for i in range(level_size):
+            node = queue.popleft()
+            # If it's the last node in the current level, add to result
+            if i == level_size - 1:
+                result.append(node.val)
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+    return result
+
+# Recursive Approach (DFS)
+def rightSideViewDFS(root: TreeNode) -> list:
+    def helper(node: TreeNode, depth: int):
+        if not node:
+            return
+        if depth == len(result):
+            result.append(node.val)
+        # Traverse right subtree first
+        helper(node.right, depth + 1)
+        helper(node.left, depth + 1)
+    
+    result = []
+    helper(root, 0)
+    return result
+
+# Example usage:
+# Constructing the following binary tree
+#       1
+#      / \
+#     2   3
+#      \   \
+#       5   4
+root = TreeNode(1)
+root.left = TreeNode(2, None, TreeNode(5))
+root.right = TreeNode(3, None, TreeNode(4))
+
+print(rightSideViewBFS(root))  # Output: [1, 3, 4]
+print(rightSideViewDFS(root))  # Output: [1, 3, 4]
+\end{lstlisting}
+
+\textbf{Explanation}
+
+The function \texttt{rightSideView} returns the values of the nodes that are visible when the binary tree is viewed from the right side. 
+
+\begin{itemize}
+    \item \textbf{Iterative Approach (BFS)}: 
+    \begin{itemize}
+        \item Utilizes a queue to perform level-order traversal.
+        \item At each level, it records the last node's value, which is visible from the right side.
+        \item Enqueues the left and right children of each node to traverse subsequent levels.
+    \end{itemize}
+    
+    \item \textbf{Recursive Approach (DFS)}: 
+    \begin{itemize}
+        \item Uses a helper function to traverse the tree depth-first, prioritizing the right subtree first.
+        \item When visiting a node at a new depth, it adds the node's value to the result list.
+        \item This ensures that the first node encountered at each depth is the rightmost node.
+    \end{itemize}
+\end{itemize}
+
+\textbf{Why This Approach}
+
+\begin{itemize}
+    \item \textbf{Iterative Approach (BFS)}: 
+    \begin{itemize}
+        \item Efficiently handles level-by-level traversal, making it straightforward to identify the rightmost node at each level.
+        \item Suitable for scenarios where breadth-wise information is essential.
+    \end{itemize}
+    
+    \item \textbf{Recursive Approach (DFS)}: 
+    \begin{itemize}
+        \item Recursively explores the right subtree first, ensuring that the first node encountered at each depth is the rightmost node.
+        \item Simplifies the implementation by leveraging the call stack to manage traversal depth.
+    \end{itemize}
+\end{itemize}
+
+\textbf{Alternative Approaches}
+
+An alternative method involves using Depth-First Search (DFS) iteratively with a stack, maintaining a record of depths and ensuring that the rightmost nodes are processed first. However, the BFS and recursive DFS approaches are generally more intuitive and easier to implement for this problem.
+
+\textbf{Similar Problems to This One}
+
+Similar tree traversal problems include finding the left side view of a binary tree (\hyperref[problem:binary_tree_left_side_view]{Binary Tree Left Side View}), performing a zigzag level order traversal (\hyperref[problem:binary_tree_zigzag_level_order_traversal]{Binary Tree Zigzag Level Order Traversal}), and finding the maximum depth of a binary tree (\hyperref[problem:maximum_depth_of_binary_tree]{Maximum Depth of Binary Tree}).
+
+\textbf{Things to Keep in Mind and Tricks}
+
+\begin{itemize}
+    \item \textbf{Handling Empty Trees}: Always check if the root is \texttt{NULL} to handle empty trees gracefully.
+    \item \textbf{Level Tracking}: In the iterative approach, keeping track of the current level's size helps in identifying the rightmost node.
+    \item \textbf{Traversal Order}: Prioritizing the right subtree first in the recursive approach ensures that the first node encountered at each depth is the rightmost node.
+    \item \textbf{Space Optimization}: Be mindful of the space used by the queue in BFS or the recursion stack in DFS, especially for very deep or wide trees.
+    \item \textbf{Consistent Level Identification}: Ensure that nodes are correctly associated with their respective levels to maintain accurate traversal results.
+\end{itemize}
+
+\textbf{Corner and Special Cases to Test When Writing the Code}
+
+\begin{itemize}
+    \item \textbf{Empty Tree}: Should return an empty list.
+    \item \textbf{Single Node}: Should return a list containing the single node's value.
+    \item \textbf{Left-Skewed Tree}: Trees where each node has only a left child should correctly return the last node at each level.
+    \item \textbf{Right-Skewed Tree}: Trees where each node has only a right child should correctly return all node values.
+    \item \textbf{Balanced Tree}: Ensure that balanced trees return the rightmost nodes at each level.
+    \item \textbf{Large Tree}: Testing with a large number of nodes ensures that the implementation handles depth and breadth efficiently without performance degradation.
+\end{itemize}

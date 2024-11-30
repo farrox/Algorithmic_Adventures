@@ -1,0 +1,142 @@
+% Filename: median_of_two_sorted_arrays.tex
+
+\problemsection{Median of Two Sorted Arrays}
+\label{problem:Median_of_Two_Sorted_Arrays}
+
+The **Median of Two Sorted Arrays** problem is a classic computational challenge that involves merging and analyzing two sorted arrays to find their median. It tests proficiency in optimizing algorithms for time complexity and requires a deep understanding of binary search techniques.
+
+---
+
+\section*{Problem Statement}
+Given two sorted arrays \texttt{nums1} and \texttt{nums2} of sizes \(m\) and \(n\) respectively, return the median of the two sorted arrays. The solution should have a time complexity of \(O(\log(m + n))\).
+
+---
+
+\textbf{Input:}
+- \texttt{nums1}: A sorted list of integers.
+- \texttt{nums2}: Another sorted list of integers.
+
+\textbf{Output:}
+- A float representing the median of the combined arrays.
+
+\textbf{Example 1:}
+\begin{verbatim}
+Input: nums1 = [1, 3], nums2 = [2]
+Output: 2.0
+Explanation: Merging nums1 and nums2 gives [1, 2, 3]. The median is 2.0.
+\end{verbatim}
+
+\textbf{Example 2:}
+\begin{verbatim}
+Input: nums1 = [1, 2], nums2 = [3, 4]
+Output: 2.5
+Explanation: Merging nums1 and nums2 gives [1, 2, 3, 4]. The median is (2 + 3)/2 = 2.5.
+\end{verbatim}
+
+\textbf{Constraints:}
+- \(0 \leq m, n \leq 1000\)
+- \(1 \leq m + n \leq 2000\)
+- \(-10^6 \leq \texttt{nums1[i]}, \texttt{nums2[i]} \leq 10^6\)
+
+---
+
+\section*{Algorithmic Approach}
+
+Finding the median in \(O(\log(m + n))\) requires a binary search approach rather than merging the arrays, which would take \(O(m + n)\). The algorithm works by applying binary search on the smaller array.
+
+\subsection*{Steps:}
+1. Ensure \texttt{nums1} is the smaller array; if not, swap \texttt{nums1} and \texttt{nums2}.
+2. Perform binary search on the smaller array:
+   - Partition both arrays such that the left halves contain the smaller elements.
+   - Use two pointers to adjust the partition dynamically.
+3. Check if the partition is valid:
+   - If the maximum element of the left half is less than or equal to the minimum element of the right half, the partition is correct.
+   - Otherwise, adjust the partition by moving the binary search pointers.
+4. Compute the median:
+   - If the combined array size is odd, the median is the maximum of the left half.
+   - If even, the median is the average of the maximum of the left half and the minimum of the right half.
+
+---
+
+\subsection*{Complexities}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(\log(\min(m, n)))\), as the binary search is applied to the smaller array.
+    \item \textbf{Space Complexity:} \(O(1)\), as the algorithm operates in-place.
+\end{itemize}
+
+---
+
+\section*{Python Implementation}
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class Solution:
+    def findMedianSortedArrays(self, nums1: List[int], nums2: List[int]) -> float:
+        if len(nums1) > len(nums2):
+            nums1, nums2 = nums2, nums1  # Ensure nums1 is the smaller array
+
+        x, y = len(nums1), len(nums2)
+        left, right = 0, x
+        
+        while left <= right:
+            partitionX = (left + right) // 2
+            partitionY = (x + y + 1) // 2 - partitionX
+
+            maxX = float('-inf') if partitionX == 0 else nums1[partitionX - 1]
+            minX = float('inf') if partitionX == x else nums1[partitionX]
+            maxY = float('-inf') if partitionY == 0 else nums2[partitionY - 1]
+            minY = float('inf') if partitionY == y else nums2[partitionY]
+
+            if maxX <= minY and maxY <= minX:
+                if (x + y) % 2 == 0:
+                    return (max(maxX, maxY) + min(minX, minY)) / 2
+                else:
+                    return max(maxX, maxY)
+            elif maxX > minY:
+                right = partitionX - 1
+            else:
+                left = partitionX + 1
+        
+        raise ValueError("Input arrays are not sorted properly.")
+
+# Example usage:
+nums1 = [1, 3]
+nums2 = [2]
+solution = Solution()
+print(solution.findMedianSortedArrays(nums1, nums2))  # Output: 2.0
+\end{lstlisting}
+\end{fullwidth}
+
+---
+
+\section*{Why This Approach?}
+This approach is efficient because it avoids merging the arrays. By focusing on partitioning the arrays into balanced halves, the algorithm achieves \(O(\log(\min(m, n)))\) time complexity while maintaining the simplicity of binary search.
+
+---
+
+\section*{Alternative Approaches}
+1. **Merging Arrays:** Combine the arrays and find the median directly. This approach has \(O(m + n)\) complexity and is less efficient for large datasets.
+2. **Heap-Based Methods:** Use a min-heap or max-heap to extract the median. While useful in streaming data, it is unnecessary for this problem.
+
+---
+
+\section*{Similar Problems}
+\begin{itemize}
+    \item **Kth Largest Element in an Array:** Use similar partitioning techniques to locate the \(k\)-th largest element.
+    \item **Median of a Stream:** Continuously calculate the median as elements arrive.
+    \item **Find Median in a Sorted Matrix:** Combines searching and partitioning methods for 2D arrays.
+\end{itemize}
+
+---
+
+\section*{Corner Cases to Test}
+\begin{itemize}
+    \item Empty array: \( \texttt{nums1} = [], \texttt{nums2} = [1] \).
+    \item Arrays of different sizes: \( \texttt{nums1} = [1, 2], \texttt{nums2} = [3, 4, 5, 6] \).
+    \item Arrays with negative numbers: \( \texttt{nums1} = [-5, -3], \texttt{nums2} = [-2, -1] \).
+\end{itemize}
+
+---
+
+\section*{Conclusion}
+The **Median of Two Sorted Arrays** problem highlights the elegance of binary search in solving complex problems efficiently. By leveraging the sorted nature of the input, the algorithm achieves optimal performance and showcases the versatility of partitioning techniques.

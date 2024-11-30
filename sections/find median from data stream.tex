@@ -1,0 +1,86 @@
+
+ewpage
+\chapter{295. Find Median from Data Stream}
+\label{chap:find_median_from_data_stream}
+
+The problem is to design a data structure that efficiently finds the median of the elements in a data stream. As data streams in, we want to be able to add a number and find the current median quickly.
+
+\section*{Problem Statement}
+Leetcode Link: \href{https://leetcode.com/problems/find-median-from-data-stream/}{295. Find Median from Data Stream}
+
+\section*{Algorithmic Approach}
+To solve this problem, I will use two priority queues (also known as heaps in Python): one max-heap to store the smaller half of the numbers and one min-heap to store the larger half of the numbers. The max-heap allows us to efficiently get the largest of the small numbers, whereas the min-heap gives us quick access to the smallest of the large numbers. By keeping both heaps balanced (having the same number of elements or the max-heap having one more element), we can ensure that the median is either the top of the max-heap or the average of the tops of both heaps.
+
+\section*{Complexities}
+\begin{itemize}
+    \item Time Complexity:
+      \begin{itemize}
+        \item addNum() - O(log n) because adding an element to a heap is O(log n) due to the need to maintain the heap invariant.
+        \item findMedian() - O(1) because it only requires accessing the top elements of the heaps.
+      \end{itemize}
+    \item Space Complexity: O(n) as we store all elements inserted into the data structure.
+\end{itemize}
+
+
+ewpage
+\section*{Python Implementation}
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+import heapq
+
+class MedianFinder:
+
+    def __init__(self):
+        # The large heap stores the larger half, the small heap stores the smaller half
+        self.small = []  # Use max-heap (invert the values to use min-heap in Python)
+        self.large = []  # Use min-heap
+
+    def addNum(self, num):
+        # Add to max heap
+        heapq.heappush(self.small, -num)
+        
+        # Balance heaps - ensure each heappop operation is valid
+        if self.small and self.large and (-self.small[0] > self.large[0]):
+            val = -heapq.heappop(self.small)
+            heapq.heappush(self.large, val)
+            
+        # Maintain size property - max-heap can have one more element than min-heap
+        if len(self.small) > len(self.large) + 1:
+            val = -heapq.heappop(self.small)
+            heapq.heappush(self.large, val)
+        elif len(self.large) > len(self.small):
+            val = heapq.heappop(self.large)
+            heapq.heappush(self.small, -val)
+
+    def findMedian(self):
+        if len(self.small) == len(self.large):
+            return (-self.small[0] + self.large[0]) / 2.0
+        return float(-self.small[0])
+
+# Your MedianFinder object will be instantiated and called as such:
+# obj = MedianFinder()
+# obj.addNum(num)
+# param_2 = obj.findMedian()
+\end{lstlisting}
+
+\end{fullwidth}
+
+\section*{Explanation}
+Initially, both heaps are empty. When a new number is added to the stream, it is first inserted into the max-heap. If after insertion, the max element of the max-heap is greater than the min element of the min-heap, we move this element from the max-heap to the min-heap to maintain the order property. We also balance the heaps such that either both heaps have the same number of elements or the max-heap has one more element.
+
+\section*{Why this approach}
+This approach ensures that finding the median operation can be done in constant time while adding a number operation takes logarithmic time. This is efficient considering the median needs to be recalculated each time a new number is introduced.
+
+\section*{Alternative approaches}
+An alternative would be to maintain a sorted list and insert each number in the correct position, which would take O(n) time for adding a number and O(1) time for finding the median. This approach is not efficient for large lists.
+
+\section*{Similar problems to this one}
+Similar problems deal with dynamic order statistics, such as finding the k-th largest element in a stream, which can also be solved using a dual heap approach.
+
+\section*{Things to keep in mind and tricks}
+Keep both heaps balanced in size so the median can be found quickly. When using a min-heap in Python, to simulate a max-heap you can insert the negation of the values.
+
+\section*{Corner and special cases to test when writing the code}
+- The stream has no elements or only one element.
+- The number of elements is odd or even.
+- Continuous numbers that would lead to imbalance heaps if not correctly managed.

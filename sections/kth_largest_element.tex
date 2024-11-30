@@ -1,0 +1,156 @@
+% Filename: kth_largest_element.tex
+
+\problemsection{Kth Largest Element in an Array}
+\label{problem:Kth_Largest_Element}
+
+The **Kth Largest Element in an Array** problem challenges you to find the \(k\)-th largest element efficiently, without necessarily sorting the entire array. This problem is a great exercise in optimization techniques, particularly for scenarios where sorting is not feasible due to performance constraints.
+
+---
+
+\section*{Problem Statement}
+Given an integer array \texttt{nums} and an integer \texttt{k}, return the \(k\)-th largest element in the array. Note that the \(k\)-th largest element is determined in sorted order, not based on distinct values.
+
+\textbf{Input:}
+- \texttt{nums}: A list of integers.
+- \texttt{k}: An integer representing the desired rank.
+
+\textbf{Output:}
+- An integer representing the \(k\)-th largest element in \texttt{nums}.
+
+---
+
+\textbf{Example 1:}
+\begin{verbatim}
+Input: nums = [3, 2, 1, 5, 6, 4], k = 2
+Output: 5
+Explanation: The sorted array is [1, 2, 3, 4, 5, 6]. The 2nd largest is 5.
+\end{verbatim}
+
+\textbf{Example 2:}
+\begin{verbatim}
+Input: nums = [3, 2, 3, 1, 2, 4, 5, 5, 6], k = 4
+Output: 4
+Explanation: The sorted array is [1, 2, 2, 3, 3, 4, 5, 5, 6]. The 4th largest is 4.
+\end{verbatim}
+
+\textbf{Constraints:}
+- \(1 \leq \texttt{nums.length} \leq 10^5\)
+- \(-10^4 \leq \texttt{nums}[i] \leq 10^4\)
+- \(1 \leq \texttt{k} \leq \texttt{nums.length}\)
+
+---
+
+\section*{Algorithmic Approaches}
+
+This problem can be efficiently solved using the following techniques:
+
+\subsection*{1. Min-Heap Approach (\(O(n \log k)\))}
+Use a min-heap of size \(k\) to maintain the \(k\)-th largest elements seen so far:
+1. Push each element into the heap.
+2. If the heap size exceeds \(k\), remove the smallest element (top of the heap).
+3. At the end, the top of the heap is the \(k\)-th largest element.
+
+\subsection*{2. Quickselect (\(O(n)\) Average Case)}
+Quickselect is an optimization of the QuickSort algorithm that focuses only on the partition containing the desired \(k\)-th largest element:
+1. Partition the array around a pivot element.
+2. Compare the pivot’s position to \(n-k\) (index for \(k\)-th largest element in sorted order):
+    - If equal, return the pivot.
+    - If smaller, search the right partition.
+    - If larger, search the left partition.
+3. Repeat until the \(k\)-th largest element is found.
+
+---
+
+\subsection*{Complexities}
+1. **Min-Heap Approach:**
+   - Time Complexity: \(O(n \log k)\), as each insertion/removal operation in the heap is \(O(\log k)\).
+   - Space Complexity: \(O(k)\), for the heap.
+
+2. **Quickselect:**
+   - Time Complexity: \(O(n)\) on average, \(O(n^2)\) in the worst case (unbalanced partitions).
+   - Space Complexity: \(O(1)\), as it operates in-place.
+
+---
+
+\section*{Python Implementations}
+
+\subsection*{Min-Heap Approach (\(O(n \log k)\))}
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+import heapq
+
+def findKthLargest(nums, k):
+    heap = []
+    for num in nums:
+        heapq.heappush(heap, num)
+        if len(heap) > k:
+            heapq.heappop(heap)
+    return heapq.heappop(heap)
+
+# Example usage:
+nums = [3, 2, 1, 5, 6, 4]
+k = 2
+print(findKthLargest(nums, k))  # Output: 5
+\end{lstlisting}
+\end{fullwidth}
+
+\subsection*{Quickselect Approach (\(O(n)\) Average Case)}
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+import random
+
+def findKthLargest(nums, k):
+    def partition(left, right, pivot_index):
+        pivot = nums[pivot_index]
+        nums[pivot_index], nums[right] = nums[right], nums[pivot_index]
+        store_index = left
+        for i in range(left, right):
+            if nums[i] > pivot:
+                nums[store_index], nums[i] = nums[i], nums[store_index]
+                store_index += 1
+        nums[store_index], nums[right] = nums[right], nums[store_index]
+        return store_index
+
+    left, right = 0, len(nums) - 1
+    while True:
+        pivot_index = random.randint(left, right)
+        pivot_index = partition(left, right, pivot_index)
+        if pivot_index == k - 1:
+            return nums[pivot_index]
+        elif pivot_index < k - 1:
+            left = pivot_index + 1
+        else:
+            right = pivot_index - 1
+
+# Example usage:
+nums = [3, 2, 1, 5, 6, 4]
+k = 2
+print(findKthLargest(nums, k))  # Output: 5
+\end{lstlisting}
+\end{fullwidth}
+
+---
+
+\section*{Why These Approaches?}
+- The Min-Heap approach is intuitive and robust, especially for streaming data or cases where \(k\) is small.
+- Quickselect is ideal for large datasets as it is faster on average and has \(O(1)\) space complexity.
+
+---
+
+\section*{Similar Problems}
+1. **Kth Smallest Element in a Sorted Matrix:** A similar ranking problem in a 2D matrix.
+2. **Find Median of Two Sorted Arrays:** Combines binary search and partitioning concepts.
+3. **Top K Frequent Elements:** Uses heaps or hash maps to find the most frequent elements.
+
+---
+
+\section*{Corner Cases to Test}
+1. \(k = 1\): The largest element in the array.
+2. \(k = \texttt{len(nums)}\): The smallest element in the array.
+3. Array with duplicates: Ensure the rank logic works correctly.
+4. Array with negative numbers: Test arrays containing both positive and negative integers.
+
+---
+
+\section*{Conclusion}
+The \(k\)-th Largest Element in an Array problem highlights the importance of efficient selection algorithms like Quickselect and heap-based optimizations. These techniques ensure performance even for large datasets and demonstrate the versatility of divide-and-conquer and heap-based approaches in real-world scenarios.

@@ -1,0 +1,138 @@
+% Filename: spiral_matrix.tex
+
+\problemsection{Spiral Matrix}
+\label{problem:Spiral_Matrix}
+
+The **Spiral Matrix** problem requires traversing a given matrix in a spiral order. This task demonstrates techniques for systematic traversal of 2D arrays and highlights careful boundary management during iteration.
+
+---
+
+\section*{Problem Statement}
+Given an \(m \times n\) matrix, return all elements of the matrix in spiral order.
+
+---
+
+\textbf{Input:}
+- \texttt{matrix}: A list of lists representing an \(m \times n\) integer matrix.
+
+\textbf{Output:}
+- A list of integers containing the elements of \texttt{matrix} in spiral order.
+
+---
+
+\textbf{Example 1:}
+\begin{verbatim}
+Input: matrix = [
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9]
+]
+Output: [1, 2, 3, 6, 9, 8, 7, 4, 5]
+\end{verbatim}
+
+\textbf{Example 2:}
+\begin{verbatim}
+Input: matrix = [
+    [1, 2, 3, 4],
+    [5, 6, 7, 8],
+    [9, 10, 11, 12]
+]
+Output: [1, 2, 3, 4, 8, 12, 11, 10, 9, 5, 6, 7]
+\end{verbatim}
+
+---
+
+\section*{Algorithmic Approach}
+The spiral order traversal follows these steps:
+1. Start at the top-left corner and move right until reaching the boundary.
+2. Move downward along the rightmost column.
+3. Move left along the bottom row (if it hasn’t been visited).
+4. Move upward along the leftmost column (if it hasn’t been visited).
+5. Repeat the above steps while adjusting the boundaries for each traversal.
+
+---
+
+\subsection*{Complexities}
+1. **Time Complexity:** \(O(m \times n)\), as every element is visited exactly once.
+2. **Space Complexity:** \(O(1)\), excluding the space required for the output list.
+
+---
+
+\section*{Python Implementation}
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def spiralOrder(matrix):
+    if not matrix or not matrix[0]:
+        return []
+
+    result = []
+    top, bottom = 0, len(matrix) - 1
+    left, right = 0, len(matrix[0]) - 1
+
+    while top <= bottom and left <= right:
+        # Traverse from left to right along the top row
+        for col in range(left, right + 1):
+            result.append(matrix[top][col])
+        top += 1
+
+        # Traverse from top to bottom along the right column
+        for row in range(top, bottom + 1):
+            result.append(matrix[row][right])
+        right -= 1
+
+        if top <= bottom:
+            # Traverse from right to left along the bottom row
+            for col in range(right, left - 1, -1):
+                result.append(matrix[bottom][col])
+            bottom -= 1
+
+        if left <= right:
+            # Traverse from bottom to top along the left column
+            for row in range(bottom, top - 1, -1):
+                result.append(matrix[row][left])
+            left += 1
+
+    return result
+
+# Example usage:
+matrix = [
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9]
+]
+print(spiralOrder(matrix))  # Output: [1, 2, 3, 6, 9, 8, 7, 4, 5]
+\end{lstlisting}
+\end{fullwidth}
+
+---
+
+\section*{Why This Approach?}
+The approach ensures that all elements are visited exactly once, while carefully managing the boundaries of traversal. It avoids unnecessary computations and maintains a clear structure for moving in a spiral order.
+
+---
+
+\section*{Alternative Approaches}
+1. **Simulation-Based Traversal:**
+   - Use a direction vector (e.g., right, down, left, up) to simulate the traversal and adjust boundaries dynamically.
+   - This approach can be easier to extend but involves more bookkeeping.
+
+---
+
+\section*{Similar Problems}
+1. **Spiral Matrix II:** Generate an \(n \times n\) matrix filled with integers from 1 to \(n^2\) in spiral order.
+2. **Diagonal Traversal of a Matrix:** Traverse a matrix diagonally.
+3. **Matrix Rotation:** Rotate a matrix by 90 degrees clockwise.
+
+---
+
+\section*{Corner Cases to Test}
+1. Single row matrix: \(\texttt{matrix} = [[1, 2, 3, 4]]\).
+2. Single column matrix: \(\texttt{matrix} = [[1], [2], [3], [4]]\).
+3. Empty matrix: \(\texttt{matrix} = []\).
+4. \(1 \times 1\) matrix: \(\texttt{matrix} = [[1]]\).
+5. Rectangular matrices where \(m \neq n\).
+
+---
+
+\section*{Conclusion}
+The **Spiral Matrix** problem highlights the importance of systematic traversal and boundary management in 2D arrays. This solution is efficient, clear, and adaptable for various matrix traversal problems.

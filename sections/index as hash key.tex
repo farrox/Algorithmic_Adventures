@@ -1,0 +1,171 @@
+\section{Index as a Hash Key}
+
+\section*{Introduction}
+
+In algorithmic problem-solving, achieving optimal time and space complexities is often a critical goal, especially in scenarios with large datasets or stringent memory constraints. One powerful technique to attain \(O(1)\) space complexity is to utilize the input array itself as a hash table. This method is particularly effective when the array contains elements within a specific range, typically from 1 to \(N\), where \(N\) is the length of the array.
+
+By leveraging the array indices as hash keys, you can mark the presence of elements without the need for additional data structures. A common strategy involves negating the value at the index corresponding to each element, thereby indicating that the element has been encountered. This approach not only optimizes space usage but also maintains the original array's integrity by providing a reversible way to track element occurrences.
+
+In this chapter, we will explore the concept of using array indices as hash keys, discuss its applications in solving common algorithmic problems, and provide Python implementations to illustrate the technique. We will also examine the associated time and space complexities, ensuring a comprehensive understanding of this efficient method.
+
+\section*{Problem Statement}
+
+\textbf{Find All Duplicates in an Array}
+
+Given an array of integers \texttt{nums} where \(1 \leq nums[i] \leq n\) (\(n\) is the size of the array), some elements appear twice and others appear once. Find all the elements that appear twice in this array without using extra space and in \(O(n)\) time.
+
+\textbf{Input:} An array \texttt{nums} of integers where each integer is in the range \([1, n]\).
+
+\textbf{Output:} A list of integers that appear twice in the array.
+
+\textbf{Example:}
+\begin{verbatim}
+Input: nums = [4,3,2,7,8,2,3,1]
+Output: [2,3]
+Explanation: The numbers 2 and 3 appear twice in the array.
+\end{verbatim}
+
+% LeetCode link: \href{https://leetcode.com/problems/find-all-duplicates-in-an-array/}{Find All Duplicates in an Array}
+
+\section*{Algorithmic Approach}
+
+Using the array itself as a hash table allows us to achieve \(O(1)\) space complexity by encoding the presence of elements through manipulation of the array's indices. Here's how the approach works:
+
+\begin{itemize}
+    \item \textbf{Iteration}: Traverse the array from left to right.
+    \item \textbf{Index Mapping}: For each element \texttt{nums[i]}, compute the corresponding index as \texttt{index = abs(nums[i]) - 1}.
+    \item \textbf{Marking Presence}: Negate the value at the computed index to indicate that the element \texttt{abs(nums[i])} has been encountered.
+    \item \textbf{Duplicate Detection}: If the value at the computed index is already negative, it signifies that the element \texttt{abs(nums[i])} has been seen before, indicating a duplicate.
+    \item \textbf{Result Collection}: Collect all such duplicate elements identified during the traversal.
+\end{itemize}
+
+This method ensures that each element is processed in constant time, leading to an overall \(O(n)\) time complexity while maintaining \(O(1)\) space usage.
+
+\section*{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:} The algorithm runs in \(O(n)\) time since it involves a single pass through the array.
+    
+    \item \textbf{Space Complexity:} The space complexity is \(O(1)\) because no additional data structures are used; the input array is modified in place.
+\end{itemize}
+
+\section*{Python Implementation}
+
+Below is the Python code to solve the "Find All Duplicates in an Array" problem using the index-as-hash-key technique:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+from typing import List
+
+def findDuplicates(nums: List[int]) -> List[int]:
+    """
+    Finds all elements that appear twice in the array using O(1) extra space.
+    
+    Parameters:
+    nums (List[int]): The input array containing integers from 1 to n.
+    
+    Returns:
+    List[int]: A list of integers that appear twice in the array.
+    """
+    duplicates = []
+    
+    for num in nums:
+        index = abs(num) - 1  # Compute the index corresponding to the current number
+        if nums[index] < 0:
+            duplicates.append(abs(num))  # If already negative, it's a duplicate
+        else:
+            nums[index] = -nums[index]  # Negate the value to mark presence
+    
+    return duplicates
+
+# Example usage:
+nums = [4,3,2,7,8,2,3,1]
+print(findDuplicates(nums))  # Output: [2, 3]
+\end{lstlisting}
+\end{fullwidth}
+
+\section*{Example Usage and Test Cases}
+
+\begin{lstlisting}[language=Python]
+# Test case 1: General case with duplicates
+nums = [4,3,2,7,8,2,3,1]
+print(findDuplicates(nums))  # Output: [2, 3]
+
+# Test case 2: No duplicates
+nums = [1,2,3,4,5]
+print(findDuplicates(nums))  # Output: []
+
+# Test case 3: All elements are duplicates
+nums = [1,1,2,2,3,3]
+print(findDuplicates(nums))  # Output: [1, 2, 3]
+
+# Test case 4: Single element repeated multiple times
+nums = [2,2,2,2]
+print(findDuplicates(nums))  # Output: [2]
+
+# Test case 5: Mixed positive and negative numbers (though problem constraints specify positive)
+nums = [4,3,2,7,8,2,3,1]
+print(findDuplicates(nums))  # Output: [2, 3]
+\end{lstlisting}
+
+\section*{Why This Approach}
+
+This approach is chosen because it ingeniously leverages the input array to track the presence of elements without requiring extra space. By using the absolute value of each element to determine the corresponding index and negating the value at that index, we effectively mark which numbers have been seen. If a number is encountered whose corresponding index already holds a negative value, it indicates a duplicate. This method ensures that each element is checked exactly once, resulting in an efficient \(O(n)\) time complexity with \(O(1)\) space usage.
+
+Moreover, this technique is simple to implement and avoids the overhead of additional data structures like hash maps or sets, making it highly suitable for interview scenarios where space optimization is critical.
+
+\section*{Similar Problems}
+
+Other problems that benefit from using array indices as hash keys include:
+
+\begin{itemize}
+    \item \textbf{Find All Numbers Disappeared in an Array}: Identify all the numbers in the range [1, n] that do not appear in the array.
+    
+    \item \textbf{First Missing Positive}: Find the smallest missing positive integer from an unsorted array.
+    
+    \item \textbf{Find Duplicate Number}: Given an array containing \(n + 1\) integers where each integer is between 1 and \(n\) (inclusive), find the duplicate number.
+    
+    \item \textbf{Find All Duplicates in an Array}: Extend the technique to find all duplicates when multiple elements can appear more than twice.
+\end{itemize}
+
+These problems utilize similar in-place modification strategies to achieve optimal time and space complexities by mapping array elements to their corresponding indices.
+
+\section*{Things to Keep in Mind and Tricks}
+
+\begin{itemize}
+    \item \textbf{Array Constraints}: This technique is applicable when the array elements are within a specific range (e.g., 1 to \(n\)), allowing for direct mapping to indices.
+    
+    \item \textbf{Handling Zero or Negative Numbers}: Ensure that the array does not contain zero or negative numbers unless the problem explicitly allows for it, as this can interfere with the index mapping.
+    
+    \item \textbf{Preserving Original Array}: If the original array needs to remain unchanged after the operation, consider restoring the array's values by taking the absolute value of each element after processing.
+    
+    \item \textbf{Edge Cases}: Always test edge cases such as empty arrays, arrays with all unique elements, and arrays with all elements duplicated.
+    
+    \item \textbf{Use of Absolute Values}: When iterating through the array, use the absolute value of each element to ensure that previously negated values do not affect the current iteration.
+    
+    \item \textbf{Index Calculation}: Remember to subtract one from the absolute value of the current number to obtain the correct zero-based index.
+\end{itemize}
+
+\section*{Exercises}
+
+\begin{enumerate}
+    \item \textbf{Find All Numbers Disappeared in an Array}: Given an array of integers where \(1 \leq a_i \leq n\) (\(n\) is the size of the array), find all the integers in the range [1, n] that do not appear in the array.
+    
+    \item \textbf{First Missing Positive}: Given an unsorted integer array, find the smallest missing positive integer.
+    
+    \item \textbf{Find Duplicate Number}: Given an array of integers containing \(n + 1\) integers where each integer is between 1 and \(n\) (inclusive), prove that at least one duplicate number must exist. Assume that there is only one duplicate number, find the duplicate one.
+    
+    \item \textbf{Find All Duplicates in an Array II}: Given an integer array, some elements appear twice and others appear once. Find all the elements that appear twice using \(O(1)\) extra space.
+\end{enumerate}
+
+\section*{Questions for Reflection}
+
+\begin{itemize}
+    \item How does the presence of duplicate elements affect the in-place hashing technique, and how can it be adapted to handle multiple duplicates?
+    
+    \item Can this approach be extended to handle arrays where elements are not confined to the range [1, n]? If so, how?
+    
+    \item What are the trade-offs between using in-place hashing versus traditional hash tables or sets for tracking element occurrences?
+    
+    \item How would you modify the algorithm to restore the original array after finding duplicates if the array must remain unchanged?
+\end{itemize}

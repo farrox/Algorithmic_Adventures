@@ -1,0 +1,107 @@
+% Filename: first_missing_positive.tex
+
+\problemsection{First Missing Positive}
+\label{problem:First_Missing_Positive}
+
+The **First Missing Positive** problem is a challenging question that tests your understanding of in-place array manipulation and indexing. The goal is to identify the smallest positive integer that is missing from an unsorted array in \(O(n)\) time and \(O(1)\) space, excluding the space used for the input array.
+
+\subsection*{Problem Statement}
+Given an unsorted integer array \texttt{nums}, return the smallest missing positive integer.
+
+\textbf{Input:}
+- An array of integers \texttt{nums}.
+
+\textbf{Output:}
+- An integer representing the smallest missing positive number.
+
+\textbf{Example 1:}
+\begin{verbatim}
+Input: nums = [1,2,0]
+Output: 3
+\end{verbatim}
+
+\textbf{Example 2:}
+\begin{verbatim}
+Input: nums = [3,4,-1,1]
+Output: 2
+\end{verbatim}
+
+\textbf{Example 3:}
+\begin{verbatim}
+Input: nums = [7,8,9,11,12]
+Output: 1
+\end{verbatim}
+
+\subsection*{Algorithmic Approach}
+The problem can be efficiently solved by leveraging the array as a hash table using index manipulation. The key insight is that the first missing positive integer must be within the range \([1, n+1]\), where \(n\) is the length of the array.
+
+\textbf{Steps:}
+\begin{itemize}
+    \item Iterate through the array and place each number \(x\) in its correct position if \(1 \leq x \leq n\)\sidenote{This step reorders the array so that each index \(i\) ideally contains the number \(i+1\)}.
+    \item After rearrangement, iterate through the array again to find the first index where the value does not match the expected value \(i+1\).
+    \item Return \(i+1\) as the first missing positive. If no such index is found, return \(n+1\).
+\end{itemize}
+
+\subsection*{Complexities}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(n)\), since each number is placed in its correct position at most once.
+    \item \textbf{Space Complexity:} \(O(1)\), as the algorithm uses the input array for rearrangement without additional data structures.
+\end{itemize}
+
+\subsection*{Python Implementation}
+Below is the Python implementation of the above approach:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def firstMissingPositive(nums: List[int]) -> int:
+    n = len(nums)
+    
+    # Rearrange numbers to their correct positions
+    for i in range(n):
+        while 1 <= nums[i] <= n and nums[nums[i] - 1] != nums[i]:
+            nums[nums[i] - 1], nums[i] = nums[i], nums[nums[i] - 1]
+    
+    # Find the first missing positive
+    for i in range(n):
+        if nums[i] != i + 1:
+            return i + 1
+    
+    return n + 1
+\end{lstlisting}
+\end{fullwidth}
+
+\subsection*{Why This Approach?}
+This approach achieves optimal time and space complexity by leveraging in-place array manipulation. The reordering step ensures that numbers are placed in their "expected" positions, enabling efficient identification of the missing positive without additional storage.
+
+\subsection*{Alternative Approaches}
+\begin{itemize}
+    \item **Hash Set Approach:**  
+    Use a hash set to store all positive integers in the array and iterate from \(1\) to \(n+1\) to find the first missing number. This approach is simpler but requires \(O(n)\) additional space\sidenote{The hash set provides constant-time lookups but sacrifices space efficiency}.
+    \item **Sorting Approach:**  
+    Sort the array and iterate to find the first missing positive. This has \(O(n \log n)\) time complexity due to sorting and is less efficient than the optimal solution.
+\end{itemize}
+
+\subsection*{Similar Problems}
+\begin{itemize}
+    \item \textbf{Missing Number:} Find the missing number from an array containing numbers \(0\) to \(n\).
+    \item \textbf{Find All Duplicates in an Array:} Identify duplicate numbers using in-place manipulation.
+    \item \textbf{Find All Numbers Disappeared in an Array:} Find numbers missing from \(1\) to \(n\) in a given array.
+\end{itemize}
+
+\subsection*{Things to Keep in Mind and Tricks}
+\begin{itemize}
+    \item Numbers outside the range \([1, n]\) can be ignored as they do not affect the result.
+    \item Use a while loop during reordering to ensure that each number is placed in its correct position\sidenote{The while loop handles cases where swapping creates new misplaced elements}.
+    \item Handle edge cases such as empty arrays or arrays with all negative numbers.
+\end{itemize}
+
+\subsection*{Corner and Special Cases to Test}
+\begin{itemize}
+    \item **Empty Array:** Input: \texttt{nums = []} (should return \texttt{1}).
+    \item **All Negative Numbers:** Input: \texttt{nums = [-1, -2, -3]} (should return \texttt{1}).
+    \item **All Positive Numbers in Range:** Input: \texttt{nums = [1, 2, 3]} (should return \texttt{4}).
+    \item **Unordered Numbers:** Input: \texttt{nums = [3, 4, -1, 1]} (should return \texttt{2}).
+\end{itemize}
+
+\subsection*{Conclusion}
+The **First Missing Positive** problem is an excellent example of using in-place array manipulation to achieve optimal performance. Mastery of this problem demonstrates a strong understanding of indexing, boundary

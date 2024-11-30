@@ -1,0 +1,147 @@
+% Filename: least_recently_used_cache.tex
+
+\problemsection{Least Recently Used (LRU) Cache}
+\label{problem:LRU_Cache}
+
+The **Least Recently Used (LRU) Cache** is a classic design problem that tests your ability to implement an efficient cache system. The LRU Cache evicts the least recently used item when the cache reaches its capacity. It requires optimizing for fast access, insertion, and deletion, typically in \(O(1)\) time for each operation.
+
+\subsection*{Problem Statement}
+Design a data structure that implements the LRU cache with the following operations:
+\begin{itemize}
+    \item \textbf{Get (key):} Return the value of the key if it exists in the cache, otherwise return \(-1\).
+    \item \textbf{Put (key, value):} Update or insert the value if the key is not already present. If the cache reaches its capacity, evict the least recently used item before inserting the new key-value pair.
+\end{itemize}
+
+\textbf{Input:}
+- A series of \texttt{get} and \texttt{put} operations.
+
+\textbf{Output:}
+- The results of \texttt{get} operations and the state of the cache after each operation.
+
+\textbf{Example 1:}
+\begin{verbatim}
+Input:
+["LRUCache", "put", "put", "get", "put", "get", "put", "get", "get", "get"]
+[[2], [1,1], [2,2], [1], [3,3], [2], [4,4], [1], [3], [4]]
+Output:
+[null, null, null, 1, null, -1, null, -1, 3, 4]
+\end{verbatim}
+
+\subsection*{Algorithmic Approach}
+The LRU Cache can be efficiently implemented using:
+\begin{itemize}
+    \item A \textbf{hash map} for fast access to cache items.
+    \item A \textbf{doubly linked list} to maintain the order of use, allowing \(O(1)\) insertion and deletion at both ends\sidenote{The doubly linked list helps in quickly moving the most recently accessed item to the front and evicting the least recently used item from the back}.
+\end{itemize}
+
+\textbf{Operations:}
+\begin{itemize}
+    \item \textbf{Get (key):}
+    \begin{itemize}
+        \item If the key exists in the hash map, retrieve the node, move it to the front of the doubly linked list, and return its value.
+        \item If the key does not exist, return \(-1\).
+    \end{itemize}
+    \item \textbf{Put (key, value):}
+    \begin{itemize}
+        \item If the key exists, update its value and move it to the front.
+        \item If the key does not exist:
+        \begin{itemize}
+            \item Add it to the hash map and doubly linked list.
+            \item If the cache exceeds its capacity, remove the least recently used item (from the back of the doubly linked list).
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\subsection*{Complexities}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(1)\) for both \texttt{get} and \texttt{put}, as hash map and linked list operations are constant time.
+    \item \textbf{Space Complexity:} \(O(n)\), where \(n\) is the capacity of the cache, for storing \(n\) key-value pairs and their linked list nodes.
+\end{itemize}
+
+\subsection*{Python Implementation}
+Below is the Python implementation of the LRU Cache:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class Node:
+    def __init__(self, key, value):
+        self.key = key
+        self.value = value
+        self.prev = None
+        self.next = None
+
+class LRUCache:
+    def __init__(self, capacity: int):
+        self.capacity = capacity
+        self.cache = {}  # Hash map for storing key-node pairs
+        self.head = Node(0, 0)  # Dummy head of doubly linked list
+        self.tail = Node(0, 0)  # Dummy tail of doubly linked list
+        self.head.next = self.tail
+        self.tail.prev = self.head
+
+    def _remove(self, node: Node):
+        """Remove a node from the doubly linked list."""
+        prev, nxt = node.prev, node.next
+        prev.next, nxt.prev = nxt, prev
+
+    def _add_to_front(self, node: Node):
+        """Add a node to the front of the doubly linked list."""
+        node.next = self.head.next
+        node.prev = self.head
+        self.head.next.prev = node
+        self.head.next = node
+
+    def get(self, key: int) -> int:
+        if key in self.cache:
+            node = self.cache[key]
+            self._remove(node)
+            self._add_to_front(node)
+            return node.value
+        return -1
+
+    def put(self, key: int, value: int):
+        if key in self.cache:
+            self._remove(self.cache[key])
+        node = Node(key, value)
+        self.cache[key] = node
+        self._add_to_front(node)
+        if len(self.cache) > self.capacity:
+            lru = self.tail.prev
+            self._remove(lru)
+            del self.cache[lru.key]
+\end{lstlisting}
+\end{fullwidth}
+
+\subsection*{Why This Approach?}
+The combination of a hash map and a doubly linked list ensures that all operations are efficient. The hash map provides constant-time access to cache entries, while the doubly linked list allows constant-time insertion, deletion, and reordering of nodes to maintain the LRU order.
+
+\subsection*{Alternative Approaches}
+\begin{itemize}
+    \item **Ordered Dictionary (Python Collections):** Use Python’s \texttt{OrderedDict} to simplify the implementation. However, this may be less flexible for custom extensions\sidenote{The \texttt{OrderedDict} internally maintains the order of insertion, making it suitable for LRU Cache implementation}.
+    \item **Array-Based Approach:** Use an array for cache entries and reorder elements on each access. This approach has \(O(n)\) time complexity for reordering, making it impractical for large caches.
+\end{itemize}
+
+\subsection*{Similar Problems}
+\begin{itemize}
+    \item \textbf{LFU Cache (Least Frequently Used):} A more advanced version of the cache problem that considers access frequency instead of recency.
+    \item \textbf{Design a Data Structure with Expiry:} Implement a cache that supports expiration times for entries.
+    \item \textbf{Priority Queue-Based Caches:} Explore heap-based designs for managing cache priorities.
+\end{itemize}
+
+\subsection*{Things to Keep in Mind and Tricks}
+\begin{itemize}
+    \item Use dummy head and tail nodes to simplify boundary conditions in the doubly linked list.
+    \item Always update the cache size and handle capacity checks during \texttt{put} operations.
+    \item Test edge cases like cache capacity of \(1\) or \(0\), and frequent repeated accesses to the same key.
+\end{itemize}
+
+\subsection*{Corner and Special Cases to Test}
+\begin{itemize}
+    \item **Empty Cache:** Test behavior when the cache has zero capacity.
+    \item **Single Element Capacity:** Verify operations when the cache can only hold one element.
+    \item **Overwriting Keys:** Insert a key-value pair that already exists in the cache.
+    \item **Repeated Access:** Access the same key multiple times to ensure it remains in the cache.
+\end{itemize}
+
+\subsection*{Conclusion}
+The **Least Recently Used (LRU) Cache** problem demonstrates the importance of combining data structures to achieve efficient operations. By mastering this problem, you gain a deeper understanding of hash maps, doubly linked lists, and their applications in real-world scenarios like caching and memory management.

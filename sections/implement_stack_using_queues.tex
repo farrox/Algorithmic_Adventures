@@ -1,0 +1,184 @@
+% filename: implement_stack_using_queues.tex
+\problemsection{Implement Stack using Queues}\marginpar{This problem demonstrates how to mimic stack behavior using queue operations, highlighting the differences between LIFO and FIFO structures.}
+
+\textbf{Problem Description:}  
+Implement a last-in-first-out (LIFO) stack using only two first-in-first-out (FIFO) queues. The stack should support the following operations:
+
+\begin{itemize}
+    \item \texttt{push(x)}: Push element \texttt{x} onto the stack.
+    \item \texttt{pop()}: Removes the element on top of the stack and returns it.
+    \item \texttt{top()}: Returns the element on top of the stack without removing it.
+    \item \texttt{empty()}: Returns \texttt{true} if the stack is empty, \texttt{false} otherwise.
+\end{itemize}
+
+\textbf{Notes:}
+\begin{itemize}
+    \item You may use only standard queue operations (\texttt{enqueue}, \texttt{dequeue}, \texttt{isEmpty}, and \texttt{size}).
+    \item All operations should be implemented using \(O(n)\) time complexity, where \(n\) is the number of elements in the stack.
+    \item You should not use any other data structures, such as arrays or lists.
+\end{itemize}
+
+\marginpar{Understanding how to implement one data structure using another deepens comprehension of their fundamental behaviors.}
+
+\textbf{Solution Overview:}  
+There are two primary approaches to implement a stack using queues:
+
+\begin{enumerate}
+    \item \textbf{Making \texttt{push} Costly:}
+        \begin{itemize}
+            \item Use two queues, \texttt{q1} and \texttt{q2}.
+            \item When pushing an element, enqueue it into \texttt{q2}.
+            \item Dequeue all elements from \texttt{q1} and enqueue them into \texttt{q2}.
+            \item Swap the names of \texttt{q1} and \texttt{q2}.
+            \item Now, \texttt{q1} has the new element at the front, maintaining stack order.
+        \end{itemize}
+    \item \textbf{Making \texttt{pop} Costly:}
+        \begin{itemize}
+            \item Use a single queue.
+            \item For \texttt{pop} and \texttt{top}, rotate the queue elements until the last inserted element is at the front.
+        \end{itemize}
+\end{enumerate}
+
+We will focus on the first approach, where the \texttt{push} operation is more time-consuming, but \texttt{pop} and \texttt{top} operations are efficient.
+
+\textbf{Implementation Details:}  
+Here's an implementation using two queues in Python:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+from collections import deque
+
+class MyStack:
+    def __init__(self):
+        self.q1 = deque()
+        self.q2 = deque()
+    
+    def push(self, x):
+        # Enqueue element to q2
+        self.q2.append(x)
+        # Move all elements from q1 to q2
+        while self.q1:
+            self.q2.append(self.q1.popleft())
+        # Swap q1 and q2
+        self.q1, self.q2 = self.q2, self.q1
+    
+    def pop(self):
+        if self.empty():
+            raise Exception("Stack Underflow")
+        return self.q1.popleft()
+    
+    def top(self):
+        if self.empty():
+            raise Exception("Stack is empty")
+        return self.q1[0]
+    
+    def empty(self):
+        return not self.q1
+
+# Example usage:
+stack = MyStack()
+stack.push(1)
+stack.push(2)
+print(stack.top())    # Output: 2
+print(stack.pop())    # Output: 2
+print(stack.empty())  # Output: False
+\end{lstlisting}
+\end{fullwidth}\marginpar{Swapping queues after each push ensures the newest element is always at the front of \texttt{q1}.}
+
+\textbf{Complexities:}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:}
+        \begin{itemize}
+            \item \texttt{push}: \(O(n)\), due to moving all elements from \texttt{q1} to \texttt{q2}.
+            \item \texttt{pop}: \(O(1)\), direct dequeue from \texttt{q1}.
+            \item \texttt{top}: \(O(1)\), accessing the front of \texttt{q1}.
+            \item \texttt{empty}: \(O(1)\), simple check on \texttt{q1}.
+        \end{itemize}
+    \item \textbf{Space Complexity:} \(O(n)\), where \(n\) is the number of elements in the stack.
+\end{itemize}\marginpar{Making \texttt{push} costly optimizes \texttt{pop} and \texttt{top}, which are often called more frequently.}
+
+\textbf{Alternative Approach:}  
+Making the \texttt{pop} operation costly can be beneficial if \texttt{push} operations are more frequent.
+
+\textbf{Implementation with Costly \texttt{pop}:}
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class MyStack:
+    def __init__(self):
+        self.q = deque()
+    
+    def push(self, x):
+        self.q.append(x)
+    
+    def pop(self):
+        if self.empty():
+            raise Exception("Stack Underflow")
+        # Rotate the queue to bring the last element to the front
+        size = len(self.q)
+        for _ in range(size - 1):
+            self.q.append(self.q.popleft())
+        return self.q.popleft()
+    
+    def top(self):
+        if self.empty():
+            raise Exception("Stack is empty")
+        # Rotate the queue to get the last element
+        size = len(self.q)
+        for _ in range(size - 1):
+            self.q.append(self.q.popleft())
+        result = self.q[0]
+        self.q.append(self.q.popleft())  # Restore the queue
+        return result
+    
+    def empty(self):
+        return not self.q
+
+# Example usage:
+stack = MyStack()
+stack.push(1)
+stack.push(2)
+print(stack.top())    # Output: 2
+print(stack.pop())    # Output: 2
+print(stack.empty())  # Output: False
+\end{lstlisting}
+\end{fullwidth}\marginpar{This method keeps \texttt{push} operations at \(O(1)\) time complexity.}
+
+\textbf{Complexities:}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:}
+        \begin{itemize}
+            \item \texttt{push}: \(O(1)\), straightforward enqueue.
+            \item \texttt{pop}: \(O(n)\), rotating elements to access the last one.
+            \item \texttt{top}: \(O(n)\), similar to \texttt{pop}, but with an extra step to restore the queue.
+            \item \texttt{empty}: \(O(1)\).
+        \end{itemize}
+    \item \textbf{Space Complexity:} \(O(n)\).
+\end{itemize}\marginpar{Choose the approach based on the frequency of \texttt{push} vs. \texttt{pop} operations in your use case.}
+
+\textbf{Why This Approach?}
+
+The first approach is generally preferred when \texttt{pop} and \texttt{top} operations are expected to be called more frequently than \texttt{push}. It provides faster retrieval of the top element, which is critical in stack operations.
+
+\textbf{Corner Cases to Test:}
+
+\begin{itemize}
+    \item \textbf{Empty Stack Operations:} Ensure that calling \texttt{pop} or \texttt{top} on an empty stack raises appropriate exceptions or handles the case gracefully.
+    \item \textbf{Single Element Stack:} Test the behavior when only one element is present in the stack.
+    \item \textbf{Sequence of Operations:} Perform a series of \texttt{push}, \texttt{pop}, and \texttt{top} operations to verify the stack maintains correct order.
+    \item \textbf{Stress Test:} Test with a large number of elements to assess performance and correctness.
+\end{itemize}\marginpar{Testing various scenarios ensures robustness and reliability of the stack implementation.}
+
+\textbf{Similar Problems:}
+
+\begin{itemize}
+    \item \textbf{Implement Queue using Stacks:} Reverse of this problem, where you implement a queue using stack operations.
+    \item \textbf{Design a Stack with Increment Operation:} Enhance the stack with an operation that increments the bottom \(k\) elements by a given value.
+    \item \textbf{Min Stack:} Design a stack that supports retrieving the minimum element in constant time.
+\end{itemize}\marginpar{Exploring similar problems deepens understanding of data structure transformations.}
+
+\textbf{Conclusion:}
+
+Implementing a stack using queues challenges the understanding of fundamental data structures and their operations. It requires manipulating the order of elements to emulate LIFO behavior using FIFO mechanisms. Mastery of such transformations enhances problem-solving skills and prepares one for more complex algorithmic challenges in computer science.\marginpar{Understanding these concepts is crucial for algorithm design and optimization.}

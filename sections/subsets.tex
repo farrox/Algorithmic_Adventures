@@ -1,0 +1,128 @@
+% Filename: subsets.tex
+
+\problemsection{Subsets (Power Set)}
+\label{problem:Subsets}
+
+The **Subsets** problem, also known as the power set problem, involves generating all possible subsets of a given set of unique integers. This problem highlights the versatility of recursive backtracking and iterative combinatorial algorithms.
+
+\subsection*{Problem Statement}
+Given an integer array \texttt{nums} of unique elements, return all possible subsets (the power set).
+
+\textbf{Input:}
+- A list of integers \texttt{nums}, where each integer is unique.
+
+\textbf{Output:}
+- A list of lists, where each inner list represents a subset of \texttt{nums}.
+
+\textbf{Example 1:}
+
+Input: \texttt{nums = [1, 2, 3]}
+
+Output: \[
+\left[ 
+[], [1], [2], [3], [1, 2], [1, 3], [2, 3], [1, 2, 3] 
+\right]
+\]
+
+\textbf{Example 2:}
+
+Input: \texttt{nums = [0]}
+
+Output: \[
+\left[ 
+[], [0] 
+\right]
+\]
+
+\subsection*{Algorithmic Approach}
+There are two primary approaches to solving this problem: backtracking and iterative generation.
+
+\textbf{Backtracking Approach:}
+\begin{itemize}
+    \item Start with an empty subset.
+    \item At each step, decide whether to include the current number in the subset.
+    \item Recur for the next number, generating all subsets that include and exclude the current number.
+    \item Once all numbers have been processed, add the subset to the result.
+\end{itemize}
+
+\textbf{Iterative Approach:}
+\begin{itemize}
+    \item Begin with an empty subset.
+    \item For each number in the input array, add it to all existing subsets to create new subsets.
+    \item Append these new subsets to the result.
+\end{itemize}
+
+\subsection*{Complexities}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(2^n)\), where \(n\) is the number of elements in \texttt{nums}, as there are \(2^n\) subsets in the power set.
+    \item \textbf{Space Complexity:} \(O(2^n)\), for storing the subsets in the result list.
+\end{itemize}
+
+\subsection*{Python Implementation (Backtracking)}
+Below is the implementation using backtracking:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def subsets(nums):
+    def backtrack(start, current):
+        # Add the current subset to the result
+        result.append(current[:])
+        
+        # Explore all possible subsets by including the next numbers
+        for i in range(start, len(nums)):
+            current.append(nums[i])
+            backtrack(i + 1, current)
+            current.pop()  # Backtrack to explore other subsets
+    
+    result = []
+    backtrack(0, [])
+    return result
+
+# Example usage:
+print(subsets([1, 2, 3]))  # Output: [[], [1], [2], [3], [1, 2], [1, 3], [2, 3], [1, 2, 3]]
+\end{lstlisting}
+\end{fullwidth}
+
+\subsection*{Python Implementation (Iterative)}
+Below is the implementation using an iterative approach:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def subsets(nums):
+    result = [[]]
+    for num in nums:
+        # Add the current number to each existing subset
+        result += [subset + [num] for subset in result]
+    return result
+
+# Example usage:
+print(subsets([1, 2, 3]))  # Output: [[], [1], [2], [3], [1, 2], [1, 3], [2, 3], [1, 2, 3]]
+\end{lstlisting}
+\end{fullwidth}
+
+\subsection*{Why These Approaches?}
+The backtracking approach provides a recursive and intuitive way to generate subsets, making it easier to understand and debug. The iterative approach, on the other hand, is more concise and eliminates the need for recursion, making it suitable for situations where recursion depth may be a concern.
+
+\subsection*{Similar Problems}
+\begin{itemize}
+    \item \textbf{Permutations:} Generate all possible permutations of a given set of numbers.
+    \item \textbf{Combinations:} Generate all subsets of a specific size \(k\).
+    \item \textbf{Subset Sum:} Find all subsets whose sum equals a given target.
+\end{itemize}
+
+\subsection*{Things to Keep in Mind and Tricks}
+\begin{itemize}
+    \item Ensure that the input list \texttt{nums} does not contain duplicates, as this may lead to duplicate subsets.
+    \item For large input sizes, consider the exponential growth in the number of subsets and the memory required to store them.
+    \item The order of subsets in the result does not matter unless explicitly specified in the problem statement.
+\end{itemize}
+
+\subsection*{Corner and Special Cases to Test}
+\begin{itemize}
+    \item \textbf{Empty Input:} Input: \texttt{nums = []}, Output: \texttt{[[]]}.
+    \item \textbf{Single Element:} Input: \texttt{nums = [0]}, Output: \texttt{[[], [0]]}.
+    \item \textbf{Large Input:} Test with larger arrays to ensure performance and correctness.
+\end{itemize}
+
+\subsection*{Conclusion}
+The **Subsets** problem provides an excellent opportunity to practice both backtracking and iterative techniques for generating combinatorial structures. Mastering this problem builds a strong foundation for tackling more complex problems in combinatorics and recursion.

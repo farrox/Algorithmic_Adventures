@@ -1,0 +1,197 @@
+% Filename: reorder_list.tex
+
+\problemsection{Reorder List}
+\label{problem:reorder_list}
+\marginnote{Reordering linked lists is a common task in algorithm design, particularly useful in interview settings.}
+
+The \textbf{Reorder List} problem involves rearranging a given singly linked list in a specific order without altering the node values. The goal is to reorder the list such that it follows the pattern: first node, last node, second node, second last node, and so on.\marginnote{This problem tests your ability to manipulate linked lists efficiently, often requiring a combination of multiple techniques.}
+
+\section*{Problem Statement}
+Given the head of a singly linked list, reorder the list to follow a specific pattern:
+\[
+\text{L}_0 \rightarrow \text{L}_n \rightarrow \text{L}_1 \rightarrow \text{L}_{n-1} \rightarrow \text{L}_2 \rightarrow \text{L}_{n-2} \rightarrow \dots
+\]
+You must perform this rearrangement **in-place** without altering the node values.
+
+\marginnote{\href{https://leetcode.com/problems/reorder-list/}{[LeetCode Link]}\index{LeetCode}}
+\marginnote{\href{https://www.geeksforgeeks.org/reorder-a-linked-list/}{[GeeksForGeeks Link]}\index{GeeksForGeeks}}
+\marginnote{\href{https://www.hackerrank.com/challenges/reorder-a-linked-list/problem}{[HackerRank Link]}\index{HackerRank}}
+\marginnote{\href{https://app.codesignal.com/challenges/reorder-a-linked-list}{[CodeSignal Link]}\index{CodeSignal}}
+\marginnote{\href{https://www.interviewbit.com/problems/reorder-list/}{[InterviewBit Link]}\index{InterviewBit}}
+\marginnote{\href{https://www.educative.io/courses/grokking-the-coding-interview/RM8y8Y3nLdY}{[Educative Link]}\index{Educative}}
+\marginnote{\href{https://www.codewars.com/kata/reorder-linked-list/train/python}{[Codewars Link]}\index{Codewars}}
+
+\section*{Algorithmic Approach}
+To efficiently reorder the linked list, the following **three-step approach** is employed:
+
+\begin{enumerate}
+    \item \textbf{Find the Middle of the List:}
+    \begin{itemize}
+        \item Utilize the **fast and slow pointer** technique to locate the midpoint.
+        \item This divides the list into two halves for subsequent processing.
+    \end{itemize}
+    
+    \item \textbf{Reverse the Second Half:}
+    \begin{itemize}
+        \item Reverse the second half of the list to facilitate the interleaving process.
+    \end{itemize}
+    
+    \item \textbf{Merge the Two Halves:}
+    \begin{itemize}
+        \item Alternately merge nodes from the first and the reversed second half to achieve the desired order.
+    \end{itemize}
+\end{enumerate}
+
+\section*{Complexities}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(n)\), where \(n\) is the number of nodes in the linked list. Each step of the algorithm traverses the list linearly.
+    \item \textbf{Space Complexity:} \(O(1)\), as the rearrangement is performed in-place without using additional data structures.
+\end{itemize}
+
+\section*{Python Implementation}
+\marginnote{Implementing the three-step approach ensures an efficient and clean solution with optimal space usage.}
+
+Below is the complete Python code for reordering a linked list using the outlined algorithmic approach:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+# Definition for singly-linked list.
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+class Solution:
+    def reorderList(self, head: ListNode) -> None:
+        """
+        Do not return anything, modify head in-place instead.
+        """
+        if not head or not head.next:
+            return
+        
+        # Step 1: Find the middle of the list
+        slow, fast = head, head
+        while fast.next and fast.next.next:
+            slow = slow.next
+            fast = fast.next.next
+        
+        # Step 2: Reverse the second half
+        prev, curr = None, slow.next
+        while curr:
+            temp = curr.next
+            curr.next = prev
+            prev = curr
+            curr = temp
+        slow.next = None  # Split the list into two halves
+        
+        # Step 3: Merge the two halves
+        first, second = head, prev
+        while second:
+            temp1, temp2 = first.next, second.next
+            first.next = second
+            second.next = temp1
+            first, second = temp1, temp2
+
+# Example Usage:
+# Constructing the linked list: 1 -> 2 -> 3 -> 4
+head = ListNode(1, ListNode(2, ListNode(3, ListNode(4))))
+solution = Solution()
+solution.reorderList(head)
+
+# Function to print the reordered linked list
+def print_linked_list(head):
+    elems = []
+    while head:
+        elems.append(str(head.val))
+        head = head.next
+    print(" -> ".join(elems))
+
+print_linked_list(head)  # Output: 1 -> 4 -> 2 -> 3
+
+# Handling Edge Cases:
+# Single Node
+head_single = ListNode(1)
+solution.reorderList(head_single)
+print_linked_list(head_single)  # Output: 1
+
+# Two Nodes
+head_two = ListNode(1, ListNode(2))
+solution.reorderList(head_two)
+print_linked_list(head_two)  # Output: 1 -> 2
+
+# Empty List
+head_empty = None
+solution.reorderList(head_empty)
+print_linked_list(head_empty)  # Output: 
+\end{lstlisting}
+\end{fullwidth}
+
+\section*{Explanation}
+The `reorderList` function reorders a singly linked list in-place to follow the specific pattern required. Here's a detailed breakdown of the implementation:
+
+\begin{itemize}
+    \item \textbf{Initialization:}
+    \begin{itemize}
+        \item **Edge Case Handling:** If the list is empty or contains only one node, no reordering is necessary.
+        \item **Pointers Setup:** Two pointers, `slow` and `fast`, are initialized to traverse the list and find its middle.
+    \end{itemize}
+    
+    \item \textbf{Finding the Middle of the List:}
+    \begin{itemize}
+        \item **Fast and Slow Pointers:** `fast` moves two steps at a time, while `slow` moves one step.
+        \item **Middle Detection:** When `fast` reaches the end of the list, `slow` will be at the midpoint.
+    \end{itemize}
+    
+    \item \textbf{Reversing the Second Half:}
+    \begin{itemize}
+        \item **Reversal Process:** Starting from `slow.next`, the second half of the list is reversed.
+        \item **Pointer Manipulation:** Each node's `next` pointer is redirected to point to the previous node.
+        \item **Splitting the List:** After reversal, `slow.next` is set to `None` to split the list into two separate halves.
+    \end{itemize}
+    
+    \item \textbf{Merging the Two Halves:}
+    \begin{itemize}
+        \item **Pointers Setup:** `first` points to the head of the first half, and `second` points to the head of the reversed second half.
+        \item **Interleaving Nodes:** Alternately connect nodes from the first and second halves to achieve the desired order.
+        \item **Termination:** The process continues until all nodes from the second half are merged.
+    \end{itemize}
+    
+    \item \textbf{Final Output:}
+    \begin{itemize}
+        \item The original list is now reordered in-place, following the pattern: first node, last node, second node, second last node, etc.
+    \end{itemize}
+\end{itemize}
+
+\section*{Why This Approach}
+This method is chosen due to its **efficiency** and **in-place** operation, which optimizes both time and space complexities. By breaking down the problem into three manageable steps—finding the middle, reversing the second half, and merging—the algorithm ensures a clear and systematic solution.\marginnote{In-place algorithms are essential for optimizing memory usage, especially in environments with limited resources.}
+
+\section*{Alternative Approaches}
+An alternative method involves using additional data structures, such as arrays or stacks, to store the nodes' values and then reconstruct the reordered list. While this approach can simplify the merging process, it increases the space complexity to \(O(n)\), which is less optimal compared to the in-place method.\marginnote{Using extra space can lead to higher memory usage, which may not be desirable in certain applications.}
+
+\section*{Similar Problems to This One}
+\begin{itemize}
+    \item \hyperref[problem:merge_k_sorted_lists]{Merge k Sorted Lists}\index{Merge k Sorted Lists}
+    \item \hyperref[problem:reorder_array]{Reorder Array}\index{Reorder Array}
+    \item \hyperref[problem:reverse_linked_list]{Reverse Linked List}\index{Reverse Linked List}
+\end{itemize}
+
+\section*{Things to Keep in Mind and Tricks}
+\begin{itemize}
+    \item \textbf{Edge Cases:} Always consider scenarios where the linked list is empty, contains a single node, or has an even number of nodes.\index{Edge Cases}
+    \item \textbf{Pointer Management:} Carefully manage pointers during list traversal and modification to prevent unintended cycles or loss of nodes.\index{Pointer Management}
+    \item \textbf{In-Place Operations:} Strive to perform operations without using extra space to optimize memory usage.\index{In-Place Operations}
+    \item \textbf{Using Fast and Slow Pointers:} This technique is effective for finding the middle of the list and can be applied to other linked list problems.\index{Fast and Slow Pointers}
+\end{itemize}
+
+\section*{Corner and Special Cases to Test When Writing the Code}
+\begin{itemize}
+    \item \textbf{Empty List:} \texttt{head = None}\index{Corner Cases}
+    \item \textbf{Single Node:} \texttt{head = ListNode(1)}\index{Corner Cases}
+    \item \textbf{Two Nodes:} \texttt{head = ListNode(1, ListNode(2))}\index{Corner Cases}
+    \item \textbf{Odd Number of Nodes:} \texttt{head = ListNode(1, ListNode(2, ListNode(3)))}\index{Corner Cases}
+    \item \textbf{Even Number of Nodes:} \texttt{head = ListNode(1, ListNode(2, ListNode(3, ListNode(4))))}\index{Corner Cases}
+    \item \textbf{Duplicate Values:} \texttt{head = ListNode(1, ListNode(1, ListNode(2, ListNode(2))))}\index{Corner Cases}
+    \item \textbf{Large Lists:} Test with a large number of nodes to ensure the algorithm handles scalability.\index{Corner Cases}
+\end{itemize}
+
+\printindex

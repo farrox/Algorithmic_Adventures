@@ -1,0 +1,115 @@
+% Filename: subsets_with_duplicates.tex
+
+\problemsection{Subsets with Duplicates}
+\label{problem:Subsets_with_Duplicates}
+
+The **Subsets with Duplicates** problem is an extension of the classic power set problem. It requires generating all possible subsets of an integer array \texttt{nums} that may contain duplicate elements, ensuring no duplicate subsets are included in the output.
+
+\subsection*{Problem Statement}
+Given an integer array \texttt{nums} that may contain duplicates, return all possible subsets (the power set) without duplicate subsets.
+
+\textbf{Input:}
+- A list of integers \texttt{nums}, which may contain duplicates.
+
+\textbf{Output:}
+- A list of lists, where each inner list represents a unique subset of \texttt{nums}.
+
+\textbf{Example 1:}
+
+Input: \texttt{nums = [1, 2, 2]}
+
+Output: \[
+\left[
+[], [1], [2], [1, 2], [2, 2], [1, 2, 2]
+\right]
+\]
+
+\textbf{Example 2:}
+
+Input: \texttt{nums = [0]}
+
+Output: \[
+\left[
+[], [0]
+\right]
+\]
+
+\subsection*{Algorithmic Approach}
+To handle duplicates, the problem can be solved using backtracking with an additional step to skip generating subsets for duplicate elements.
+
+\textbf{Steps:}
+\begin{itemize}
+    \item Sort the input array to ensure duplicates are adjacent\sidenote{Sorting allows us to easily identify and skip duplicates.}.
+    \item Use a recursive backtracking function to construct subsets incrementally.
+    \item At each step, include the current number in the subset and recurse, or skip it to explore other subsets.
+    \item Skip duplicate elements by checking if the current element is the same as the previous one, and only include it if the previous element was part of the subset.
+\end{itemize}
+
+\subsection*{Complexities}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(2^n)\), where \(n\) is the length of \texttt{nums}, as each element has two possibilities (included or excluded).
+    \item \textbf{Space Complexity:} \(O(n)\), for the recursion stack.
+\end{itemize}
+
+\subsection*{Python Implementation}
+Below is the Python implementation using backtracking:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def subsetsWithDup(nums):
+    def backtrack(start, current):
+        # Add the current subset to the result
+        result.append(current[:])
+        
+        # Explore all possible subsets
+        for i in range(start, len(nums)):
+            # Skip duplicates
+            if i > start and nums[i] == nums[i - 1]:
+                continue
+            current.append(nums[i])
+            backtrack(i + 1, current)
+            current.pop()  # Backtrack to explore other subsets
+    
+    nums.sort()  # Sort to handle duplicates
+    result = []
+    backtrack(0, [])
+    return result
+
+# Example usage:
+print(subsetsWithDup([1, 2, 2]))  # Output: [[], [1], [2], [1, 2], [2, 2], [1, 2, 2]]
+\end{lstlisting}
+\end{fullwidth}
+
+\subsection*{Why This Approach?}
+Backtracking is an effective way to systematically generate subsets while avoiding duplicates. Sorting ensures that duplicate elements are adjacent, allowing us to skip generating redundant subsets by comparing the current element with the previous one.
+
+\subsection*{Alternative Approaches}
+\begin{itemize}
+    \item **Iterative Approach:** Use a set to track generated subsets and avoid duplicates. This is less efficient due to the overhead of set operations.
+    \item **Bitmasking:** Generate subsets using binary representation and filter out duplicates. This approach is less intuitive and requires additional logic to handle duplicates.
+\end{itemize}
+
+\subsection*{Similar Problems}
+\begin{itemize}
+    \item \textbf{Subsets:} Generate all subsets of a set without duplicates.
+    \item \textbf{Permutations with Duplicates:} Generate all unique permutations of a list with duplicates.
+    \item \textbf{Combination Sum:} Find all unique combinations that sum to a target value.
+\end{itemize}
+
+\subsection*{Things to Keep in Mind and Tricks}
+\begin{itemize}
+    \item Always sort the input array to make duplicate detection straightforward.
+    \item Use conditions to skip duplicates only after the first occurrence in a given recursive path.
+    \item Test with edge cases like all elements being the same or all elements being distinct.
+\end{itemize}
+
+\subsection*{Corner and Special Cases to Test}
+\begin{itemize}
+    \item \textbf{Empty Input:} Input: \texttt{nums = []}, Output: \texttt{[[]]}.
+    \item \textbf{Single Element:} Input: \texttt{nums = [1]}, Output: \texttt{[[], [1]]}.
+    \item \textbf{All Duplicates:} Input: \texttt{nums = [2, 2, 2]}, Output: \texttt{[[], [2], [2, 2], [2, 2, 2]]}.
+    \item \textbf{Mixed Duplicates:} Input: \texttt{nums = [1, 2, 2, 3]}, Verify correctness.
+\end{itemize}
+
+\subsection*{Conclusion}
+The **Subsets with Duplicates** problem builds upon the classic subsets problem, emphasizing the need for handling duplicate elements efficiently. Mastering this problem enhances understanding of recursion, backtracking, and combinatorics.

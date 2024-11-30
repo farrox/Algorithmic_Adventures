@@ -1,0 +1,92 @@
+
+ewpage
+
+\chapter{Encode and Decode Strings}
+\label{chap:encode_decode_strings}
+
+The "Encode and Decode Strings" problem is an exercise in serialization and deserialization, specifically geared towards string data. The challenge is to create two functions, one for encoding a list of strings into a single string and another for decoding this single string back into the original list of strings.
+
+\section*{Problem Statement}
+The task is to design an algorithm that can take any list of strings and encode it into a single, flat string, and then reverse that process, ensuring that the original list of strings and the end result are identical. 
+
+The `encode(strs)` function will take in a list of strings, `strs`, and output a single string that represents the encoded list in a retrievable manner.
+
+The 'decode(s)` function will take in the single encoded string, `s`, and reconstruct the original list of strings that was encoded.
+
+Leet code link: \href{https://leetcode.com/problems/encode-and-decode-strings/}{Encode and Decode Strings}
+
+\section*{Algorithmic Approach}
+To meet the requirements of no predefined delimiters and handling all ASCII characters, a length-prefixed encoding scheme can be used. Each string is encoded as its length, followed by a special character (commonly, a non-digit character), and then the string itself. During decoding, the length is parsed first to determine where the actual string starts and ends.
+
+\section*{Complexities}
+\begin{itemize}
+	\item \textbf{Time Complexity:} The time complexity of encoding is \(O(N)\), where \(N\) is the total number of characters across all strings. The time complexity of decoding is also \(O(N)\) since each character is processed exactly twice.
+	\item \textbf{Space Complexity:} The space complexity is \(O(N)\), which is necessary to store the encoded string or the list of decoded strings.
+\end{itemize}
+
+
+ewpage % Start Python Implementation on a new page
+\section*{Python Implementation}
+Below is the complete Python code for `encode` and `decode` functions designed to handle a list of strings:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+	class Codec:
+
+	    def encode(self, strs):
+	        """Encodes a list of strings to a single string.
+	        
+	        :type strs: List[str]
+	        :rtype: str
+	        """
+	        # The encoded format is len(string)/string
+	        # This handles any string, including strings with problematic characters
+	        return ''.join(f'{len(s)}/{s}' for s in strs)
+
+	    def decode(self, s):
+	        """Decodes a single string to a list of strings.
+	        
+	        :type s: str
+	        :rtype: List[str]
+	        """
+	        i, n = 0, len(s)
+	        decoded = []
+	        
+	        while i < n:
+	            j = i
+	            # find the position of the separator '/'
+	            while s[j] != '/':
+	                j += 1
+	            # extract the length of the next string
+	            length = int(s[i:j])
+	            i = j + 1
+	            # extract the string using the length
+	            decoded.append(s[i:i + length])
+	            # move the index to the next part of the encoded string
+	            i += length
+	            
+	        return decoded
+	        
+	# Your Codec object will be instantiated and called as such:
+	# codec = Codec()
+	# codec.decode(codec.encode(strs))
+\end{lstlisting}
+
+\end{fullwidth}
+
+This implementation encodes each string by first representing its length, followed by a separator character ('/'), and then the string itself. During decoding, the encoded string is processed by identifying the length and then the string, consecutively for all encoded parts.
+
+\section*{Why this approach}
+This approach was chosen because it is simple, efficient, and works for all ASCII characters without assuming any specific character cannot be present in the strings. It requires no additional data structures and processes each character in a linear pass.
+
+\section*{Alternative approaches}
+Alternative approaches could include using escape characters to handle special characters or another form of delimiter-based encoding. However, those methods would add complexity and potentially fail if delimiter characters appeared within the strings.
+
+\section*{Similar problems to this one}
+Problems related to serialization and deserialization of more complex data structures, such as binary trees or graphs, share similarities with this problem. They require devising an encoding scheme that can be reliably reversed.
+
+\section*{Things to keep in mind and tricks}
+Choosing an appropriate encoding scheme that guarantees no collisions with characters in the strings is crucial. This implies you should consider problematic characters during design and stress-test your solution with edge cases.
+
+\section*{Corner and special cases to test when writing the code}
+Special cases to consider include empty lists

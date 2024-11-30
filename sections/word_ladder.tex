@@ -1,0 +1,344 @@
+% file: word_ladder.tex
+
+\problemsection{Word Ladder}
+\label{problem:word_ladder}
+\marginnote{This problem leverages Breadth-First Search (BFS) and graph theory concepts to efficiently find the shortest transformation sequence between two words.}
+
+The \textbf{Word Ladder} problem is a classic algorithmic challenge that involves transforming a \textit{beginWord} into an \textit{endWord} by changing only one letter at a time. Each intermediate word in the transformation sequence must exist within a given \textit{wordList}. The objective is to determine the length of the shortest possible transformation sequence that adheres to these constraints.
+
+\section*{Problem Statement}
+
+Given two words, \texttt{beginWord} and \texttt{endWord}, and a dictionary \texttt{wordList}, find the length of the shortest transformation sequence from \texttt{beginWord} to \texttt{endWord}, such that:
+
+\begin{itemize}
+    \item Only one letter can be changed at a time.
+    \item Each transformed word must exist in the \texttt{wordList}.
+\end{itemize}
+
+Return the number of words in the shortest transformation sequence, or \(0\) if no such sequence exists.
+
+\textbf{Note:}
+\begin{itemize}
+    \item \texttt{beginWord} does not need to be in \texttt{wordList}.
+    \item All words have the same length.
+    \item All words contain only lowercase English letters.
+\end{itemize}
+
+\textbf{Examples:}
+
+\textit{Example 1:}
+
+\begin{verbatim}
+Input:
+beginWord = "hit",
+endWord = "cog",
+wordList = ["hot","dot","dog","lot","log","cog"]
+
+Output: 5
+
+Explanation: One shortest transformation is "hit" -> "hot" -> "dot" -> "dog" -> "cog", which has 5 words.
+\end{verbatim}
+
+\textit{Example 2:}
+
+\begin{verbatim}
+Input:
+beginWord = "hit",
+endWord = "cog",
+wordList = ["hot","dot","dog","lot","log"]
+
+Output: 0
+
+Explanation: The endWord "cog" is not in wordList, so no possible transformation.
+\end{verbatim}
+
+LeetCode link: \href{https://leetcode.com/problems/word-ladder/}{Word Ladder}\index{LeetCode}
+
+\marginnote{\href{https://leetcode.com/problems/word-ladder/}{[LeetCode Link]}\index{LeetCode}}
+\marginnote{\href{https://www.geeksforgeeks.org/word-ladder-problem-shortest-transformation-sequence/}{[GeeksForGeeks Link]}\index{GeeksForGeeks}}
+\marginnote{\href{https://www.hackerrank.com/challenges/word-ladder/problem}{[HackerRank Link]}\index{HackerRank}}
+\marginnote{\href{https://app.codesignal.com/challenges/word-ladder}{[CodeSignal Link]}\index{CodeSignal}}
+\marginnote{\href{https://www.interviewbit.com/problems/word-ladder/}{[InterviewBit Link]}\index{InterviewBit}}
+\marginnote{\href{https://www.educative.io/courses/grokking-the-coding-interview/RM8y8Y3nLdY}{[Educative Link]}\index{Educative}}
+\marginnote{\href{https://www.codewars.com/kata/word-ladder/train/python}{[Codewars Link]}\index{Codewars}}
+
+\section*{Algorithmic Approach}
+
+The \textbf{Word Ladder} problem can be effectively solved using Breadth-First Search (BFS) by modeling each word as a node in a graph. An edge exists between two nodes if the corresponding words differ by exactly one letter. The goal is to find the shortest path from the \texttt{beginWord} to the \texttt{endWord} within this graph.
+
+To optimize the BFS process, we preprocess the \texttt{wordList} to create a mapping between generic intermediate states and the list of words that can be transformed into that state. For example, for the word "dog", the generic states would be "*og", "d*g", "do*". This preprocessing allows for efficient adjacency lookups during BFS.
+
+\begin{enumerate}
+    \item \textbf{Preprocessing:}
+    \begin{itemize}
+        \item For each word in the \texttt{wordList}, generate all possible generic intermediate states by replacing each letter with a wildcard character "\(*\)".
+        \item Create a dictionary (\texttt{all\_combo\_dict}) where each key is a generic intermediate state, and the value is a list of words matching that state.
+    \end{itemize}
+    
+    \item \textbf{Breadth-First Search (BFS):}
+    \begin{itemize}
+        \item Initialize a queue with a tuple containing the \texttt{beginWord} and the initial level (1).
+        \item Use a \texttt{visited} dictionary to keep track of visited words to prevent revisiting and cycles.
+        \item While the queue is not empty:
+        \begin{itemize}
+            \item Dequeue the first element to get the current word and its level.
+            \item For each character position in the current word, generate the corresponding generic intermediate state.
+            \item For each word in the list corresponding to the generic state:
+            \begin{itemize}
+                \item If the word is the \texttt{endWord}, return the current level plus one.
+                \item If the word has not been visited, mark it as visited and enqueue it with an incremented level.
+            \end{itemize}
+            \item Clear the list of words for the current generic state to prevent redundant processing.
+        \end{itemize}
+    \end{itemize}
+    
+    \item \textbf{Termination:}
+    \begin{itemize}
+        \item If the \texttt{endWord} is never reached during BFS, return \(0\) as no valid transformation sequence exists.
+    \end{itemize}
+\end{enumerate}
+
+\marginnote{Efficient adjacency lookups using generic intermediate states significantly reduce the number of operations during BFS, enhancing performance.}
+
+\section*{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(N \cdot K^2)\), where \(N\) is the number of words in \texttt{wordList} and \(K\) is the length of each word. This accounts for generating all generic intermediate states and performing BFS traversal.
+    \item \textbf{Space Complexity:} \(O(N \cdot K)\), due to storing the intermediate states in \texttt{all\_combo\_dict} and maintaining the \texttt{visited} dictionary.
+\end{itemize}
+
+\newpage % Start Python Implementation on a new page
+\section*{Python Implementation}
+
+\marginnote{Implementing BFS with preprocessed intermediate states ensures that each transformation step is efficiently explored without unnecessary computations.}
+
+Below is the complete Python code that implements a solution to the \textbf{Word Ladder} problem:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+from collections import defaultdict, deque
+
+def ladderLength(beginWord, endWord, wordList):
+    if endWord not in wordList:
+        return 0
+
+    L = len(beginWord)
+    all_combo_dict = defaultdict(list)
+    for word in wordList:
+        for i in range(L):
+            intermediate_word = word[:i] + "*" + word[i+1:]
+            all_combo_dict[intermediate_word].append(word)
+
+    queue = deque([(beginWord, 1)])
+    visited = {beginWord: True}
+
+    while queue:
+        current_word, level = queue.popleft()
+        for i in range(L):
+            intermediate_word = current_word[:i] + "*" + current_word[i+1:]
+            for word in all_combo_dict[intermediate_word]:
+                if word == endWord:
+                    return level + 1
+                if word not in visited:
+                    visited[word] = True
+                    queue.append((word, level + 1))
+            all_combo_dict[intermediate_word] = []  # Clear to prevent re-processing
+    return 0
+
+# Example usage:
+print(ladderLength("hit", "cog", ["hot","dot","dog","lot","log","cog"]))  # Output: 5
+print(ladderLength("hit", "cog", ["hot","dot","dog","lot","log"]))         # Output: 0
+\end{lstlisting}
+\end{fullwidth}
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+from collections import defaultdict, deque
+
+def ladderLength(beginWord, endWord, wordList):
+    if endWord not in wordList:
+        return 0
+
+    L = len(beginWord)
+    all_combo_dict = defaultdict(list)
+    for word in wordList:
+        for i in range(L):
+            intermediate_word = word[:i] + "*" + word[i+1:]
+            all_combo_dict[intermediate_word].append(word)
+
+    queue = deque([(beginWord, 1)])
+    visited = {beginWord: True}
+
+    while queue:
+        current_word, level = queue.popleft()
+        for i in range(L):
+            intermediate_word = current_word[:i] + "*" + current_word[i+1:]
+            for word in all_combo_dict[intermediate_word]:
+                if word == endWord:
+                    return level + 1
+                if word not in visited:
+                    visited[word] = True
+                    queue.append((word, level + 1))
+            all_combo_dict[intermediate_word] = []  # Clear to prevent re-processing
+    return 0
+\end{lstlisting}
+\end{fullwidth}
+
+This implementation begins by checking if the \texttt{endWord} exists in the \texttt{wordList}. If not, it immediately returns \(0\), as no valid transformation is possible. It then preprocesses the \texttt{wordList} to create a mapping of generic intermediate states to the corresponding words. Using BFS, the algorithm explores each word level by level, ensuring that the shortest transformation sequence is found. The \texttt{visited} dictionary keeps track of already processed words to prevent cycles and redundant processing.
+
+\section*{Explanation}
+
+The provided Python implementation defines a function \texttt{ladderLength} which takes \texttt{beginWord}, \texttt{endWord}, and \texttt{wordList} as inputs and returns the length of the shortest transformation sequence from \texttt{beginWord} to \texttt{endWord}.
+
+\begin{itemize}
+    \item \textbf{Edge Case Handling:}
+    \begin{itemize}
+        \item If the \texttt{endWord} is not present in the \texttt{wordList}, the function returns \(0\), as no transformation can lead to the desired word.
+    \end{itemize}
+    
+    \item \textbf{Preprocessing:}
+    \begin{itemize}
+        \item Determine the length \(L\) of the \texttt{beginWord}.
+        \item Iterate through each word in the \texttt{wordList} and generate all possible generic intermediate states by replacing each character with "\(*\)".
+        \item Populate the \texttt{all\_combo\_dict} with these intermediate states mapping to the corresponding words.
+    \end{itemize}
+    
+    \item \textbf{BFS Initialization:}
+    \begin{itemize}
+        \item Initialize a queue with a tuple containing the \texttt{beginWord} and the initial transformation level \(1\).
+        \item Initialize a \texttt{visited} dictionary to keep track of words that have already been processed.
+    \end{itemize}
+    
+    \item \textbf{BFS Traversal:}
+    \begin{itemize}
+        \item While the queue is not empty:
+        \begin{itemize}
+            \item Dequeue the first element to get the current word and its associated level.
+            \item For each character position in the current word, generate the corresponding generic intermediate state.
+            \item For each word associated with this intermediate state:
+            \begin{itemize}
+                \item If the word matches the \texttt{endWord}, return the current level incremented by one, as the transformation is complete.
+                \item If the word has not been visited, mark it as visited and enqueue it with an incremented level.
+            \end{itemize}
+            \item Clear the list of words for the current intermediate state in \texttt{all\_combo\_dict} to prevent re-processing in future iterations.
+        \end{itemize}
+    \end{itemize}
+    
+    \item \textbf{Termination:}
+    \begin{itemize}
+        \item If the BFS completes without finding the \texttt{endWord}, return \(0\), indicating that no valid transformation sequence exists.
+    \end{itemize}
+\end{itemize}
+
+This approach ensures that the shortest transformation sequence is found by exploring all possible one-letter transformations in a level-by-level manner, characteristic of BFS. The preprocessing step significantly optimizes the adjacency lookup, allowing the algorithm to efficiently navigate through potential transformation paths.
+
+\section*{Why this approach}
+
+Breadth-First Search (BFS) is particularly well-suited for finding the shortest path in unweighted graphs, which aligns perfectly with the requirements of the \textbf{Word Ladder} problem. By treating each word as a node and establishing edges between words that differ by a single letter, BFS systematically explores all possible transformation sequences in order of increasing length. The preprocessing step of creating generic intermediate states facilitates rapid adjacency lookups, thereby enhancing the efficiency of the BFS traversal. This method guarantees the discovery of the shortest possible transformation sequence, if one exists.
+
+\section*{Alternative Approaches}
+
+An alternative method to solving the \textbf{Word Ladder} problem is to employ \textbf{Bidirectional BFS}, which simultaneously initiates BFS from both the \texttt{beginWord} and the \texttt{endWord}. This technique can significantly reduce the search space and improve performance, especially in cases where the transformation sequence is long. Here's a brief overview of how Bidirectional BFS works:
+
+\begin{enumerate}
+    \item \textbf{Initialization:}
+    \begin{itemize}
+        \item Initialize two queues, one starting from the \texttt{beginWord} and the other from the \texttt{endWord}.
+        \item Maintain two separate \texttt{visited} dictionaries for both search fronts.
+    \end{itemize}
+    
+    \item \textbf{Traversal:}
+    \begin{itemize}
+        \item Alternate between expanding the search frontiers from both ends.
+        \item At each step, expand the smaller of the two queues to optimize performance.
+        \item If a common word is found in both \texttt{visited} dictionaries, the shortest transformation sequence has been identified.
+    \end{itemize}
+\end{enumerate}
+
+Bidirectional BFS can lead to faster convergence by effectively halving the search depth, which is particularly beneficial for large word lists.
+
+\section*{Similar Problems to This One}
+
+Similar problems that involve finding the shortest transformation or path within a constrained space include:
+
+\begin{itemize}
+    \item \textbf{Word Ladder II:} Extends the \textbf{Word Ladder} problem by requiring the enumeration of all shortest transformation sequences.
+    \index{Word Ladder II}
+    
+    \item \textbf{Sliding Puzzle Problems:} Such as the 8-puzzle, where the goal is to reach a target configuration through a series of valid moves.
+    \index{Sliding Puzzle Problems}
+    
+    \item \textbf{Maze Solving Problems:} Finding the shortest path from a start point to an end point within a maze.
+    \index{Maze Solving Problems}
+    
+    \item \textbf{Minimum Genetic Mutation:} Determining the minimum number of mutations needed to mutate from a start gene string to an end gene string, with each mutation being valid.
+    \index{Minimum Genetic Mutation}
+    
+    \item \textbf{Shortest Path in a Grid:} Finding the shortest path from the top-left corner to the bottom-right corner in a grid with obstacles.
+    \index{Shortest Path in a Grid}
+\end{itemize}
+
+These problems share the common theme of navigating through a space of possibilities to find an optimal or feasible path, often leveraging similar algorithmic strategies like BFS or DFS.
+
+\section*{Things to Keep in Mind and Tricks}
+
+\begin{itemize}
+    \item \textbf{Preprocessing Intermediate States:} Efficiently generating and utilizing generic intermediate states can drastically reduce the number of operations during BFS.
+    \index{Preprocessing Intermediate States}
+    
+    \item \textbf{Avoiding Reprocessing:} Mark words as visited immediately after enqueuing them to prevent multiple enqueues of the same word, which can lead to redundant computations.
+    \index{Avoiding Reprocessing}
+    
+    \item \textbf{Early Termination:} If the \texttt{endWord} is found during BFS, terminate immediately to ensure the shortest path is returned.
+    \index{Early Termination}
+    
+    \item \textbf{Bidirectional BFS:} Consider using Bidirectional BFS for large datasets to optimize search performance.
+    \index{Bidirectional BFS}
+    
+    \item \textbf{Handling Edge Cases:} Ensure that edge cases, such as an empty \texttt{wordList} or when the \texttt{beginWord} equals the \texttt{endWord}, are handled appropriately.
+    \index{Handling Edge Cases}
+    
+    \item \textbf{Optimizing Space:} Clearing the list of words for each intermediate state after processing helps in reducing memory usage and prevents unnecessary future processing.
+    \index{Optimizing Space}
+    
+    \item \textbf{Consistent Word Length:} All words must be of the same length. Validate this if the problem constraints are not explicitly guaranteed.
+    \index{Consistent Word Length}
+\end{itemize}
+
+\section*{Corner and Special Cases to Test When Writing the Code}
+
+To ensure the robustness and correctness of the solution, consider testing the following corner cases:
+
+\begin{itemize}
+    \item \textbf{Empty \texttt{wordList}:} No possible transformations should return \(0\).
+    \index{Corner Cases}
+    
+    \item \textbf{Begin Word Equals End Word:} If the \texttt{beginWord} is the same as the \texttt{endWord}, the transformation sequence length is \(1\).
+    \index{Corner Cases}
+    
+    \item \textbf{No Possible Transformation:} When no sequence can lead from \texttt{beginWord} to \texttt{endWord}, even if \texttt{endWord} is in the \texttt{wordList}.
+    \index{Corner Cases}
+    
+    \item \textbf{Minimum Transformation:} Transformation is possible in one step.
+    \index{Corner Cases}
+    
+    \item \textbf{Multiple Transformation Paths:} Ensure that the shortest path is returned even when multiple paths exist.
+    \index{Corner Cases}
+    
+    \item \textbf{Large \texttt{wordList}:} Test the algorithm's performance and efficiency with a large number of words.
+    \index{Corner Cases}
+    
+    \item \textbf{Words with No Common Letters:} Verify that the algorithm correctly identifies when no transformations are possible.
+    \index{Corner Cases}
+    
+    \item \textbf{Prefix Words:} Words where one word is a prefix of another, ensuring that the algorithm handles such scenarios without errors.
+    \index{Corner Cases}
+    
+    \item \textbf{Non-Alphabet Characters:} If allowed, ensure that words containing non-alphabet characters are handled correctly.
+    \index{Corner Cases}
+    
+    \item \textbf{Case Sensitivity:} All words should be lowercase as per the problem statement; however, verify how the algorithm handles mixed case inputs.
+    \index{Corner Cases}
+\end{itemize}
+
+\printindex

@@ -1,0 +1,125 @@
+% Filename: permutations.tex
+
+\problemsection{Permutations}
+\label{problem:Permutations}
+
+The **Permutations** problem is a fundamental combinatorial problem that involves generating all possible arrangements of a given set of distinct integers. This problem demonstrates the power of recursion and backtracking in systematically exploring all permutations.
+
+\subsection*{Problem Statement}
+Given an array \texttt{nums} of distinct integers, return all possible permutations of the elements.
+
+\textbf{Input:}
+- A list of integers \texttt{nums}, where all integers are distinct.
+
+\textbf{Output:}
+- A list of lists, where each inner list represents a unique permutation of \texttt{nums}.
+
+\textbf{Example 1:}
+
+Input: \texttt{nums = [1, 2, 3]}
+
+Output: \[
+\left[
+[1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]
+\right]
+\]
+
+\textbf{Example 2:}
+
+Input: \texttt{nums = [0, 1]}
+
+Output: \[
+\left[
+[0, 1], [1, 0]
+\right]
+\]
+
+\textbf{Example 3:}
+
+Input: \texttt{nums = [1]}
+
+Output: \[
+\left[
+[1]
+\right]
+\]
+
+\subsection*{Algorithmic Approach}
+The problem can be solved using backtracking to systematically generate all permutations.
+
+\textbf{Steps:}
+\begin{itemize}
+    \item Use a recursive backtracking function to construct permutations incrementally.
+    \item Swap elements in place to avoid using additional space for constructing permutations.
+    \item At each recursion level, fix one element at the current position and recursively permute the remaining elements.
+    \item Once all positions are filled, add the current permutation to the result list.
+\end{itemize}
+
+\subsection*{Complexities}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(n!)\), where \(n\) is the number of elements in \texttt{nums}, as there are \(n!\) permutations.
+    \item \textbf{Space Complexity:} \(O(n)\), for the recursion stack.
+\end{itemize}
+
+\subsection*{Python Implementation}
+Below is the Python implementation using backtracking:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def permute(nums):
+    def backtrack(start):
+        # Base case: If all positions are filled, add the current permutation
+        if start == len(nums):
+            result.append(nums[:])
+            return
+        
+        for i in range(start, len(nums)):
+            # Swap the current element with the start
+            nums[start], nums[i] = nums[i], nums[start]
+            # Recurse for the next position
+            backtrack(start + 1)
+            # Backtrack by swapping back
+            nums[start], nums[i] = nums[i], nums[start]
+    
+    result = []
+    backtrack(0)  # Start permuting from the first position
+    return result
+
+# Example usage:
+print(permute([1, 2, 3]))  # Output: [[1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]]
+\end{lstlisting}
+\end{fullwidth}
+
+\subsection*{Why This Approach?}
+The backtracking approach efficiently explores all permutations by recursively fixing elements and swapping them back after recursion. The in-place swapping reduces additional space usage for constructing permutations.
+
+\subsection*{Alternative Approaches}
+\begin{itemize}
+    \item **Iterative Approach:** Use a queue or stack to iteratively construct permutations. However, this approach is less intuitive than backtracking.
+    \item **Library Functions:** In Python, the \texttt{itertools.permutations} function can generate permutations directly, but it may not provide the same educational insight as implementing the algorithm yourself.
+\end{itemize}
+
+\subsection*{Similar Problems}
+\begin{itemize}
+    \item \textbf{Combinations:} Generate all subsets of a specific size \(k\).
+    \item \textbf{Subsets:} Generate all subsets (power set) of a given set.
+    \item \textbf{Permutations with Duplicates:} Generate all unique permutations when the input contains duplicates.
+\end{itemize}
+
+\subsection*{Things to Keep in Mind and Tricks}
+\begin{itemize}
+    \item Avoid using additional space for tracking used elements by leveraging in-place swaps.
+    \item Ensure that the input array does not contain duplicates unless the problem explicitly allows them.
+    \item Test the algorithm with edge cases like an empty array or a single element.
+\end{itemize}
+
+\subsection*{Corner and Special Cases to Test}
+\begin{itemize}
+    \item \textbf{Empty Input:} Input: \texttt{nums = []}, Output: \texttt{[[]]}.
+    \item \textbf{Single Element:} Input: \texttt{nums = [1]}, Output: \texttt{[[1]]}.
+    \item \textbf{Small Input:} Input: \texttt{nums = [0, 1]}, Verify correctness.
+    \item \textbf{Larger Input:} Input: \texttt{nums = [1, 2, 3, 4]}, Test performance.
+\end{itemize}
+
+\subsection*{Conclusion}
+The **Permutations** problem is a fundamental challenge in combinatorics that reinforces recursive problem-solving and backtracking techniques. Mastering this problem lays the groundwork for tackling more advanced combinatorial problems efficiently.

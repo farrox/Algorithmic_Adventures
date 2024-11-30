@@ -1,0 +1,104 @@
+
+ewpage
+\chapter{Design Add and Search Words Data Structure}
+\label{chap:design_add_search_words_data_structure}
+
+The problem described requires the creation of a data structure that supports both the addition of words and searching for words with the possibility of including wildcards represented by '.' characters, where each '.' can match any single letter.
+
+LeetCode link: \href{https://leetcode.com/problems/design-add-and-search-words-data-structure/}{Design Add and Search Words Data Structure}
+
+\section*{Algorithmic Approach}
+To efficiently support the operations required by the problem, a trie (prefix tree) data structure is a suitable choice. A trie is a tree-like data structure used to store a dynamic set of strings, where keys are usually strings. Each node in the trie corresponds to a character of a string, making it a good fit for our word handling functionality.
+
+For the \texttt{addWord(word)} operation, we insert a string into the trie by creating nodes for each character if they do not already exist. 
+
+For the \texttt{search(word)} operation with support for wildcards, we use recursion to represent different possibilities when a wildcard character is encountered.
+
+\section*{Complexities}
+\begin{itemize}
+    \item For the \texttt{addWord(word)} operation, the time complexity is \(O(m)\), where \(m\) is the length of the word to be inserted. This is because we process each character of the word once.
+    
+    \item The \texttt{search(word)} operation has a worst-case time complexity of \(O(n \cdot 26^m)\), where \(n\) is the number of words added, and \(m\) is the length of the search word. This is because each wildcard character can be matched with any of the 26 possible characters, leading to a combinatorial explosion of possibilities. However, the average case is often much better, especially if there are a limited number of wildcards.
+    
+    \item The space complexity is \(O(t)\), where \(t\) is the total number of nodes in the trie. In the worst case, when all words are of length \(m\) and have no common prefix, this complexity is \(O(n m)\), where \(n\) is the number of inserted words.
+\end{itemize}
+
+
+ewpage 
+\section*{Python Implementation}
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.is_end_of_word = False
+
+class WordDictionary:
+
+    def __init__(self):
+        self.root = TrieNode()
+
+    def addWord(self, word):
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                node.children[char] = TrieNode()
+            node = node.children[char]
+        node.is_end_of_word = True
+
+    def search(self, word):
+        def search_in_node(word, node):
+            for i, char in enumerate(word):
+                if char != '.':
+                    if char not in node.children:
+                        return False
+                    node = node.children[char]
+                else:
+                    for child in node.children.values():
+                        if search_in_node(word[i + 1:], child):
+                            return True
+                    return False
+            return node.is_end_of_word
+
+        return search_in_node(word, self.root)
+\end{lstlisting}
+
+\end{fullwidth}
+
+\section*{Explanation}
+The core of the implemented solution consists of two parts:
+- The \texttt{TrieNode} class, which models the nodes of the trie, includes a dictionary child named \texttt{children} that maps characters to their child nodes, as well as a boolean flag \texttt{is\_end\_of\_word} that indicates if a node is the end of a word.
+- The \texttt{WordDictionary} class, which implements the \texttt{addWord} and \texttt{search} methods. 
+
+The \texttt{addWord} method iterates through each character of the word, creating new nodes as required, and flags the end of the inserted word. 
+
+The \texttt{search} method is where the wildcard handling occurs. It uses a helper function \texttt{search\_in\_node} that searches recursively. If it encounters a regular character, it simply traverses deeper into the trie. However, if a '.' character is encountered, the function must try all possible subpaths that could lead to a word match.
+
+\section*{Why this approach}
+The trie was chosen for its efficiency and suitability in handling prefix-based search queries. Its structured approach to storing words allows for a quick and flexible search operation, including the ability to handle wildcards with a backtracking search technique.
+
+\section*{Alternative Approaches}
+An alternative approach could have been to use a hash table storing all possible words and then checking for matches with wildcards using regular expressions. However, this would have been less space-efficient and potentially slower for wildcard searches due to the lack of structure in comparison to a trie.
+
+\section*{Similar Problems}
+\begin{itemize}
+    \item Implementing a trie is a common problem itself.
+    \item "Implement Magic Dictionary" is similar, as it involves adding a "search" functionality that can match words with one character difference.
+    \item "Replace Words" uses a similar concept where shortest equivalents from a dictionary are used to replace words in a sentence.
+    \item "Word Search II" involves finding words in a grid and can also be implemented with trie for more efficiency.
+\end{itemize}
+
+\section*{Things to Keep in Mind and Tricks}
+When implementing the trie:
+\begin{itemize}
+    \item Recursion is often used in search functions, particularly when dealing with wildcards.
+    \item It's important to carefully manage the \texttt{is\_end\_of\_word} flag to correctly indicate when a word terminates.
+\end{itemize}
+
+\section*{Corner and Special Cases to Test}
+\begin{itemize}
+    \item The empty string as input.
+    \item Cases with multiple wildcards in different positions (e.g. "..a", "a..", ".a.", "...").
+    \item Repeated calls to \texttt{addWord} and \texttt{search} with the same word to check if previous insertions or searches interfere with later ones.
+\end{itemize}

@@ -1,0 +1,91 @@
+\problemsection{Minimum Size Subarray Sum}
+\label{sec:Minimum_Size_Subarray_Sum}
+
+The "Minimum Size Subarray Sum" problem is another excellent example of the sliding window technique in action. This problem challenges one to find the smallest contiguous subarray whose sum is at least a given target.
+
+\section*{Problem Statement}
+
+Given an array of positive integers \texttt{nums} and a positive integer \texttt{s}, find the minimal length of a contiguous subarray of which the sum is greater than or equal to \texttt{s}. If there isn't one, return 0 instead.
+
+\textbf{Input:} An integer \texttt{s} and an array of positive integers \texttt{nums}.
+
+\textbf{Output:} The minimal length of a contiguous subarray with a sum $\geq$ \texttt{s}.
+
+\textbf{Example:}
+\begin{verbatim}
+    Input: s = 7, nums = [2,3,1,2,4,3]
+    Output: 2
+    Explanation: The subarray [4,3] has the minimal length under the problem constraint.
+\end{verbatim}
+
+% LeetCode link: \href{https://leetcode.com/problems/minimum-size-subarray-sum/}{Minimum Size Subarray Sum}
+
+\section*{Algorithmic Approach}
+
+To solve this problem, we employ the sliding window technique. The idea is to expand the window by adding elements to the sum until it is greater than or equal to \texttt{s}. Once the sum is sufficient, we contract the window from the left to find the minimal length while still maintaining the sum $\geq$ \texttt{s}.
+
+\section*{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:} The time complexity of this algorithm is \(O(n)\), where \(n\) is the length of the array. This is because each element is added and removed from the window at most once.
+    \item \textbf{Space Complexity:} The space complexity is \(O(1)\) as we are using only a few extra variables for the window sum, start pointer, and the minimum length.
+\end{itemize}
+
+\section*{Python Implementation}
+
+Below is the complete Python code for solving the "Minimum Size Subarray Sum" problem using the sliding window technique:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def min_subarray_len(s, nums):
+    n = len(nums)
+    min_length = float('inf')
+    current_sum = 0
+    start = 0
+    
+    for end in range(n):
+        current_sum += nums[end]
+        
+        while current_sum >= s:
+            min_length = min(min_length, end - start + 1)
+            current_sum -= nums[start]
+            start += 1
+    
+    return 0 if min_length == float('inf') else min_length
+
+# Example usage:
+s = 7
+nums = [2, 3, 1, 2, 4, 3]
+print(min_subarray_len(s, nums))  # Output: 2
+\end{lstlisting}
+
+\end{fullwidth}
+
+This implementation maintains a running sum of the current window. If the sum becomes greater than or equal to \texttt{s}, it tries to shrink the window from the left to find the minimum length. It updates the minimum length whenever the sum condition is satisfied.
+
+\section*{Why this approach}
+
+The sliding window technique is chosen here for its efficiency in handling contiguous subarrays. It ensures that each element is processed at most twice, once when added to the window and once when removed, making it highly efficient.
+
+\section*{Alternative approaches}
+
+An alternative approach could involve using binary search along with prefix sums to find the minimum subarray length. However, this approach would be more complex and less intuitive than the sliding window method.
+
+\section*{Similar problems to this one}
+
+Similar problems include "Longest Substring with At Most Two Distinct Characters" and "Longest Repeating Character Replacement," where the sliding window technique is also applied to find subarrays or substrings under certain constraints.
+
+\section*{Things to keep in mind and tricks}
+
+One important trick is to remember that as soon as the window sum exceeds \texttt{s}, you should try to shrink the window from the left to find the minimal length subarray. This ensures that the solution remains optimal.
+
+\section*{Corner and Special Cases to Test When Writing the Code}
+
+Test cases should include:
+- Arrays where no subarray meets the sum condition, returning 0.
+- Large arrays to verify performance.
+- Edge cases with the minimum input size (e.g., an array with one element).
+
+
+
+

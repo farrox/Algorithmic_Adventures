@@ -1,0 +1,87 @@
+% Filename: same_tree.tex
+
+\problemsection{Same Tree}\marginpar{Determine if two binary trees are identical using recursion.}
+
+\textbf{Problem Statement}
+
+This problem involves determining whether two binary trees are identical. Two binary trees are considered the same if they are structurally identical and all corresponding nodes have the same value.
+
+% The problem as described on LeetCode can be found at the following link: \href{https://leetcode.com/problems/same-tree/}{Same Tree}.
+
+\textbf{Algorithmic Approach}
+
+To solve this problem, a recursive approach is typically used. The algorithm proceeds as follows:
+
+\begin{enumerate}
+    \item \textbf{Base Case - Both Trees are Empty}: Check if both trees are empty (NULL pointers). If they are, return \textit{true} since two empty trees are considered the same.
+    \item \textbf{One Tree is Empty}: If one tree is empty and the other is not, return \textit{false} because they cannot be the same.
+    \item \textbf{Compare Current Nodes}: Compare the values of the current nodes from both trees. If they do not match, return \textit{false}.
+    \item \textbf{Recurse on Left Subtrees}: Recursively check the left subtrees of both trees to see if they are the same.
+    \item \textbf{Recurse on Right Subtrees}: Recursively check the right subtrees of both trees to see if they are the same.
+    \item \textbf{Combine Results}: If the values of the current nodes match and the recursive checks for both subtrees return \textit{true}, then the current trees are the same; hence, return \textit{true}.
+    \item \textbf{Otherwise}: Return \textit{false}.
+\end{enumerate}
+
+\textbf{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity}: The time complexity is \(O(n)\), where \(n\) is the number of nodes in the tree. This is because the algorithm must visit each node exactly once.
+    \item \textbf{Space Complexity}: The space complexity is \(O(h)\), where \(h\) is the height of the tree. This space is used in the call stack during recursive calls. In the worst case, the tree can be completely unbalanced, yielding a space complexity of \(O(n)\).
+\end{itemize}
+
+\textbf{Python Implementation}\marginpar{Implementing the solution using recursion for clarity and efficiency.}
+
+\begin{lstlisting}[language=Python, xleftmargin=0.02\textwidth, xrightmargin=0.02\textwidth]
+# Definition for a binary tree node.
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def isSameTree(p: TreeNode, q: TreeNode) -> bool:
+    # Both trees are empty
+    if not p and not q:
+        return True
+    # One tree is empty, and the other is not
+    if not p or not q:
+        return False
+    # Node values are different
+    if p.val != q.val:
+        return False
+    # Recursively check the left and right subtrees
+    return isSameTree(p.left, q.left) and isSameTree(p.right, q.right)
+\end{lstlisting}
+
+\textbf{Explanation}
+
+The function \texttt{isSameTree} determines whether two binary trees, \texttt{p} and \texttt{q}, are the same by recursively comparing their structure and node values. It returns \textit{true} only if both trees are structurally identical and all corresponding nodes have the same value.
+
+\textbf{Why This Approach}
+
+The recursive approach is natural for tree problems because it mimics the structure of a tree, allowing us to perform the same operation on subtrees as we would on the entire tree. It is elegant and leads to a simple yet effective solution.
+
+\textbf{Alternative Approaches}
+
+An alternative method would be to use an iterative approach with a queue or stack to perform a level-order or depth-first traversal, respectively. At each step, you would compare the nodes from both trees. However, the recursive approach is more straightforward in this case.
+
+\textbf{Similar Problems to This One}
+
+Similar tree comparison problems include checking if a tree is symmetric (\hyperref[problem:symmetric_tree]{Symmetric Tree}), determining if a tree is a subtree of another tree (\hyperref[problem:subtree_of_another_tree]{Subtree of Another Tree}), and checking if two trees are mirror images of each other (\hyperref[problem:invert_binary_tree]{Invert Binary Tree}).
+
+\textbf{Things to Keep in Mind and Tricks}
+
+\begin{itemize}
+    \item Always check for NULL pointers when dealing with trees to avoid dereferencing them.
+    \item If the tree nodes have unique values, a pre-order or post-order traversal would suffice to determine tree equality. If not, a combination of in-order and pre/post-order traversal can be used.
+\end{itemize}
+
+\textbf{Corner and Special Cases to Test When Writing the Code}
+
+Some corner and special cases to consider:
+\begin{itemize}
+    \item One or both trees are empty.
+    \item Trees have only one node.
+    \item Trees with a different structure but the same values in a different arrangement.
+    \item Trees where one is a complete binary tree and the other is not.
+\end{itemize}

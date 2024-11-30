@@ -1,0 +1,119 @@
+% Filename: encode_and_decode_strings.tex
+
+\problemsection{Encode and Decode Strings}
+\label{problem:Encode_and_Decode_Strings}
+
+The **Encode and Decode Strings** problem involves designing a system to encode a list of strings into a single string and decode it back into the original list. This is a practical challenge often encountered when transferring data, where maintaining the integrity of the original data while avoiding ambiguity is crucial.
+
+\subsection*{Problem Statement}
+Design an encoding and decoding scheme with the following properties:
+\begin{itemize}
+    \item The encoding process should convert a list of strings into a single string.
+    \item The decoding process should revert the encoded string back into the original list of strings.
+    \item The encoding should handle special characters, including delimiters, spaces, and empty strings.
+\end{itemize}
+
+\textbf{Input:}
+- A list of strings for encoding, or an encoded string for decoding.
+
+\textbf{Output:}
+- A single encoded string or the original list of strings.
+
+\textbf{Example:}
+\begin{verbatim}
+Input: ["hello", "world"]
+Encoded: "5#hello5#world"
+Decoded: ["hello", "world"]
+\end{verbatim}
+
+\subsection*{Algorithmic Approach}
+The challenge lies in encoding strings such that the decoding process can unambiguously separate them. A robust solution involves prefixing each string with its length followed by a delimiter, ensuring no ambiguity regardless of the content of the strings.
+
+\subsection*{Encoding}
+\begin{itemize}
+    \item For each string, calculate its length.
+    \item Concatenate the length, a delimiter (e.g., \texttt{\#}), and the string.
+    \item Append each encoded string to form the final encoded result.
+\end{itemize}
+
+\subsection*{Decoding}
+\begin{itemize}
+    \item Traverse the encoded string, reading the length of each string until the delimiter.
+    \item Extract the substring of the given length and add it to the result list.
+    \item Continue until the entire encoded string is processed.
+\end{itemize}
+
+\subsection*{Complexities}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(n)\), where \(n\) is the total length of all strings combined. Each character is processed once during encoding and decoding.
+    \item \textbf{Space Complexity:} \(O(n)\), for storing the encoded string or the decoded list.
+\end{itemize}
+
+\subsection*{Python Implementation}
+Below is the Python implementation of the encoding and decoding scheme:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class Codec:
+    def encode(self, strs):
+        """Encodes a list of strings to a single string."""
+        encoded = ""
+        for s in strs:
+            encoded += f"{len(s)}#{s}"
+        return encoded
+
+    def decode(self, s):
+        """Decodes a single string to a list of strings."""
+        decoded = []
+        i = 0
+        while i < len(s):
+            # Find the next delimiter
+            j = s.find('#', i)
+            length = int(s[i:j])  # Extract the length
+            decoded.append(s[j+1:j+1+length])  # Extract the string
+            i = j + 1 + length  # Move to the next segment
+        return decoded
+
+# Example usage:
+codec = Codec()
+strings = ["hello", "world", "", "python"]
+encoded = codec.encode(strings)
+print(f"Encoded: {encoded}")  # Output: "5#hello5#world0#6#python"
+decoded = codec.decode(encoded)
+print(f"Decoded: {decoded}")  # Output: ["hello", "world", "", "python"]
+\end{lstlisting}
+\end{fullwidth}
+
+\subsection*{Why This Approach?}
+This approach ensures robust encoding and decoding by clearly separating the length and content of each string using a delimiter. By prefixing each string with its length, it avoids ambiguity, even when strings contain special characters or delimiters themselves.
+
+\subsection*{Alternative Approaches}
+\begin{itemize}
+    \item **Escape Delimiters:** Use a unique escape sequence to handle special characters, but this increases complexity during decoding.
+    \item **Fixed-Length Encoding:** Use fixed-width fields for lengths or strings. However, this is inefficient for strings of varying lengths.
+\end{itemize}
+
+\subsection*{Similar Problems}
+\begin{itemize}
+    \item \textbf{Serialize and Deserialize Binary Tree:} Encode a binary tree into a string and decode it back into its original structure.
+    \item \textbf{Run-Length Encoding (RLE):} Compress strings by encoding repeating characters.
+    \item \textbf{Compression Algorithms:} Implement algorithms like Huffman coding for compressing data.
+\end{itemize}
+
+\subsection*{Things to Keep in Mind and Tricks}
+\begin{itemize}
+    \item Always choose a delimiter that is guaranteed not to conflict with string content, or ensure it is escaped properly.
+    \item Handle edge cases like empty strings and lists during encoding and decoding.
+    \item Validate the encoded string during decoding to ensure correctness and avoid crashes.
+\end{itemize}
+
+\subsection*{Corner and Special Cases to Test}
+\begin{itemize}
+    \item **Empty List:** Input: \texttt{[]}, Output: Encoded: \texttt{""}, Decoded: \texttt{[]}.
+    \item **Strings with Delimiters:** Input: \texttt{["abc", "12\#34"]}, Output: Properly encoded and decoded.
+    \item **Long Strings:** Test with very long strings to ensure scalability.
+    \item **Empty Strings:** Input: \texttt{["", ""]}, Output: Properly encoded and decoded as two empty strings.
+\end{itemize}
+
+\subsection*{Conclusion}
+The **Encode and Decode Strings** problem demonstrates the importance of designing robust and scalable encoding schemes. By employing a length-prefixed approach, the solution ensures accuracy and efficiency while handling edge cases and special characters effectively.

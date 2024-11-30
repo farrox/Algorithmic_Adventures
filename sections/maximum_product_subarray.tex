@@ -1,0 +1,122 @@
+\problemsection{Maximum Product Subarray}
+\label{problem:Maximum_Product_Subarray}
+
+The **Maximum Product Subarray** problem is a classic dynamic programming challenge that highlights the importance of tracking both the maximum and minimum values in a sequence. The problem’s complexity arises from handling positive, negative, and zero values, which can significantly affect the product of subarrays.
+
+\subsection*{Problem Statement}
+Given an integer array \texttt{nums}, find the contiguous subarray (containing at least one number) which has the largest product, and return the product.
+
+\textbf{Example 1:}
+\begin{verbatim}
+Input: nums = [2,3,-2,4]
+Output: 6
+Explanation: The subarray [2,3] has the largest product 6.
+\end{verbatim}
+
+\textbf{Example 2:}
+\begin{verbatim}
+Input: nums = [-2,0,-1]
+Output: 0
+Explanation: The result cannot be 2, because [-2,-1] is not a contiguous subarray.
+\end{verbatim}
+
+\textbf{Key Observations:}
+\begin{itemize}
+    \item Negative numbers can transform a large negative product into a large positive product when multiplied with another negative number\sidenote{Tracking both the maximum and minimum products is crucial for this reason}.
+    \item Zeros break the continuity of a subarray’s product, requiring a reset of the calculation\sidenote{Any subarray containing zero has a product of zero}.
+\end{itemize}
+
+\subsection*{Algorithmic Approach}
+The most efficient solution to this problem leverages dynamic programming to maintain:
+\begin{itemize}
+    \item \texttt{max\_product}: The maximum product of a subarray ending at the current index.
+    \item \texttt{min\_product}: The minimum product of a subarray ending at the current index\sidenote{Tracking the minimum is essential to handle negative values correctly}.
+\end{itemize}
+
+At each step, update \texttt{max\_product} and \texttt{min\_product} using the current number and the products of the current number with the previous \texttt{max\_product} and \texttt{min\_product}. If the current number is negative, swap \texttt{max\_product} and \texttt{min\_product} before updating.
+
+\textbf{Algorithm:}
+\begin{enumerate}
+    \item Initialize \texttt{max\_product}, \texttt{min\_product}, and \texttt{result} to the first element of the array.
+    \item Iterate through the array starting from the second element:
+    \begin{itemize}
+        \item If the current number is negative, swap \texttt{max\_product} and \texttt{min\_product}.
+        \item Update \texttt{max\_product} as:
+        \[
+        \text{max\_product} = \max(\text{nums}[i], \text{max\_product} \times \text{nums}[i])
+        \]
+        \item Update \texttt{min\_product} as:
+        \[
+        \text{min\_product} = \min(\text{nums}[i], \text{min\_product} \times \text{nums}[i])
+        \]
+        \item Update \texttt{result} as:
+        \[
+        \text{result} = \max(\text{result}, \text{max\_product})
+        \]
+    \end{itemize}
+    \item Return \texttt{result}.
+\end{enumerate}
+
+\subsection*{Complexities}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(n)\), as the array is traversed only once.
+    \item \textbf{Space Complexity:} \(O(1)\), since only a constant amount of extra space is required.
+\end{itemize}
+
+\subsection*{Python Implementation}
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class Solution:
+    def maxProduct(self, nums: List[int]) -> int:
+        # Initialize max_product, min_product, and result with the first element
+        max_product = min_product = result = nums[0]
+
+        # Iterate through nums starting from the second element
+        for i in range(1, len(nums)):
+            # If the current element is negative, swap max_product and min_product
+            if nums[i] < 0:
+                max_product, min_product = min_product, max_product
+
+            # Update max_product and min_product
+            max_product = max(nums[i], max_product * nums[i])
+            min_product = min(nums[i], min_product * nums[i])
+
+            # Update the global result
+            result = max(result, max_product)
+
+        return result
+\end{lstlisting}
+\end{fullwidth}
+
+\subsection*{Why This Approach?}
+This approach efficiently calculates the maximum product of a subarray by maintaining local maxima and minima at each step, ensuring optimal performance. The \(O(n)\) time complexity is achieved by avoiding recalculation of products for all possible subarrays, which would otherwise result in \(O(n^2)\) complexity.
+
+\subsection*{Alternative Approaches}
+\begin{itemize}
+    \item **Brute Force:** Calculate the product of every possible subarray. While straightforward, this approach has \(O(n^2)\) time complexity and is impractical for large arrays.
+    \item **Divide and Conquer:** Split the array into halves, recursively find the maximum product in each half, and compute the maximum product across the midpoint. This approach has \(O(n \log n)\) time complexity but is less efficient than the dynamic programming solution.
+\end{itemize}
+
+\subsection*{Similar Problems}
+\begin{itemize}
+    \item \textbf{Maximum Subarray Sum:} Use Kadane’s Algorithm to find the maximum sum of a contiguous subarray.
+    \item \textbf{Circular Subarray Maximum Product:} Extend this problem to handle arrays with wraparound subarrays.
+\end{itemize}
+
+\subsection*{Things to Keep in Mind and Tricks}
+\begin{itemize}
+    \item **Negative Numbers:** Always track both maximum and minimum products to handle cases where negative values become positive when multiplied.
+    \item **Zeros:** A zero resets the product, so consider restarting the calculation from the next element after a zero.
+    \item **Edge Cases:** Test arrays with single elements, all positive numbers, all negative numbers, and arrays with zeros.
+\end{itemize}
+
+\subsection*{Corner and Special Cases to Test}
+\begin{itemize}
+    \item Arrays with one element (\([3]\)): The product is the element itself.
+    \item Arrays with all negative numbers (\([-1, -2, -3]\)): The maximum product is the product of all elements if the count of negatives is even.
+    \item Arrays with zeros (\([0, -2, -3, 0, 4]\)): Ensure the algorithm handles resets correctly.
+    \item Mixed positive and negative numbers (\([2, 3, -2, 4, -1]\)): Check transitions between positive and negative subarrays.
+\end{itemize}
+
+\subsection*{Conclusion}
+The **Maximum Product Subarray** problem is a classic example of dynamic programming’s power in handling complex array-based problems. By maintaining local maxima and minima, this approach elegantly solves the problem in linear time, ensuring efficiency even for large inputs. Mastering this problem builds a strong foundation for tackling similar challenges involving subarrays and dynamic optimization.

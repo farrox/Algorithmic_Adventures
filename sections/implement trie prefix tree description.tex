@@ -1,0 +1,114 @@
+
+ewpage
+
+\chapter{Trie (Prefix Tree)}
+\label{chap:trie_prefix_tree}
+
+The problem deals with implementing a Trie (also known as a prefix tree), which is a specialized tree used to handle a common set of strings. A trie is a variant of an n-ary tree in which characters are stored at each node and each path down the tree may represent a word. It has several methods, such as insert, search, and startsWith, which allow for efficient information retrieval and manipulation based on prefixes.
+
+\section*{Problem Statement}
+
+LeetCode link: \href{https://leetcode.com/problems/implement-trie-prefix-tree/}{Implement Trie (Prefix Tree)}
+
+\section*{Algorithmic Approach}
+
+The trie structure is typically implemented using a class (\textit{TrieNode}) representing each node in the trie. Each \textit{TrieNode} contains a map or an array of child nodes, and a boolean flag indicating whether the node represents the end of a word.
+
+The insert method traverses the trie based on the characters of the word being inserted, creating new nodes as necessary, and marks the final character's node as the end of a word.
+
+The search method traverses the trie based on the characters of the word being searched, returning false if a character does not have a corresponding child node in the trie. If the final character's node is reached, the method returns whether the node is marked as the end of a word.
+
+The startsWith method is similar to the search method, but it only checks the existence of the prefix and does not require the final node to be marked as the end of a word.
+
+\section*{Complexities}
+
+\begin{itemize}
+	\item Time complexity:
+	\begin{itemize}
+		\item For insertion: $O(m)$, where $m$ is the length of the word to be inserted.
+		\item For search and startsWith: $O(m)$, where $m$ is the length of the word or prefix to be searched.
+	\end{itemize}
+	\item Space complexity: $O(n \times l)$, where $n$ is the number of nodes in the trie and $l$ is the size of the alphabet (26 for lowercase English letters in this problem).
+\end{itemize}
+
+
+ewpage 
+\section*{Python Implementation}
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.is_end_of_word = False
+
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
+
+    def insert(self, word: str) -> None:
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                node.children[char] = TrieNode()
+            node = node.children[char]
+        node.is_end_of_word = True
+
+    def search(self, word: str) -> bool:
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                return False
+            node = node.children[char]
+        return node.is_end_of_word
+
+    def startsWith(self, prefix: str) -> bool:
+        node = self.root
+        for char in prefix:
+            if char not in node.children:
+                return False
+            node = node.children[char]
+        return True
+\end{lstlisting}
+
+\end{fullwidth}
+
+\section*{Explanation}
+
+The `TrieNode` class serves as the blueprint for each node. It includes a dictionary to store children nodes (edges in the trie), and a boolean to mark the end of a word.
+
+The `Trie` class itself has methods for insertion, searching a whole word, and searching by prefix. When inserting, we iterate over the word. If the character is not already a child of the current node, we create a new `TrieNode`. After adding all characters, we mark the last node as the end of a word.
+
+The search method checks for the presence of each character in the word. If any character is missing from the children of the current node, the search returns false. If we reach the end of the word, we return whether the last node is marked as an end of a word.
+
+The startsWith method checks if the prefix is present in the trie. It is similar to search, except it does not require the final node to be marked as an end.
+
+\section*{Why this approach}
+
+The trie data structure is chosen for its efficiency in searching and storing strings, especially when dealing with prefixes. It allows for quick insertions and prefix-based lookups, scaling well when dealing with a large collection of strings.
+
+\section*{Alternative approaches}
+
+An alternative is to use a hash set. While this can be effective for word lookups, it does not handle prefix searches efficiently, requiring O(n*m) time where n is the number of words and m is the length of the longest word.
+
+\section*{Similar problems to this one}
+
+- Autocomplete feature implementation
+- Dictionary word lookup
+- IP routing table with prefix lookups
+
+\section*{Things to Keep in Mind and Tricks}
+
+\begin{itemize}
+    \item Understanding the difference between searching for a whole word and a prefix.
+    \item Avoiding duplicate nodes by checking if a child node already exists before creating a new one.
+    \item Efficiently finding the end of a word and checking the \texttt{is\_end\_of\_word} flag to return accurate search results.
+\end{itemize}
+
+
+\section*{Corner and special cases to test when writing the code}
+
+- Inserting and then searching for the same word
+- Inserting a word and then searching for a longer word with the same prefix
+- Searching a prefix that matches multiple words in the trie
+- Handling case sensitivity if required

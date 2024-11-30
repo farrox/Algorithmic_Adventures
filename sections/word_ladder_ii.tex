@@ -1,0 +1,407 @@
+% file: word_ladder_ii.tex
+
+\problemsection{Word Ladder II}
+\label{problem:word_ladder_ii}
+\marginnote{This problem extends the Word Ladder challenge by requiring the enumeration of all shortest transformation sequences using BFS and backtracking techniques.}
+
+The \textbf{Word Ladder II} problem builds upon the original Word Ladder challenge by not only finding the length of the shortest transformation sequence from a \textit{beginWord} to an \textit{endWord}, but also by enumerating all possible shortest transformation sequences that satisfy the transformation rules. This problem emphasizes advanced graph traversal methods and efficient backtracking strategies to handle multiple valid paths.
+
+\section*{Problem Statement}
+
+Given two words, \texttt{beginWord} and \texttt{endWord}, and a dictionary \texttt{wordList}, find all the shortest transformation sequences from \texttt{beginWord} to \texttt{endWord}, such that:
+
+\begin{itemize}
+    \item Only one letter can be changed at a time.
+    \item Each transformed word must exist in the \texttt{wordList}.
+\end{itemize}
+
+\textbf{Note:}
+\begin{itemize}
+    \item \texttt{beginWord} does not need to be in \texttt{wordList}.
+    \item All words have the same length.
+    \item All words contain only lowercase English letters.
+\end{itemize}
+
+\textbf{Output:} A list of lists, where each inner list represents a valid shortest transformation sequence from \texttt{beginWord} to \texttt{endWord}. If no such sequence exists, return an empty list.
+
+\textbf{Examples:}
+
+\textit{Example 1:}
+
+\begin{verbatim}
+Input:
+beginWord = "hit",
+endWord = "cog",
+wordList = ["hot","dot","dog","lot","log","cog"]
+
+Output:
+[
+  ["hit","hot","dot","dog","cog"],
+  ["hit","hot","lot","log","cog"]
+]
+\end{verbatim}
+
+\textit{Example 2:}
+
+\begin{verbatim}
+Input:
+beginWord = "hit",
+endWord = "cog",
+wordList = ["hot","dot","dog","lot","log"]
+
+Output: []
+Explanation: The endWord "cog" is not in wordList, so no possible transformation.
+\end{verbatim}
+
+LeetCode link: \href{https://leetcode.com/problems/word-ladder-ii/}{Word Ladder II}\index{LeetCode}
+
+\marginnote{\href{https://leetcode.com/problems/word-ladder-ii/}{[LeetCode Link]}\index{LeetCode}}
+\marginnote{\href{https://www.geeksforgeeks.org/word-ladder-problem-shortest-transformation-sequence/}{[GeeksForGeeks Link]}\index{GeeksForGeeks}}
+\marginnote{\href{https://www.hackerrank.com/challenges/word-ladder/problem}{[HackerRank Link]}\index{HackerRank}}
+\marginnote{\href{https://app.codesignal.com/challenges/word-ladder-ii}{[CodeSignal Link]}\index{CodeSignal}}
+\marginnote{\href{https://www.interviewbit.com/problems/word-ladder-ii/}{[InterviewBit Link]}\index{InterviewBit}}
+\marginnote{\href{https://www.educative.io/courses/grokking-the-coding-interview/RM8y8Y3nLdY}{[Educative Link]}\index{Educative}}
+\marginnote{\href{https://www.codewars.com/kata/word-ladder-ii/train/python}{[Codewars Link]}\index{Codewars}}
+
+\section*{Algorithmic Approach}
+
+The \textbf{Word Ladder II} problem can be effectively solved by combining Breadth-First Search (BFS) to determine the shortest path lengths and Depth-First Search (DFS) for backtracking to construct all possible shortest transformation sequences. The primary challenge lies in efficiently handling multiple paths and ensuring that only the shortest sequences are captured.
+
+\begin{enumerate}
+    \item \textbf{BFS to Determine Levels:}
+    \begin{itemize}
+        \item Treat each word as a node in a graph, with edges connecting words that differ by exactly one letter.
+        \item Perform BFS starting from the \texttt{beginWord} to explore the graph level by level.
+        \item During BFS, keep track of each word's level (distance from the \texttt{beginWord}).
+        \item Use a dictionary (\texttt{level}) to store the earliest level at which each word is encountered.
+    \end{itemize}
+    
+    \item \textbf{Building the Graph:}
+    \begin{itemize}
+        \item Use a dictionary (\texttt{parents}) to map each word to its predecessors in the BFS traversal.
+        \item This mapping is essential for backtracking all possible shortest paths from \texttt{endWord} to \texttt{beginWord}.
+    \end{itemize}
+    
+    \item \textbf{DFS for Backtracking:}
+    \begin{itemize}
+        \item Starting from the \texttt{endWord}, perform DFS to traverse back to the \texttt{beginWord} using the \texttt{parents} mapping.
+        \item Accumulate the paths during DFS to collect all valid shortest transformation sequences.
+    \end{itemize}
+    
+    \item \textbf{Termination:}
+    \begin{itemize}
+        \item BFS terminates once the \texttt{endWord} is reached, ensuring that only the shortest paths are considered.
+        \item If the \texttt{endWord} is not reachable, return an empty list.
+    \end{itemize}
+\end{enumerate}
+
+\marginnote{Combining BFS for level determination with DFS for path construction efficiently captures all shortest transformation sequences without redundant computations.}
+
+\section*{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(N \cdot K^2 + M)\), where:
+    \begin{itemize}
+        \item \(N\) is the number of words in \texttt{wordList}.
+        \item \(K\) is the length of each word.
+        \item \(M\) is the number of shortest transformation sequences.
+    \end{itemize}
+    The \(N \cdot K^2\) term accounts for generating all generic intermediate states and building the graph, while \(M\) represents the time taken to backtrack and construct all possible sequences.
+    
+    \item \textbf{Space Complexity:} \(O(N \cdot K)\), due to storing the generic intermediate states in \texttt{all\_combo\_dict}, the BFS queue, and the \texttt{parents} mapping.
+\end{itemize}
+
+\section*{Python Implementation}
+
+\marginnote{Efficiently managing BFS levels and parent mappings is crucial for accurately backtracking all shortest paths without excessive memory usage.}
+
+Below is the complete Python code that implements a solution to the \textbf{Word Ladder II} problem:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+from collections import defaultdict, deque
+
+def findLadders(beginWord, endWord, wordList):
+    wordSet = set(wordList)
+    if endWord not in wordSet:
+        return []
+    
+    # Initialize variables
+    level = {beginWord: 0}
+    parents = defaultdict(set)
+    queue = deque([beginWord])
+    word_len = len(beginWord)
+    found = False
+    current_level = 0
+    
+    while queue and not found:
+        current_level += 1
+        for _ in range(len(queue)):
+            word = queue.popleft()
+            for i in range(word_len):
+                for c in 'abcdefghijklmnopqrstuvwxyz':
+                    if c == word[i]:
+                        continue
+                    next_word = word[:i] + c + word[i+1:]
+                    if next_word in wordSet:
+                        if next_word not in level:
+                            level[next_word] = current_level
+                            queue.append(next_word)
+                        if level[next_word] == current_level:
+                            parents[next_word].add(word)
+                        if next_word == endWord:
+                            found = True
+        # Optional: Remove words that have been visited to prevent revisiting
+        # wordSet -= set(parents.keys())
+    
+    if not found:
+        return []
+    
+    # Backtracking to build paths
+    res = []
+    path = [endWord]
+    
+    def backtrack(word):
+        if word == beginWord:
+            res.append(path[::-1])
+            return
+        for parent in parents[word]:
+            path.append(parent)
+            backtrack(parent)
+            path.pop()
+    
+    backtrack(endWord)
+    return res
+
+# Example usage:
+print(findLadders("hit", "cog", ["hot","dot","dog","lot","log","cog"]))
+# Output: [["hit","hot","dot","dog","cog"], ["hit","hot","lot","log","cog"]]
+
+print(findLadders("hit", "cog", ["hot","dot","dog","lot","log"]))
+# Output: []
+\end{lstlisting}
+\end{fullwidth}
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+from collections import defaultdict, deque
+
+def findLadders(beginWord, endWord, wordList):
+    wordSet = set(wordList)
+    if endWord not in wordSet:
+        return []
+    
+    # Initialize variables
+    level = {beginWord: 0}
+    parents = defaultdict(set)
+    queue = deque([beginWord])
+    word_len = len(beginWord)
+    found = False
+    current_level = 0
+    
+    while queue and not found:
+        current_level += 1
+        for _ in range(len(queue)):
+            word = queue.popleft()
+            for i in range(word_len):
+                for c in 'abcdefghijklmnopqrstuvwxyz':
+                    if c == word[i]:
+                        continue
+                    next_word = word[:i] + c + word[i+1:]
+                    if next_word in wordSet:
+                        if next_word not in level:
+                            level[next_word] = current_level
+                            queue.append(next_word)
+                        if level[next_word] == current_level:
+                            parents[next_word].add(word)
+                        if next_word == endWord:
+                            found = True
+        # Optional: Remove words that have been visited to prevent revisiting
+        # wordSet -= set(parents.keys())
+    
+    if not found:
+        return []
+    
+    # Backtracking to build paths
+    res = []
+    path = [endWord]
+    
+    def backtrack(word):
+        if word == beginWord:
+            res.append(path[::-1])
+            return
+        for parent in parents[word]:
+            path.append(parent)
+            backtrack(parent)
+            path.pop()
+    
+    backtrack(endWord)
+    return res
+\end{lstlisting}
+\end{fullwidth}
+
+This implementation begins by converting the \texttt{wordList} into a set for efficient lookups and checks if the \texttt{endWord} is present. It then performs a BFS to determine the shortest path levels and simultaneously builds a \texttt{parents} mapping to track predecessors for each word. Once the \texttt{endWord} is found, it employs a DFS-based backtracking approach to construct all valid shortest transformation sequences by traversing the \texttt{parents} mapping from \texttt{endWord} back to \texttt{beginWord}.
+
+\section*{Explanation}
+
+The provided Python implementation defines a function \texttt{findLadders} which takes \texttt{beginWord}, \texttt{endWord}, and \texttt{wordList} as inputs and returns a list of all shortest transformation sequences from \texttt{beginWord} to \texttt{endWord}.
+
+\begin{itemize}
+    \item \textbf{Edge Case Handling:}
+    \begin{itemize}
+        \item Convert the \texttt{wordList} to a set (\texttt{wordSet}) for \(O(1)\) lookups.
+        \item If the \texttt{endWord} is not present in the \texttt{wordSet}, return an empty list as no transformation is possible.
+    \end{itemize}
+    
+    \item \textbf{BFS Traversal:}
+    \begin{itemize}
+        \item Initialize a \texttt{level} dictionary to store the level (distance from \texttt{beginWord}) of each word.
+        \item Initialize a \texttt{parents} mapping using \texttt{defaultdict(set)} to track all possible predecessors of each word.
+        \item Use a queue to perform BFS, starting with the \texttt{beginWord}.
+        \item Iterate level by level, exploring all one-letter transformations.
+        \item For each valid transformation, update the \texttt{level} and \texttt{parents} mappings.
+        \item Terminate BFS early if the \texttt{endWord} is found to ensure only the shortest paths are considered.
+    \end{itemize}
+    
+    \item \textbf{Backtracking with DFS:}
+    \begin{itemize}
+        \item If the \texttt{endWord} is found, initiate backtracking to construct all valid shortest transformation sequences.
+        \item Use a recursive \texttt{backtrack} function that traverses from the \texttt{endWord} to the \texttt{beginWord} using the \texttt{parents} mapping.
+        \item Accumulate paths and append valid sequences to the result list \texttt{res}.
+    \end{itemize}
+    
+    \item \textbf{Termination:}
+    \begin{itemize}
+        \item If BFS completes without finding the \texttt{endWord}, return an empty list.
+        \item Otherwise, return the list of all valid shortest transformation sequences.
+    \end{itemize}
+\end{itemize}
+
+This approach ensures that all shortest transformation sequences are captured by first identifying the minimum number of steps required using BFS and then systematically constructing all possible paths of that length using DFS-based backtracking.
+
+\section*{Why This Approach}
+
+Combining BFS with DFS-based backtracking is a strategic choice for the \textbf{Word Ladder II} problem because:
+
+\begin{itemize}
+    \item \textbf{BFS Guarantees Shortest Paths:} BFS explores the graph level by level, ensuring that the first time the \texttt{endWord} is encountered, it is reached via the shortest possible path.
+    
+    \item \textbf{Efficient Path Construction:} By tracking all possible parents during BFS, the algorithm can backtrack to construct every valid shortest sequence without redundant computations.
+    
+    \item \textbf{Handling Multiple Paths:} The \texttt{parents} mapping allows the algorithm to handle multiple predecessors for a single word, enabling the enumeration of all shortest sequences.
+    
+    \item \textbf{Optimal Time and Space Usage:} This method avoids exploring longer paths once the shortest paths are found, optimizing both time and space complexities.
+\end{itemize}
+
+\section*{Alternative Approaches}
+
+An alternative approach to solving the \textbf{Word Ladder II} problem is to implement \textbf{Bidirectional BFS} combined with backtracking. Here's how it can be structured:
+
+\begin{enumerate}
+    \item \textbf{Initialize Two BFS Frontiers:}
+    \begin{itemize}
+        \item One starting from the \texttt{beginWord}.
+        \item Another starting from the \texttt{endWord}.
+    \end{itemize}
+    
+    \item \textbf{Expand the Smaller Frontier:}
+    \begin{itemize}
+        \item At each step, expand the frontier with fewer nodes to optimize performance.
+        \item Update the \texttt{parents} mapping for both directions.
+    \end{itemize}
+    
+    \item \textbf{Detect Intersection:}
+    \begin{itemize}
+        \item When the frontiers intersect, initiate backtracking from the intersection points to construct all valid shortest paths.
+    \end{itemize}
+    
+    \item \textbf{Termination:}
+    \begin{itemize}
+        \item If no intersection is found, return an empty list.
+    \end{itemize}
+\end{enumerate}
+
+\textbf{Advantages of Bidirectional BFS:}
+\begin{itemize}
+    \item Reduces the search space by simultaneously exploring from both ends.
+    \item Potentially lowers the time complexity, especially for large word lists.
+\end{itemize}
+
+\section*{Similar Problems to This One}
+
+Similar problems that involve finding all shortest paths or sequences in a graph-like structure include:
+
+\begin{itemize}
+    \item \textbf{Word Ladder I:} Finding the length of the shortest transformation sequence.
+    \index{Word Ladder I}
+    
+    \item \textbf{Minimum Genetic Mutation:} Determining the minimum number of mutations to transform one gene string into another.
+    \index{Minimum Genetic Mutation}
+    
+    \item \textbf{Sliding Puzzle Problems:} Such as the 8-puzzle, where the goal is to reach a target configuration through a series of valid moves.
+    \index{Sliding Puzzle Problems}
+    
+    \item \textbf{Shortest Path in a Maze:} Finding the shortest path from a start point to an endpoint within a maze.
+    \index{Shortest Path in a Maze}
+    
+    \item \textbf{Course Schedule II:} Determining the order of courses to take based on prerequisites.
+    \index{Course Schedule II}
+\end{itemize}
+
+These problems share the common theme of navigating through a space of possibilities to find optimal paths or sequences, often leveraging similar algorithmic strategies like BFS, DFS, and backtracking.
+
+\section*{Things to Keep in Mind and Tricks}
+
+\begin{itemize}
+    \item \textbf{Managing Visited States:} Carefully track visited words to prevent cycles and ensure that only the shortest paths are considered.
+    
+    \item \textbf{Backtracking with Parents Mapping:} Maintaining a comprehensive \texttt{parents} mapping during BFS is essential for accurately reconstructing all shortest transformation sequences.
+    
+    \item \textbf{Early Termination:} Once the \texttt{endWord} is found during BFS, halt further exploration to focus solely on constructing the shortest paths.
+    
+    \item \textbf{Handling Edge Cases:} Address scenarios where the \texttt{endWord} is not in the \texttt{wordList}, when \texttt{beginWord} equals \texttt{endWord}, or when no transformation is possible.
+    
+    \item \textbf{Bidirectional BFS:} For enhanced performance, especially with large datasets, consider implementing Bidirectional BFS to halve the search depth and reduce computational overhead.
+    
+    \item \textbf{Optimizing Space:} Clear the lists in \texttt{all\_combo\_dict} after processing to free up memory and prevent redundant checks.
+    
+    \item \textbf{Consistent Word Length:} Ensure that all words are of the same length to maintain consistency in generating intermediate states.
+\end{itemize}
+
+\section*{Corner and Special Cases to Test When Writing the Code}
+
+To ensure the robustness and correctness of the solution, consider testing the following corner cases:
+
+\begin{itemize}
+    \item \textbf{End Word Not in Word List:} Verify that the function returns an empty list when the \texttt{endWord} is absent from the \texttt{wordList}.
+    \index{Corner Cases}
+    
+    \item \textbf{Begin Word Equals End Word:} When the \texttt{beginWord} is identical to the \texttt{endWord}, the shortest transformation sequence is trivially the word itself.
+    \index{Corner Cases}
+    
+    \item \textbf{Single Transformation:} Cases where the \texttt{beginWord} can transform into the \texttt{endWord} in one step.
+    \index{Corner Cases}
+    
+    \item \textbf{Multiple Shortest Paths:} Ensure that all valid shortest transformation sequences are captured when multiple paths of equal length exist.
+    \index{Corner Cases}
+    
+    \item \textbf{No Possible Transformation:} Scenarios where no sequence of valid transformations can lead from \texttt{beginWord} to \texttt{endWord}.
+    \index{Corner Cases}
+    
+    \item \textbf{Large Word List:} Test the algorithm's performance and efficiency with a large number of words in the \texttt{wordList}.
+    \index{Corner Cases}
+    
+    \item \textbf{Words with No Common Letters:} Ensure that the algorithm correctly identifies when no single-letter transformations are possible between words.
+    \index{Corner Cases}
+    
+    \item \textbf{Prefix Words:} Words where one word is a prefix of another, ensuring the algorithm handles such scenarios without errors.
+    \index{Corner Cases}
+    
+    \item \textbf{Self-Transformation:} Words that require transforming a letter to itself (e.g., transforming "a" to "a") should be handled appropriately.
+    \index{Corner Cases}
+    
+    \item \textbf{Duplicate Words in Word List:} Ensure that the algorithm can handle duplicate entries in the \texttt{wordList} without affecting the outcome.
+    \index{Corner Cases}
+\end{itemize}
+
+\printindex

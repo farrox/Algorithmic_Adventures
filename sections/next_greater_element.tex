@@ -1,0 +1,55 @@
+% Filename: next_greater_element.tex
+
+\problemsection{Next Greater Element}\marginpar{This problem utilizes monotonic stacks to find the next greater element for each item in a list.}
+
+\textbf{Problem Description:}
+
+Given an array of integers \texttt{nums}, for each element in the array, find the next greater element. The Next Greater Element of a number \( x \) is the first greater number to its right in the array. If it does not exist, output \(-1\) for that number.
+
+\textbf{Example 1:}
+
+\begin{itemize}
+    \item \textbf{Input:} \texttt{nums = [4,5,2,25]}
+    \item \textbf{Output:} \texttt{[5,25,25,-1]}
+\end{itemize}
+
+\textbf{Example 2:}
+
+\begin{itemize}
+    \item \textbf{Input:} \texttt{nums = [13,7,6,12]}
+    \item \textbf{Output:} \texttt{[-1,12,12,-1]}
+\end{itemize}
+
+\textbf{Solution Overview:}
+
+Use a stack to keep track of indices whose next greater element has not been found yet. Iterate through the array:
+
+\begin{itemize}
+    \item For each element \( nums[i] \):
+        \begin{itemize}
+            \item While the stack is not empty and \( nums[i] > nums[stack[-1]] \):
+                \begin{itemize}
+                    \item Set the next greater element of \( nums[stack[-1]] \) to \( nums[i] \).
+                    \item Pop the index from the stack.
+                \end{itemize}
+            \item Push the current index \( i \) onto the stack.
+        \end{itemize}
+\end{itemize}
+
+At the end, set the next greater element of remaining indices in the stack to \(-1\).
+
+\begin{lstlisting}[language=Python]
+def nextGreaterElement(nums):
+    result = [-1] * len(nums)
+    stack = []
+    for i in range(len(nums)):
+        while stack and nums[i] > nums[stack[-1]]:
+            idx = stack.pop()
+            result[idx] = nums[i]
+        stack.append(i)
+    return result
+
+# Example usage:
+print(nextGreaterElement([4,5,2,25]))  # Output: [5,25,25,-1]
+print(nextGreaterElement([13,7,6,12])) # Output: [-1,12,12,-1]
+\end{lstlisting}

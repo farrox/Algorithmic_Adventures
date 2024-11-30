@@ -1,0 +1,158 @@
+% Filename: lowest_common_ancestor_of_a_binary_search_tree.tex
+
+\problemsection{Lowest Common Ancestor of a Binary Search Tree}\marginpar{Find the lowest common ancestor (LCA) of two nodes in a BST using BST properties.}
+
+\textbf{Problem Statement}
+
+Given a binary search tree (BST), find the lowest common ancestor (LCA) of two given nodes in the tree. According to the definition of LCA on Wikipedia: \textit{“The lowest common ancestor is defined between two nodes p and q as the lowest node in T that has both p and q as descendants (where we allow a node to be a descendant of itself).”}
+
+\textbf{Algorithmic Approach}
+
+To solve this problem efficiently, leverage the properties of the binary search tree. Since in a BST, for any node, all nodes in the left subtree have values less than the node's value, and all nodes in the right subtree have values greater than the node's value, we can determine the LCA by comparing the values of the current node with the values of p and q.
+
+\begin{enumerate}
+    \item \textbf{Iterative Approach}:
+    \begin{itemize}
+        \item \textbf{Start at the Root}: Initialize a pointer to the root of the BST.
+        \item \textbf{Traverse the Tree}:
+        \begin{enumerate}
+            \item If both p and q are greater than the current node, move to the right child.
+            \item If both p and q are less than the current node, move to the left child.
+            \item If one of p or q is on one side and the other is on the opposite side (or equal to the current node), the current node is the LCA.
+        \end{enumerate}
+    \end{itemize}
+    
+    \item \textbf{Recursive Approach}:
+    \begin{itemize}
+        \item \textbf{Base Case}: If the current node is \texttt{NULL}, return \texttt{NULL}.
+        \item \textbf{Compare Values}:
+        \begin{enumerate}
+            \item If both p and q are greater than the current node's value, recursively search the right subtree.
+            \item If both p and q are less than the current node's value, recursively search the left subtree.
+            \item If p and q lie on different sides of the current node (or one is equal to the current node), the current node is the LCA.
+        \end{enumerate}
+    \end{itemize}
+\end{enumerate}
+
+\textbf{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity}: \(O(h)\), where \(h\) is the height of the BST. In the best case of a balanced BST, \(h = \log n\), and in the worst case of a skewed BST, \(h = n\).
+    \item \textbf{Space Complexity}:
+    \begin{itemize}
+        \item \textbf{Iterative Approach}: \(O(1)\), as it uses constant extra space.
+        \item \textbf{Recursive Approach}: \(O(h)\), due to the recursive call stack.
+    \end{itemize}
+\end{itemize}
+
+\textbf{Python Implementation}\marginpar{Implementing both iterative and recursive solutions leveraging BST properties.}
+
+\begin{lstlisting}[language=Python, xleftmargin=0.02\textwidth, xrightmargin=0.02\textwidth]
+# Definition for a binary tree node.
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+# Iterative Approach
+def lowestCommonAncestorIterative(root: TreeNode, p: TreeNode, q: TreeNode) -> TreeNode:
+    current = root
+    while current:
+        if p.val > current.val and q.val > current.val:
+            current = current.right
+        elif p.val < current.val and q.val < current.val:
+            current = current.left
+        else:
+            return current
+    return None
+
+# Recursive Approach
+def lowestCommonAncestorRecursive(root: TreeNode, p: TreeNode, q: TreeNode) -> TreeNode:
+    if not root:
+        return None
+    if p.val > root.val and q.val > root.val:
+        return lowestCommonAncestorRecursive(root.right, p, q)
+    if p.val < root.val and q.val < root.val:
+        return lowestCommonAncestorRecursive(root.left, p, q)
+    return root
+
+# Example usage:
+# Constructing the following BST
+#         6
+#        / \
+#       2   8
+#      / \ / \
+#     0  4 7  9
+#       / \
+#      3   5
+
+root = TreeNode(6)
+root.left = TreeNode(2, TreeNode(0), TreeNode(4, TreeNode(3), TreeNode(5)))
+root.right = TreeNode(8, TreeNode(7), TreeNode(9))
+
+p = root.left        # Node with value 2
+q = root.left.right  # Node with value 4
+
+lca_iterative = lowestCommonAncestorIterative(root, p, q)
+print(lca_iterative.val)  # Output: 2
+
+lca_recursive = lowestCommonAncestorRecursive(root, p, q)
+print(lca_recursive.val)  # Output: 2
+\end{lstlisting}
+
+\textbf{Explanation}
+
+The function \texttt{lowestCommonAncestor} identifies the lowest common ancestor (LCA) of two nodes in a binary search tree by utilizing the inherent properties of the BST. 
+
+\begin{itemize}
+    \item \textbf{Iterative Approach}: 
+    \begin{itemize}
+        \item Begins at the root and traverses the tree based on the values of p and q.
+        \item If both p and q are greater than the current node, it moves to the right subtree.
+        \item If both are less, it moves to the left subtree.
+        \item If they diverge (one is on the left and the other on the right) or one equals the current node, the current node is the LCA.
+    \end{itemize}
+    
+    \item \textbf{Recursive Approach}: 
+    \begin{itemize}
+        \item Recursively navigates the tree in a similar manner to the iterative approach.
+        \item The recursion continues until it finds the split point where p and q diverge, identifying the current node as the LCA.
+    \end{itemize}
+\end{itemize}
+
+\textbf{Why This Approach}
+
+\begin{itemize}
+    \item \textbf{Efficiency}: Leveraging the BST properties allows for efficient traversal, reducing the search space at each step.
+    \item \textbf{Simplicity}: Both iterative and recursive approaches are straightforward to implement and understand, making the solution elegant and maintainable.
+    \item \textbf{Optimality}: The approaches achieve optimal time complexity by avoiding unnecessary traversal of irrelevant subtrees.
+\end{itemize}
+
+\textbf{Alternative Approaches}
+
+An alternative method involves performing an inorder traversal to generate a sorted list of node values and then finding the LCA by analyzing this list. However, this approach is less efficient in terms of time and space compared to the iterative and recursive methods that directly utilize the BST properties.
+
+\textbf{Similar Problems to This One}
+
+Similar tree-related problems include finding the lowest common ancestor in a binary tree (\hyperref[problem:lowest_common_ancestor_of_a_binary_tree]{Lowest Common Ancestor of a Binary Tree}), determining if one tree is a subtree of another (\hyperref[problem:subtree_of_another_tree]{Subtree of Another Tree}), and finding the distance between two nodes in a tree (\hyperref[problem:distance_between_two_nodes_in_a_tree]{Distance Between Two Nodes in a Tree}).
+
+\textbf{Things to Keep in Mind and Tricks}
+
+\begin{itemize}
+    \item \textbf{BST Properties}: Always utilize the BST properties to guide the traversal, as they significantly reduce the search space.
+    \item \textbf{Edge Cases}: Consider scenarios where one of the nodes is the root or where one node is an ancestor of the other.
+    \item \textbf{Handling Non-Existent Nodes}: Ensure that both nodes exist in the tree to avoid incorrect LCA identification.
+    \item \textbf{Recursive Call Optimization}: In the recursive approach, short-circuit the recursion once the LCA is found to optimize performance.
+\end{itemize}
+
+\textbf{Corner and Special Cases to Test When Writing the Code}
+
+\begin{itemize}
+    \item \textbf{Both Nodes are the Same}: When p and q are the same node, the LCA is the node itself.
+    \item \textbf{One Node is the Ancestor of the Other}: When one node is an ancestor of the other, the ancestor node is the LCA.
+    \item \textbf{Nodes on Different Subtrees}: When p and q are on different subtrees, the LCA is the split point where one is on the left and the other on the right.
+    \item \textbf{Nodes Not Present in the Tree}: Handle cases where one or both nodes are not present in the tree.
+    \item \textbf{Empty Tree}: When the tree is empty, there is no LCA.
+    \item \textbf{Single Node Tree}: When the tree has only one node, it is the LCA if it matches one of the target nodes.
+\end{itemize}

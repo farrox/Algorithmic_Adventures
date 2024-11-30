@@ -1,0 +1,320 @@
+% file: decode_ways.tex
+
+\problemsection{Decode Ways}
+\label{problem:decode_ways}
+\marginnote{This problem utilizes dynamic programming to efficiently calculate the number of ways to decode a digit string into letters.}
+
+The \textbf{Decode Ways} problem is a classic dynamic programming challenge that requires determining the total number of ways a given digit string can be decoded into letters, where each letter from A to Z is represented by numbers from 1 to 26.
+
+\section*{Problem Statement}
+
+The task is to find the number of ways to decode a string \( s \) that consists only of digits with a mapping from 'A' to 'Z' where 'A' maps to "1", 'B' maps to "2", ..., and 'Z' maps to "26". A valid decoding can be any combination of single-digit numbers or two-digit numbers that fall within the range from "1" to "26".
+
+\textbf{Examples:}
+
+\begin{itemize}
+    \item \textbf{Example 1:}
+    \begin{verbatim}
+    Input: s = "12"
+    Output: 2
+    Explanation: It could be decoded as "AB" (1 2) or "L" (12).
+    \end{verbatim}
+
+    \item \textbf{Example 2:}
+    \begin{verbatim}
+    Input: s = "226"
+    Output: 3
+    Explanation: It could be decoded as "BZ" (2 26), "VF" (22 6), or "BBF" (2 2 6).
+    \end{verbatim}
+
+    \item \textbf{Example 3:}
+    \begin{verbatim}
+    Input: s = "0"
+    Output: 0
+    Explanation: There is no character that is mapped to a number starting with '0'.
+    \end{verbatim}
+\end{itemize}
+
+LeetCode link: \href{https://leetcode.com/problems/decode-ways/}{Decode Ways}\index{LeetCode}
+
+\marginnote{\href{https://leetcode.com/problems/decode-ways/}{[LeetCode Link]}\index{LeetCode}}
+\marginnote{\href{https://www.geeksforgeeks.org/count-possible-decodings-given-digit-sequence/}{[GeeksForGeeks Link]}\index{GeeksForGeeks}}
+\marginnote{\href{https://www.hackerrank.com/challenges/decode-the-message/problem}{[HackerRank Link]}\index{HackerRank}}
+\marginnote{\href{https://app.codesignal.com/challenges/decode-ways}{[CodeSignal Link]}\index{CodeSignal}}
+\marginnote{\href{https://www.interviewbit.com/problems/decode-ways/}{[InterviewBit Link]}\index{InterviewBit}}
+\marginnote{\href{https://www.educative.io/courses/grokking-the-coding-interview/RM8y8Y3nLdY}{[Educative Link]}\index{Educative}}
+\marginnote{\href{https://www.codewars.com/kata/decode-ways/train/python}{[Codewars Link]}\index{Codewars}}
+
+\section*{Algorithmic Approach}
+
+To solve the \textbf{Decode Ways} problem, we can use dynamic programming. We define a cache array where \( cache[i] \) represents the number of ways to decode the substring \( s[:i] \). We iterate through the given string and update the cache based on whether the current character or the combination of the current and previous characters can represent a valid decoding.
+
+\begin{enumerate}
+    \item \textbf{Initialization:}
+    \begin{itemize}
+        \item Create a cache array of size \( n + 1 \), where \( n \) is the length of the string \( s \).
+        \item Initialize \( cache[0] = 1 \) to represent the base case of an empty string.
+        \item Initialize \( cache[1] = 1 \) if the first character is not '0'; otherwise, set it to 0.
+    \end{itemize}
+    
+    \item \textbf{Iteration:}
+    \begin{itemize}
+        \item Iterate through the string from the second character to the end.
+        \item For each character, check the following:
+        \begin{itemize}
+            \item **Single-digit decode:** If the current character is not '0', set \( cache[i] += cache[i-1] \).
+            \item **Two-digit decode:** If the two-digit number formed by the current and previous characters is between 10 and 26, set \( cache[i] += cache[i-2] \).
+        \end{itemize}
+    \end{itemize}
+    
+    \item \textbf{Result:}
+    \begin{itemize}
+        \item After completing the iteration, \( cache[n] \) will contain the total number of ways to decode the entire string.
+    \end{itemize}
+\end{enumerate}
+
+This method ensures that each subproblem is solved only once, achieving an optimal \( O(n) \) time complexity.
+
+\marginnote{Dynamic programming efficiently solves overlapping subproblems by storing and reusing solutions.}
+
+\section*{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:} \( O(n) \), where \( n \) is the length of the string. We traverse the string once, performing constant-time operations at each step.
+    \item \textbf{Space Complexity:} \( O(n) \) for the cache array. However, this can be optimized to \( O(1) \) by only keeping track of the last two computed values.
+\end{itemize}
+
+\newpage
+\section*{Python Implementation}
+\marginnote{Space-optimized solution reduces memory usage from O(n) to O(1).}
+
+Below are two implementations: the standard DP solution and a space-optimized version:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+from typing import List, Optional
+
+class Solution:
+    def numDecodings(self, s: str) -> int:
+        """Standard DP solution with O(n) space."""
+        if not s or s[0] == '0':
+            return 0
+
+        n = len(s)
+        cache = [0] * (n + 1)
+        cache[0] = 1
+        cache[1] = 1
+
+        for i in range(2, n + 1):
+            one_digit = int(s[i-1:i])
+            two_digits = int(s[i-2:i])
+
+            if 1 <= one_digit <= 9:
+                cache[i] += cache[i-1]
+
+            if 10 <= two_digits <= 26:
+                cache[i] += cache[i-2]
+
+        return cache[n]
+
+    def numDecodingsOptimized(self, s: str) -> int:
+        """Space-optimized solution with O(1) space."""
+        if not s or s[0] == '0':
+            return 0
+
+        n = len(s)
+        prev2, prev1 = 1, 1  # dp[i-2], dp[i-1]
+
+        for i in range(1, n):
+            current = 0
+            if s[i] != '0':
+                current += prev1
+            if 10 <= int(s[i-1:i+1]) <= 26:
+                current += prev2
+            prev2, prev1 = prev1, current
+
+        return prev1
+
+    def getAllDecodings(self, s: str) -> List[str]:
+        """Returns all possible decodings of the string."""
+        def backtrack(index: int, current: str) -> None:
+            if index == len(s):
+                result.append(current)
+                return
+
+            # Single digit
+            if s[index] != '0':
+                digit = int(s[index])
+                char = chr(ord('A') + digit - 1)
+                backtrack(index + 1, current + char)
+
+            # Two digits
+            if index + 1 < len(s):
+                two_digits = int(s[index:index+2])
+                if 10 <= two_digits <= 26:
+                    char = chr(ord('A') + two_digits - 1)
+                    backtrack(index + 2, current + char)
+
+        result: List[str] = []
+        if s and s[0] != '0':
+            backtrack(0, "")
+        return result
+
+# Comprehensive test cases
+def test_decode_ways():
+    solution = Solution()
+    
+    # Basic cases
+    assert solution.numDecodings("12") == 2
+    assert solution.numDecodings("226") == 3
+    assert set(solution.getAllDecodings("12")) == {"AB", "L"}
+    
+    # Edge cases
+    assert solution.numDecodings("") == 0
+    assert solution.numDecodings("0") == 0
+    assert solution.numDecodings("01") == 0
+    
+    # Complex cases
+    assert solution.numDecodings("1111") == 5
+    assert len(solution.getAllDecodings("1111")) == 5
+    
+    # Performance test
+    assert solution.numDecodingsOptimized("111111") == 13
+\end{lstlisting}
+\end{fullwidth}
+
+This implementation first checks if the input string is empty or starts with '0'. If either is true, there are no ways to decode the message, and it returns `0`. It initializes a cache array where each index represents the number of ways to decode the string up to that point. It then iterates through the string, updating the cache based on whether one-digit or two-digit numbers can represent valid letters.
+
+\section*{Explanation}
+
+The `numDecodings` function efficiently calculates the number of ways to decode the input string \( s \) by leveraging dynamic programming. Here's a detailed breakdown of the implementation:
+
+\begin{itemize}
+    \item \textbf{Initialization:}
+    \begin{itemize}
+        \item **Edge Cases:** If the string is empty or starts with '0', return `0` as no valid decodings are possible.
+        \item **Cache Array:** Create a cache array `cache` of size \( n + 1 \), where \( n \) is the length of the string. Initialize `cache[0] = 1` to represent the base case of an empty string and `cache[1] = 1` if the first character is not '0'.
+    \end{itemize}
+    
+    \item \textbf{Iteration:}
+    \begin{itemize}
+        \item Iterate through the string from the second character to the end (i.e., indices 2 to \( n \)).
+        \item For each position \( i \):
+        \begin{itemize}
+            \item **Single-digit decode:** Extract the single digit \( s[i-1] \) and convert it to an integer. If it is between 1 and 9, it represents a valid letter, so add the number of ways to decode the string up to \( i-1 \) (i.e., `cache[i-1]`) to `cache[i]`.
+            \item **Two-digit decode:** Extract the two-digit number \( s[i-2:i] \) and convert it to an integer. If it is between 10 and 26, it represents a valid letter, so add the number of ways to decode the string up to \( i-2 \) (i.e., `cache[i-2]`) to `cache[i]`.
+        \end{itemize}
+    \end{itemize}
+    
+    \item \textbf{Result:}
+    \begin{itemize}
+        \item After completing the iteration, the value at `cache[n]` will represent the total number of ways to decode the entire string \( s \).
+    \end{itemize}
+\end{itemize}
+
+\section*{Why This Approach}
+
+The dynamic programming approach is chosen for its efficiency in both time and space. It systematically builds up the solution by solving smaller subproblems (i.e., decoding substrings of increasing length) and storing their results to avoid redundant calculations. This ensures that each subproblem is solved only once, achieving an optimal \( O(n) \) time complexity.
+
+\section*{Alternative Approaches}
+
+An alternative approach is to use a **recursive function with memoization** to store the results of subproblems and avoid recalculating them. While this method also achieves \( O(n) \) time complexity, it may have a higher space complexity due to the recursion stack. Another possibility is to use an **iterative approach with two variables** to store the last two results, thereby reducing the space complexity to \( O(1) \).
+
+However, the dynamic programming approach presented above strikes a balance between simplicity and efficiency, making it the most straightforward and optimal solution for this problem.
+
+\section*{Similar Problems to This One}
+
+There are several other problems that involve decoding or parsing strings with specific constraints, such as:
+
+\begin{itemize}
+    \item \hyperref[problem:climbing_stairs]{Climbing Stairs}\index{Climbing Stairs}
+    \item \hyperref[problem:house_robber]{House Robber}\index{House Robber}
+    \item \hyperref[problem:fibonacci_number]{Fibonacci Number}\index{Fibonacci Number}
+    \item \hyperref[problem:longest_palindromic_substring]{Longest Palindromic Substring}\index{Longest Palindromic Substring}
+    \item \hyperref[problem:unique_paths]{Unique Paths}\index{Unique Paths}
+\end{itemize}
+
+\section*{Things to Keep in Mind and Tricks}
+
+When solving dynamic programming problems, especially those involving strings, it's important to consider edge cases such as empty strings and strings with leading zeros. For this specific problem, the decoding is invalid if there are any zeros not preceded by '1' or '2'. Additionally, optimizing space usage by using only the necessary previous states can lead to more efficient solutions.
+
+\section*{Corner and Special Cases to Test When Writing the Code}
+
+Some corner cases to consider include:
+
+\begin{itemize}
+    \item \textbf{Single '0':} `s = "0"` should return `0` as no valid decoding exists.
+    \index{Corner Cases}
+    
+    \item \textbf{Leading '0':} `s = "06"` should return `0` as the string starts with '0'.
+    \index{Corner Cases}
+    
+    \item \textbf{All '1's and '2's:} `s = "1111"` should return `5` (`"AAAA"`, `"AAB"`, `"ABA"`, `"BAA"`, `"BB"`).
+    \index{Corner Cases}
+    
+    \item \textbf{Numbers Greater Than '26':} `s = "27"` should return `1` (`"BG"`), as '27' does not map to any letter.
+    \index{Corner Cases}
+    
+    \item \textbf{Multiple '0's:} `s = "100"` should return `0` as the second '0' cannot be decoded.
+    \index{Corner Cases}
+    
+    \item \textbf{Empty String:} `s = ""` should return `0` as there are no characters to decode.
+    \index{Corner Cases}
+    
+    \item \textbf{Long String with Valid Decodings:} A long string like `s = "1111111111"` should return a large number of decodings (e.g., 89 for 10 '1's).
+    \index{Corner Cases}
+    
+    \item \textbf{String with '10' and '20':} `s = "1010"` should return `1` (`"JJ"`).
+    \index{Corner Cases}
+\end{itemize}
+
+\section*{Visual Explanation}
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}[scale=0.8]
+        % Add visualization of DP table for "226"
+        \matrix [matrix of nodes, nodes in empty cells,
+                nodes={minimum size=8mm, anchor=center,draw}] (m) {
+            & 0 & 2 & 2 & 6 \\
+            0 & 1 & 1 & 2 & 3 \\
+        };
+        \node[left] at (m-2-1) {dp:};
+        \draw[->] (m-2-2) -- (m-2-3) node[midway,above] {+1};
+        \draw[->] (m-2-3) -- (m-2-4) node[midway,above] {+1};
+        \draw[->] (m-2-4) -- (m-2-5) node[midway,above] {+1};
+    \end{tikzpicture}
+    \caption{DP table evolution for input "226"}
+    \label{fig:dp_visualization}
+\end{figure}
+
+\section*{Implementation Variants}
+\begin{itemize}
+    \item \textbf{Recursive with Memoization:}
+        \begin{itemize}
+            \item Uses recursion with caching
+            \item Good for interview discussions
+            \item Easier to understand initially
+        \end{itemize}
+    \item \textbf{Bottom-up DP:}
+        \begin{itemize}
+            \item More efficient in practice
+            \item Better space complexity
+            \item Faster execution
+        \end{itemize}
+    \item \textbf{Space-Optimized:}
+        \begin{itemize}
+            \item Uses only two variables
+            \item O(1) space complexity
+            \item Best for production code
+        \end{itemize}
+\end{itemize}
+
+\section*{Real-World Applications}
+\begin{itemize}
+    \item \textbf{Cryptography:} Decoding encrypted messages
+    \item \textbf{Natural Language Processing:} Word segmentation
+    \item \textbf{DNA Sequencing:} Pattern matching in sequences
+    \item \textbf{Data Compression:} Variable-length encoding
+\end{itemize}
+
+\printindex

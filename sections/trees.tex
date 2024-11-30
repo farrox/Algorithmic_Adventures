@@ -1,0 +1,96 @@
+% Filename: trees.tex
+
+\chapter{Trees}\marginpar{Trees are hierarchical data structures essential in various algorithms and applications.}
+
+\section{Introduction to Trees}
+
+A \textbf{tree} is a fundamental data structure that represents a hierarchical relationship between elements. Unlike linear data structures like arrays and linked lists, trees consist of nodes connected by edges, forming a branching structure. Each tree has a single root node, and every other node has exactly one parent node, except for the root, which has none.
+
+\section{Properties of Trees}\marginpar{Understanding tree properties is crucial for effective manipulation and traversal.}
+
+\begin{itemize}
+    \item \textbf{Root}: The topmost node in a tree.
+    \item \textbf{Parent and Child}: In a tree, a node can have child nodes, and these children have the node as their parent.
+    \item \textbf{Leaf Nodes}: Nodes with no children.
+    \item \textbf{Height of a Tree}: The length of the longest path from the root to a leaf.
+    \item \textbf{Depth of a Node}: The length of the path from the root to the node.
+    \item \textbf{Subtree}: A tree consisting of a node and all its descendants.
+\end{itemize}
+
+\section{Binary Trees}\marginpar{Binary trees are the foundation for more specialized tree structures.}
+
+A \textbf{binary tree} is a type of tree where each node has at most two children, referred to as the left child and the right child. Binary trees are the foundation for more specialized tree structures like binary search trees, AVL trees, and red-black trees.
+
+\subsection{Types of Binary Trees}\marginpar{Different binary tree types serve various purposes and optimizations.}
+
+\begin{itemize}
+    \item \textbf{Full Binary Tree}: Every node has either 0 or 2 children. There are no nodes with only one child.
+    \item \textbf{Complete Binary Tree}: All levels are fully filled except possibly the last level, and all nodes in the last level are as far left as possible.
+    \item \textbf{Perfect Binary Tree}: All internal nodes have two children, and all leaf nodes are at the same level.
+\end{itemize}
+
+\section{Binary Search Trees (BSTs)}\marginpar{BSTs allow efficient searching, insertion, and deletion operations.}
+
+A \textbf{binary search tree} (BST) is a binary tree with the following properties:
+\begin{itemize}
+    \item The left subtree of a node contains only nodes with values less than the node's value.
+    \item The right subtree of a node contains only nodes with values greater than the node's value.
+    \item Both the left and right subtrees must also be binary search trees.
+\end{itemize}
+
+\section{Tree Traversal}\marginpar{Traversal methods are essential for accessing and processing tree data.}
+
+Tree traversal refers to the process of visiting each node in a tree in a specific order. Common traversal methods include:
+
+\subsection{Depth-First Traversal}\marginpar{Depth-first traversals explore as far as possible along each branch before backtracking.}
+
+\begin{itemize}
+    \item \textbf{Inorder (Left, Root, Right)}: Yields nodes in ascending order for BSTs.
+    \item \textbf{Preorder (Root, Left, Right)}: Useful for copying trees.
+    \item \textbf{Postorder (Left, Right, Root)}: Useful for deleting trees.
+\end{itemize}
+
+\subsection{Breadth-First Traversal (Level Order)}\marginpar{Breadth-first traversal is ideal for scenarios requiring level-wise processing.}
+
+\begin{itemize}
+    \item Visits nodes level by level from left to right.
+    \item Utilizes a queue to keep track of nodes at the current level.
+\end{itemize}
+
+\section{Tree Operations}\marginpar{Understanding tree operations is crucial for maintaining BST properties.}
+
+\subsection{Insertion}
+
+\begin{itemize}
+    \item In a BST, insertion involves comparing the value to be inserted with the current node and recursively placing it in the left or right subtree.
+    \item Ensures that the BST properties are maintained after insertion.
+\end{itemize}
+
+\subsection{Deletion}
+
+\begin{itemize}
+    \item Removing a node from a BST requires handling three cases:
+        \begin{enumerate}
+            \item \textbf{Node with no children}: Simply remove the node.
+            \item \textbf{Node with one child}: Remove the node and replace it with its child.
+            \item \textbf{Node with two children}: Find the inorder successor (smallest in the right subtree) or inorder predecessor (largest in the left subtree), swap values, and delete the successor/predecessor node.
+        \end{enumerate}
+\end{itemize}
+
+\subsection{Searching}
+
+\begin{itemize}
+    \item Start at the root and compare the target value with the current node's value.
+    \item Traverse left or right subtree based on comparison until the target is found or a leaf is reached.
+\end{itemize}
+
+\section{Applications of Trees}\marginpar{Trees underpin many real-world systems and algorithms.}
+
+Trees are versatile structures used in various applications:
+\begin{itemize}
+    \item \textbf{Databases}: Hierarchical storage and indexing.
+    \item \textbf{File Systems}: Organizing files and directories.
+    \item \textbf{Compiler Design}: Syntax trees for parsing expressions.
+    \item \textbf{Networking}: Routing protocols use tree structures.
+    \item \textbf{Artificial Intelligence}: Decision trees and game trees.
+\end{itemize}

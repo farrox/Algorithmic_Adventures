@@ -1,0 +1,77 @@
+
+\chapter{Contains Duplicate}
+\label{chap:Contains_Duplicate}
+
+The "Contains Duplicate" problem is a common coding challenge that requires a straightforward solution to determine if an array contains any repeated elements.
+
+\section*{Problem Statement}
+Given an integer array \textit{nums}, return \texttt{true} if any value appears at least twice in the array, and return \texttt{false} if every element is distinct.
+
+\textbf{Example 1:}
+
+Input: \textit{nums} = [1,2,3,1]
+
+Output: \texttt{true}
+
+\textbf{Example 2:}
+
+Input: \textit{nums} = [1,2,3,4]
+
+Output: \texttt{false}
+
+\textbf{Example 3:}
+
+Input: \textit{nums} = [1,1,1,3,3,4,3,2,4,2]
+
+Output: \texttt{true}
+
+%LeetCode link: \href{https://leetcode.com/problems/contains-duplicate/}{Contains Duplicate}
+
+\section*{Algorithmic Approach}
+There are several approaches to solve this problem:
+
+1. Sorting: Sort the array and check for consecutive elements being equal.
+
+2. Hashing: Use a hash set to keep track of visited elements.
+
+The solution can be implemented using either approach, but using a hash set typically results in a time-efficient and straightforward solution. The follow-up question challenges the possibility of not using any extra space, which would then likely lead us to modify the array in-place, such as performing a sort operation.
+
+\section*{Complexities}
+\begin{itemize}
+	\item \textbf{Time Complexity:} The time complexity for the sorting approach is \(O(n \log n)\) due to the sort operation. For the hashing approach, it is \(O(n)\) in the average case, as set operations have a constant time complexity on average.
+	\item \textbf{Space Complexity:} The space complexity is \(O(n)\) for the hashing approach as it requires storing up to \(n\) elements in the set. For sorting, if the in-place sort is used, then the space complexity can be \(O(1)\).
+\end{itemize}
+
+\section*{Python Implementation}
+Below is the complete Python code implementing the hashing approach to determining if a list contains any duplicates:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class Solution:
+    def containsDuplicate(self, nums: List[int]) -> bool:
+        seen = set()
+        for number in nums:
+            if number in seen:
+                return True
+            seen.add(number)
+        return False
+\end{lstlisting}
+
+\end{fullwidth}
+
+This implementation uses a set to store elements that have already been processed. As we iterate over the list, we check if each element is already present in the set, indicating a duplicate. If so, we return \texttt{true}; otherwise, we add the element to the set. If we finish iterating without finding duplicates, we return \texttt{false}.
+
+\section*{Why this approach}
+The hashing approach was chosen because it provides an average-time complexity that is linear with respect to the number of elements in the array. It's also a simple and elegant solution that is easy to implement.
+
+\section*{Alternative approaches}
+An alternative approach is to sort the array first and then look for consecutive equal elements. This removes the need for extra space (apart from the space needed to sort the array), complying with the follow-up requirement. However, sorting the array will increase the time complexity to \(O(n \log n)\), making it less efficient than the hashing approach in terms of time.
+
+\section*{Similars problems to this one}
+Similar problems often involve finding duplicates or checking for the existence of certain elements within a dataset. Problems such as "Find the Duplicate Number," "Find All Duplicates in an Array," and "Contains Duplicate II" are variations that pose additional constraints or slight modifications to the underlying problem of detecting duplicates.
+
+\section*{Things to keep in mind and tricks}
+In problems like these, hashing is a common trick that leverages the high-speed access time of a hash table to quickly check for the existence of an element. It's important to consider the trade-off between time and space complexity when choosing the approach to implement.
+
+\section*{Corner and special cases to test when writing the code}
+When implementing solutions, it is crucial to handle corner cases, such as empty arrays or arrays with a single element where no duplicates can exist. Additionally, for the hashing approach, one must consider the hash set's potential impact on the runtime if the dataset contains many elements, causing hash collisions and degrading performance to \(O(n^2)\) in the worst case.

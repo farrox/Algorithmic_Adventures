@@ -1,0 +1,84 @@
+
+ewpage
+\chapter{Word Search}
+\label{chap:Word_Search}
+
+The "Word Search" problem involves determining if a given word can be found in a grid of letters. The word must be constructed by connecting letters sequentially in adjacent cells, with the constraint that any cell can only be used once in the construction of the word. Adjacent cells are directly above, below, to the left, or to the right of a cell, but not diagonally connected.
+
+\section*{Problem Statement}
+Given an \( m \times n \) grid of characters \textit{board} and a string \textit{word}, return true if \textit{word} exists in the grid. The \textit{word} can be constructed from letters of sequentially adjacent cells, with the condition that the same letter cell may not be used more than once.\\
+
+\textbf{Example 1:}
+\begin{verbatim}
+Input: board = [["A","B","C","E"],
+                ["S","F","C","S"],
+                ["A","D","E","E"]],
+       word = "ABCCED"
+Output: true
+\end{verbatim}
+
+\textbf{Example 2:}
+\begin{verbatim}
+Input: board = [["A","B","C","E"],
+                ["S","F","C","S"],
+                ["A","D","E","E"]],
+       word = "SEE"
+Output: true
+\end{verbatim}
+
+\textbf{Example 3:}
+\begin{verbatim}
+Input: board = [["A","B","C","E"],
+                ["S","F","C","S"],
+                ["A","D","E","E"]],
+       word = "ABCB"
+Output: false
+\end{verbatim}
+
+LeetCode link: \href{https://leetcode.com/problems/word-search/}{Word Search}
+
+\section*{Algorithmic Approach}
+To solve this problem, a typical approach is to use Depth-First Search (DFS) combined with backtracking. The algorithm starts by iterating over each cell in the grid. If the cell contains the first letter of the word, it recursively explores all adjacent cells that could contribute to the word. Through backtracking, the algorithm marks the current cell as visited and proceeds to the next letter in the word. If the path does not lead to the word, the algorithm backtracks by unmarking the visited cell and tries a different path.
+
+
+ewpage % Start Python Implementation on a new page
+
+\section*{Python Implementation}
+Below is the complete Python code for solving the "Word Search" problem:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class Solution:
+    def exist(self, board, word):
+        def dfs(board, word, i, j, k):
+            if not (0 <= i < len(board)) or not (0 <= j < len(board[0])) or board[i][j] != word[k]:
+                return False
+            if k == len(word) - 1:
+                return True
+            board[i][j] = ''
+            res = (dfs(board, word, i+1, j, k+1) or
+                   dfs(board, word, i-1, j, k+1) or
+                   dfs(board, word, i, j+1, k+1) or
+                   dfs(board, word, i, j-1, k+1))
+            board[i][j] = word[k]
+            return res
+
+        for i in range(len(board)):
+            for j in range(len(board[0])):
+                if dfs(board, word, i, j, 0):
+                    return True
+        return False
+\end{lstlisting}
+
+\end{fullwidth}
+
+This implementation uses a nested function `dfs` that checks whether the current path in the grid leads to the given word. It searches through all possible directions from the current cell and returns true if the word is found. The `exist` function iterates over the entire board, invoking `dfs` when it finds the starting letter of the word.
+
+\section*{Why this approach}
+Depth-First Search is a suitable algorithm for this problem because it allows exploration of all possible paths in the grid that may form the word. Backtracking ensures that once a path is found to be invalid, it reverses changes and explores alternative paths without duplicating the search in previously visited cells.
+
+\section*{Alternative approaches}
+An alternative solution could implement Breadth-First Search (BFS), but BFS is less efficient in this case as it does not take full advantage of the problem's constraints and may require additional space to store all possible paths at each level.
+
+\section*{Similars problems to this one}
+Similar problems that involve grid traversal and backtracking include "N-Queens", "Sudoku Solver", and "Word Search II", which may require modifications to the search

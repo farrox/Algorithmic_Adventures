@@ -1,0 +1,45 @@
+\section{Traversing from the Right}
+
+\section*{Introduction}
+
+Sometimes you can traverse an array starting from the right instead of the conventional approach of moving from the left. This technique can be particularly beneficial in scenarios where processing elements in reverse order leads to more efficient algorithms or simplifies problem-solving. Traversing from the right allows for in-place modifications without the need for additional memory, which is crucial in optimization problems. Additionally, certain problems, such as merging sorted arrays or implementing two-pointer techniques, naturally lend themselves to a right-to-left traversal.
+
+By starting from the end of the array, you can avoid overwriting important data and reduce the complexity of the algorithm. For example, when merging two sorted arrays into one, beginning from the largest elements and working backwards ensures that you place elements in their correct positions without the need to shift existing elements. This approach not only enhances performance but also maintains the integrity of the data structure.
+
+In this chapter, we will delve into the concept of traversing arrays from the right, explore its advantages, and examine common algorithmic problems where this approach is advantageous. Understanding when and how to apply right-to-left traversal can significantly improve your problem-solving skills and optimize your code for better performance.
+
+\section*{When to Traverse from the Right}
+
+Traversing an array from the right is especially useful in the following scenarios:
+
+\begin{itemize}
+    \item \textbf{In-Place Merging}: When merging two sorted arrays where one array has enough space at the end to accommodate the other.
+    \item \textbf{Two-Pointer Techniques}: When you need to use two pointers moving towards each other to solve problems like finding pairs that meet certain conditions.
+    \item \textbf{Reversing Operations}: When performing operations that require reversing the order of elements without using extra space.
+    \item \textbf{Dynamic Programming}: In certain dynamic programming problems, processing elements from the end can simplify the state transitions.
+\end{itemize}
+
+\section*{Advantages of Right-to-Left Traversal}
+
+\begin{enumerate}
+    \item \textbf{Efficiency}: Reduces the need for additional memory by allowing in-place modifications.
+    \item \textbf{Simplicity}: Simplifies the logic for certain algorithms, making the code easier to understand and maintain.
+    \item \textbf{Performance}: Enhances performance by minimizing the number of operations required to achieve the desired outcome.
+    \item \textbf{Data Integrity}: Prevents the overwriting of important data during the traversal and modification process.
+\end{enumerate}
+
+\problemsection{Merging Two Sorted Arrays}
+
+Consider the "Merge Sorted Array" problem, where you are given two sorted arrays, \texttt{nums1} and \texttt{nums2}, and you need to merge \texttt{nums2} into \texttt{nums1} as one sorted array. By traversing from the right, you can efficiently place the largest elements at the end of \texttt{nums1} without overwriting existing elements.
+
+\begin{verbatim}
+Input: nums1 = [1,2,3,0,0,0], m = 3
+       nums2 = [2,5,6], n = 3
+Output: [1,2,2,3,5,6]
+\end{verbatim}
+
+In this example, starting from the end allows you to compare and place elements from \texttt{nums1} and \texttt{nums2} in their correct positions without the need for shifting elements to make space.
+
+\section*{Conclusion}
+
+Traversing from the right is a powerful technique that can optimize various algorithms and simplify complex problem-solving scenarios. By understanding when and how to apply this approach, you can enhance the efficiency and performance of your code, making it a valuable tool in your algorithmic toolkit.

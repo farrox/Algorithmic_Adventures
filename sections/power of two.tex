@@ -1,0 +1,70 @@
+
+ewpage
+\chapter{231. Power of Two}
+\label{chap:power_of_two}
+
+Determining if a given integer is a power of two is a common problem in computer science. This problem entails checking whether a number \(n\) can be expressed as \(2^k\) where \(k\) is an integer.
+
+\section*{Problem Statement}
+
+Given an integer \(n\), the task is to write a function to determine if it is a power of two.
+
+LeetCode link: \href{https://leetcode.com/problems/power-of-two/}{231. Power of Two}
+
+\section*{Algorithmic Approach}
+
+To solve the problem, we will capitalize on the properties of binary representations of powers of two. An integer is a power of two if and only if it has exactly one '1' bit in its binary representation and it is not the sign bit. Therefore, the problem can be approached by checking the following conditions:
+\begin{itemize}
+    \item \textbf{Positivity:} \(n\) must be positive, as negative numbers and zero cannot be powers of two.
+    \item \textbf{Single '1' bit:} \(n\) must have exactly one '1' bit in its binary representation.
+\end{itemize}
+
+To check for a single '1' bit, we can use the following tricks and properties:
+\begin{itemize}
+    \item \textbf{Bitwise AND:} When \(n\) is a power of two, \(n \& (n-1)\) will be zero since there is no overlap of '1' bits between \(n\) and \(n-1\).
+    \item \textbf{Special Cases:} Since the problem's range is between \(-2^{31}\) to \(2^{31} - 1\), we have to be careful when \(n\) is \(2^{31}\) due to integer overflow issues.
+\end{itemize}
+
+\section*{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(1)\) - The time complexity is constant as the operation to check if the number is a power of two requires a fixed number of steps.
+    \item \textbf{Space Complexity:} \(O(1)\) - No extra space is required aside from the few variables used, so the space complexity is also constant.
+\end{itemize}
+
+
+ewpage
+\section*{Python Implementation}
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def isPowerOfTwo(n):
+    return n > 0 and (n & (n - 1)) == 0
+\end{lstlisting}
+
+\end{fullwidth}
+
+\section*{Explanation}
+The provided Python function checks two conditions: first, that the input integer \(n\) is greater than zero, and second, that \(n\) has exactly one '1' bit in its binary representation. The bitwise AND operation \(n \& (n - 1)\) zeroes out the least significant '1' bit of \(n\), and if after this operation the result is zero, then \(n\) was a power of two.
+
+\section*{Why this approach}
+The bitwise approach is chosen for its efficiency. It avoids the need for looping, which would make the solution less efficient, especially for large values of \(n\).
+
+\section*{Alternative Approaches}
+An alternative approach would be to continually divide \(n\) by two until \(n\) equals one. If \(n\) becomes non-integer at any point in this process, it is not a power of two.
+
+\section*{Similar Problems}
+A related problem is determining if a number is a power of any given number \(x\), not just two. This would involve a similar approach of dividing by \(x\) until the result is one or a non-integer value.
+
+\section*{Things to Keep in Mind and Tricks}
+\begin{itemize}
+    \item The special case of the maximum 32-bit integer (\(2^{31}\)) should be kept in mind.
+    \item Remember to first check that \(n\) is positive before performing the bitwise check.
+    \item The bitwise trick used here is that a power of two has a single '1' bit and all other bits are '0'.
+\end{itemize}
+
+\section*{Corner and Special Cases to Test}
+\begin{itemize}
+    \item Test the function with the input integers \(0\) and \(-1\) to ensure that the condition of \(n\) being greater than zero is correctly handled.
+    \item Also test the function with \(1\) and \(2^{30}\) which are on the edge of being within the problem constraints.
+\end{itemize}

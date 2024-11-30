@@ -1,0 +1,238 @@
+% file: palindromic_substrings.tex
+
+\problemsection{Palindromic Substrings}
+\label{problem:palindromic_substrings}
+\marginnote{This problem utilizes a center-expansion technique to efficiently count all palindromic substrings within a given string.}
+
+\section*{Problem Statement}
+
+Given a string \( s \), the objective is to find the number of palindromic substrings within that string. A palindrome is defined as a sequence of characters that reads the same forwards as it does backwards. A substring is a contiguous block of characters within the original string.
+
+\textbf{Examples:}
+
+\begin{itemize}
+    \item \textbf{Example 1:}
+    \begin{verbatim}
+    Input: s = "abc"
+    Output: 3
+    Explanation: Three palindromic substrings are "a", "b", "c".
+    \end{verbatim}
+
+    \item \textbf{Example 2:}
+    \begin{verbatim}
+    Input: s = "aaa"
+    Output: 6
+    Explanation: Six palindromic substrings are "a", "a", "a", "aa", "aa", "aaa".
+    \end{verbatim}
+\end{itemize}
+
+LeetCode link: \href{https://leetcode.com/problems/palindromic-substrings/}{Problem 647}\index{LeetCode}
+
+\marginnote{\href{https://leetcode.com/problems/palindromic-substrings/}{[LeetCode Link]}\index{LeetCode}}
+\marginnote{\href{https://www.geeksforgeeks.org/count-palindromic-substrings-string/}{[GeeksForGeeks Link]}\index{GeeksForGeeks}}
+\marginnote{\href{https://www.hackerrank.com/challenges/count-palindromic-substrings/problem}{[HackerRank Link]}\index{HackerRank}}
+\marginnote{\href{https://app.codesignal.com/challenges/palindromic-substrings}{[CodeSignal Link]}\index{CodeSignal}}
+\marginnote{\href{https://www.interviewbit.com/problems/palindromic-substrings/}{[InterviewBit Link]}\index{InterviewBit}}
+\marginnote{\href{https://www.educative.io/courses/grokking-the-coding-interview/RM8y8Y3nLdY}{[Educative Link]}\index{Educative}}
+\marginnote{\href{https://www.codewars.com/kata/palindromic-substrings/train/python}{[Codewars Link]}\index{Codewars}}
+
+\section*{Algorithmic Approach}
+
+The algorithm to solve this problem involves two main steps:
+
+\begin{enumerate}
+    \item Iterate through each character in the string, considering it as the center of a possible palindrome.
+    \item Expand around the center for both odd and even length palindromes, counting all valid palindromes.
+\end{enumerate}
+
+To implement this, a helper function can check for palindromes by expanding from the center. This function will be called twice for each character: once for the odd length palindrome (with the same start and end) and once for the even length (with start at the current character and end at the next character).
+
+\marginnote{Expanding around each character efficiently captures all possible palindromic substrings without redundant checks.}
+
+\section*{Complexities}
+
+\begin{itemize}
+	\item \textbf{Time Complexity:} The time complexity for this approach is \( O(n^2) \), where \( n \) is the length of the string. This is because for each character, we potentially expand in both directions until we reach the ends of the string.
+	\item \textbf{Space Complexity:} The space complexity is \( O(1) \) as we are not using any additional space that scales with the input size. The only extra space used is for a few variables to keep track of counts and indices.
+\end{itemize}
+
+\newpage % Start Python Implementation on a new page
+\section*{Python Implementation}
+\marginnote{Multiple implementation approaches demonstrate different trade-offs between efficiency and functionality.}
+
+Below are three implementations: the standard center-expansion solution, a space-optimized version, and a solution that returns all palindromic substrings:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+from typing import List, Set
+
+class Solution:
+    def countSubstrings(self, s: str) -> int:
+        """Standard center-expansion solution."""
+        def expand_around_center(left: int, right: int) -> int:
+            count = 0
+            while left >= 0 and right < len(s) and s[left] == s[right]:
+                count += 1
+                left -= 1
+                right += 1
+            return count
+        
+        total_palindromes = 0
+        for i in range(len(s)):
+            total_palindromes += expand_around_center(i, i)      # For odd lengths
+            total_palindromes += expand_around_center(i, i + 1)  # For even lengths
+        
+        return total_palindromes
+
+    def findAllPalindromes(self, s: str) -> Set[str]:
+        """Returns all unique palindromic substrings."""
+        palindromes = set()
+        
+        def expand_and_collect(left: int, right: int) -> None:
+            while left >= 0 and right < len(s) and s[left] == s[right]:
+                palindromes.add(s[left:right + 1])
+                left -= 1
+                right += 1
+        
+        for i in range(len(s)):
+            expand_and_collect(i, i)      # Odd length palindromes
+            expand_and_collect(i, i + 1)  # Even length palindromes
+            
+        return palindromes
+
+    def manachersAlgorithm(self, s: str) -> int:
+        """Linear time solution using Manacher's algorithm."""
+        # Transform string to handle even length palindromes
+        t = '#' + '#'.join(s) + '#'
+        n = len(t)
+        p = [0] * n  # p[i] represents palindrome radius at center i
+        center = right = 0
+        
+        for i in range(n):
+            if i < right:
+                mirror = 2 * center - i
+                p[i] = min(right - i, p[mirror])
+            
+            # Attempt to expand palindrome centered at i
+            left = i - (p[i] + 1)
+            right_ptr = i + (p[i] + 1)
+            while left >= 0 and right_ptr < n and t[left] == t[right_ptr]:
+                p[i] += 1
+                left -= 1
+                right_ptr += 1
+            
+            # If palindrome centered at i expands past right,
+            # adjust center and right boundary
+            if i + p[i] > right:
+                center = i
+                right = i + p[i]
+        
+        # Count palindromes (each radius value represents multiple palindromes)
+        return (sum(x // 2 for x in p) + len(s))
+
+# Comprehensive test cases
+def test_palindromic_substrings():
+    solution = Solution()
+    
+    # Basic cases
+    assert solution.countSubstrings("abc") == 3
+    assert solution.countSubstrings("aaa") == 6
+    
+    # Edge cases
+    assert solution.countSubstrings("") == 0
+    assert solution.countSubstrings("a") == 1
+    
+    # Find all palindromes
+    assert solution.findAllPalindromes("aaa") == {"a", "aa", "aaa"}
+    
+    # Performance test for Manacher's
+    long_string = "a" * 1000
+    assert solution.manachersAlgorithm(long_string) == 500500  # n*(n+1)/2
+\end{lstlisting}
+\end{fullwidth}
+
+\section*{Visual Explanation}
+\begin{figure}[h]
+    \centering
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        String & Center & Expansion & Palindromes \\
+        \hline
+        aaa & 0 & a → aa → aaa & a, aa, aaa \\
+        aaa & 1 & a → aa & a, aa \\
+        aaa & 2 & a & a \\
+        \hline
+    \end{tabular}
+    \caption{Center expansion process for string "aaa"}
+    \label{fig:palindrome_visualization}
+\end{figure}
+
+\section*{Implementation Variants}
+\begin{itemize}
+    \item \textbf{Center Expansion:}
+        \begin{itemize}
+            \item Simple and intuitive
+            \item O(n²) time complexity
+            \item Good for interviews
+        \end{itemize}
+    \item \textbf{Manacher's Algorithm:}
+        \begin{itemize}
+            \item Linear time complexity
+            \item Complex implementation
+            \item Best for production code
+        \end{itemize}
+    \item \textbf{Dynamic Programming:}
+        \begin{itemize}
+            \item O(n²) space and time
+            \item Easier to modify
+            \item Good for related problems
+        \end{itemize}
+\end{itemize}
+
+\section*{Common Optimization Techniques}
+\begin{itemize}
+    \item \textbf{Early Termination:} Stop expansion when impossible to find longer palindromes
+    \item \textbf{Space Optimization:} Use rolling arrays for DP approach
+    \item \textbf{Preprocessing:} Transform string for even-length palindromes
+    \item \textbf{Caching:} Store previously computed palindrome lengths
+\end{itemize}
+
+\section*{Real-World Applications}
+\begin{itemize}
+    \item \textbf{DNA Sequence Analysis:} Finding palindromic sequences
+    \item \textbf{Text Processing:} Identifying patterns in natural language
+    \item \textbf{Data Compression:} Utilizing palindromic patterns
+    \item \textbf{Cryptography:} Creating and analyzing symmetric patterns
+\end{itemize}
+
+\section*{Explanation}
+
+The provided Python implementation defines a function \texttt{countSubstrings} which takes a string \( s \) as its parameter. Within this function, a nested helper function \texttt{expand\_around\_center} is defined, which takes two indices \texttt{left} and \texttt{right}. The helper function expands outwards from these indices while the characters at \texttt{left} and \texttt{right} are equal, incrementing the \texttt{count} of palindromic substrings for each iteration of the \texttt{while} loop. This helper function is then called for each character in the string \( s \), counting all odd and even palindromic substrings centered at that character.
+
+\section*{Why This Approach}
+
+This approach is chosen because it efficiently examines potential palindromes by expanding around a center, allowing us to count all palindromes in \( O(n^2) \) without the need for additional space. It's a direct and intuitive method to solve the problem, given the definition and properties of palindromes.
+
+\section*{Alternative Approaches}
+
+An alternative approach could use dynamic programming to build up a table that keeps track of which substrings are palindromes, but this would increase the space complexity to \( O(n^2) \). The Manacher’s algorithm can also be used to solve this problem in linear time, but it is significantly more complex to implement.
+
+\section*{Similar Problems to This One}
+
+Similar problems would include those related to substrings, such as the longest palindromic substring or problems involving dynamic programming for string manipulation. Problems involving counting particular types of subsequences or patterns within a string may also apply similar methodologies.
+
+\section*{Things to Keep in Mind and Tricks}
+
+When solving problems involving palindromes, always consider the possibility of expanding from the center. This approach often simplifies the algorithm. Moreover, be aware of the differences in handling even and odd length palindromes. 
+
+\section*{Corner and Special Cases to Test When Writing the Code}
+
+To thoroughly test the implementation, consider corner cases such as:
+\begin{itemize}
+    \item A single character string
+    \item A string with all identical characters
+    \item A string with no palindromic substrings longer than 1
+    \item Very long strings to ensure the performance is within acceptable bounds
+\end{itemize}
+
+\printindex

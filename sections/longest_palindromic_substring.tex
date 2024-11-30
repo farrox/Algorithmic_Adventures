@@ -1,0 +1,136 @@
+% Filename: longest_palindromic_substring.tex
+
+\problemsection{Longest Palindromic Substring}
+\label{problem:Longest_Palindromic_Substring}
+
+The **Longest Palindromic Substring** problem is a classic challenge in string manipulation that requires finding the longest contiguous substring in a given string that reads the same backward as forward. It serves as an excellent introduction to dynamic programming and center-expansion techniques for substring problems.
+
+\subsection*{Problem Statement}
+Given a string \texttt{s}, return the longest palindromic substring in \texttt{s}.
+
+\textbf{Input:}
+- A string \texttt{s}.
+
+\textbf{Output:}
+- A string representing the longest palindromic substring in \texttt{s}.
+
+\textbf{Example 1:}
+\begin{verbatim}
+Input: s = "babad"
+Output: "bab"
+\end{verbatim}
+
+\textbf{Example 2:}
+\begin{verbatim}
+Input: s = "cbbd"
+Output: "bb"
+\end{verbatim}
+
+\textbf{Example 3:}
+\begin{verbatim}
+Input: s = "a"
+Output: "a"
+\end{verbatim}
+
+\subsection*{Algorithmic Approaches}
+Several approaches can be used to solve the problem efficiently:
+
+\subsection*{1. Dynamic Programming}
+Dynamic programming tracks whether substrings are palindromic and builds the solution iteratively. A 2D boolean array \texttt{dp} is used where \texttt{dp[i][j]} is \texttt{true} if the substring \texttt{s[i:j+1]} is a palindrome.
+
+\textbf{Steps:}
+\begin{itemize}
+    \item Initialize \texttt{dp} where \texttt{dp[i][i]} is \texttt{true} for all \(i\) (single characters are palindromes).
+    \item Fill \texttt{dp} for substrings of length 2 and greater using the relation:
+    \[
+    \texttt{dp[i][j]} = (\texttt{s[i] == s[j]} \, \texttt{and} \, \texttt{dp[i+1][j-1]})
+    \]
+    \item Track the maximum palindrome length and its starting index.
+\end{itemize}
+
+\textbf{Complexity:}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(n^2)\), where \(n\) is the length of the string.
+    \item \textbf{Space Complexity:} \(O(n^2)\), due to the 2D array.
+\end{itemize}
+
+\subsection*{2. Center Expansion (Optimal)}
+Palindromes can be expanded from their center. Each character (and between characters) is considered a potential center.
+
+\textbf{Steps:}
+\begin{itemize}
+    \item Iterate over each character and pair of characters as potential centers.
+    \item Expand outward while the characters on both sides match.
+    \item Track the longest palindrome found during expansion.
+\end{itemize}
+
+\textbf{Complexity:}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(n^2)\), as each character is a center and expansion takes \(O(n)\) in total.
+    \item \textbf{Space Complexity:} \(O(1)\), as no additional data structures are needed.
+\end{itemize}
+
+\subsection*{Python Implementation}
+Below is the implementation of the center expansion approach:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def longestPalindrome(s: str) -> str:
+    def expandAroundCenter(left: int, right: int) -> str:
+        while left >= 0 and right < len(s) and s[left] == s[right]:
+            left -= 1
+            right += 1
+        return s[left + 1:right]
+    
+    longest = ""
+    for i in range(len(s)):
+        # Odd-length palindromes
+        palindrome1 = expandAroundCenter(i, i)
+        # Even-length palindromes
+        palindrome2 = expandAroundCenter(i, i + 1)
+        # Update longest palindrome
+        longest = max(longest, palindrome1, palindrome2, key=len)
+    
+    return longest
+
+# Example usage:
+s = "babad"
+print(longestPalindrome(s))  # Output: "bab" or "aba"
+\end{lstlisting}
+\end{fullwidth}
+
+\subsection*{Why This Approach?}
+The center expansion approach is preferred for its simplicity and \(O(1)\) space complexity. By focusing only on expanding potential centers, it avoids the overhead of maintaining a DP table while achieving the same time complexity.
+
+\subsection*{Alternative Approaches}
+\begin{itemize}
+    \item **Manacher's Algorithm:**  
+    An advanced algorithm that reduces the time complexity to \(O(n)\) by transforming the string and calculating palindrome radii. However, it is more complex and rarely required for practical applications.
+    \item **Brute Force:**  
+    Check all substrings to find the longest palindrome. This has \(O(n^3)\) time complexity and is impractical for larger strings.
+\end{itemize}
+
+\subsection*{Similar Problems}
+\begin{itemize}
+    \item \textbf{Palindrome Partitioning:} Partition a string into the minimum number of palindromic substrings.
+    \item \textbf{Count Substrings That Are Palindromes:} Count all substrings of a string that are palindromic.
+    \item \textbf{Longest Palindromic Subsequence:} Find the longest subsequence (not necessarily contiguous) that is palindromic.
+\end{itemize}
+
+\subsection*{Things to Keep in Mind and Tricks}
+\begin{itemize}
+    \item Single characters are always palindromes.
+    \item Even-length and odd-length palindromes must be treated separately in center expansion.
+    \item Use the \(O(1)\) space solution (center expansion) unless specifically required to use DP or a more complex method like Manacher's Algorithm.
+\end{itemize}
+
+\subsection*{Corner and Special Cases to Test}
+\begin{itemize}
+    \item **Empty String:** Input: \(s = ""\), Output: \( "" \).
+    \item **Single Character:** Input: \(s = "a"\), Output: \( "a" \).
+    \item **All Characters Same:** Input: \(s = "aaaa"\), Output: \( "aaaa" \).
+    \item **No Palindrome Longer Than One Character:** Input: \(s = "abcd"\), Output: \( "a" \) (or any single character).
+\end{itemize}
+
+\subsection*{Conclusion}
+The **Longest Palindromic Substring** problem highlights the power of efficient substring manipulation techniques such as dynamic programming and center expansion. Mastery of these methods enables you to solve a wide range of string-related problems efficiently and effectively.

@@ -1,0 +1,191 @@
+% Filename: validate_binary_search_tree.tex
+
+\problemsection{Validate Binary Search Tree}\marginpar{Determine if a binary tree is a valid Binary Search Tree using recursive or iterative methods.}
+
+\textbf{Problem Statement}
+
+Given the \texttt{root} of a binary tree, determine if it is a valid binary search tree (BST).
+
+A valid BST is defined as follows:
+\begin{itemize}
+    \item The left subtree of a node contains only nodes with keys **less than** the node's key.
+    \item The right subtree of a node contains only nodes with keys **greater than** the node's key.
+    \item Both the left and right subtrees must also be binary search trees.
+\end{itemize}
+
+\textbf{Algorithmic Approach}
+
+To solve this problem, you can use either a recursive approach or an iterative approach with in-order traversal. Below, both methods are described:
+
+\begin{enumerate}
+    \item \textbf{Recursive Approach (Using Bounds)}:
+    \begin{itemize}
+        \item \textbf{Use Helper Function with Bounds}: Create a helper function that takes a node and the allowable range of values for that node.
+        \item \textbf{Validate Node Values}:
+        \begin{enumerate}
+            \item If the current node is \texttt{NULL}, it is valid by definition; return \texttt{True}.
+            \item Check if the current node's value is within the valid range (\texttt{min\_val} < node.val < \texttt{max\_val}). If not, return \texttt{False}.
+            \item Recursively validate the left subtree with updated \texttt{max\_val} and the right subtree with updated \texttt{min\_val}.
+        \end{enumerate}
+    \end{itemize}
+    
+    \item \textbf{Iterative Approach (In-Order Traversal)}:
+    \begin{itemize}
+        \item \textbf{Use a Stack for Traversal}: Utilize a stack to perform an in-order traversal of the tree.
+        \item \textbf{Maintain Previous Value}:
+        \begin{enumerate}
+            \item Initialize an empty stack and set the \texttt{prev\_val} to \texttt{None}.
+            \item Traverse the tree:
+            \begin{enumerate}
+                \item Go as far left as possible, pushing nodes onto the stack.
+                \item Pop a node from the stack and compare its value with \texttt{prev\_val}. If the current node's value is not greater, the BST property is violated; return \texttt{False}.
+                \item Update \texttt{prev\_val} to the current node's value.
+                \item Move to the right subtree.
+            \end{enumerate}
+        \end{enumerate}
+    \end{itemize}
+\end{enumerate}
+
+\textbf{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity}: \(O(n)\), where \(n\) is the number of nodes in the tree. Each node is visited exactly once.
+    \item \textbf{Space Complexity}: 
+    \begin{itemize}
+        \item \textbf{Recursive Approach}: \(O(h)\), where \(h\) is the height of the tree, due to the recursive call stack.
+        \item \textbf{Iterative Approach}: \(O(h)\), where \(h\) is the height of the tree, due to the stack used for traversal.
+    \end{itemize}
+\end{itemize}
+
+\textbf{Python Implementation}\marginpar{Implementing both recursive and iterative solutions leveraging BST properties.}
+
+\begin{lstlisting}[language=Python, xleftmargin=0.02\textwidth, xrightmargin=0.02\textwidth]
+# Definition for a binary tree node.
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+# Recursive Approach (Using Bounds)
+def isValidBSTRecursive(root: TreeNode) -> bool:
+    def helper(node: TreeNode, min_val: float, max_val: float) -> bool:
+        if not node:
+            return True
+        if not (min_val < node.val < max_val):
+            return False
+        return helper(node.left, min_val, node.val) and helper(node.right, node.val, max_val)
+    
+    return helper(root, float('-inf'), float('inf'))
+
+# Iterative Approach (In-Order Traversal)
+def isValidBSTIterative(root: TreeNode) -> bool:
+    stack = []
+    prev_val = None
+    current = root
+    
+    while stack or current:
+        while current:
+            stack.append(current)
+            current = current.left
+        current = stack.pop()
+        if prev_val is not None and current.val <= prev_val:
+            return False
+        prev_val = current.val
+        current = current.right
+    return True
+
+# Example usage:
+# Constructing the following BST
+#       5
+#      / \
+#     3   7
+#    / \   \
+#   2   4   8
+
+root = TreeNode(5)
+root.left = TreeNode(3, TreeNode(2), TreeNode(4))
+root.right = TreeNode(7, None, TreeNode(8))
+
+print(isValidBSTRecursive(root))  # Output: True
+print(isValidBSTIterative(root))  # Output: True
+
+# Constructing an invalid BST
+#       5
+#      / \
+#     1   4
+#        / \
+#       3   6
+
+invalid_root = TreeNode(5)
+invalid_root.left = TreeNode(1)
+invalid_root.right = TreeNode(4, TreeNode(3), TreeNode(6))
+
+print(isValidBSTRecursive(invalid_root))  # Output: False
+print(isValidBSTIterative(invalid_root))  # Output: False
+\end{lstlisting}
+
+\textbf{Explanation}
+
+The function \texttt{isValidBST} determines whether a binary tree is a valid Binary Search Tree by leveraging the inherent properties of BSTs. 
+
+\begin{itemize}
+    \item \textbf{Recursive Approach (Using Bounds)}:
+    \begin{itemize}
+        \item **Helper Function with Bounds**: The helper function checks whether each node's value lies within the valid range defined by \texttt{min\_val} and \texttt{max\_val}.
+        \item **Validation Process**: 
+        \begin{enumerate}
+            \item If the current node is \texttt{NULL}, it is considered valid.
+            \item If the current node's value does not satisfy \texttt{min\_val < node.val < max\_val}, the BST property is violated; return \texttt{False}.
+            \item Recursively validate the left subtree with an updated \texttt{max\_val} (current node's value) and the right subtree with an updated \texttt{min\_val} (current node's value).
+        \end{enumerate}
+    \end{itemize}
+    
+    \item \textbf{Iterative Approach (In-Order Traversal)}:
+    \begin{itemize}
+        \item **In-Order Traversal**: In-order traversal of a BST yields a sorted list of values in ascending order.
+        \item **Validation Process**:
+        \begin{enumerate}
+            \item Traverse the tree using a stack to simulate recursion.
+            \item At each step, compare the current node's value with the previous node's value. If the current value is not greater, the BST property is violated; return \texttt{False}.
+            \item Update the \texttt{prev\_val} to the current node's value and continue traversal.
+        \end{enumerate}
+    \end{itemize}
+\end{itemize}
+
+\textbf{Why This Approach}
+
+\begin{itemize}
+    \item \textbf{Leverages BST Properties}: Both approaches utilize the fundamental properties of BSTs to efficiently validate the tree structure.
+    \item \textbf{Efficiency}: The recursive approach optimally narrows down the valid range for each node, ensuring that each node is checked against appropriate boundaries. The iterative approach ensures that the in-order traversal strictly increases, maintaining the BST property.
+    \item \textbf{Simplicity and Readability}: Both methods are straightforward to implement and understand, making the solution elegant and maintainable.
+\end{itemize}
+
+\textbf{Alternative Approaches}
+
+An alternative method involves performing an in-order traversal to collect all node values into a list and then verifying if the list is strictly increasing. However, this approach requires additional space to store the list of node values, making it less space-efficient compared to the iterative in-order traversal method that validates on-the-fly.
+
+\textbf{Similar Problems to This One}
+
+Similar tree-related problems include finding the minimum depth of a binary tree (\hyperref[problem:minimum_depth_of_binary_tree]{Minimum Depth of Binary Tree}), checking if a tree is balanced (\hyperref[problem:balanced_binary_tree]{Balanced Binary Tree}), and determining the lowest common ancestor in a binary tree (\hyperref[problem:lowest_common_ancestor_of_a_binary_tree]{Lowest Common Ancestor of a Binary Tree}).
+
+\textbf{Things to Keep in Mind and Tricks}
+
+\begin{itemize}
+    \item \textbf{Handling Edge Cases}: Always consider edge cases such as empty trees, single-node trees, and trees with duplicate values.
+    \item \textbf{Using Bounds Correctly}: In the recursive approach, ensure that the bounds are correctly updated when traversing left and right subtrees.
+    \item \textbf{In-Order Traversal Validity}: Remember that for a valid BST, in-order traversal should produce a strictly increasing sequence of values.
+    \item \textbf{Avoiding Unnecessary Computations}: In the iterative approach, validate the BST property during traversal to avoid storing all node values.
+\end{itemize}
+
+\textbf{Corner and Special Cases to Test When Writing the Code}
+
+\begin{itemize}
+    \item \textbf{Empty Tree}: Should return \texttt{True} as an empty tree is considered a valid BST.
+    \item \textbf{Single Node}: Should return \texttt{True} as a single-node tree is a valid BST.
+    \item \textbf{Valid BST}: Trees that satisfy all BST properties should return \texttt{True}.
+    \item \textbf{Invalid BST Due to Left Subtree}: Trees where a node in the left subtree has a value greater than or equal to its parent.
+    \item \textbf{Invalid BST Due to Right Subtree}: Trees where a node in the right subtree has a value less than or equal to its parent.
+    \item \textbf{Large Tree}: Testing with a large number of nodes ensures that the implementation handles deep recursion and large stacks efficiently without performance degradation.
+    \item \textbf{Trees with Duplicate Values}: Ensure that trees with duplicate values are handled according to the BST definition (typically, duplicates are not allowed or consistently placed in one subtree).
+\end{itemize}

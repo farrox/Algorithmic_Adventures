@@ -1,0 +1,135 @@
+\newpage
+\section{More Examples of Sliding Window Technique}
+Here are more examples of the sliding window technique.
+
+\problemsection{Longest Substring Without Repeating Characters}
+\label{subsec:Longest_Substring_Without_Repeating_Characters}
+
+The "Longest Substring Without Repeating Characters" problem is a frequently addressed question in coding interviews, focusing on strings and the utilization of data structures to optimize search and retrieval operations. The task is to sift through the sequence of characters in a given string, identifying the lengthiest possible segment that consists purely of non-repeating characters.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\mywidth]{figs/mayan.png}  
+  \caption{A scientist studying the Mayan alphabet to decode the longest substring without repeating characters.}
+  \label{fig:mayan}
+\end{figure}
+
+\paragraph*{Problem Statement}
+
+Given a string \texttt{s}, the challenge lies in discerning the length of the longest substring devoid of recurrent characters. For example, within the string "abcabcbb", the longest substring that meets the criteria is "abc", which constitutes 3 characters. In contrast, for a string like "bbbbb", the longest such substring is simply "b", reflecting a length of 1. The crux of the matter is to efficiently navigate through the string, implementing a strategy that maximizes the window of unique characters whilst conforming to the constraints set forth.
+
+\paragraph*{Algorithmic Approach}
+
+To unravel this problem, a sliding window technique is employed, enhancing the algorithm's capability to dynamically adjust the extent of the observed substring\sidenote{Sliding window technique}. The primary objective is to expand this window by traversing the string and keeping a vigilant eye for duplicating elements. The moment a recurring character manifests, it necessitates a recalibration of the window's scope, excising the previously occurring instance of said character before progressing. 
+
+**Detailed Steps:**
+\begin{enumerate}
+    \item **Initialization:**
+    \begin{itemize}
+        \item Create a dictionary, \texttt{char\_index\_map}, to store the latest index of each character encountered.
+        \item Initialize two pointers, \texttt{start} and \texttt{max\_length}, to track the beginning of the current window and the maximum length found, respectively.
+    \end{itemize}
+    
+    \item **Traversal:**
+    \begin{itemize}
+        \item Iterate over the string using the \texttt{end} pointer.
+        \item For each character, check if it exists in \texttt{char\_index\_map} and if its last occurrence is within the current window (i.e., \texttt{char\_index\_map[char] \(\geq\) start}).
+        \item If so, move the \texttt{start} pointer to the position right after the last occurrence to ensure all characters in the window remain unique.
+        \item Update the character's latest index in \texttt{char\_index\_map}.
+        \item Calculate the current window size (\texttt{end - start + 1}) and update \texttt{max\_length} if the current window is larger.
+    \end{itemize}
+    
+    \item **Termination:**
+    \begin{itemize}
+        \item After completing the traversal, \texttt{max\_length} holds the length of the longest substring without repeating characters.
+    \end{itemize}
+\end{enumerate}
+
+This method ensures that each character is processed only once, maintaining an overall time complexity of \(O(n)\).
+
+\paragraph*{Complexities}
+
+\begin{itemize}
+	\item \textbf{Time Complexity:} The overarching time complexity of the solution pivots around \(O(n)\), as the algorithm meticulously processes each character in the string a singular time — a testament to the efficiency of the sliding window methodology\sidenote{Time complexity \(O(n)\)}.
+	\item \textbf{Space Complexity:} The auxiliary space complexity, contingent upon the breadth of the character set employed in the hash map or set, invariably approaches \(O(m)\), where \(m\) represents the size of the character alphabet (in the case of ASCII, potentially up to 128)\sidenote{Space complexity \(O(m)\)}.
+\end{itemize}
+
+\paragraph*{Python Implementation}
+
+Below is the complete Python code for solving the "Longest Substring Without Repeating Characters" problem by employing a sliding window approach:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def length_of_longest_substring(s):
+    """
+    Finds the length of the longest substring without repeating characters.
+    
+    Parameters:
+    s (str): The input string.
+    
+    Returns:
+    int: The length of the longest substring without repeating characters.
+    """
+    char_index_map = {}
+    max_length = 0
+    start = 0
+    
+    for i, char in enumerate(s):
+        if char in char_index_map and char_index_map[char] >= start:
+            start = char_index_map[char] + 1
+        char_index_map[char] = i
+        max_length = max(max_length, i - start + 1)
+    
+    return max_length
+
+# Example usage:
+s = "abcabcbb"
+print(length_of_longest_substring(s))  # Output: 3
+\end{lstlisting}
+\end{fullwidth}
+
+\paragraph*{Example Usage and Test Cases}
+
+Here are some test cases to test the function:
+
+\begin{lstlisting}[language=Python]
+# Test case 1: General case
+s = "abcabcbb"
+print(length_of_longest_substring(s))  # Output: 3
+
+# Test case 2: All characters are the same
+s = "bbbbb"
+print(length_of_longest_substring(s))  # Output: 1
+
+# Test case 3: No repeating characters
+s = "abcdefg"
+print(length_of_longest_substring(s))  # Output: 7
+
+# Test case 4: Empty string
+s = ""
+print(length_of_longest_substring(s))  # Output: 0
+
+# Test case 5: String with special characters
+s = "pwwkew"
+print(length_of_longest_substring(s))  # Output: 3
+\end{lstlisting}
+
+\paragraph*{Why This Approach}
+
+The sliding window technique is favored in this context due to its real-time responsiveness to evolving conditions within the string. It streamlines operations by eliminating the need for redundant inspections of previously reviewed characters and concentrates computational efforts solely on the changing window edges, thereby enhancing the procedure's efficiency\sidenote{Efficiency of sliding window}.
+
+\paragraph*{Alternative Approaches}
+
+An alternative approach to the sliding window technique could involve brute force, which entails inspecting every possible substring for duplicates—a method that is computationally exhaustive and less feasible for longer strings. Another potential approach might utilize dynamic programming to keep track of the longest substring without repeating characters up to each index, but this is generally less efficient than the adopted sliding window strategy\sidenote{Alternative approaches}.
+
+\paragraph*{Similar Problems to This One}
+
+There are several problems akin to the "Longest Substring Without Repeating Characters," such as "Longest Substring with At Most Two Distinct Characters," "Longest Repeating Character Replacement," and "Substring with Concatenation of All Words." Each of these presents unique requisites that necessitate slight modifications to the basic sliding window construct\sidenote{Similar problems}.
+
+\paragraph*{Things to Keep in Mind and Tricks}
+
+When dealing with sliding window problems, an imperative trick is to adequately manage the window boundaries, especially when the window contracts. It's crucial to ensure that the starting boundary does not revert backwards, as this would lead to incorrect computations\sidenote{Managing window boundaries}.
+
+\paragraph*{Corner and Special Cases to Test When Writing the Code}
+
+One should be alert to scenarios involving extensive sequences of identical characters, strings consisting solely of unique characters, or strings with alternating patterns. Additionally, edge cases such as an empty string should be contemplated. It is advisable to conduct thorough testing against these circumstances to affirm the robustness of the algorithm\sidenote{Corner cases}.

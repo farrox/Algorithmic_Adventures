@@ -1,0 +1,82 @@
+% Filename: asteroid_collision.tex
+
+\problemsection{Asteroid Collision}\marginpar{This problem involves simulating collisions using a stack.}
+
+\textbf{Problem Description:}
+
+We are given an array \texttt{asteroids} of integers representing asteroids in a row.
+
+For each asteroid, the absolute value represents its size, and the sign represents its direction (positive meaning right, negative meaning left). Each asteroid moves at the same speed.
+
+Find out the state of the asteroids after all collisions. If two asteroids meet, the smaller one will explode. If both are the same size, both will explode. Two asteroids moving in the same direction will never meet.
+
+\textbf{Example 1:}
+
+\begin{itemize}
+    \item \textbf{Input:} \texttt{[5, 10, -5]}
+    \item \textbf{Output:} \texttt{[5, 10]}
+    \item \textbf{Explanation:} The 10 and -5 collide resulting in 10. The 5 and 10 never collide.
+\end{itemize}
+
+\textbf{Example 2:}
+
+\begin{itemize}
+    \item \textbf{Input:} \texttt{[8, -8]}
+    \item \textbf{Output:} \texttt{[]}
+    \item \textbf{Explanation:} The 8 and -8 collide exploding each other.
+\end{itemize}
+
+\textbf{Example 3:}
+
+\begin{itemize}
+    \item \textbf{Input:} \texttt{[10, 2, -5]}
+    \item \textbf{Output:} \texttt{[10]}
+    \item \textbf{Explanation:} The 2 and -5 collide resulting in -5. The 10 and -5 collide resulting in 10.
+\end{itemize}
+
+\textbf{Solution Overview:}
+
+Use a stack to simulate the collisions:
+
+\begin{itemize}
+    \item Iterate through each asteroid in the array.
+    \item For each asteroid:
+        \begin{itemize}
+            \item If the stack is empty or the current asteroid is moving right (positive), push it onto the stack.
+            \item If the current asteroid is moving left (negative):
+                \begin{itemize}
+                    \item Check for collisions with the top of the stack (which would be moving right).
+                    \item While there is a collision:
+                        \begin{itemize}
+                            \item If the top asteroid is smaller, pop it and continue checking.
+                            \item If they are equal in size, pop the top asteroid and stop checking.
+                            \item If the top asteroid is larger, the current asteroid explodes; stop checking.
+                        \end{itemize}
+                \end{itemize}
+        \end{itemize}
+\end{itemize}
+
+\textbf{Code Implementation:}
+
+\begin{lstlisting}[language=Python]
+def asteroidCollision(asteroids):
+    stack = []
+    for a in asteroids:
+        while stack and a < 0 < stack[-1]:
+            if stack[-1] < -a:
+                stack.pop()
+                continue
+            elif stack[-1] == -a:
+                stack.pop()
+                break
+            else:
+                break
+        else:
+            stack.append(a)
+    return stack
+
+# Example usage:
+print(asteroidCollision([5, 10, -5]))   # Output: [5, 10]
+print(asteroidCollision([8, -8]))       # Output: []
+print(asteroidCollision([10, 2, -5]))   # Output: [10]
+\end{lstlisting}

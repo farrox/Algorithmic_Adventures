@@ -1,0 +1,123 @@
+% Filename: important_queue_problems.tex
+
+\section{Important Queue Problems}
+
+Queues are fundamental data structures that play a crucial role in various algorithmic solutions and real-world applications. Mastering a range of queue-related problems enhances one's ability to handle ordered data efficiently and implement complex systems with optimal performance. Below is a curated list of important queue problems, each accompanied by a detailed explanation and a high-level overview of the solution approach.
+
+\problemsection{Implement Queue using Stacks}\marginpar{This problem highlights the versatility of stacks in emulating other data structures.}
+
+\textbf{Problem Description:}  
+Design a queue data structure using two stacks. The queue should support the standard operations: \texttt{enqueue} (to add an element to the end) and \texttt{dequeue} (to remove an element from the front).
+
+\textbf{Solution Overview:}  
+The optimal solution involves using two stacks, \texttt{stack\_in} and \texttt{stack\_out}. When enqueuing, elements are pushed onto \texttt{stack\_in}. For dequeuing, if \texttt{stack\_out} is empty, all elements from \texttt{stack\_in} are popped and pushed onto \texttt{stack\_out}, effectively reversing the order. The top of \texttt{stack\_out} then represents the front of the queue. This method ensures that each element is moved at most twice, resulting in an amortized \(O(1)\) time complexity for each operation.
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class MyQueue:
+    def __init__(self):
+        self.stack_in = []
+        self.stack_out = []
+    
+    def enqueue(self, x: int) -> None:
+        self.stack_in.append(x)
+    
+    def dequeue(self) -> int:
+        self.peek()  # Ensure stack_out has the current elements
+        return self.stack_out.pop()
+    
+    def peek(self) -> int:
+        if not self.stack_out:
+            while self.stack_in:
+                self.stack_out.append(self.stack_in.pop())
+        return self.stack_out[-1]
+    
+    def empty(self) -> bool:
+        return not self.stack_in and not self.stack_out
+
+# Example usage:
+# Initialize the queue
+q = MyQueue()
+q.enqueue(1)
+q.enqueue(2)
+print(q.peek())    # Output: 1
+print(q.pop())     # Output: 1
+print(q.empty())   # Output: False
+\end{lstlisting}
+\end{fullwidth}\marginpar{Using two stacks efficiently reverses the order to maintain FIFO behavior without significant overhead.}
+
+\problemsection{Implement Stack using Queues}\marginpar{This problem demonstrates how queues can be manipulated to replicate stack behavior.}
+
+\textbf{Problem Description:}  
+Design a stack data structure using two queues. The stack should support the standard operations: \texttt{push} (to add an element to the top) and \texttt{pop} (to remove the top element).
+
+\textbf{Solution Overview:}  
+The solution utilizes two queues, \texttt{queue\_1} and \texttt{queue\_2}. For the \texttt{push} operation, the new element is enqueued into \texttt{queue\_2}, followed by all elements from \texttt{queue\_1} being transferred to \texttt{queue\_2}. The roles of the queues are then swapped. This ensures that the most recently added element is always at the front of \texttt{queue\_1}, allowing the \texttt{pop} operation to dequeue from \texttt{queue\_1} in \(O(1)\) time. Although this approach results in \(O(n)\) time complexity for \texttt{push}, it maintains efficient \texttt{pop} operations.\marginpar{Swapping queues after each push ensures the last pushed element is ready to be popped first.}
+
+\problemsection{Sliding Window Maximum}\marginpar{This problem is pivotal in scenarios requiring real-time data analysis within moving windows.}
+
+\textbf{Problem Description:}  
+Given an array of integers and a sliding window size \(k\), find the maximum value in each sliding window as it moves from left to right across the array.
+
+\textbf{Solution Overview:}  
+An optimal approach employs a deque (double-ended queue) to maintain the indices of potential maximum elements within the current window. As the window slides, elements outside the current window are removed from the front of the deque. Incoming elements are compared, and smaller elements are removed from the back to ensure that the deque's front always holds the index of the maximum element. This method guarantees an \(O(n)\) time complexity, where each element is processed exactly once.\marginpar{Using a deque allows for efficient tracking of maximums without redundant comparisons.}
+
+\problemsection{Design a Logger Rate Limiter}\marginpar{This problem emphasizes the application of queues in rate-limiting and time-based constraints.}
+
+\textbf{Problem Description:}  
+Implement a logger system that receives a stream of messages along with their timestamps. Each message should only be printed if it has not been printed in the last 10 seconds.
+
+\textbf{Solution Overview:}  
+The solution uses a queue to track the timestamps of printed messages. When a new message arrives, the system first removes all messages from the front of the queue that are older than 10 seconds relative to the current timestamp. It then checks if the message already exists in the remaining queue. If not, the message is printed, and its timestamp is enqueued. This approach ensures that each message is processed in \(O(1)\) time on average, maintaining an efficient rate-limiting mechanism with \(O(n)\) space complexity, where \(n\) is the number of messages within the 10-second window.\marginpar{Queues effectively manage the temporal aspect of message processing, ensuring timely and orderly logging.}
+
+\problemsection{Minimum Size Subarray Sum}\marginpar{This problem is crucial for optimizing resource allocation within sliding windows.}
+
+\textbf{Problem Description:}  
+Given an array of positive integers and a target sum \(S\), find the minimal length of a contiguous subarray for which the sum is at least \(S\). If no such subarray exists, return 0.
+
+\textbf{Solution Overview:}  
+Employ a sliding window technique using two pointers. Initialize two pointers, \texttt{start} and \texttt{end}, to define the window's boundaries. Incrementally add elements to the window by moving the \texttt{end} pointer and accumulate the sum. Once the sum meets or exceeds \(S\), update the minimal length and shrink the window from the \texttt{start} side by moving the \texttt{start} pointer forward while maintaining the sum condition. This approach ensures an \(O(n)\) time complexity with \(O(1)\) space complexity, as each element is processed at most twice.\marginpar{Sliding windows allow dynamic adjustment of the subarray size to efficiently find the optimal solution.}
+
+\problemsection{Design a Circular Queue}\marginpar{Circular queues maximize space utilization in fixed-size buffer scenarios.}
+
+\textbf{Problem Description:}  
+Implement a circular queue with a fixed size, supporting operations \texttt{enqueue}, \texttt{dequeue}, \texttt{front}, \texttt{rear}, \texttt{isEmpty}, and \texttt{isFull}.
+
+\textbf{Solution Overview:}  
+Use a fixed-size array along with two pointers, \texttt{front} and \texttt{rear}, to manage the queue's start and end. Implement modulo arithmetic to wrap the pointers around the array, effectively creating a circular structure. Maintain a count of the number of elements to efficiently check for full or empty states. This design ensures \(O(1)\) time complexity for all operations with \(O(n)\) space complexity, where \(n\) is the capacity of the queue.\marginpar{Circular queues prevent the need for shifting elements, thereby maintaining consistent operation times.}
+
+\problemsection{Task Scheduler}\marginpar{Efficient task scheduling is critical for optimizing resource utilization in multi-processing systems.}
+
+\textbf{Problem Description:}  
+Given a list of tasks and a cooling period \(n\), determine the least number of intervals the CPU will take to finish all the given tasks without executing the same task within \(n\) intervals.
+
+\textbf{Solution Overview:}  
+Use a priority queue to always execute the task with the highest remaining count that is not in the cooling period. Additionally, employ a queue to keep track of tasks in the cooling period. After executing a task, decrease its count and enqueue it into the cooling queue with the timestamp when it can be executed again. Continue this process until all tasks are completed. This approach ensures optimal scheduling with \(O(n \log k)\) time complexity, where \(k\) is the number of unique tasks.\marginpar{Balancing task execution with cooling periods prevents resource contention and ensures fair task processing.}
+
+\problemsection{Sliding Window Median}\marginpar{Calculating medians in sliding windows is essential for statistical analysis in real-time data streams.}
+
+\textbf{Problem Description:}  
+Given an array of integers and a window size \(k\), find the median of each sliding window as it moves from left to right across the array.
+
+\textbf{Solution Overview:}  
+Implement two priority queues (heaps): a max-heap for the lower half of the numbers and a min-heap for the upper half. As the window slides, add the new element to the appropriate heap and remove the element that is no longer in the window. Rebalance the heaps to ensure their sizes differ by at most one. The median is then derived from the tops of the heaps. This method achieves an \(O(n \log k)\) time complexity with \(O(k)\) space complexity, making it efficient for large datasets.\marginpar{Balancing heaps ensures that median calculations remain accurate and efficient as the window moves.}
+
+\problemsection{Design Circular Deque}\marginpar{Double-ended queues provide greater flexibility in element insertion and removal, useful in various algorithmic scenarios.}
+
+\textbf{Problem Description:}  
+Design a circular double-ended queue (deque) with a fixed size. Implement operations to insert and delete elements from both ends, along with checks for full and empty states.
+
+\textbf{Solution Overview:}  
+Implement the circular deque using a fixed-size array with two pointers, \texttt{front} and \texttt{rear}, and a count of current elements. Allow insertion and deletion from both ends by adjusting the pointers appropriately using modulo arithmetic to maintain the circular nature. Ensure that all operations check for boundary conditions to prevent overflows and underflows. This design achieves \(O(1)\) time complexity for all operations with \(O(k)\) space complexity, where \(k\) is the capacity of the deque.\marginpar{Circular deques combine the flexibility of double-ended queues with the efficiency of circular buffers.}
+
+\problemsection{Maximum of All Subarrays of Size K}\marginpar{Determining maximums within sliding windows is crucial for real-time analytics and monitoring systems.}
+
+\textbf{Problem Description:}  
+Given an array of integers and a window size \(k\), find the maximum value in each sliding window of size \(k\) as it moves from left to right across the array.
+
+\textbf{Solution Overview:}  
+Utilize a deque to store indices of potential maximum elements within the current window. As the window slides, remove indices that are out of the current window from the front of the deque. For each new element, remove all smaller elements from the back of the deque, as they are no longer candidates for the maximum. The front of the deque always holds the index of the current maximum. This method ensures an \(O(n)\) time complexity with \(O(k)\) space complexity, providing an efficient solution for large datasets.\marginpar{Efficiently maintaining potential maxima in the deque allows for constant-time retrieval of maximums.}
+
+\section{Conclusion}
+
+Queues are indispensable in managing ordered data and are pivotal in a myriad of applications ranging from algorithm design to real-world system implementations. Mastery of queues involves understanding their various implementations, operational complexities, and the strategic application of queue-related algorithms to solve complex problems efficiently. By exploring different types of queues and engaging with common problems, one can develop a robust foundation in utilizing this versatile data structure effectively.\marginpar{Proficiency in queues enhances problem-solving skills and prepares one for advanced data structure challenges.}

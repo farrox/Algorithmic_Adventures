@@ -1,0 +1,327 @@
+% file: range_sum_query_immutable.tex
+
+\problemsection{Range Sum Query 2D - Immutable}
+\label{problem:range_sum_query_2d_immutable}
+\marginnote{This problem utilizes a prefix sum matrix to efficiently calculate range sums in constant time after initial preprocessing.}
+
+The \textbf{Range Sum Query 2D - Immutable} problem involves handling multiple range sum queries on a 2D matrix. The challenge is to efficiently compute the sum of elements within a submatrix defined by its upper-left and lower-right corners, multiple times, after an initial preprocessing step.
+
+\section*{Problem Statement}
+
+Given a 2D matrix \texttt{matrix}, handle multiple queries of the following type:
+
+- **sumRegion**(\texttt{row1}, \texttt{col1}, \texttt{row2}, \texttt{col2}): Return the sum of the elements of \texttt{matrix} inside the rectangle defined by its upper left corner \((row1, col1)\) and lower right corner \((row2, col2)\).
+
+Implement the \texttt{NumMatrix} class:
+
+- \texttt{NumMatrix(int[][] matrix)} Initializes the object with the integer matrix \texttt{matrix}.
+- \texttt{int sumRegion(int row1, int col1, int row2, int col2)} Returns the sum of the elements of \texttt{matrix} inside the rectangle defined by its upper left corner \((row1, col1)\) and lower right corner \((row2, col2)\).
+
+\textbf{Example 1:}
+\begin{verbatim}
+Input:
+["NumMatrix","sumRegion","sumRegion","sumRegion"]
+[[[[3,0,1,4,2],
+   [5,6,3,2,1],
+   [1,2,0,1,5],
+   [4,1,0,1,7],
+   [1,0,3,0,5]]],
+ [2,1,4,3],
+ [1,1,2,2],
+ [1,2,2,4]]
+Output:
+[null, 8, 11, 12]
+
+Explanation:
+NumMatrix numMatrix = new NumMatrix([
+  [3,0,1,4,2],
+  [5,6,3,2,1],
+  [1,2,0,1,5],
+  [4,1,0,1,7],
+  [1,0,3,0,5]
+]);
+numMatrix.sumRegion(2, 1, 4, 3); // return 11
+numMatrix.sumRegion(1, 1, 2, 2); // return 11
+numMatrix.sumRegion(1, 2, 2, 4); // return 12
+\end{verbatim}
+
+LeetCode link: \href{https://leetcode.com/problems/range-sum-query-2d-immutable/}{Range Sum Query 2D - Immutable}\index{LeetCode}
+
+\marginnote{\href{https://leetcode.com/problems/range-sum-query-2d-immutable/}{[LeetCode Link]}\index{LeetCode}}
+\marginnote{\href{https://www.geeksforgeeks.org/range-sum-query-2d-immutable/}{[GeeksForGeeks Link]}\index{GeeksForGeeks}}
+\marginnote{\href{https://www.hackerrank.com/challenges/range-sum-query-2d-immutable/problem}{[HackerRank Link]}\index{HackerRank}}
+\marginnote{\href{https://app.codesignal.com/challenges/range-sum-query-2d-immutable}{[CodeSignal Link]}\index{CodeSignal}}
+\marginnote{\href{https://www.interviewbit.com/problems/range-sum-query-2d-immutable/}{[InterviewBit Link]}\index{InterviewBit}}
+\marginnote{\href{https://www.educative.io/courses/grokking-the-coding-interview/RM8y8Y3nLdY}{[Educative Link]}\index{Educative}}
+\marginnote{\href{https://www.codewars.com/kata/range-sum-query-2d-immutable/train/python}{[Codewars Link]}\index{Codewars}}
+
+\section*{Algorithmic Approach}
+
+\subsection*{Main Concept}
+The main idea to solve this problem is to use a **prefix sum matrix** (also known as a cumulative sum matrix). By preprocessing the matrix to compute the cumulative sums up to each cell, we can answer each range sum query in constant time. Here's a step-by-step breakdown:
+
+\begin{enumerate}
+    \item **Prefix Sum Matrix Calculation:**
+    \begin{itemize}
+        \item Create a prefix sum matrix \texttt{prefix\_sums} of size \((m + 1) \times (n + 1)\), where \(m\) is the number of rows and \(n\) is the number of columns in the original matrix.
+        \item Initialize \texttt{prefix\_sums[0][*]} and \texttt{prefix\_sums[*][0]} to \(0\) to handle edge cases.
+        \item For each cell \((i, j)\) in the original matrix, compute \texttt{prefix\_sums[i+1][j+1]} as:
+        \[
+        prefix\_sums[i+1][j+1] = prefix\_sums[i][j + 1] + prefix\_sums[i + 1][j] - prefix\_sums[i][j] + matrix[i][j]
+        \]
+    \end{itemize}
+    
+    \item **Handling Queries:**
+    \begin{itemize}
+        \item For each \texttt{sumRegion(row1, col1, row2, col2)} query, compute the sum of the rectangle by leveraging the prefix sums:
+        \[
+        sum = prefix\_sums[row2 + 1][col2 + 1] - prefix\_sums[row1][col2 + 1] - prefix\_sums[row2 + 1][col1] + prefix\_sums[row1][col1]
+        \]
+    \end{itemize}
+\end{enumerate}
+
+This approach ensures that after an initial \( O(m \times n) \) preprocessing step, each query can be answered in \( O(1) \) time.
+
+\marginnote{Prefix sum matrices enable rapid computation of submatrix sums by utilizing precomputed cumulative totals.}
+
+\section*{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:} 
+    \begin{itemize}
+        \item **Initialization:** \( O(m \times n) \), where \( m \) is the number of rows and \( n \) is the number of columns, for computing the prefix sums.
+        \item **sumRegion Queries:** \( O(1) \) per query, since each query involves a constant number of arithmetic operations.
+    \end{itemize}
+    
+    \item \textbf{Space Complexity:} 
+    \begin{itemize}
+        \item \( O(m \times n) \) for storing the prefix sum matrix.
+    \end{itemize}
+\end{itemize}
+
+\newpage
+\section*{Python Implementation}
+
+\marginnote{Implementing the prefix sum matrix allows for efficient and rapid range sum computations by leveraging preprocessed cumulative sums.}
+
+Below is the complete Python code for the \texttt{NumMatrix} class, which implements the \texttt{sumRange} method to calculate the sum of elements within a specified submatrix:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class NumMatrix:
+    def __init__(self, matrix):
+        """
+        :type matrix: List[List[int]]
+        """
+        if not matrix or not matrix[0]:
+            self.prefix_sums = []
+            return
+        
+        m, n = len(matrix), len(matrix[0])
+        self.prefix_sums = [[0] * (n + 1) for _ in range(m + 1)]
+        
+        for i in range(m):
+            for j in range(n):
+                self.prefix_sums[i + 1][j + 1] = (
+                    self.prefix_sums[i][j + 1] + 
+                    self.prefix_sums[i + 1][j] - 
+                    self.prefix_sums[i][j] + 
+                    matrix[i][j]
+                )
+
+    def sumRange(self, row1, col1, row2, col2):
+        """
+        :type row1: int
+        :type col1: int
+        :type row2: int
+        :type col2: int
+        :rtype: int
+        """
+        return (
+            self.prefix_sums[row2 + 1][col2 + 1] - 
+            self.prefix_sums[row1][col2 + 1] - 
+            self.prefix_sums[row2 + 1][col1] + 
+            self.prefix_sums[row1][col1]
+        )
+\end{lstlisting}
+\end{fullwidth}
+
+\section*{Visual Explanation}
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}
+    % Add a visual representation of the prefix sum matrix calculation
+    \matrix [matrix of nodes] (m) {
+        3 & 0 & 1 & 4 & 2 \\
+        5 & 6 & 3 & 2 & 1 \\
+        1 & 2 & 0 & 1 & 5 \\
+        4 & 1 & 0 & 1 & 7 \\
+        1 & 0 & 3 & 0 & 5 \\
+    };
+    \draw[red, thick] (m-2-2.north west) rectangle (m-3-3.south east);
+    \end{tikzpicture}
+    \caption{Visual representation of sumRegion(1,1,2,2) calculation}
+    \label{fig:prefix_sum_2d}
+\end{figure}
+
+\section*{Implementation Variants}
+\begin{itemize}
+    \item \textbf{Standard Implementation:}
+    \begin{lstlisting}[language=Python]
+    class NumMatrix:
+        def __init__(self, matrix):
+            if not matrix or not matrix[0]:
+                return
+            m, n = len(matrix), len(matrix[0])
+            self.sums = [[0] * (n + 1) for _ in range(m + 1)]
+            for i in range(m):
+                for j in range(n):
+                    self.sums[i + 1][j + 1] = (matrix[i][j] + 
+                        self.sums[i + 1][j] + self.sums[i][j + 1] - 
+                        self.sums[i][j])
+    \end{lstlisting}
+
+    \item \textbf{Memory-Optimized Implementation:}
+    \begin{lstlisting}[language=Python]
+    class NumMatrix:
+        def __init__(self, matrix):
+            if not matrix or not matrix[0]:
+                return
+            m, n = len(matrix), len(matrix[0])
+            self.sums = [[0] * n for _ in range(m)]
+            # Calculate row-wise prefix sums
+            for i in range(m):
+                for j in range(n):
+                    self.sums[i][j] = (matrix[i][j] + 
+                        (self.sums[i][j-1] if j > 0 else 0))
+    \end{lstlisting}
+
+    \item \textbf{Cache-Friendly Implementation:}
+    \begin{lstlisting}[language=Python]
+    class NumMatrix:
+        def __init__(self, matrix):
+            if not matrix or not matrix[0]:
+                return
+            self.matrix = matrix
+            m, n = len(matrix), len(matrix[0])
+            self.row_sums = [[0] * (n + 1) for _ in range(m)]
+            for i in range(m):
+                for j in range(n):
+                    self.row_sums[i][j + 1] = (self.row_sums[i][j] + 
+                        matrix[i][j])
+    \end{lstlisting}
+\end{itemize}
+
+\section*{Performance Analysis}
+\begin{itemize}
+    \item \textbf{Memory Usage:}
+        \begin{itemize}
+            \item Standard: \(O(m \times n)\) extra space
+            \item Memory-Optimized: \(O(n)\) extra space
+            \item Cache-Friendly: \(O(m \times n)\) with better cache utilization
+        \end{itemize}
+    \item \textbf{Query Time:}
+        \begin{itemize}
+            \item Standard: \(O(1)\) per query
+            \item Memory-Optimized: \(O(m)\) per query
+            \item Cache-Friendly: \(O(m)\) per query with better cache hits
+        \end{itemize}
+\end{itemize}
+
+\section*{Common Pitfalls and Solutions}
+\begin{itemize}
+    \item \textbf{Integer Overflow:}
+        \begin{itemize}
+            \item Problem: Large matrices can cause integer overflow
+            \item Solution: Use long integers or handle overflow cases
+        \end{itemize}
+    \item \textbf{Memory Constraints:}
+        \begin{itemize}
+            \item Problem: Large matrices require significant memory
+            \item Solution: Use row-wise prefix sums for space optimization
+        \end{itemize}
+    \item \textbf{Cache Performance:}
+        \begin{itemize}
+            \item Problem: Poor cache utilization in large matrices
+            \item Solution: Implement cache-friendly traversal patterns
+        \end{itemize}
+\end{itemize}
+
+\section*{Optimization Techniques}
+\begin{itemize}
+    \item \textbf{Matrix Partitioning:} Divide large matrices into blocks
+    \item \textbf{Cache Blocking:} Optimize for CPU cache performance
+    \item \textbf{SIMD Instructions:} Utilize vector operations when available
+    \item \textbf{Parallel Processing:} Implement multi-threaded initialization
+\end{itemize}
+
+\section*{Similar Problems to This One}
+
+There are several other problems that involve range queries and efficient data retrieval from 2D matrices, such as:
+
+\begin{itemize}
+    \item \hyperref[problem:range_sum_query_mutable]{Range Sum Query - Mutable}\index{Range Sum Query - Mutable}
+    \item \hyperref[problem:maximum_submatrix_sum]{Maximum Submatrix Sum}\index{Maximum Submatrix Sum}
+    \item \hyperref[problem:number_of_submatrices_that_sum_to_target]{Number of Submatrices That Sum to Target}\index{Number of Submatrices That Sum to Target}
+    \item \hyperref[problem:submatrix_sum_equals_k]{Submatrix Sum Equals K}\index{Submatrix Sum Equals K}
+    \item \hyperref[problem:count_square_submatrices_with_all_ones]{Count Square Submatrices with All Ones}\index{Count Square Submatrices with All Ones}
+\end{itemize}
+
+\section*{Things to Keep in Mind and Tricks}
+
+When solving range query problems, consider the following tips:
+
+\begin{itemize}
+    \item \textbf{Preprocessing:} Utilize preprocessing techniques like prefix sums to reduce query time.
+    \index{Preprocessing}
+    
+    \item \textbf{Space-Time Tradeoff:} Balance between additional space used for preprocessing and the time saved during queries.
+    \index{Space-Time Tradeoff}
+    
+    \item \textbf{Edge Cases:} Always handle edge cases such as empty matrices, single-element matrices, and queries that span the entire matrix.
+    \index{Edge Cases}
+    
+    \item \textbf{Immutable vs. Mutable:} Choose appropriate data structures based on whether the matrix can change after initialization.
+    \index{Immutable vs. Mutable}
+    
+    \item \textbf{Efficient Data Structures:} When dealing with mutable matrices, consider advanced data structures like Binary Indexed Trees or Segment Trees.
+    \index{Efficient Data Structures}
+    
+    \item \textbf{Avoid Redundant Computations:} Use memoization or dynamic programming principles to store and reuse results.
+    \index{Avoid Redundant Computations}
+\end{itemize}
+
+\section*{Corner and Special Cases to Test When Writing the Code}
+
+To ensure robustness, consider testing the following corner cases:
+
+\begin{itemize}
+    \item \textbf{Empty Matrix:} \texttt{matrix = []}. Should handle gracefully, possibly returning 0 or raising an exception based on problem constraints.
+    \index{Corner Cases}
+    
+    \item \textbf{Single Element Matrix:} \texttt{matrix = [[5]]}. Queries like \texttt{sumRegion(0, 0, 0, 0)} should return the single element.
+    \index{Corner Cases}
+    
+    \item \textbf{All Zeroes:} \texttt{matrix = [[0,0,0], [0,0,0]]}. Sums should reflect the number of zeroes in the range.
+    \index{Corner Cases}
+    
+    \item \textbf{Negative Numbers:} \texttt{matrix = [[-1,-2,-3], [-4,-5,-6]]}. Ensure that sums are computed correctly with negative values.
+    \index{Corner Cases}
+    
+    \item \textbf{Large Matrix with Mixed Values:} Test with large matrices containing a mix of positive, negative, and zero values to ensure correctness and performance.
+    \index{Corner Cases}
+    
+    \item \textbf{Maximum Range Queries:} \texttt{sumRegion(0, 0, m-1, n-1)} where \( m \) and \( n \) are the dimensions of the matrix. Should return the total sum of the matrix.
+    \index{Corner Cases}
+    
+    \item \textbf{Overlapping Ranges:} Multiple queries with overlapping ranges to ensure independent and correct computations.
+    \index{Corner Cases}
+    
+    \item \textbf{Invalid Queries:} Queries where \texttt{row1 > row2} or \texttt{col1 > col2} or indices are out of bounds. Should handle gracefully, possibly by returning 0 or raising exceptions.
+    \index{Corner Cases}
+    
+    \item \textbf{Performance Testing:} Ensure that the implementation performs efficiently with a large number of queries (e.g., \( 10^5 \) queries) and large matrix sizes.
+    \index{Corner Cases}
+\end{itemize}
+
+\printindex

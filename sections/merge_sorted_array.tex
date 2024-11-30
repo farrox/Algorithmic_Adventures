@@ -1,0 +1,224 @@
+\problemsection{Two Pointers Technique for Merging Arrays}\marginpar{Merge two sorted arrays using two pointers.}
+
+When you are given two arrays to process, it is common to have one index per array (pointer) to traverse and compare both of them, incrementing one of the pointers when relevant. For example, we use this approach to merge two sorted arrays.
+\section*{Two Pointers Technique for Merging Arrays}
+
+When you are given two arrays to process, it is common to have one index per array (pointer) to traverse and compare both of them, incrementing one of the pointers when relevant. For example, we use this approach to merge two sorted arrays.
+
+\subsection{Merge Sorted Array}
+\label{subsec:Merge_Sorted_Array}
+
+The "Merge Sorted Array" problem is a common algorithmic challenge that focuses on efficiently merging two sorted arrays. The task is to merge the contents of \texttt{nums2} into \texttt{nums1}, ensuring that \texttt{nums1} remains sorted in non-decreasing order. This problem tests one's ability to manipulate arrays in-place while maintaining the integrity of the original data.
+
+\section*{Problem Statement}
+
+You are given two integer arrays \texttt{nums1} and \texttt{nums2}, sorted in non-decreasing order, and two integers \texttt{m} and \texttt{n}, representing the number of elements in \texttt{nums1} and \texttt{nums2}, respectively. Merge \texttt{nums1} and \texttt{nums2} into a single array sorted in non-decreasing order.
+
+The final sorted array should not be returned by the function but instead stored inside the array \texttt{nums1}. To accommodate this, \texttt{nums1} has a length of \texttt{m + n}, where the first \texttt{m} elements denote the elements that should be merged, and the last \texttt{n} elements are set to 0 and should be ignored. \texttt{nums2} has a length of \texttt{n}.
+
+\textbf{Constraints:}
+
+\begin{itemize}
+    \item \texttt{nums1.length} = \texttt{m + n}
+    \item \texttt{nums2.length} = \texttt{n}
+    \item $0 \leq m, n \leq 200$
+    \item $1 \leq m + n \leq 200$
+    \item $-10^9 \leq \texttt{nums1[i]}, \texttt{nums2[i]} \leq 10^9$
+    \item \texttt{nums1} and \texttt{nums2} are sorted in non-decreasing order.
+\end{itemize}
+
+\textbf{Input:} Two sorted integer arrays \texttt{nums1} and \texttt{nums2}, and integers \texttt{m} and \texttt{n}.
+
+\textbf{Output:} The merged and sorted array stored within \texttt{nums1}.
+
+\textbf{Example 1:}
+\begin{verbatim}
+Input: nums1 = [1,2,3,0,0,0], m = 3, nums2 = [2,5,6], n = 3
+Output: [1,2,2,3,5,6]
+\end{verbatim}
+
+\textbf{Example 2:}
+\begin{verbatim}
+Input: nums1 = [1], m = 1, nums2 = [], n = 0
+Output: [1]
+\end{verbatim}
+
+\textbf{Example 3:}
+\begin{verbatim}
+Input: nums1 = [0], m = 0, nums2 = [1], n = 1
+Output: [1]
+Explanation: Since m = 0, there are no elements in nums1. The merged array is [1].
+\end{verbatim}
+
+\section*{Algorithmic Approach}
+
+To merge these two arrays efficiently, the two pointers technique is ideal. Instead of merging the arrays from the start, which could require extra space or unnecessary element shifts, we can start from the end of \texttt{nums1} and move backwards. This approach ensures that we overwrite the trailing zeroes in \texttt{nums1} while comparing the largest elements from both arrays.
+
+Here's how the approach works:
+
+\begin{itemize}
+    \item Initialize two pointers \texttt{p1} and \texttt{p2} to point at the last elements of the valid parts of \texttt{nums1} and \texttt{nums2}, respectively (i.e., \texttt{p1 = m - 1}, \texttt{p2 = n - 1}).
+    \item Another pointer \texttt{p} starts at the last position of the combined array (\texttt{m + n - 1}) in \texttt{nums1}.
+    \item Compare the elements at \texttt{p1} and \texttt{p2}. Place the larger element at position \texttt{p} in \texttt{nums1} and move the respective pointer.
+    \item Decrement the \texttt{p} pointer and repeat until all elements are merged.
+    \item If any elements remain in \texttt{nums2}, copy them over to \texttt{nums1}.
+\end{itemize}
+
+\subsection*{Detailed Walkthrough}
+
+Consider the example:
+
+\begin{verbatim}
+nums1 = [1,2,3,0,0,0], m = 3
+nums2 = [2,5,6], n = 3
+\end{verbatim}
+
+\begin{enumerate}
+    \item Set \texttt{p1 = 2} (points to 3 in \texttt{nums1}), \texttt{p2 = 2} (points to 6 in \texttt{nums2}), \texttt{p = 5}.
+    \item Compare \texttt{nums1[p1]} (3) and \texttt{nums2[p2]} (6). Since 6 > 3, set \texttt{nums1[p]} = 6, decrement \texttt{p2} to 1, \texttt{p} to 4.
+    \item Compare \texttt{nums1[p1]} (3) and \texttt{nums2[p2]} (5). Since 5 > 3, set \texttt{nums1[p]} = 5, decrement \texttt{p2} to 0, \texttt{p} to 3.
+    \item Compare \texttt{nums1[p1]} (3) and \texttt{nums2[p2]} (2). Since 3 > 2, set \texttt{nums1[p]} = 3, decrement \texttt{p1} to 1, \texttt{p} to 2.
+    \item Compare \texttt{nums1[p1]} (2) and \texttt{nums2[p2]} (2). Since 2 == 2, set \texttt{nums1[p]} = 2, decrement \texttt{p2} to -1, \texttt{p} to 1.
+    \item Since \texttt{p2} < 0, copy remaining elements from \texttt{nums1} (if any). Here, set \texttt{nums1[p]} = \texttt{nums1[p1]} (2), decrement \texttt{p1} to 0, \texttt{p} to 0.
+    \item Set \texttt{nums1[p]} = \texttt{nums1[p1]} (1).
+\end{enumerate}
+
+Final merged array: \texttt{[1,2,2,3,5,6]}.
+
+\subsection*{Alternative Approaches}
+
+An alternative approach is to create a new array and merge \texttt{nums1} and \texttt{nums2} from the start, similar to the merge step in the Merge Sort algorithm. However, this approach requires additional space of $O(m + n)$ and extra work to copy back the merged array into \texttt{nums1}. The reverse two-pointer technique is more efficient in terms of space and time since it operates in-place and avoids shifting elements multiple times.
+
+\section*{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:} The time complexity is $O(m + n)$ because each element in \texttt{nums1} and \texttt{nums2} is processed once. We iterate through both arrays starting from their ends and move backwards, ensuring that all elements are compared and placed correctly.
+    \item \textbf{Space Complexity:} The space complexity is $O(1)$ since the merging is done in-place within \texttt{nums1}. We do not use any additional significant space that scales with the input size.
+\end{itemize}
+
+\section*{Python Implementation}
+
+Below is the Python code to implement the "Merge Sorted Array" problem using the two pointers technique:
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+from typing import List
+
+def merge(nums1: List[int], m: int, nums2: List[int], n: int) -> None:
+    """
+    Merges nums2 into nums1 in-place, resulting in a single sorted array.
+
+    Parameters:
+    nums1 (List[int]): The first sorted array with a length of m + n,
+                       where the first m elements denote the elements to merge,
+                       and the last n elements are set to 0 and should be ignored.
+    m (int): Number of initialized elements in nums1.
+    nums2 (List[int]): The second sorted array.
+    n (int): Number of initialized elements in nums2.
+
+    Returns:
+    None: The function modifies nums1 in-place.
+    """
+    p1, p2, p = m - 1, n - 1, m + n - 1
+
+    # While there are elements to compare in nums1 and nums2
+    while p1 >= 0 and p2 >= 0:
+        if nums1[p1] > nums2[p2]:
+            nums1[p] = nums1[p1]
+            p1 -= 1
+        else:
+            nums1[p] = nums2[p2]
+            p2 -= 1
+        p -= 1
+
+    # If there are remaining elements in nums2, copy them
+    while p2 >= 0:
+        nums1[p] = nums2[p2]
+        p2 -= 1
+        p -= 1
+\end{lstlisting}
+\end{fullwidth}
+\subsection*{Example Usage and Test Cases}
+
+\begin{lstlisting}[language=Python]
+# Test case 1: General case
+nums1 = [1,2,3,0,0,0]
+m = 3
+nums2 = [2,5,6]
+n = 3
+merge(nums1, m, nums2, n)
+print(nums1)  # Output: [1, 2, 2, 3, 5, 6]
+
+# Test case 2: nums2 is empty
+nums1 = [1]
+m = 1
+nums2 = []
+n = 0
+merge(nums1, m, nums2, n)
+print(nums1)  # Output: [1]
+
+# Test case 3: nums1 is empty
+nums1 = [0]
+m = 0
+nums2 = [1]
+n = 1
+merge(nums1, m, nums2, n)
+print(nums1)  # Output: [1]
+
+# Test case 4: Negative numbers
+nums1 = [-1,0,0,0]
+m = 1
+nums2 = [-3,-2,-1]
+n = 3
+merge(nums1, m, nums2, n)
+print(nums1)  # Output: [-3, -2, -1, -1]
+\end{lstlisting}
+
+\section*{Why This Approach}
+
+The reverse two-pointer technique is ideal for this problem because it avoids the need to move elements multiple times. By starting from the end of \texttt{nums1}, we place elements directly into their final positions without overwriting any unprocessed elements. This in-place approach is more efficient than merging from the start, which could require shifting elements forward to make space.
+
+Starting from the end of the arrays ensures that we utilize the unused space at the end of \texttt{nums1} (the zeroes) to store the largest elements first. This method leverages the fact that we know the total number of elements and the arrays are sorted, allowing us to merge efficiently without extra space.
+
+\section*{Similar Problems}
+
+Other problems that involve merging sorted data structures or using the two-pointer technique include:
+
+\begin{itemize}
+    \item \textbf{Merge Two Sorted Lists}: Merge two sorted linked lists and return it as a new sorted list.
+    \item \textbf{Merge k Sorted Lists}: Merge $k$ sorted linked lists and return it as one sorted list.
+    \item \textbf{Merge Intervals}: Merge all overlapping intervals in a list of intervals.
+    \item \textbf{Two Sum II - Input Array Is Sorted}: Find two numbers such that they add up to a specific target number in a sorted array.
+\end{itemize}
+
+These problems also require careful handling of elements in sorted order, often leveraging two pointers or similar techniques.
+
+\section*{Things to Keep in Mind and Tricks}
+
+\begin{itemize}
+    \item \textbf{Edge Cases}: Always consider edge cases such as empty arrays or arrays with one element. Ensure your algorithm handles these scenarios correctly.
+    \item \textbf{Remaining Elements}: After the main loop, if there are remaining elements in \texttt{nums2}, they need to be copied over to \texttt{nums1}. If there are remaining elements in \texttt{nums1}, they are already in place.
+    \item \textbf{Avoiding Shifts}: By starting from the end, we avoid shifting elements multiple times, which improves efficiency.
+    \item \textbf{Optimization Tip}: If \texttt{nums2} is empty (\texttt{n == 0}), we can skip the merging process altogether.
+    \item \textbf{Common Pitfall}: Do not forget to handle the case where \texttt{nums1} has no elements (\texttt{m == 0}). In this case, we need to copy all elements from \texttt{nums2} to \texttt{nums1}.
+\end{itemize}
+
+\section*{Exercises}
+
+\begin{enumerate}
+    \item \textbf{Descending Order Merge}: Modify the algorithm to merge two arrays sorted in non-increasing (descending) order.
+    \item \textbf{Merge Without Extra Space}: Suppose \texttt{nums1} has no extra space at the end (i.e., length is \texttt{m}). How would you merge \texttt{nums2} into \texttt{nums1} without using extra space?
+    \item \textbf{Non-Sorted Arrays}: Adapt the algorithm to merge two unsorted arrays into a sorted array without using built-in sorting functions.
+    \item \textbf{Alternative Languages}: Implement the merge function in another programming language, such as Java or C++, to practice language-specific syntax.
+\end{enumerate}
+
+\section*{Questions for Reflection}
+
+\begin{itemize}
+    \item How would the algorithm change if the arrays were not sorted?
+    \item Can this approach be extended to merge more than two arrays? How would you modify it?
+    \item What are the trade-offs between in-place algorithms and those that use extra space?
+\end{itemize}
+
+\section*{References}
+
+LeetCode Problem: \href{https://leetcode.com/problems/merge-sorted-array/}{Merge Sorted Array}

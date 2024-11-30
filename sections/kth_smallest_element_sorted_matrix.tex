@@ -1,0 +1,175 @@
+% Filename: kth_smallest_element_sorted_matrix.tex
+
+\problemsection{Kth Smallest Element in a Sorted Matrix}
+\label{problem:Kth_Smallest_Element_Sorted_Matrix}
+
+The **Kth Smallest Element in a Sorted Matrix** problem is a classic challenge that combines elements of sorting, binary search, and heap-based optimization. The task is to locate the \(k\)-th smallest element in a row and column-wise sorted matrix efficiently.
+
+\section*{Problem Statement}
+Given an \(n \times n\) matrix where each row and column is sorted in ascending order, return the \(k\)-th smallest element in the matrix.
+
+\textbf{Input:}
+- \texttt{matrix}: A list of lists representing an \(n \times n\) matrix where rows and columns are sorted.
+- \texttt{k}: An integer representing the rank of the desired element.
+
+\textbf{Output:}
+- An integer representing the \(k\)-th smallest element.
+
+\textbf{Example 1:}
+\begin{verbatim}
+Input: matrix = [
+    [1, 5, 9],
+    [10, 11, 13],
+    [12, 13, 15]
+], k = 8
+Output: 13
+Explanation: The sorted order of elements is 
+[1, 5, 9, 10, 11, 12, 13, 13, 15]. The 8th smallest element is 13.
+\end{verbatim}
+
+\textbf{Example 2:}
+\begin{verbatim}
+Input: matrix = [
+    [1, 2],
+    [1, 3]
+], k = 2
+Output: 1
+Explanation: The sorted order of elements is [1, 1, 2, 3]. The 2nd smallest element is 1.
+\end{verbatim}
+
+\textbf{Constraints:}
+- \(1 \leq n \leq 300\)
+- \(-10^9 \leq \texttt{matrix[i][j]} \leq 10^9\)
+- All rows and columns of \texttt{matrix} are sorted.
+- \(1 \leq k \leq n^2\)
+
+---
+
+\section*{Algorithmic Approaches}
+
+This problem can be solved using multiple approaches based on the constraints and desired efficiency.
+
+\subsection*{1. Min-Heap Approach (\(O(k \log n)\))}
+\textbf{Key Idea:}
+Use a min-heap to efficiently extract the smallest elements while traversing the matrix row by row. At each step:
+1. Push the first element of each row into the heap.
+2. Pop the smallest element from the heap \(k\) times to find the \(k\)-th smallest.
+
+\textbf{Algorithm Steps:}
+1. Initialize a min-heap with the first element of each row along with its indices \((row, col)\).
+2. Extract the smallest element and push the next element from the same row into the heap.
+3. Repeat until the \(k\)-th smallest element is found.
+
+\subsection*{2. Binary Search on Value Range (\(O(n \log(\texttt{max} - \texttt{min})))\)}
+\textbf{Key Idea:}
+The matrix is sorted, so the range of possible values is \([\texttt{matrix}[0][0], \texttt{matrix}[n-1][n-1]]\). Use binary search to count how many elements are less than or equal to a mid-point in the range:
+1. Compute the middle value of the current range.
+2. Count elements less than or equal to the middle value using a two-pointer approach.
+3. Adjust the range based on whether the count is less than or greater than \(k\).
+
+---
+
+\subsection*{Complexities}
+1. **Min-Heap Approach:**
+   - Time Complexity: \(O(k \log n)\), where \(k\) extractions and \(O(\log n)\) insertions per element.
+   - Space Complexity: \(O(n)\) for the heap.
+
+2. **Binary Search Approach:**
+   - Time Complexity: \(O(n \log(\texttt{max} - \texttt{min}))\), where counting elements in \(n\) rows takes \(O(n)\).
+   - Space Complexity: \(O(1)\), as no extra space is used beyond variables.
+
+---
+
+\section*{Python Implementations}
+
+\subsection*{Min-Heap Implementation}
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+import heapq
+
+def kthSmallest(matrix, k):
+    n = len(matrix)
+    heap = [(matrix[i][0], i, 0) for i in range(n)]
+    heapq.heapify(heap)
+    
+    for _ in range(k - 1):
+        val, row, col = heapq.heappop(heap)
+        if col + 1 < n:
+            heapq.heappush(heap, (matrix[row][col + 1], row, col + 1))
+    
+    return heapq.heappop(heap)[0]
+
+# Example usage:
+matrix = [
+    [1, 5, 9],
+    [10, 11, 13],
+    [12, 13, 15]
+]
+k = 8
+print(kthSmallest(matrix, k))  # Output: 13
+\end{lstlisting}
+\end{fullwidth}
+
+\subsection*{Binary Search Implementation}
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def kthSmallest(matrix, k):
+    def countLessEqual(mid):
+        count, n = 0, len(matrix)
+        row, col = n - 1, 0
+        while row >= 0 and col < n:
+            if matrix[row][col] <= mid:
+                count += row + 1
+                col += 1
+            else:
+                row -= 1
+        return count
+
+    low, high = matrix[0][0], matrix[-1][-1]
+    while low < high:
+        mid = low + (high - low) // 2
+        if countLessEqual(mid) < k:
+            low = mid + 1
+        else:
+            high = mid
+    
+    return low
+
+# Example usage:
+matrix = [
+    [1, 5, 9],
+    [10, 11, 13],
+    [12, 13, 15]
+]
+k = 8
+print(kthSmallest(matrix, k))  # Output: 13
+\end{lstlisting}
+\end{fullwidth}
+
+---
+
+\section*{Why These Approaches?}
+The min-heap approach is intuitive and handles \(k\) extractions efficiently for small \(k\). The binary search approach is optimal for large matrices, leveraging the sorted property of rows and columns to reduce unnecessary operations.
+
+---
+
+\section*{Similar Problems}
+\begin{itemize}
+    \item **Kth Largest Element in an Array:** Use heaps or quickselect to find the \(k\)-th largest element.
+    \item **Median of Two Sorted Arrays:** Combines binary search with merging concepts.
+    \item **Merge K Sorted Lists:** Similar heap-based solution.
+\end{itemize}
+
+---
+
+\section*{Corner Cases to Test}
+\begin{itemize}
+    \item Single element matrix: \( \texttt{matrix} = [[1]], \texttt{k} = 1 \).
+    \item All elements are the same: \( \texttt{matrix} = [[2, 2], [2, 2]], \texttt{k} = 3 \).
+    \item Large \(k\): Ensure performance for \(n = 300\) and \(k = n^2\).
+\end{itemize}
+
+---
+
+\section*{Conclusion}
+The \(k\)-th smallest element in a sorted matrix problem highlights the versatility of heap-based and binary search techniques. Both approaches leverage the sorted structure of the matrix to achieve efficiency, making this problem an excellent demonstration of algorithmic optimization.

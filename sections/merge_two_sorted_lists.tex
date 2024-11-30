@@ -1,0 +1,177 @@
+% Filename: merge_two_sorted_lists.tex
+
+\problemsection{Merge Two Sorted Lists}
+\label{problem:merge_two_sorted_lists}
+\marginpar{Efficiently combining two sorted lists is fundamental in data processing and algorithm design.}
+
+The \textbf{Merge Two Sorted Lists} problem involves combining two sorted linked lists into a single, sorted linked list. The objective is to construct a new list by splicing together the nodes of the input lists in ascending order.\marginpar{Commonly encountered in technical interviews and serves as a building block for more complex data structures.}
+
+\section*{Problem Statement}
+Given the heads of two sorted linked lists, \texttt{list1} and \texttt{list2}, merge them into one sorted linked list. The merged linked list should be composed by splicing together the nodes of the first two lists so that the resulting list is in ascending order.
+
+\marginpar{\href{https://leetcode.com/problems/merge-two-sorted-lists/}{[LeetCode Link]}\index{LeetCode}}
+\marginpar{\href{https://www.geeksforgeeks.org/merge-two-sorted-linked-lists/}{[GeeksForGeeks Link]}\index{GeeksForGeeks}}
+\marginpar{\href{https://www.hackerrank.com/challenges/merge-two-sorted-linked-lists/problem}{[HackerRank Link]}\index{HackerRank}}
+\marginpar{\href{https://app.codesignal.com/challenges/merge-two-sorted-lists}{[CodeSignal Link]}\index{CodeSignal}}
+\marginpar{\href{https://www.interviewbit.com/problems/merge-two-sorted-lists/}{[InterviewBit Link]}\index{InterviewBit}}
+\marginpar{\href{https://www.educative.io/courses/grokking-the-coding-interview/RM8y8Y3nLdY}{[Educative Link]}\index{Educative}}
+\marginpar{\href{https://www.codewars.com/kata/merge-two-sorted-lists/train/python}{[Codewars Link]}\index{Codewars}}
+
+\section*{Algorithmic Approach}
+To efficiently merge two sorted lists, the **two-pointer technique** is utilized. This method allows simultaneous traversal of both lists, ensuring that the merged list maintains sorted order without the need for additional sorting.\marginpar{The two-pointer technique is versatile and widely used in array and list manipulation problems.}
+
+\begin{enumerate}
+    \item \textbf{Initialize Pointers:}
+    \begin{itemize}
+        \item Create a dummy node to serve as the starting point of the merged list.
+        \item Initialize a current pointer to track the end of the merged list.
+    \end{itemize}
+    
+    \item \textbf{Traverse and Compare:}
+    \begin{itemize}
+        \item While neither \texttt{list1} nor \texttt{list2} is exhausted:
+        \begin{itemize}
+            \item Compare the current nodes of both lists.
+            \item Append the node with the smaller value to the merged list.
+            \item Move the corresponding pointer forward.
+        \end{itemize}
+    \end{itemize}
+    
+    \item \textbf{Handle Remaining Elements:}
+    \begin{itemize}
+        \item After one list is exhausted, append the remaining nodes from the other list to the merged list.
+    \end{itemize}
+\end{enumerate}
+
+\section*{Complexities}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(n + m)\), where \(n\) and \(m\) are the lengths of \texttt{list1} and \texttt{list2}, respectively. Each node is visited exactly once.
+    \item \textbf{Space Complexity:} \(O(1)\), as the merge is performed in-place without allocating additional space for the merged list.
+\end{itemize}
+
+\section*{Python Implementation}
+\marginpar{Implementing the two-pointer technique ensures efficient runtime and optimal space usage.}
+
+Below is the complete Python code for merging two sorted linked lists using the two-pointer technique:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+# Definition for singly-linked list.
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+class Solution:
+    def mergeTwoLists(self, list1: ListNode, list2: ListNode) -> ListNode:
+        # Create a dummy node to serve as the start of the merged list
+        dummy = ListNode()
+        current = dummy
+        
+        # Traverse both lists and append the smaller value to the merged list
+        while list1 and list2:
+            if list1.val < list2.val:
+                current.next = list1  # Link to list1 node
+                list1 = list1.next   # Move list1 pointer
+            else:
+                current.next = list2  # Link to list2 node
+                list2 = list2.next   # Move list2 pointer
+            current = current.next    # Move merged list pointer
+
+        # Append any remaining nodes from list1 or list2
+        current.next = list1 if list1 else list2
+        
+        # Return the head of the merged list, skipping the dummy node
+        return dummy.next
+
+# Example Usage:
+# Constructing the first sorted linked list: 1 -> 3 -> 5
+list1 = ListNode(1, ListNode(3, ListNode(5)))
+
+# Constructing the second sorted linked list: 2 -> 4 -> 6
+list2 = ListNode(2, ListNode(4, ListNode(6)))
+
+# Creating a Solution object and merging the lists
+solution = Solution()
+merged_head = solution.mergeTwoLists(list1, list2)
+
+# Function to print the merged linked list
+def print_linked_list(head):
+    elems = []
+    while head:
+        elems.append(str(head.val))
+        head = head.next
+    print(" -> ".join(elems))
+
+print_linked_list(merged_head)  # Output: 1 -> 2 -> 3 -> 4 -> 5 -> 6
+
+# Handling Edge Cases
+print_linked_list(solution.mergeTwoLists(None, ListNode(1, ListNode(2, ListNode(3)))))  # Output: 1 -> 2 -> 3
+print_linked_list(solution.mergeTwoLists(ListNode(1, ListNode(2, ListNode(3))), None))  # Output: 1 -> 2 -> 3
+print_linked_list(solution.mergeTwoLists(ListNode(1, ListNode(3, ListNode(5))), ListNode(1, ListNode(3, ListNode(5)))))  # Output: 1 -> 1 -> 3 -> 3 -> 5 -> 5
+\end{lstlisting}
+\end{fullwidth}
+
+\section*{Explanation}
+The `mergeTwoLists` function efficiently merges two sorted linked lists by leveraging the **two-pointer technique**. Here's a step-by-step breakdown of the implementation:
+
+\begin{itemize}
+    \item \textbf{Initialization:}
+    \begin{itemize}
+        \item A dummy node is created to simplify edge cases, such as when one or both input lists are empty.
+        \item A `current` pointer is initialized to track the end of the merged list.
+    \end{itemize}
+    
+    \item \textbf{Merging Process:}
+    \begin{itemize}
+        \item The function enters a loop that continues until either `list1` or `list2` is exhausted.
+        \item Within the loop, the values of the current nodes of both lists are compared.
+        \item The node with the smaller value is appended to the merged list by updating `current.next`.
+        \item The pointer of the list from which the node was taken is moved forward.
+        \item The `current` pointer is then moved to the newly appended node.
+    \end{itemize}
+    
+    \item \textbf{Appending Remaining Nodes:}
+    \begin{itemize}
+        \item After the main loop, one of the lists may still contain nodes.
+        \item The remaining nodes from the non-exhausted list are appended to the merged list.
+    \end{itemize}
+    
+    \item \textbf{Finalizing the Merged List:}
+    \begin{itemize}
+        \item The merged list is returned by skipping the dummy node (`dummy.next`).
+    \end{itemize}
+\end{itemize}
+
+\section*{Why This Approach}
+This method is chosen because it is both intuitive and efficient. By iterating through both lists simultaneously and always selecting the smaller current element, we ensure that the merged list remains sorted. Additionally, since the merge is done in-place, it optimizes space usage without the need for additional data structures.\marginpar{In-place operations are crucial for optimizing memory usage, especially with large datasets.}
+
+\section*{Alternative Approaches}
+An alternative method involves using recursion to merge the two lists. In this recursive approach, the function compares the heads of both lists and recursively merges the remaining elements. While elegant, the recursive method may lead to increased space usage due to the call stack, especially with very long lists.\marginpar{Recursive solutions can be more readable but may not always be the most space-efficient.}
+
+\section*{Similar Problems to This One}
+\begin{itemize}
+    \item \hyperref[problem:merge_k_sorted_lists]{Merge k Sorted Lists}\index{Merge k Sorted Lists}
+    \item \hyperref[problem:merge_intervals]{Merge Intervals}\index{Merge Intervals}
+    \item \hyperref[problem:sorted_arrays_merge]{Merge Sorted Arrays}\index{Merge Sorted Arrays}
+\end{itemize}
+
+\section*{Things to Keep in Mind and Tricks}
+\begin{itemize}
+    \item \textbf{Edge Cases:} Always consider scenarios where one or both input lists are empty.\index{Edge Cases}
+    \item \textbf{Duplicate Elements:} Decide how to handle duplicate values; in this case, duplicates are allowed and included in the merged list.\index{Duplicate Elements}
+    \item \textbf{In-Place Merging:} If allowed, modifying one of the input lists can save space.\index{In-Place Merging}
+    \item \textbf{Using Built-in Functions:} Python’s built-in functions like \texttt{sorted()} can simplify merging but may not be as efficient for large lists.\index{Built-in Functions}
+\end{itemize}
+
+\section*{Corner and Special Cases to Test When Writing the Code}
+\begin{itemize}
+    \item \textbf{Both Lists Empty:} \texttt{list1 = [], list2 = []}\index{Corner Cases}
+    \item \textbf{One List Empty:} \texttt{list1 = [], list2 = [1, 2, 3]} and \texttt{list1 = [1, 2, 3], list2 = []}\index{Corner Cases}
+    \item \textbf{Different Lengths:} \texttt{list1 = [1, 4, 5], list2 = [2, 3]}\index{Corner Cases}
+    \item \textbf{All Elements from One List Smaller:} \texttt{list1 = [1, 2, 3], list2 = [4, 5, 6]}\index{Corner Cases}
+    \item \textbf{All Elements from One List Larger:} \texttt{list1 = [4, 5, 6], list2 = [1, 2, 3]}\index{Corner Cases}
+    \item \textbf{Duplicate Elements:} \texttt{list1 = [1, 3, 5], list2 = [1, 3, 5]}\index{Corner Cases}
+\end{itemize}
+
+\printindex

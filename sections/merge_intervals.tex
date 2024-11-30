@@ -1,0 +1,155 @@
+% Filename: merge_intervals.tex
+
+\problemsection{Merge Intervals}
+\label{problem:MergeIntervals}
+
+The **Merge Intervals** problem is a quintessential algorithmic challenge that tests one's ability to manipulate and process interval data efficiently. It involves consolidating overlapping intervals into a minimal set of non-overlapping intervals, a task fundamental in various applications such as scheduling, computational geometry, and resource allocation\sidenote{Efficient interval merging ensures optimal utilization of resources and prevents scheduling conflicts}.
+
+\subsection*{Problem Statement}
+Given a collection of intervals, merge all overlapping intervals and return an array of the non-overlapping intervals that cover all the intervals in the input\sidenote{Merging intervals helps in simplifying data representation by consolidating overlapping periods}.
+
+\textbf{Example:}
+
+\begin{verbatim}
+Input: intervals = [[1,3],[2,6],[8,10],[15,18]]
+Output: [[1,6],[8,10],[15,18]]
+Explanation: Since intervals [1,3] and [2,6] overlap, merge them into [1,6].
+\end{verbatim}
+
+% LeetCode link: \href{https://leetcode.com/problems/merge-intervals/}{Merge Intervals}
+
+\subsection*{Algorithmic Approach}
+The **Merge Intervals** problem can be efficiently solved by following a systematic approach that leverages the sorting of intervals and iterative consolidation\sidenote{Sorting is essential as it brings overlapping intervals adjacent to each other, facilitating easier merging}.
+
+\begin{enumerate}
+    \item \textbf{Sort the Intervals:} Begin by sorting the list of intervals based on their start times\sidenote{Sorting ensures that intervals are ordered sequentially, allowing for the detection of overlaps in a single pass}.
+    
+    \item \textbf{Initialize the Merged List:} Create a list to hold the merged intervals, starting with the first interval from the sorted list\sidenote{This list will be updated with merged intervals as overlapping intervals are identified}.
+    
+    \item \textbf{Iterate Through Intervals:} Traverse the sorted list of intervals and compare each interval with the last interval in the merged list.
+        \begin{itemize}
+            \item \textbf{Check for Overlap:} If the current interval overlaps with the last merged interval (i.e., the start of the current interval is less than or equal to the end of the last merged interval), merge them by updating the end of the last merged interval to be the maximum of both ends\sidenote{This step consolidates overlapping intervals into a single interval that spans their combined range}.
+            
+            \item \textbf{No Overlap:} If there is no overlap, append the current interval to the merged list\sidenote{Non-overlapping intervals are added as separate entries, maintaining the integrity of distinct periods}.
+        \end{itemize}
+    
+    \item \textbf{Completion:} After processing all intervals, the merged list will contain all consolidated, non-overlapping intervals covering the entire range of input intervals\sidenote{This ensures that all original intervals are accounted for without redundancies}.
+\end{enumerate}
+
+\subsection*{Python Implementation}
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class Solution:
+    def merge(self, intervals: List[List[int]]) -> List[List[int]]:
+        if not intervals:
+            return []
+
+        # Sort the intervals based on the start time
+        intervals.sort(key=lambda x: x[0])
+        
+        merged = [intervals[0]]
+        
+        for current in intervals[1:]:
+            prev = merged[-1]
+            if current[0] <= prev[1]:
+                # Overlapping intervals, merge them
+                merged[-1][1] = max(prev[1], current[1])
+            else:
+                # Non-overlapping interval, add to the list
+                merged.append(current)
+                
+        return merged
+
+# Example usage:
+intervals = [[1,3],[2,6],[8,10],[15,18]]
+solution = Solution()
+print(solution.merge(intervals))  # Output: [[1,6],[8,10],[15,18]]
+\end{lstlisting}
+\end{fullwidth}
+
+\subsection*{Example Usage and Test Cases}
+
+\begin{lstlisting}[language=Python]
+# Test case 1: General case
+intervals = [[1,3],[2,6],[8,10],[15,18]]
+print(Solution().merge(intervals))  # Output: [[1,6],[8,10],[15,18]]
+
+# Test case 2: No overlapping intervals
+intervals = [[1,2],[3,4],[5,6]]
+print(Solution().merge(intervals))  # Output: [[1,2],[3,4],[5,6]]
+
+# Test case 3: All intervals overlapping
+intervals = [[1,5],[2,6],[3,7],[4,8]]
+print(Solution().merge(intervals))  # Output: [[1,8]]
+
+# Test case 4: Single interval
+intervals = [[1,4]]
+print(Solution().merge(intervals))  # Output: [[1,4]]
+
+# Test case 5: Intervals with same start and end
+intervals = [[1,3],[1,3],[1,3]]
+print(Solution().merge(intervals))  # Output: [[1,3]]
+\end{lstlisting}
+
+\subsection*{Why This Approach}
+
+The sorting-based approach combined with iterative merging is chosen for its **efficiency and simplicity**. By sorting the intervals, we ensure that any overlapping intervals are positioned consecutively\sidenote{This eliminates the need for nested comparisons, allowing for a streamlined merging process}. This method reduces the problem's complexity by enabling a single pass through the sorted intervals to perform all necessary merges\sidenote{The algorithm operates in linear time relative to the number of intervals after sorting, which is optimal for this problem}.
+
+\subsection*{Complexity Analysis}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \( O(n \log n) \)\sidenote{The sorting step dominates the time complexity, while the merging process operates in linear time}.
+    
+    \item \textbf{Space Complexity:} \( O(n) \)\sidenote{In the worst case, where no intervals overlap, the space required for the merged list is proportional to the number of input intervals}.
+\end{itemize}
+
+\subsection*{Similar Problems}
+
+Other interval-related problems that can be efficiently solved using sorting and merging techniques include:
+\begin{itemize}
+    \item \textbf{Non-overlapping Intervals}: Find the minimum number of intervals you need to remove to make the rest of the intervals non-overlapping\sidenote{This problem is a variant of the Merge Intervals problem and can be approached similarly with sorting and greedy strategies}.
+    
+    \item \textbf{Insert Interval}: Insert a new interval into a list of non-overlapping intervals and merge if necessary\sidenote{Requires identifying the correct position for insertion and merging overlapping intervals as needed}.
+    
+    \item \textbf{Meeting Rooms}: Determine if a person could attend all meetings given their schedules\sidenote{By sorting the intervals and checking for overlaps, we can efficiently assess meeting overlaps}.
+    
+    \item \textbf{Interval List Intersections}: Find the intersection between two lists of intervals\sidenote{Involves iterating through both sorted lists and identifying overlapping regions}.
+\end{itemize}
+These problems leverage the foundational principles of sorting and merging, demonstrating the versatility and power of these techniques in various algorithmic contexts\sidenote{Mastering these approaches provides a strong foundation for solving a wide range of interval-related problems}.
+
+\subsection*{Things to Keep in Mind and Tricks}
+\begin{itemize}
+    \item \textbf{Sorting Key}: Always sort the intervals based on their start times to ensure that overlapping intervals are positioned consecutively\sidenote{Incorrect sorting criteria can lead to missed overlaps and inaccurate merges}.
+    
+    \item \textbf{Handling Edge Cases}: Ensure that the algorithm correctly handles edge cases such as empty input, single interval, and all intervals overlapping\sidenote{Robust handling of these scenarios prevents runtime errors and ensures correct results}.
+    
+    \item \textbf{In-Place Merging}: If space is a constraint, consider modifying the input list in place to store merged intervals\sidenote{This can reduce space overhead but may complicate the implementation}.
+    
+    \item \textbf{Max Function}: Utilize the `max` function to determine the furthest end point when merging overlapping intervals\sidenote{This ensures that the merged interval accurately spans all overlapping regions}.
+    
+    \item \textbf{Greedy Approach}: Adopt a greedy strategy by always merging the current interval with the last merged interval if they overlap\sidenote{This approach guarantees that the number of merged intervals is minimized}.
+\end{itemize}
+
+\subsection*{Corner and Special Cases to Test When Writing the Code}
+\begin{itemize}
+    \item \textbf{Empty List}: Ensure the function returns an empty list when given no intervals\sidenote{Handles scenarios where no data is provided gracefully}.
+    
+    \item \textbf{Single Interval}: Verify that a single interval is returned as is\sidenote{No merging is required in this case}.
+    
+    \item \textbf{All Overlapping Intervals}: Test with all intervals overlapping to ensure they are merged into one\sidenote{Confirms that the algorithm correctly consolidates fully overlapping intervals}.
+    
+    \item \textbf{No Overlapping Intervals}: Ensure that non-overlapping intervals are returned unchanged\sidenote{Checks the algorithm's ability to recognize and preserve distinct intervals}.
+    
+    \item \textbf{Mixed Overlapping and Non-Overlapping Intervals}: Test with a combination of overlapping and non-overlapping intervals\sidenote{Validates the algorithm's capability to handle complex merging scenarios}.
+    
+    \item \textbf{Intervals with Same Start or End Points}: Verify that intervals with identical start or end points are handled correctly\sidenote{Ensures accurate merging when intervals share boundaries}.
+\end{itemize}
+
+\subsection*{References}
+\begin{itemize}
+    \item [GeeksforGeeks Article:] \sidenote{\href{https://www.geeksforgeeks.org/merge-intervals/}{Merge Intervals}}
+    \item [LeetCode Problem:] \sidenote{\href{https://leetcode.com/problems/merge-intervals/}{Merge Intervals}}
+    \item [HackerRank Problem:] \sidenote{\href{https://www.hackerrank.com/challenges/merge-intervals/problem}{Merge Intervals}}
+\end{itemize}
+
+\subsection*{Conclusion}
+The **Merge Intervals** problem exemplifies how sorting an array can simplify complex algorithmic challenges by imposing a structured order on the data\sidenote{This structured approach enables efficient identification and consolidation of overlapping intervals}. By leveraging the sorted nature of the intervals and adopting a greedy strategy, the algorithm efficiently merges overlapping intervals with optimal time and space complexities\sidenote{Achieving \( O(n \log n) \) time complexity through sorting and linear traversal demonstrates the effectiveness of this approach}. Mastering this technique not only enhances problem-solving skills but also provides a foundation for tackling more intricate interval-based challenges effectively.

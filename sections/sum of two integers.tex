@@ -1,0 +1,77 @@
+
+ewpage
+
+\chapter{Sum of Two Integers}
+\label{chap:Sum_of_Two_Integers}
+
+The "Sum of Two Integers" problem is a computational challenge that involves calculating the sum of two integers, \(a\) and \(b\), without utilizing the traditional arithmetic operators such as `+` and `-`.
+
+\section*{Problem Statement}
+Given two integers `a` and `b`, return the sum of the two integers without using the operators `+` and `-`.
+
+\section*{Examples}
+\begin{itemize}
+    \item \textbf{Example 1:}
+    \subitem \textbf{Input:} \(a = 1\), \(b = 2\)
+    \subitem \textbf{Output:} \(3\)
+
+    \item \textbf{Example 2:}
+    \subitem \textbf{Input:} \(a = -2\), \(b = 3\)
+    \subitem \textbf{Output:} \(1\)
+\end{itemize}
+
+LeetCode link: \href{https://leetcode.com/problems/sum-of-two-integers/}{Sum of Two Integers}
+
+\section*{Algorithmic Approach}
+The solution to this problem can be approached by using bitwise operations to imitate the addition operation. Specifically, we exploit the bitwise XOR (\( \oplus \)) operation to perform addition without carry, and the bitwise AND (\( \& \)) operation followed by a left shift (\( << \)) to calculate the carry. The process is repeated iteratively: calculate the sum without carry, then calculate the carry, until no carry is left.
+
+\section*{Complexities}
+\begin{itemize}
+	\item \textbf{Time Complexity:} The time complexity of the algorithm is \(O(1)\) since the operation is done in constant time. However, note that the iteration can run up to the number of bits in the integers, which is a constant.
+	
+	\item \textbf{Space Complexity:} The space complexity is \(O(1)\) because the algorithm uses a fixed amount of space.
+\end{itemize}
+
+
+ewpage % Start Python Implementation on a new page
+\section*{Python Implementation}
+Below is the complete Python code for the function `getSum`, which fulfills the requirement to compute the sum of two integers without using the operators `+` and `-`:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class Solution(object):
+    def getSum(self, a, b):
+        # 32 bits integer max
+        MAX = 0x7FFFFFFF
+        # 32 bits interger min 
+        MIN = 0x80000000
+        # mask to get last 32 bits
+        mask = 0xFFFFFFFF
+        
+        while b != 0:
+            # ^ gets different bits and & gets double 1s, << moves carry
+            a, b = (a ^ b) & mask, ((a & b) << 1) & mask
+            
+        # if a is negative, get a's 32 bits complement positive first
+        # then get 32-bit negative
+        return a if a <= MAX else ~(a ^ mask)
+\end{lstlisting}
+
+\end{fullwidth}
+
+This implementation considers a 32-bit integer overflow situation. It uses masking to keep the result within the 32-bit integer range and handles the situation where the computed sum is a negative number.
+  
+\section*{Why this approach}
+The bitwise operation approach is chosen because it avoids direct usage of addition and subtraction and is commonly used in low-level programming and hardware design for arithmetic operations. Bitwise operations are highly efficient and guaranteed to run in constant time, making them ideal for this problem.
+
+\section*{Alternative approaches}
+An alternative approach could involve using higher-level mathematical operations or representations, such as working with binary strings or arrays of bits, and simulating the addition through loops or recursion. However, these would likely be less efficient than bitwise operations.
+
+\section*{Similar problems to this one}
+Similar computational challenges often involve manipulation of binary data without the use of arithmetic operations, such as "Add Binary", "Multiplying Strings", or "Plus One" (where instead of addition, you increment an integer represented as a digit array).
+
+\section*{Things to keep in mind and tricks}
+When working with bitwise operations, it is important to be aware of integer overflow and to know the bit length of the integers with which you are working. Masking is a useful technique to handle overflows. Always remember to test edge cases, such as the maximum and minimum values for the data types you are using.
+
+\section*{Corner and special cases to test when writing the code}
+While writing code that involves bitwise operations, test cases should include checking behavior at and near overflow

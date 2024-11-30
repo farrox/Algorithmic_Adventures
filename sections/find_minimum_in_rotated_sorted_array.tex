@@ -1,0 +1,122 @@
+% Filename: find_minimum_in_rotated_sorted_array.tex
+
+\problemsection{Find Minimum in Rotated Sorted Array}
+\label{problem:Find_Minimum_in_Rotated_Sorted_Array}
+
+The **Find Minimum in Rotated Sorted Array** problem involves identifying the smallest element in a rotated sorted array. This problem demonstrates the efficient application of binary search techniques to leverage the sorted structure of the array while addressing the rotation.
+
+---
+
+\section*{Problem Statement}
+Given a rotated sorted array, locate its minimum element. A sorted array is considered rotated if some elements from the beginning are moved to the end, maintaining the overall ascending order. The solution should run in \(O(\log n)\) time complexity.
+
+---
+
+\textbf{Input:}
+- \texttt{nums}: A list of integers representing the rotated sorted array.
+
+\textbf{Output:}
+- An integer representing the minimum element in \texttt{nums}.
+
+\textbf{Example 1:}
+\begin{verbatim}
+Input: nums = [3, 4, 5, 1, 2]
+Output: 1
+Explanation: The minimum value is 1.
+\end{verbatim}
+
+\textbf{Example 2:}
+\begin{verbatim}
+Input: nums = [4, 5, 6, 7, 0, 1, 2]
+Output: 0
+Explanation: The minimum value is 0.
+\end{verbatim}
+
+\textbf{Example 3:}
+\begin{verbatim}
+Input: nums = [11, 13, 15, 17]
+Output: 11
+Explanation: The array is not rotated, so the first element is the smallest.
+\end{verbatim}
+
+---
+
+\section*{Algorithmic Approach}
+
+To solve the problem efficiently:
+1. Use binary search with two pointers, \( \texttt{left} \) and \( \texttt{right} \), representing the bounds of the current search space.
+2. Compute the middle index:
+   \[
+   \texttt{mid} = \texttt{left} + (\texttt{right} - \texttt{left}) // 2
+   \]
+3. Compare \texttt{nums[mid]} with \texttt{nums[right]}:
+   - If \texttt{nums[mid]} \(>\) \texttt{nums[right]}, the minimum must be in the right half. Update \( \texttt{left} = \texttt{mid} + 1 \).
+   - Otherwise, the minimum is in the left half (including \texttt{mid}). Update \( \texttt{right} = \texttt{mid} \).
+4. Continue until \( \texttt{left} == \texttt{right} \), at which point the minimum element is found at \( \texttt{nums[left]} \).
+
+---
+
+\subsection*{Complexities}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \( O(\log n) \), since the search space is halved at each step.
+    \item \textbf{Space Complexity:} \( O(1) \), as no additional space is used beyond a few variables.
+\end{itemize}
+
+---
+
+\section*{Python Implementation}
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class Solution:
+    def findMin(self, nums: List[int]) -> int:
+        left, right = 0, len(nums) - 1
+        while left < right:
+            mid = left + (right - left) // 2
+            if nums[mid] > nums[right]:
+                left = mid + 1
+            else:
+                right = mid
+        return nums[left]
+
+# Example usage:
+nums = [4, 5, 6, 7, 0, 1, 2]
+solution = Solution()
+print(solution.findMin(nums))  # Output: 0
+\end{lstlisting}
+\end{fullwidth}
+
+---
+
+\section*{Why This Approach?}
+Binary search is ideal for this problem because the array is partially sorted. Instead of iterating through all elements (\(O(n)\)), binary search exploits the sorted structure to locate the minimum in \(O(\log n)\) time.
+
+---
+
+\section*{Alternative Approaches}
+1. **Linear Search (\(O(n)\)):** Scan all elements to find the minimum. This approach is straightforward but inefficient for large arrays.
+2. **Recursive Binary Search (\(O(\log n)\)):** The binary search logic can be implemented recursively, although it adds stack overhead.
+
+---
+
+\section*{Similar Problems}
+\begin{itemize}
+    \item **Search in Rotated Sorted Array:** Find the position of a target element in a rotated sorted array.
+    \item **Find Peak Element:** Locate a peak element in an array.
+    \item **Find Minimum in Rotated Sorted Array II:** Handles duplicates in the rotated array.
+\end{itemize}
+
+---
+
+\section*{Corner Cases to Test}
+\begin{itemize}
+    \item Array is not rotated: \( \texttt{nums} = [1, 2, 3, 4, 5] \).
+    \item Single element array: \( \texttt{nums} = [1] \).
+    \item Array with two elements: \( \texttt{nums} = [2, 1] \).
+    \item Minimum element is the last element: \( \texttt{nums} = [3, 4, 5, 6, 1] \).
+\end{itemize}
+
+---
+
+\section*{Conclusion}
+The "Find Minimum in Rotated Sorted Array" problem elegantly demonstrates the power of binary search in structured datasets. By efficiently narrowing down the search space, we achieve optimal performance while maintaining simplicity in implementation.

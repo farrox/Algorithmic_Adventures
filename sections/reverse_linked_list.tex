@@ -1,0 +1,160 @@
+% Filename: reverse_linked_list.tex
+
+\problemsection{Reverse a Linked List}
+\label{problem:Reverse_Linked_List}
+
+The **Reverse a Linked List** problem involves reversing the order of nodes in a singly linked list so that the head becomes the tail and vice versa. This task demonstrates the manipulation of pointers in a linked list and is a fundamental operation for mastering linked list problems.
+
+---
+
+\section*{Problem Statement}
+Given the head of a singly linked list, reverse the list and return its new head.
+
+---
+
+\textbf{Input:}
+- \texttt{head}: The head node of a singly linked list.
+
+\textbf{Output:}
+- The head of the reversed linked list.
+
+---
+
+\textbf{Example 1:}
+\begin{verbatim}
+Input: head = [1, 2, 3, 4, 5]
+Output: [5, 4, 3, 2, 1]
+\end{verbatim}
+
+\textbf{Example 2:}
+\begin{verbatim}
+Input: head = [1, 2]
+Output: [2, 1]
+\end{verbatim}
+
+\textbf{Example 3:}
+\begin{verbatim}
+Input: head = []
+Output: []
+\end{verbatim}
+
+---
+
+\section*{Algorithmic Approach}
+The solution involves manipulating pointers iteratively or recursively to reverse the direction of the list:
+
+1. **Iterative Approach:**
+   - Use three pointers: \texttt{prev}, \texttt{current}, and \texttt{next}.
+   - Traverse the list while reassigning the \texttt{next} pointer of each node to point to its previous node.
+   - Update the head to the last non-\texttt{NULL} node.
+
+2. **Recursive Approach:**
+   - Reverse the rest of the list recursively.
+   - Adjust the pointers as the recursion unwinds.
+
+---
+
+\subsection*{Complexities}
+1. **Time Complexity:** \(O(n)\), where \(n\) is the number of nodes in the linked list.
+2. **Space Complexity:**
+   - Iterative: \(O(1)\) (in-place).
+   - Recursive: \(O(n)\) (due to recursive call stack).
+
+---
+
+\section*{Python Implementation}
+
+\subsection*{Iterative Approach}
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class ListNode:
+    def __init__(self, value=0, next=None):
+        self.val = value
+        self.next = next
+
+def reverseList(head):
+    prev = None
+    current = head
+    
+    while current:
+        next_node = current.next  # Save next node
+        current.next = prev       # Reverse the link
+        prev = current            # Move prev forward
+        current = next_node       # Move current forward
+    
+    return prev
+
+# Example usage:
+# Creating a linked list: 1 -> 2 -> 3 -> 4 -> 5
+head = ListNode(1, ListNode(2, ListNode(3, ListNode(4, ListNode(5)))))
+reversed_head = reverseList(head)
+
+# Printing the reversed linked list: 5 -> 4 -> 3 -> 2 -> 1
+current = reversed_head
+while current:
+    print(current.val, end=" -> ")
+print("NULL")
+\end{lstlisting}
+\end{fullwidth}
+
+---
+
+\subsection*{Recursive Approach}
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def reverseListRecursive(head):
+    # Base case: if the list is empty or only one node, return head
+    if not head or not head.next:
+        return head
+    
+    # Reverse the rest of the list
+    reversed_head = reverseListRecursive(head.next)
+    
+    # Adjust pointers
+    head.next.next = head
+    head.next = None
+    
+    return reversed_head
+
+# Example usage:
+# Creating a linked list: 1 -> 2 -> 3 -> 4 -> 5
+head = ListNode(1, ListNode(2, ListNode(3, ListNode(4, ListNode(5)))))
+reversed_head = reverseListRecursive(head)
+
+# Printing the reversed linked list: 5 -> 4 -> 3 -> 2 -> 1
+current = reversed_head
+while current:
+    print(current.val, end=" -> ")
+print("NULL")
+\end{lstlisting}
+\end{fullwidth}
+
+---
+
+\section*{Why These Approaches?}
+1. **Iterative:** The iterative solution is efficient in terms of both time and space. It directly manipulates the pointers in place, making it a preferred choice for most use cases.
+2. **Recursive:** The recursive solution is elegant and simple, often preferred for its clarity, especially in interviews. However, it uses additional space due to the call stack.
+
+---
+
+\section*{Alternative Approaches}
+While the above approaches are optimal, another alternative involves using a stack to store nodes during traversal, then reconstructing the list in reversed order. This method, however, has \(O(n)\) space complexity.
+
+---
+
+\section*{Similar Problems}
+1. **Reverse Linked List II:** Reverse a portion of the linked list between two given positions.
+2. **Merge Two Sorted Lists:** Combine two sorted linked lists into one.
+3. **Rotate List:** Rotate a linked list to the right by \(k\) places.
+
+---
+
+\section*{Corner Cases to Test}
+1. An empty list (\(\texttt{head} = NULL\)).
+2. A list with a single node (\(\texttt{head} = [1]\)).
+3. A list with multiple nodes (\(\texttt{head} = [1, 2, 3, 4, 5]\)).
+
+---
+
+\section*{Conclusion}
+Reversing a linked list is a foundational operation in data structures, demonstrating pointer manipulation and recursive thinking. Both iterative and recursive approaches offer efficient solutions, with the choice depending on the context and constraints of the problem.

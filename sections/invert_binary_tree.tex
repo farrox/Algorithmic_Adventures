@@ -1,0 +1,165 @@
+% Filename: invert_binary_tree.tex
+
+\problemsection{Invert Binary Tree}\marginpar{Invert a binary tree using recursion or iteration.}
+
+\textbf{Problem Statement}
+
+This problem involves inverting a binary tree. Inverting a binary tree means swapping the left and right children of every node in the tree. The goal is to transform the original tree into its mirror image.
+
+\textbf{Algorithmic Approach}
+
+To solve this problem, you can use either a recursive approach or an iterative approach using a queue. Below, both methods are described:
+
+\begin{enumerate}
+    \item \textbf{Recursive Approach (Depth-First Search)}:
+    \begin{itemize}
+        \item \textbf{Base Case}: If the current node is \texttt{NULL}, return \texttt{NULL}.
+        \item \textbf{Recursive Case}: 
+        \begin{enumerate}
+            \item Recursively invert the left subtree.
+            \item Recursively invert the right subtree.
+            \item Swap the left and right subtrees.
+            \item Return the current node.
+        \end{enumerate}
+    \end{itemize}
+    
+    \item \textbf{Iterative Approach (Breadth-First Search)}:
+    \begin{itemize}
+        \item Use a queue to perform level-order traversal.
+        \item Initialize the queue with the root node.
+        \item While the queue is not empty:
+        \begin{enumerate}
+            \item Dequeue the current node.
+            \item Swap its left and right children.
+            \item Enqueue the non-\texttt{NULL} left and right children.
+        \end{enumerate}
+    \end{itemize}
+\end{enumerate}
+
+\textbf{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity}: The time complexity is \(O(n)\), where \(n\) is the number of nodes in the tree. Each node is visited exactly once.
+    \item \textbf{Space Complexity}: 
+    \begin{itemize}
+        \item \textbf{Recursive Approach}: \(O(h)\), where \(h\) is the height of the tree, due to the call stack.
+        \item \textbf{Iterative Approach}: \(O(n)\), in the worst case, when the tree is completely unbalanced and all nodes are stored in the queue.
+    \end{itemize}
+\end{itemize}
+
+\textbf{Python Implementation}\marginpar{Implementing both recursive and iterative solutions for flexibility.}
+
+\begin{lstlisting}[language=Python, xleftmargin=0.02\textwidth, xrightmargin=0.02\textwidth]
+# Definition for a binary tree node.
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+# Recursive Approach
+def invertTreeRecursive(root: TreeNode) -> TreeNode:
+    if root is None:
+        return None
+    # Recursively invert the left and right subtrees
+    left_inverted = invertTreeRecursive(root.left)
+    right_inverted = invertTreeRecursive(root.right)
+    # Swap the left and right subtrees
+    root.left, root.right = right_inverted, left_inverted
+    return root
+
+# Iterative Approach
+from collections import deque
+
+def invertTreeIterative(root: TreeNode) -> TreeNode:
+    if root is None:
+        return None
+    queue = deque([root])
+    while queue:
+        current = queue.popleft()
+        # Swap the left and right children
+        current.left, current.right = current.right, current.left
+        # Enqueue non-NULL children
+        if current.left:
+            queue.append(current.left)
+        if current.right:
+            queue.append(current.right)
+    return root
+
+# Example usage:
+# Constructing the following binary tree
+#       4
+#     /   \
+#    2     7
+#   / \   / \
+#  1   3 6   9
+
+root = TreeNode(4)
+root.left = TreeNode(2, TreeNode(1), TreeNode(3))
+root.right = TreeNode(7, TreeNode(6), TreeNode(9))
+
+inverted_recursive = invertTreeRecursive(root)
+inverted_iterative = invertTreeIterative(root)
+
+# The inverted tree should be:
+#       4
+#     /   \
+#    7     2
+#   / \   / \
+#  9   6 3   1
+\end{lstlisting}
+
+\textbf{Explanation}
+
+The function \texttt{invertTree} transforms a binary tree into its mirror image by swapping the left and right children of every node. 
+
+\begin{itemize}
+    \item \textbf{Recursive Approach}: 
+    \begin{itemize}
+        \item The function recursively inverts the left and right subtrees.
+        \item After inverting the subtrees, it swaps the left and right children of the current node.
+        \item This process continues until all nodes have been processed, resulting in an inverted tree.
+    \end{itemize}
+    
+    \item \textbf{Iterative Approach}:
+    \begin{itemize}
+        \item The function uses a queue to perform a level-order traversal of the tree.
+        \item For each node dequeued, it swaps its left and right children.
+        \item Non-\texttt{NULL} children are enqueued for subsequent processing.
+        \item This continues until all nodes have been visited and their children swapped.
+    \end{itemize}
+\end{itemize}
+
+\textbf{Why This Approach}
+
+\begin{itemize}
+    \item \textbf{Recursive Approach}: Aligns naturally with the hierarchical structure of trees, making the implementation straightforward and intuitive. It leverages the call stack to manage traversal.
+    \item \textbf{Iterative Approach}: Provides an alternative to recursion, which can be beneficial in environments with limited stack space or when dealing with very deep trees. It uses a queue to manage traversal explicitly.
+\end{itemize}
+
+\textbf{Alternative Approaches}
+
+An alternative method involves using Depth-First Search (DFS) iteratively with a stack to simulate the recursive calls. This approach can help avoid potential stack overflow issues in languages with limited recursion depth. However, the recursive and breadth-first iterative approaches are generally more intuitive and easier to implement for this problem.
+
+\textbf{Similar Problems to This One}
+
+Similar tree manipulation problems include inverting a binary tree (\hyperref[problem:invert_binary_tree]{Invert Binary Tree}), checking if a tree is symmetric (\hyperref[problem:symmetric_tree]{Symmetric Tree}), and merging two binary trees (\hyperref[problem:merge_two_binary_trees]{Merge Two Binary Trees}).
+
+\textbf{Things to Keep in Mind and Tricks}
+
+\begin{itemize}
+    \item \textbf{Base Cases Are Crucial}: Always handle cases where the tree or subtree is empty to prevent unnecessary computations and potential errors.
+    \item \textbf{Traversal Choice}: Decide between recursive and iterative approaches based on the specific requirements and constraints of the problem.
+    \item \textbf{Space Optimization}: Be mindful of the space complexity, especially when dealing with very deep or very wide trees.
+    \item \textbf{Understanding Tree Properties}: A solid grasp of tree properties and traversal methods enhances problem-solving efficiency.
+\end{itemize}
+
+\textbf{Corner and Special Cases to Test When Writing the Code}
+
+\begin{itemize}
+    \item \textbf{Empty Tree}: A tree with no nodes should remain \texttt{NULL} after inversion.
+    \item \textbf{Single Node}: A tree with only one node should remain unchanged after inversion.
+    \item \textbf{Unbalanced Tree}: Trees that are skewed to the left or right should correctly invert their structure.
+    \item \textbf{Balanced Tree}: Ensure that balanced trees are inverted correctly, maintaining their balanced property.
+    \item \textbf{Large Tree}: Testing with a large number of nodes ensures that the implementation handles depth and breadth efficiently without performance degradation.
+\end{itemize}

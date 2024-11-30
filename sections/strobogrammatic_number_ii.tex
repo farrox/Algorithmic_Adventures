@@ -1,0 +1,124 @@
+% Filename: strobogrammatic_number_ii.tex
+
+\problemsection{Strobogrammatic Number II}
+\label{problem:Strobogrammatic_Number_II}
+
+The **Strobogrammatic Number II** problem involves finding all strobogrammatic numbers of a given length. A strobogrammatic number appears the same when rotated \(180^\circ\) (e.g., \(69\), \(88\), \(96\)).
+
+\subsection*{Problem Statement}
+Given an integer \( n \), return all strobogrammatic numbers of length \( n \).
+
+\textbf{Input:}
+- An integer \( n \), where \( n \geq 1 \).
+
+\textbf{Output:}
+- A list of strings representing all strobogrammatic numbers of length \( n \).
+
+\textbf{Example 1:}
+
+Input: \( n = 2 \)
+
+Output: \[
+["11", "69", "88", "96"]
+\]
+
+\textbf{Example 2:}
+
+Input: \( n = 1 \)
+
+Output: \[
+["0", "1", "8"]
+\]
+
+\subsection*{Algorithmic Approach}
+This problem can be solved using recursion and backtracking by generating numbers character by character, ensuring they are strobogrammatic.
+
+\textbf{Steps:}
+\begin{itemize}
+    \item Define the valid digit pairs for strobogrammatic numbers: 
+        \[
+        \{
+        ("0", "0"), ("1", "1"), ("6", "9"), ("8", "8"), ("9", "6")
+        \}.
+        \]
+    \item Use a recursive function to build numbers from the outermost digits inward.
+    \item For odd-length numbers, include the single middle digit (\(0\), \(1\), \(8\)).
+    \item Skip leading zeros for \(n > 1\) to ensure valid numbers.
+    \item Add the digit pairs symmetrically until the length of the number reaches \(n\).
+\end{itemize}
+
+\subsection*{Complexities}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(5^{n/2})\), since each recursive call chooses from 5 pairs of digits and there are \(n/2\) levels of recursion.
+    \item \textbf{Space Complexity:} \(O(n)\), for the recursion stack.
+\end{itemize}
+
+\subsection*{Python Implementation}
+Below is the Python implementation using backtracking:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def findStrobogrammatic(n):
+    def backtrack(low, high, current):
+        # Base case: If the current number reaches the desired length
+        if low > high:
+            result.append("".join(current))
+            return
+        
+        for pair in strobogrammatic_pairs:
+            # Avoid leading zeros for numbers with more than one digit
+            if low == high and pair[0] != pair[1]:
+                continue
+            if low == 0 and n > 1 and pair[0] == "0":
+                continue
+            
+            # Place the strobogrammatic pair
+            current[low], current[high] = pair[0], pair[1]
+            backtrack(low + 1, high - 1, current)
+    
+    # Valid strobogrammatic digit pairs
+    strobogrammatic_pairs = [
+        ("0", "0"), ("1", "1"), ("6", "9"), ("8", "8"), ("9", "6")
+    ]
+    result = []
+    backtrack(0, n - 1, [""] * n)
+    return result
+
+# Example usage:
+print(findStrobogrammatic(2))  # Output: ["11", "69", "88", "96"]
+print(findStrobogrammatic(1))  # Output: ["0", "1", "8"]
+\end{lstlisting}
+\end{fullwidth}
+
+\subsection*{Why This Approach?}
+The recursive backtracking approach ensures that all valid strobogrammatic numbers are generated while avoiding invalid configurations. The symmetry of the number is maintained by placing digit pairs simultaneously at the beginning and the end.
+
+\subsection*{Alternative Approaches}
+\begin{itemize}
+    \item **Iterative Approach:** Use a queue to generate strobogrammatic numbers layer by layer. This approach is less intuitive than recursion.
+    \item **Dynamic Programming:** Construct strobogrammatic numbers iteratively for smaller lengths and use them to build larger numbers. However, this adds unnecessary complexity.
+\end{itemize}
+
+\subsection*{Similar Problems}
+\begin{itemize}
+    \item \textbf{Strobogrammatic Number:} Determine if a given number is strobogrammatic.
+    \item \textbf{Palindrome Number:} Check if a number reads the same forward and backward.
+    \item \textbf{Valid Palindrome II:} Determine if a string can become a palindrome by removing at most one character.
+\end{itemize}
+
+\subsection*{Things to Keep in Mind and Tricks}
+\begin{itemize}
+    \item Avoid leading zeros for numbers of length greater than 1.
+    \item For odd-length numbers, ensure that the middle digit is valid (\(0\), \(1\), \(8\)).
+    \item Use a helper function to manage symmetry and recursion effectively.
+\end{itemize}
+
+\subsection*{Corner and Special Cases to Test}
+\begin{itemize}
+    \item \textbf{Single Digit:} \( n = 1 \), Output: \texttt{["0", "1", "8"]}.
+    \item \textbf{Small Even Length:} \( n = 2 \), Output: \texttt{["11", "69", "88", "96"]}.
+    \item \textbf{Large \( n \):} Test with larger values of \( n \) to ensure scalability and correctness.
+\end{itemize}
+
+\subsection*{Conclusion}
+The **Strobogrammatic Number II** problem exemplifies recursive backtracking for generating structured outputs. Mastering this problem enhances understanding of symmetry, constraints, and efficient combinatorial generation techniques.

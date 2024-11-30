@@ -1,0 +1,71 @@
+
+ewpage
+\chapter{Rotate Image: Spin That Matrix!}
+\label{chap:rotate_image}
+
+\section*{Problem Statement}
+The challenge here is to give an \( n \times n \) matrix a 90-degree spin in a clockwise direction, all without the luxury of extra space for another matrix. In other words, we need to perform this matrix magic in place.
+
+LeetCode link: \href{https://leetcode.com/problems/rotate-image/}{Rotate Image}
+
+\section*{Algorithmic Approach}
+The rotation can be done in layers, starting from the outermost layer and moving towards the inner layers. Rotating a matrix by 90 degrees clockwise can be done by a two-step process:
+\begin{enumerate}
+  \item Transposing the matrix.
+  \item Reversing each row of the transposed matrix.
+\end{enumerate}
+
+\section*{Complexities}
+\begin{itemize}
+    \item Time Complexity: $O(n^2)$, where $n$ is the number of rows (or columns) of the matrix. We process each element once.
+    \item Space Complexity: $O(1)$, as we perform the rotation in place without using any extra space.
+\end{itemize}
+
+
+ewpage
+
+\section*{Python Implementation}
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def rotate(matrix):
+    n = len(matrix)
+    
+    # Transpose the matrix
+    for i in range(n):
+        for j in range(i, n):
+            matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]
+    
+    # Reverse each row
+    for i in range(n):
+        matrix[i].reverse()
+
+# Example usage:
+matrix = [
+  [1, 2, 3],
+  [4, 5, 6],
+  [7, 8, 9]
+]
+rotate(matrix)
+print(matrix)  # Output: [[7, 4, 1], [8, 5, 2], [9, 6, 3]]
+\end{lstlisting}
+
+\end{fullwidth}
+
+\section*{Explanation}
+The given code first transposes the matrix, which is essentially flipping the matrix over its diagonal. In this state, the columns become rows but in incorrect order (i.e., the first column becomes the last row). The second step is to reverse each row to get the columns in the correct order for the 90-degree rotation.
+
+\section*{Why this approach}
+This approach is chosen because it manipulates the matrix in place, satisfying the constraint of not using additional memory. It's an efficient and straightforward method to perform the rotation.
+
+\section*{Alternative approaches}
+An alternative approach is to rotate each layer of the matrix individually. This involves moving the elements four at a time, corresponding to the four sides of a layer. However, this approach is more complex and error-prone.
+
+\section*{Similar problems to this one}
+Similar matrix problems include "Transpose Matrix," "Spiral Matrix," and "Diagonal Traverse." Each of these problems requires understanding of matrix traversal and transformation techniques.
+
+\section*{Things to keep in mind and tricks}
+When rotating a matrix, remember you can perform rotation using a combination of transposing and reversing operations. Halving the operational limits in loops to not over-process elements is crucial. Handling odd and even dimensions needs attention to detail, as the center element in an odd-dimension matrix does not move.
+
+\section*{Corner and special cases to test when writing the code}
+Test with both even and odd $n$, ensuring the algorithm handles the central element correctly for odd $n$. Edge cases should include the smallest matrix possible (a $2 \times 2$ matrix) as well as larger matrices to gauge performance. Also, testing matrices with duplicate values can help ensure that the algorithm correctly handles identical elements.

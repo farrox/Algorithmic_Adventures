@@ -1,0 +1,124 @@
+% Filename: climbing_stairs.tex
+
+\problemsection{Climbing Stairs}
+\label{problem:Climbing_Stairs}
+
+The **Climbing Stairs** problem is a classic dynamic programming challenge that tests the ability to solve problems with overlapping subproblems and optimal substructure. This problem is often used to introduce beginners to dynamic programming concepts due to its simplicity and elegance.
+
+\section*{Problem Statement}
+You are climbing a staircase. It takes \( n \) steps to reach the top. Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?
+
+\textbf{Input:}
+- An integer \( n \), where \( n \geq 1 \).
+
+\textbf{Output:}
+- An integer representing the number of distinct ways to climb the staircase.
+
+\textbf{Example 1:}
+
+\begin{verbatim}
+Input: n = 2
+Output: 2
+Explanation: Two ways to climb the staircase:
+1. Take two 1-step climbs.
+2. Take one 2-step climb.
+\end{verbatim}
+
+\textbf{Example 2:}
+
+\begin{verbatim}
+Input: n = 3
+Output: 3
+Explanation: Three ways to climb the staircase:
+1. Take three 1-step climbs.
+2. Take one 1-step climb followed by one 2-step climb.
+3. Take one 2-step climb followed by one 1-step climb.
+\end{verbatim}
+
+\section*{Algorithmic Approach}
+The problem can be solved using dynamic programming by recognizing that the number of ways to climb \( n \) steps can be derived from the ways to climb \( n-1 \) steps and \( n-2 \) steps:
+\[
+f(n) = f(n-1) + f(n-2)
+\]
+
+\textbf{Steps:}
+\begin{enumerate}
+    \item Define a state \( f(n) \), where \( f(n) \) represents the number of ways to climb \( n \) steps.
+    \item The base cases are:
+        \[
+        f(1) = 1, \quad f(2) = 2
+        \]
+    \item Use the recurrence relation to compute \( f(n) \) for \( n > 2 \).
+\end{enumerate}
+
+\subsection*{Complexities}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \( O(n) \), since we compute \( f(n) \) in a single loop.
+    \item \textbf{Space Complexity:}
+        \begin{itemize}
+            \item \( O(n) \) if a DP array is used.
+            \item \( O(1) \) if only two variables are maintained for \( f(n-1) \) and \( f(n-2) \).
+        \end{itemize}
+\end{itemize}
+
+\section*{Python Implementation}
+Below are two implementations: one using a DP array and another with optimized space complexity.
+
+\subsection*{Using a DP Array}
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def climbStairs(n):
+    if n == 1:
+        return 1
+    dp = [0] * (n + 1)
+    dp[1], dp[2] = 1, 2
+    for i in range(3, n + 1):
+        dp[i] = dp[i - 1] + dp[i - 2]
+    return dp[n]
+
+# Example usage:
+print(climbStairs(3))  # Output: 3
+\end{lstlisting}
+\end{fullwidth}
+
+\subsection*{Optimized Space Complexity}
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def climbStairs(n):
+    if n == 1:
+        return 1
+    first, second = 1, 2
+    for i in range(3, n + 1):
+        first, second = second, first + second
+    return second
+
+# Example usage:
+print(climbStairs(3))  # Output: 3
+\end{lstlisting}
+\end{fullwidth}
+
+\section*{Why This Approach?}
+This approach efficiently solves the problem using a recurrence relation, leveraging the overlapping subproblems and optimal substructure properties inherent in dynamic programming. The optimized solution reduces space complexity while maintaining clarity and correctness.
+
+\section*{Alternative Approaches}
+\begin{itemize}
+    \item **Recursive Solution with Memoization:** Solve the problem recursively, storing results of subproblems in a hash map to avoid redundant calculations.
+    \item **Matrix Exponentiation:** Use matrix exponentiation to compute \( f(n) \) in \( O(\log n) \) time. This method is less intuitive but useful for advanced optimization.
+\end{itemize}
+
+\section*{Similar Problems}
+\begin{itemize}
+    \item **Fibonacci Sequence:** The problem is analogous to computing the Fibonacci sequence, where \( f(n) = f(n-1) + f(n-2) \).
+    \item **House Robber Problem:** Maximize the sum of non-adjacent elements in an array, which also involves a similar recurrence relation.
+    \item **Minimum Cost Climbing Stairs:** Minimize the cost to climb to the top of a staircase, extending this problem with an additional cost parameter.
+\end{itemize}
+
+\section*{Corner and Special Cases to Test}
+\begin{itemize}
+    \item \( n = 1 \): Single step, the output should be \( 1 \).
+    \item \( n = 2 \): Two steps, the output should be \( 2 \).
+    \item Large \( n \): Test the performance and correctness for large inputs (\( n > 10^4 \)).
+\end{itemize}
+
+\section*{Conclusion}
+The Climbing Stairs problem is a classic introduction to dynamic programming. Its simplicity and clear recursive structure make it an ideal starting point for understanding DP concepts. By exploring both standard and optimized solutions, one gains insights into the versatility of dynamic programming techniques.

@@ -1,0 +1,88 @@
+% Filename: basic_calculator.tex
+
+\problemsection{Basic Calculator}\marginpar{This problem involves parsing and evaluating arithmetic expressions with parentheses using stacks.}
+
+\textbf{Problem Description:}  
+Implement a basic calculator to evaluate a simple expression string.
+
+The expression string may contain open \texttt{'('} and closing parentheses \texttt{')'}, the plus \texttt{'+'} or minus sign \texttt{'-'}, non-negative integers, and empty spaces \texttt{' '}. The expression string represents a valid arithmetic expression.
+
+You may assume that the given expression is always valid.
+
+\textbf{Example 1:}
+
+\begin{itemize}
+    \item \textbf{Input:} \texttt{"1 + 1"}
+    \item \textbf{Output:} \texttt{2}
+\end{itemize}
+
+\textbf{Example 2:}
+
+\begin{itemize}
+    \item \textbf{Input:} \texttt{" 2-1 + 2 "}
+    \item \textbf{Output:} \texttt{3}
+\end{itemize}
+
+\textbf{Example 3:}
+
+\begin{itemize}
+    \item \textbf{Input:} \texttt{"(1+(4+5+2)-3)+(6+8)"}
+    \item \textbf{Output:} \texttt{23}
+\end{itemize}
+
+\textbf{Solution Overview:}  
+Use a stack to evaluate the expression by handling numbers, signs, and parentheses. Iterate through the string character by character:
+
+\begin{itemize}
+    \item If the character is a digit, build the current number.
+    \item If the character is '+', add the current number to the result with the positive sign.
+    \item If the character is '-', subtract the current number from the result.
+    \item If the character is '(', push the current result and sign onto the stack and reset them.
+    \item If the character is ')', compute the result inside the parentheses and combine it with the top values from the stack.
+\end{itemize}
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def calculate(s):
+    stack = []
+    result = 0
+    number = 0
+    sign = 1  # 1 for '+', -1 for '-'
+    i = 0
+    while i < len(s):
+        char = s[i]
+        if char.isdigit():
+            number = number * 10 + int(char)
+        elif char == '+':
+            result += sign * number
+            number = 0
+            sign = 1
+        elif char == '-':
+            result += sign * number
+            number = 0
+            sign = -1
+        elif char == '(':
+            # Push current result and sign onto the stack
+            stack.append(result)
+            stack.append(sign)
+            # Reset result and sign
+            result = 0
+            sign = 1
+        elif char == ')':
+            result += sign * number
+            number = 0
+            # Apply the sign before the parentheses
+            result *= stack.pop()
+            # Add to the result before the parentheses
+            result += stack.pop()
+        i += 1
+    if number != 0:
+        result += sign * number
+    return result
+
+# Example usage:
+print(calculate("1 + 1"))                  # Output: 2
+print(calculate(" 2-1 + 2 "))              # Output: 3
+print(calculate("(1+(4+5+2)-3)+(6+8)"))    # Output: 23
+\end{lstlisting}
+\end{fullwidth}

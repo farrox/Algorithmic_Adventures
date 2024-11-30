@@ -1,0 +1,101 @@
+%generate_parentheses.tex
+% Filename: generate_parentheses.tex
+
+\problemsection{Generate Parentheses}
+\label{problem:Generate_Parentheses}
+
+The **Generate Parentheses** problem is a classic application of recursion and backtracking. It involves generating all possible combinations of well-formed parentheses given \( n \) pairs of parentheses. This problem is commonly used to teach recursive problem-solving and the efficient pruning of invalid states.
+
+\subsection*{Problem Statement}
+Given an integer \( n \), write a function that generates all combinations of \( n \) pairs of well-formed parentheses.
+
+\textbf{Input:}
+- An integer \( n \), where \( n \geq 1 \).
+
+\textbf{Output:}
+- A list of strings representing all valid combinations of \( n \) pairs of parentheses.
+
+\textbf{Example:}
+
+Input: \( n = 3 \)
+
+Output: \([ "((()))", "(()())", "(())()", "()(())", "()()()" ]\)
+
+\textbf{Explanation:} Each string in the output represents a unique way to arrange three pairs of parentheses such that they are balanced.
+
+\subsection*{Algorithmic Approach}
+The problem can be efficiently solved using backtracking. The idea is to construct the solution incrementally, ensuring that at every step the partial solution remains valid.
+
+\textbf{Steps:}
+\begin{itemize}
+    \item Use a recursive function to build the string character by character.
+    \item Keep track of the number of open and close parentheses added so far.
+    \item At each step, add an open parenthesis if the number of open parentheses used is less than \( n \)\sidenote{Adding an open parenthesis increases the count of open parentheses used}.
+    \item Add a close parenthesis if the number of close parentheses used is less than the number of open parentheses used\sidenote{A close parenthesis is valid only if it matches a previously added open parenthesis}.
+    \item Stop when the string has \( 2n \) characters, indicating a complete solution.
+\end{itemize}
+
+\subsection*{Complexities}
+\begin{itemize}
+    \item \textbf{Time Complexity:} The total number of valid combinations is given by the \( n \)th Catalan number, \( C_n = \frac{1}{n+1} \binom{2n}{n} \). The algorithm explores all valid combinations, so the time complexity is \( O(4^n / \sqrt{n}) \) in terms of the growth rate of the Catalan numbers.
+    \item \textbf{Space Complexity:} \( O(n) \), for the recursion stack used during backtracking.
+\end{itemize}
+
+\subsection*{Python Implementation}
+Below is the Python implementation using backtracking:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def generateParenthesis(n):
+    def backtrack(current, open_count, close_count):
+        # Base case: If the current string has 2n characters, it's a valid combination
+        if len(current) == 2 * n:
+            result.append(current)
+            return
+        
+        # Add an open parenthesis if possible
+        if open_count < n:
+            backtrack(current + "(", open_count + 1, close_count)
+        
+        # Add a close parenthesis if valid
+        if close_count < open_count:
+            backtrack(current + ")", open_count, close_count + 1)
+    
+    result = []
+    backtrack("", 0, 0)  # Start with an empty string and zero counts
+    return result
+
+# Example usage:
+print(generateParenthesis(3))  # Output: ["((()))", "(()())", "(())()", "()(())", "()()()"]
+\end{lstlisting}
+\end{fullwidth}
+
+\subsection*{Why This Approach?}
+Backtracking is well-suited for this problem because it constructs the solution incrementally, exploring only valid configurations of parentheses at each step. This avoids generating invalid combinations and then filtering them, making the algorithm both time and space efficient.
+
+\subsection*{Alternative Approaches}
+An iterative approach can be used by maintaining a queue of partial strings, but it is less intuitive and harder to implement compared to the recursive backtracking approach. Dynamic programming can also be used by leveraging the properties of the Catalan numbers, but it requires additional space to store intermediate results.
+
+\subsection*{Similar Problems}
+\begin{itemize}
+    \item \textbf{Valid Parentheses:} Check if a given string containing parentheses is well-formed.
+    \item \textbf{Binary Tree Paths:} Generate all root-to-leaf paths in a binary tree, which also involves backtracking.
+    \item \textbf{Subsets:} Generate all subsets of a set, another classic backtracking problem.
+\end{itemize}
+
+\subsection*{Things to Keep in Mind and Tricks}
+\begin{itemize}
+    \item Always ensure that the number of close parentheses does not exceed the number of open parentheses at any point. This prevents invalid states.
+    \item Prune the recursion tree early by stopping further exploration when the conditions for adding parentheses are not met.
+    \item Use a helper function with parameters to track the current state and maintain the simplicity of the main function.
+\end{itemize}
+
+\subsection*{Corner and Special Cases to Test}
+\begin{itemize}
+    \item \( n = 1 \): The smallest possible input, where the result should be \(["()"]\).
+    \item \( n = 0 \): A special case where the input is \(0\), and the result should be an empty list \([]\).
+    \item Larger values of \( n \), such as \( n = 4 \), to verify scalability and correctness.
+\end{itemize}
+
+\subsection*{Conclusion}
+The **Generate Parentheses** problem elegantly demonstrates the power of recursion and backtracking in solving combinatorial problems. Understanding this problem provides foundational knowledge for tackling other recursive and combinatorial challenges efficiently.

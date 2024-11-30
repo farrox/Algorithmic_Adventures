@@ -1,0 +1,75 @@
+
+ewpage
+\chapter{Skyline Problem}
+\label{chap:skyline_problem}
+
+\section*{Problem Statement}
+Given a list of buildings represented by tuples \((left, right, height)\), the task is to compute the skyline formed by these buildings when viewed from a distance. Each tuple represents a building where \(left\) and \(right\) are the x-coordinates of the left and right sides of the building, respectively, and \(height\) denotes the height of the building. 
+
+The skyline should be represented as a list of tuples \((x, height)\), where each tuple represents a point on the skyline with its x-coordinate and height. These points must be sorted by their x-coordinate in ascending order. If multiple points share the same x-coordinate, they should be sorted by their height in descending order. 
+
+\section*{Algorithmic Approach}
+To solve this problem, we can use a priority queue or a sorted data structure to keep track of the active buildings at any point in time while we sweep over the x-coordinates. We consider both the start and end points of the buildings. An event-based approach is commonly used where we process two types of events: building starts and building ends.
+
+\section*{Complexities}
+The time complexity of this problem primarily depends on the sorting of the events and how efficiently we can add, find, and remove buildings from our active set. Typically, with an efficient priority queue or self-balancing binary search tree, the overall time complexity would be \(O(N \log N)\), where \(N\) is the number of events (start and end of buildings). The space complexity would be \(O(N)\) for storing the events and the active buildings.
+
+ewpage
+
+\section*{Python Implementation}
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class Solution:
+    def getSkyline(self, buildings):
+        # Events sorted by x-coordinate (left edge before right edge), and by height descending
+        events = [(L, -H, R) for L, R, H in buildings]
+        events += list({(R, 0, 0) for _, R, _ in buildings})
+        events.sort()
+
+        # Result list, with an initial dummy building
+        res = [[0, 0]]
+        
+        # Active buildings sorted by height
+        active_buildings = [(0, float('inf'))]  # (height, right)
+        
+        for x, neg_h, R in events:
+            while x >= active_buildings[0][1]: 
+                # Remove buildings that are already passed
+                heapq.heappop(active_buildings)
+            
+            if neg_h: 
+                # Push current building into the heap
+                heapq.heappush(active_buildings, (neg_h, R))
+            
+            # If the height has changed from the last building, add to result
+            if res[-1][1] != -active_buildings[0][0]:
+                res.append([x, -active_buildings[0][0]])
+        
+        return res[1:]  # Remove initial dummy building
+
+# Example usage:
+# buildings = [(2,9,10), (3,7,15), (5,12,12), (15,20,10), (19,24,8)]
+# sol = Solution()
+# print(sol.getSkyline(buildings))
+\end{lstlisting}
+
+\end{fullwidth}
+
+\section*{Explanation}
+The provided Python code maintains a list of 'events', each event either signifies the start or the end of a building. It ensures that for any x-coordinate, the start event is processed before the end event.
+
+\section*{Why this approach}
+This approach is chosen because it efficiently processes the buildings in order, and uses a min-heap to keep track of the highest building at the current position of the x-coordinate sweep line.
+
+\section*{Alternative approaches}
+An alternative approach could use a balanced binary search tree (BST) to maintain the active buildings' heights instead of a heap, which would still result in \(O(N \log N)\) time complexity. 
+
+\section*{Similar problems to this one}
+A similar problem would be merging intervals, where the intervals represent time slots or ranges, and the goal is to merge overlapping intervals. 
+
+\section*{Things to keep in mind and tricks}
+One of the main things to keep in mind is handling the removal of buildings from the priority queue efficiently. It's also important to handle buildings with the same x-coordinate correctly.
+
+\section*{Corner and special cases to test when writing the code}
+Special cases include buildings with zero width, buildings with the same height, and overlapping buildings. It's also crucial to handle the transition between consecutive buildings correctly.

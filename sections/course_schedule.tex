@@ -1,0 +1,279 @@
+% file: course_schedule.tex
+
+\problemsection{Course Schedule}
+\label{problem:course_schedule}
+\marginnote{This problem utilizes graph theory concepts such as cycle detection and topological sorting to determine course completion feasibility.}
+    
+The \textbf{Course Schedule} problem focuses on determining the possibility of completing a series of courses given their prerequisite requirements. This problem is analogous to understanding dependencies within systems and is commonly found as an algorithmic challenge that reinforces the understanding of graph theory concepts such as cycle detection and topological sorting.
+
+\section*{Problem Statement}
+
+Given \texttt{numCourses} courses labeled from \(0\) to \(\texttt{numCourses} - 1\), and a list of prerequisite pairs (where each pair \([a, b]\) implies that you must take course \(b\) before course \(a\)), the goal is to ascertain whether it is achievable to complete all the courses.
+
+The crux of the problem involves formulating an algorithm to determine if an order exists to take these courses such that for each course, all its prerequisites are met.
+
+\textbf{Inputs:}
+\begin{itemize}
+    \item \texttt{numCourses}: An integer representing the total number of courses.
+    \item \texttt{prerequisites}: A list of pairs of integers where each pair \([a, b]\) indicates that course \(b\) is a prerequisite for course \(a\).
+\end{itemize}
+
+\textbf{Output:}
+\begin{itemize}
+    \item Return \texttt{True} if it is possible to finish all courses, and \texttt{False} otherwise.
+\end{itemize}
+
+\textbf{Examples:}
+
+\textit{Example 1:}
+\begin{verbatim}
+Input: numCourses = 2, prerequisites = [[1,0]]
+Output: true
+Explanation: There are a total of 2 courses to take. To take course 1 you should have finished course 0. So it is possible.
+\end{verbatim}
+
+\textit{Example 2:}
+\begin{verbatim}
+Input: numCourses = 2, prerequisites = [[1,0],[0,1]]
+Output: false
+Explanation: There are a total of 2 courses to take. To take course 1 you should have finished course 0, and to take course 0 you should have finished course 1. So it is impossible.
+\end{verbatim}
+
+LeetCode link: \href{https://leetcode.com/problems/course-schedule/}{Course Schedule}\index{LeetCode}
+
+\marginnote{\href{https://leetcode.com/problems/course-schedule/}{[LeetCode Link]}\index{LeetCode}}
+\marginnote{\href{https://www.geeksforgeeks.org/course-schedule-problem/}{[GeeksForGeeks Link]}\index{GeeksForGeeks}}
+\marginnote{\href{https://www.hackerrank.com/challenges/course-schedule/problem}{[HackerRank Link]}\index{HackerRank}}
+\marginnote{\href{https://app.codesignal.com/challenges/course-schedule}{[CodeSignal Link]}\index{CodeSignal}}
+\marginnote{\href{https://www.interviewbit.com/problems/course-schedule/}{[InterviewBit Link]}\index{InterviewBit}}
+\marginnote{\href{https://www.educative.io/courses/grokking-the-coding-interview/RM8y8Y3nLdY}{[Educative Link]}\index{Educative}}
+\marginnote{\href{https://www.codewars.com/kata/course-schedule/train/python}{[Codewars Link]}\index{Codewars}}
+
+\section*{Algorithmic Approach}
+
+To resolve this challenge, we can model the courses and prerequisites as a directed graph, with each course as a node and edges representing the dependency direction (from prerequisite course to the dependent course). The solution entails checking for cycles within this directed graph since the presence of a cycle indicates that there is no feasible way to complete all courses. This is because a cycle would mean a course's prerequisites could never be fully satisfied. Detecting a cycle can be performed via Depth-First Search (DFS) or by attempting to perform a Topological Sort on the graph. If we successfully perform a topological sort with all nodes visited, it implies there is no cycle, and completing all courses is feasible.
+
+\marginnote{Graph-based approaches like DFS and BFS are effective for handling dependencies and detecting cycles in prerequisite structures.}
+
+\section*{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:} In the scenario where we use Depth-First Search (DFS), the time complexity is \(O(V + E)\) where \( V \) is the number of courses and \( E \) is the number of dependencies (prerequisites). This stems from the fact that every node and edge is visited in the worst case.
+    \item \textbf{Space Complexity:} The space complexity is also \(O(V + E)\) to store the graph data structure, as well as the recursion stack for the DFS procedure.
+\end{itemize}
+
+\newpage % Start Python Implementation on a new page
+\section*{Python Implementation}
+
+\marginnote{Implementing DFS requires careful management of recursion to handle dependencies and detect cycles efficiently.}
+
+Here is the complete Python solution utilizing DFS to check for the presence of cycles in the graph built from the course prerequisites:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class Solution(object):
+    def canFinish(self, numCourses, prerequisites):
+        def dfs(course):
+            if visited[course] == -1:
+                return False
+            if visited[course] == 1:
+                return True
+            visited[course] = -1
+            for prereq in graph[course]:
+                if not dfs(prereq):
+                    return False
+            visited[course] = 1
+            return True
+        
+        graph = {i: [] for i in range(numCourses)}
+        for course, prereq in prerequisites:
+            graph[course].append(prereq)
+        
+        visited = [0] * numCourses
+        for course in range(numCourses):
+            if not dfs(course):
+                return False
+        return True
+\end{lstlisting}
+\end{fullwidth}
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class Solution(object):
+    def canFinish(self, numCourses, prerequisites):
+        def dfs(course):
+            if visited[course] == -1:
+                return False
+            if visited[course] == 1:
+                return True
+            visited[course] = -1
+            for prereq in graph[course]:
+                if not dfs(prereq):
+                    return False
+            visited[course] = 1
+            return True
+        
+        graph = {i: [] for i in range(numCourses)}
+        for course, prereq in prerequisites:
+            graph[course].append(prereq)
+        
+        visited = [0] * numCourses
+        for course in range(numCourses):
+            if not dfs(course):
+                return False
+        return True
+\end{lstlisting}
+\end{fullwidth}
+
+This implementation begins by constructing a graph that represents the courses and their dependencies. It then utilizes a DFS approach to traverse this graph. For each course, it delves deeper into its prerequisites, using a \texttt{visited} list to track the state of each node (unvisited, visiting, visited). If a cycle is detected, indicated by finding a course in the 'visiting' state during the DFS, it returns \texttt{False}. If all courses can be traversed without encountering a cycle, the function returns \texttt{True}, indicating it is possible to finish all courses.
+
+\section*{Explanation}
+
+The provided Python implementation defines a class \texttt{Solution} which contains the method \texttt{canFinish}. Here's a detailed breakdown of the implementation:
+
+\begin{itemize}
+    \item \textbf{Edge Case Handling:}
+    \begin{itemize}
+        \item If the input \texttt{prerequisites} list is empty, it implies there are no dependencies, and all courses can be completed. The function returns \texttt{True}.
+    \end{itemize}
+    
+    \item \textbf{Graph Construction:}
+    \begin{itemize}
+        \item A dictionary named \texttt{graph} is initialized to represent the adjacency list of the graph. Each course is a key, and its value is a list of courses that are prerequisites for it.
+        \item Iterate through each pair in \texttt{prerequisites} and populate the \texttt{graph} accordingly.
+    \end{itemize}
+    
+    \item \textbf{Visited List Initialization:}
+    \begin{itemize}
+        \item A list named \texttt{visited} is initialized with all elements set to 0. The values in this list represent the state of each course:
+        \begin{itemize}
+            \item 0: Unvisited
+            \item -1: Visiting (currently in the recursion stack)
+            \item 1: Visited (all prerequisites processed)
+        \end{itemize}
+    \end{itemize}
+    
+    \item \textbf{Depth-First Search (DFS) Function:}
+    \begin{itemize}
+        \item The nested \texttt{dfs} function takes a course as its parameter.
+        \item It first checks if the course is currently being visited (\texttt{visited[course] == -1}). If so, a cycle is detected, and the function returns \texttt{False}.
+        \item If the course has already been visited (\texttt{visited[course] == 1}), it returns \texttt{True} as this path has been processed.
+        \item The course is marked as visiting (\texttt{visited[course] = -1}).
+        \item The function then recursively calls itself for all prerequisites of the current course. If any recursive call returns \texttt{False}, it propagates the \texttt{False} value up the recursion stack.
+        \item After all prerequisites are processed without detecting a cycle, the course is marked as visited (\texttt{visited[course] = 1}), and the function returns \texttt{True}.
+    \end{itemize}
+    
+    \item \textbf{Cycle Detection and Connectivity Check:}
+    \begin{itemize}
+        \item Iterate through each course. For each course, if it hasn't been visited, perform a DFS starting from that course.
+        \item If any DFS call detects a cycle, return \texttt{False}.
+        \item If all courses are processed without detecting a cycle, return \texttt{True}.
+    \end{itemize}
+\end{itemize}
+
+This approach ensures that all courses are checked for cyclic dependencies. If no cycles are found and all courses are connected appropriately, it confirms that it's possible to complete all courses.
+
+\section*{Why This Approach}
+
+This graph-based approach offers an intuitive method for representing and processing course prerequisites. DFS is a classic algorithm for detecting cycles in directed graphs, making it an apt choice for this scenario. By using a visited list to track the state of each course, the implementation efficiently identifies cycles, ensuring that only feasible course schedules are considered valid. Additionally, this method provides a clear pathway for extending the solution to more complex variants, such as retrieving the actual order of courses (as in "Course Schedule II").
+
+\section*{Alternative Approaches}
+
+Aside from the DFS-based cycle detection, another viable approach is to use \textbf{Breadth-First Search (BFS)} in conjunction with \textbf{Topological Sorting}. Specifically, Kahn's algorithm for topological sorting can be employed to determine if a valid course order exists. Here's how it works:
+
+\begin{itemize}
+    \item \textbf{Compute In-Degrees:} Calculate the number of prerequisites (in-degrees) for each course.
+    \item \textbf{Initialize Queue:} Enqueue all courses with an in-degree of 0 (i.e., courses with no prerequisites).
+    \item \textbf{Process Courses:}
+    \begin{itemize}
+        \item Dequeue a course from the queue and add it to the topological order.
+        \item For each neighbor (dependent course), decrement its in-degree by 1.
+        \item If a neighbor's in-degree becomes 0, enqueue it.
+    \end{itemize}
+    \item \textbf{Check Completion:} If all courses are processed (i.e., the topological order contains all courses), return \texttt{True}. Otherwise, return \texttt{False}.
+\end{itemize}
+
+This method is particularly efficient for large graphs and provides a clear ordering of courses if one exists.
+
+\section*{Similar Problems}
+
+Similar problems that students might encounter include:
+    
+\begin{itemize}
+    \item \textbf{Course Schedule II:} Extends the Course Schedule problem by asking for the actual order of courses to be taken.
+    \index{Course Schedule II}
+    
+    \item \textbf{Redundant Connection:} Detecting cycles in an undirected graph.
+    \index{Redundant Connection}
+    
+    \item \textbf{Minimum Height Trees:} Finding the roots of minimum height trees in a graph.
+    \index{Minimum Height Trees}
+    
+    \item \textbf{Alien Dictionary:} Deriving a valid character order from a sorted dictionary of alien words.
+    \index{Alien Dictionary}
+    
+    \item \textbf{Longest Increasing Path in a Matrix:} Finding the longest path in a matrix where each step must go to a strictly higher value.
+    \index{Longest Increasing Path in a Matrix}
+\end{itemize}
+
+\section*{Things to Keep in Mind and Tricks}
+
+\begin{itemize}
+    \item \textbf{Cycle Detection:} When dealing with dependencies, always check for cycles to ensure that the dependencies do not form an impossible loop.
+    \index{Cycle Detection}
+    
+    \item \textbf{Graph Representation:} Efficiently represent the graph using adjacency lists or adjacency matrices based on the problem constraints. Adjacency lists are generally more space-efficient for sparse graphs.
+    \index{Graph Representation}
+    
+    \item \textbf{Topological Sorting:} Understanding topological sorting is crucial for problems involving dependencies, as it provides an order of processing that respects all prerequisites.
+    \index{Topological Sorting}
+    
+    \item \textbf{Union-Find:} The Union-Find (Disjoint Set Union) data structure can be an effective tool for detecting cycles in undirected graphs.
+    \index{Union-Find}
+    
+    \item \textbf{Handling Edge Cases:} Always consider edge cases such as no prerequisites, all courses independent, or courses forming multiple disconnected components.
+    \index{Edge Cases}
+    
+    \item \textbf{Optimizing Space:} If possible, modify the input data structure to save space, such as marking visited nodes directly in the graph.
+    \index{Optimizing Space}
+    
+    \item \textbf{Choosing the Right Traversal:} Decide between DFS and BFS based on the problem's requirements and the nature of the graph.
+    \index{DFS}
+    \index{BFS}
+\end{itemize}
+
+\section*{Corner and Special Cases}
+
+\begin{itemize}
+    \item \textbf{No Courses:} \( n = 0 \). The function should return \texttt{True} as there are no courses to complete.
+    \index{Corner Cases}
+    
+    \item \textbf{Single Course:} \( n = 1 \) with no prerequisites. The function should return \texttt{True}.
+    \index{Corner Cases}
+    
+    \item \textbf{All Courses Independent:} No prerequisites. The function should return \texttt{True}.
+    \index{Corner Cases}
+    
+    \item \textbf{Chain of Prerequisites:} Courses form a linear dependency (e.g., 0 → 1 → 2 → ... → n-1). The function should return \texttt{True}.
+    \index{Corner Cases}
+    
+    \item \textbf{Cycle in Prerequisites:} A cycle exists (e.g., 0 → 1 → 2 → 0). The function should return \texttt{False}.
+    \index{Corner Cases}
+    
+    \item \textbf{Multiple Independent Cycles:} Multiple cycles exist in different components of the graph. The function should return \texttt{False} unless each component independently forms a valid tree with no cycles.
+    \index{Corner Cases}
+    
+    \item \textbf{Disconnected Graph:} The graph has multiple disconnected components. The function should return \texttt{False} unless each component independently forms a valid tree with no cycles.
+    \index{Corner Cases}
+    
+    \item \textbf{Large Number of Courses:} A large value of \( n \) with sparse or dense prerequisites to test the algorithm's performance and efficiency.
+    \index{Corner Cases}
+    
+    \item \textbf{Self-Prerequisite:} A course that lists itself as a prerequisite (e.g., \([0, 0]\)). The function should return \texttt{False}.
+    \index{Corner Cases}
+    
+    \item \textbf{Redundant Prerequisites:} Multiple identical prerequisite pairs. The function should handle duplicates gracefully without affecting the outcome.
+    \index{Corner Cases}
+\end{itemize}
+
+\printindex

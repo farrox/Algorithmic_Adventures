@@ -1,0 +1,162 @@
+% Filename: two_pointers_technique.tex
+
+\section{Two Pointers Technique}
+\label{sec:two-pointers-technique}
+
+\textbf{Introduction} \\
+The Two Pointers Technique is a fundamental algorithmic strategy widely used in solving array and string manipulation problems. By employing two indices (pointers) that traverse the data structure from different directions or positions, this method enables efficient processing of elements to meet specific conditions\sidenote{For an in-depth explanation, refer to the \href{https://www.geeksforgeeks.org/two-pointers-technique/}{GeeksforGeeks Two Pointers Technique article}.}. Particularly effective for sorted data, the technique helps in reducing time and space complexities compared to brute-force approaches. Its simplicity and versatility make it an indispensable tool for tackling a variety of computational challenges, such as searching for pairs that satisfy a given sum, removing duplicates, and more\sidenote{Explore related problems on \href{https://leetcode.com/problemset/all/}{LeetCode's Problem Set}.}.
+
+\problemsection{Find All Pairs with a Given Target Sum}
+Given a \textit{sorted} array of integers and a target sum, find all unique pairs in the array that add up to the target sum. The array is sorted, which means the elements are in non-decreasing order. This sorted property allows us to use the Two Pointers Technique efficiently\sidenote{Sorted arrays are ideal for this technique as they facilitate straightforward element comparisons.}.
+Specifically, you need to find two numbers in the sorted array such that their sum equals the target number. Return the indices of these two numbers (1-based index) as an integer array of size two, where \(1 \leq \text{index1} < \text{index2} \leq \text{array.length}\). You can assume that there is exactly one solution, and you cannot use the same element twice.
+
+\subsection*{Algorithmic Approach}
+\begin{enumerate}
+    \item \textbf{Initialize Two Pointers:}
+        \begin{itemize}
+            \item \texttt{left} pointer starts at the beginning of the array\sidenote{This pointer moves forward to find larger values when needed.}.
+            \item \texttt{right} pointer starts at the end of the array\sidenote{This pointer moves backward to find smaller values when needed.}.
+        \end{itemize}
+    \item \textbf{Traverse the Array:}
+        \begin{itemize}
+            \item While \texttt{left} is less than \texttt{right}:
+                \begin{itemize}
+                    \item Calculate the current sum: \texttt{current\_sum = nums[left] + nums[right]}\sidenote{This sum determines the movement of the pointers.}.
+                    \item If \texttt{current\_sum} equals the target, record the pair and move both pointers inward\sidenote{This ensures that duplicates are skipped and unique pairs are recorded.}.
+                    \item If \texttt{current\_sum} is less than the target, move the \texttt{left} pointer to the right to increase the sum\sidenote{Since the array is sorted, moving left increases the potential sum.}.
+                    \item If \texttt{current\_sum} is greater than the target, move the \texttt{right} pointer to the left to decrease the sum\sidenote{Moving right decreases the potential sum.}.
+                \end{itemize}
+        \end{itemize}
+    \item \textbf{Completion:}
+        \item Continue the process until the \texttt{left} and \texttt{right} pointers meet.
+\end{enumerate}
+
+\subsection*{Python Implementation}
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def pair_sum(nums, target):
+    """
+    Finds all unique pairs in a sorted array that add up to the target sum.
+    
+    Parameters:
+    nums (List[int]): The input sorted array of integers.
+    target (int): The target sum.
+    
+    Returns:
+    List[List[int]]: A list of unique pairs that add up to the target.
+    """
+    left, right = 0, len(nums) - 1
+    result = []
+    
+    while left < right:
+        current_sum = nums[left] + nums[right]
+        if current_sum == target:
+            result.append([nums[left], nums[right]])
+            left += 1
+            right -= 1
+            # Skip duplicates
+            while left < right and nums[left] == nums[left - 1]:
+                left += 1
+            while left < right and nums[right] == nums[right + 1]:
+                right -= 1
+        elif current_sum < target:
+            left += 1
+        else:
+            right -= 1
+    return result
+
+# Example usage:
+nums = [1, 2, 3, 4, 5]
+target = 6
+print(pair_sum(nums, target))  # Output: [[1, 5], [2, 4]]
+\end{lstlisting}
+\end{fullwidth}
+
+\subsection*{Example Usage and Test Cases}
+
+\begin{lstlisting}[language=Python]
+# Test case 1: General case
+nums = [1, 2, 3, 4, 5]
+target = 6
+print(pair_sum(nums, target))  # Output: [[1, 5], [2, 4]]
+
+# Test case 2: No pairs found
+nums = [1, 2, 3, 9]
+target = 8
+print(pair_sum(nums, target))  # Output: []
+
+# Test case 3: Multiple pairs with duplicates
+nums = [1, 1, 2, 2, 3, 4]
+target = 4
+print(pair_sum(nums, target))  # Output: [[1, 3], [2, 2]]
+
+# Test case 4: All elements are the same
+nums = [2, 2, 2, 2]
+target = 4
+print(pair_sum(nums, target))  # Output: [[2, 2]]
+
+# Test case 5: Single element array
+nums = [1]
+target = 2
+print(pair_sum(nums, target))  # Output: []
+\end{lstlisting}
+
+\subsection*{Why This Approach}
+
+The two pointers technique is chosen for its **efficiency and simplicity**. By leveraging the sorted nature of the array, the algorithm avoids the need for nested loops, reducing the time complexity from \(O(n^2)\) in a brute-force approach to \(O(n)\)\sidenote{Linear time complexity is optimal for this problem}. Additionally, this method ensures that each element is processed only once, making it highly suitable for large datasets\sidenote{Single-pass algorithms are preferable for handling large inputs efficiently}.
+
+\subsection*{Complexity Analysis}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(n)\)\sidenote{Each element is visited at most once by either pointer}.
+    \item \textbf{Space Complexity:} \(O(1)\) (excluding the space for the output list)\sidenote{No additional space proportional to the input size is used}.
+\end{itemize}
+
+\subsection*{Similar Problems}
+Other problems that can be efficiently solved using the two pointers technique include:
+\begin{itemize}
+    \item \textbf{Remove Duplicates from a Sorted Array}: Modify the array in-place to remove duplicates\sidenote{A fundamental application of the two pointers technique}.
+    \item \textbf{Reverse a String or Array In-Place}: Reverse the elements by swapping from both ends\sidenote{Utilizes pointers moving towards the center}.
+    \item \textbf{Container With Most Water}: Find two lines that together with the x-axis form a container that holds the most water\sidenote{Maximizing area by adjusting pointers based on height comparisons}.
+    \item \textbf{3Sum Problem}: Find all unique triplets in the array which gives the sum of zero\sidenote{An extension of the two pointers technique to handle three elements}.
+\end{itemize}
+
+\subsection*{Things to Keep in Mind and Tricks}
+\begin{itemize}
+    \item \textbf{Sorted vs. Unsorted Arrays}: The two pointers technique is most effective with sorted arrays\sidenote{If the array is unsorted, consider sorting it first if the problem allows}.
+    \item \textbf{Handling Duplicates}: When the array contains duplicates, ensure that your algorithm skips over them to avoid redundant pairs\sidenote{Skipping duplicates maintains the uniqueness of the result pairs}.
+    \item \textbf{In-Place Modifications}: This technique is ideal for in-place modifications, reducing the need for extra space\sidenote{In-place algorithms are space-efficient and often faster}.
+    \item \textbf{Edge Cases}: Always consider edge cases such as empty arrays, single-element arrays, and scenarios where no valid pairs exist\sidenote{Handling edge cases ensures robustness of the algorithm}.
+    \item \textbf{Pointer Movement Logic}: Clearly define the conditions under which each pointer should move to ensure optimal traversal\sidenote{Proper pointer management is crucial for achieving the desired time complexity}.
+\end{itemize}
+
+\subsection*{Exercises}
+\begin{enumerate}
+    \item \textbf{Container With Most Water}: Given \(n\) non-negative integers \(a_1, a_2, \ldots, a_n\), where each represents a point at coordinate \((i, a_i)\), find two lines that together with the x-axis form a container that holds the most water\sidenote{Optimize the container area by adjusting pointers based on height comparisons}.
+    
+    \item \textbf{Remove Duplicates from Sorted Array}: Given a sorted array \(nums\), remove the duplicates in-place such that each element appears only once and returns the new length\sidenote{Practice in-place array manipulation with two pointers}.
+    
+    \item \textbf{3Sum Problem}: Given an array \(nums\) of \(n\) integers, are there elements \(a, b, c\) in \(nums\) such that \(a + b + c = 0\)? Find all unique triplets in the array which gives the sum of zero\sidenote{Extend the two pointers technique to handle three elements}.
+    
+    \item \textbf{Find All Pairs with a Given Difference}: Given an array of integers and a difference value, find all unique pairs in the array that have the given difference\sidenote{Apply the two pointers technique to identify pairs based on the specified difference}.
+    
+    \item \textbf{Two Sum II - Input Array Is Sorted}: Given a 1-indexed array of integers that is already sorted in non-decreasing order, find two numbers such that they add up to a specific target number. Return the indices of the two numbers\sidenote{Use the two pointers technique to efficiently locate the target pair}.
+\end{enumerate}
+
+\subsection*{Questions for Reflection}
+\begin{itemize}
+    \item How does the two pointers technique compare to other approaches like hashing in terms of time and space complexity?\sidenote{Consider scenarios where space optimization is critical}.
+    \item In what scenarios might the two pointers technique not be the most efficient method?\sidenote{Evaluate based on data structure properties and problem constraints}.
+    \item How can you adapt the two pointers technique to handle more than two pointers for solving complex problems?\sidenote{Think about extending the technique to accommodate additional conditions or elements}.
+    \item Can the two pointers technique be combined with other techniques like sliding windows or dynamic programming to solve advanced problems?\sidenote{Explore hybrid approaches for enhanced problem-solving capabilities}.
+\end{itemize}
+
+\subsection*{References}
+\begin{itemize}
+    \item [LeetCode Problem:] \sidenote{\href{https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/}{Two Sum II - Input Array Is Sorted}}
+    \item [LeetCode Problem:] \sidenote{\href{https://leetcode.com/problems/3sum/}{3Sum}}
+    \item [GeeksforGeeks Article:] \sidenote{\href{https://www.geeksforgeeks.org/two-pointers-technique/}{Two Pointers Technique}}
+    \item [HackerRank Problem:] \sidenote{\href{https://www.hackerrank.com/challenges/two-sum/problem}{Two Sum}}
+\end{itemize}
+
+\subsection*{Conclusion}
+The Two Pointers Technique is an indispensable tool in the array and string manipulation arsenal. By leveraging the inherent order within data structures, it enables the development of efficient and elegant solutions to a wide range of problems\sidenote{Its applicability spans numerous algorithmic challenges, making it a versatile strategy}. Mastering this technique not only enhances problem-solving skills but also prepares you for tackling more complex algorithmic challenges effectively.

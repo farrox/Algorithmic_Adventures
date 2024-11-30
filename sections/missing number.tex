@@ -1,0 +1,60 @@
+
+ewpage
+
+\chapter{Missing Number}
+\label{chap:Missing_Number}
+The "Missing Number" problem is a search problem that involves finding the number that is missing from a given sequence.
+
+\section*{Problem Statement}
+Given an array nums containing \(n\) distinct numbers in the range \(0\) to \(n\), write a function to find the missing number in the sequence. Here, \(n\) represents the largest number in the sequence, which also indicates the length of the sequence since one number is missing.
+
+For example, consider the sequence \([3,0,1]\), the missing number is \(2\) as it does not appear in the sequence. Similarly, in the sequence \([9,6,4,2,3,5,7,0,1]\), the missing number is \(8\).
+
+LeetCode link: \href{https://leetcode.com/problems/missing-number/}{Missing Number}
+
+\section*{Algorithmic Approach}
+The key to solving this problem efficiently is to utilize either mathematical properties or bit manipulation. A mathematical approach involves summing the numbers and comparing with the expected sum. Alternatively, the XOR approach exploits the property that XOR-ing a number with itself results in zero and XOR-ing a number with zero results in the number itself.
+
+\section*{Complexities}
+\begin{itemize}
+	\item \textbf{Time Complexity:} The total time complexity is \(O(n)\) as we have to traverse the entire array once.
+	\item \textbf{Space Complexity:} This can be achieved in \(O(1)\) extra space by using mathematical summation or XOR which does not require additional data structures.
+\end{itemize}
+
+
+ewpage % Start Python Implementation on a new page
+\section*{Python Implementation}
+Below is the complete Python code for the `Solution` class, which includes one method to find the missing number using XOR bit manipulation:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+	class Solution:
+		def missingNumber(self, nums):
+			"""
+			:type nums: List[int]
+			:rtype: int
+			"""
+			missing = len(nums)
+			for i, num in enumerate(nums):
+				missing ^= i ^ num
+			return missing
+\end{lstlisting}
+
+\end{fullwidth}
+
+This implementation leverages the property of XOR that \(a \oplus a = 0\) and \(a \oplus 0 = a\). It iterates through the list of numbers and XORs each element with its index. In addition, it XORs with the length of the array to cover the full range from \(0\) to \(n\). The result is the missing number in the sequence.
+
+\section*{Why this approach}
+The XOR approach was chosen for its simplicity and efficiency. It runs in linear time and requires constant space, satisfying the problem constraints. By encoding both the element and its index in the XOR, we effectively cancel out each pair of numbers, leaving only the missing number.
+
+\section*{Alternative approaches}
+An alternative method is to use mathematical summation of an arithmetic series. The sum of numbers from \(0\) to \(n\) can be calculated using the formula \(n \times (n + 1) / 2\). Subtracting the sum of array elements from this total should give the missing number.
+
+\section*{Similars problems to this one}
+Similar problems include finding duplicate numbers in a sequence or finding missing numbers when multiple elements are missing. Another variant is to solve such problems with additional space constraints or under different computational models.
+
+\section*{Things to keep in mind and tricks}
+In computational problems involving sequences and ranges, leveraging mathematical formulas and properties of operations like XOR can often lead to efficient solutions. It is also helpful to be aware that XOR is its own inverse, which is a useful property that can simplify such problems.
+
+\section*{Corner and special cases to test when writing the code}
+When implementing the solution, remember to test edge cases such as an empty sequence, a sequence with just one number, and cases where the missing number is either the first or the last in the range.

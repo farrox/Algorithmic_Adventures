@@ -1,0 +1,56 @@
+\section{Precomputation}
+\label{sec:Precomputation}
+
+Precomputation is a powerful optimization technique in algorithm design that involves preparing auxiliary data structures to expedite the solution of specific queries. This technique is especially useful for problems where repeated operations, such as summation or multiplication of subarrays, are required. By leveraging precomputed values, we can significantly reduce the computational complexity of such problems, transforming potentially inefficient solutions into optimal ones\sidenote{Precomputation trades off additional memory usage for faster query response times, a common trade-off in algorithmic optimization}.
+
+\subsection*{When to Use Precomputation}
+Precomputation is most effective in scenarios where:
+
+\begin{itemize}
+    \item The problem involves repetitive calculations over subarrays, such as sums, products, or differences.
+    \item The number of queries is large, and recalculating the result for each query would be computationally expensive.
+    \item Extra memory usage for auxiliary data structures like prefix sums, suffix sums, or hash tables is acceptable\sidenote{Ensure that memory constraints of the problem allow for additional data structures}.
+    \item Query time needs to be minimized, often at the expense of preprocessing time\sidenote{Precomputation emphasizes optimizing runtime at the cost of upfront preprocessing effort}.
+\end{itemize}
+
+\subsection*{Common Applications of Precomputation}
+
+Precomputation can be applied to a wide range of algorithmic problems. Below are some common patterns:
+
+\begin{enumerate}
+    \item \textbf{Prefix Sum:} 
+    \begin{itemize}
+        \item Stores cumulative sums up to each index in the array.
+        \item Useful for quickly calculating the sum of any subarray \( [i, j] \) using the formula:
+        \[
+        \text{sum}(i, j) = \text{prefix}[j] - \text{prefix}[i-1]
+        \]
+        \sidenote{This reduces the time complexity of each query from \( O(n) \) to \( O(1) \)}.
+    \end{itemize}
+    
+    \item \textbf{Suffix Sum:} 
+    \begin{itemize}
+        \item Stores cumulative sums from the end of the array to each index.
+        \item Complements prefix sums for problems requiring both forward and backward traversal.
+    \end{itemize}
+    
+    \item \textbf{Prefix Product and Suffix Product:}
+    \begin{itemize}
+        \item Similar to prefix and suffix sums, but for products. Used in problems like "Product of Array Except Self"\sidenote{LeetCode Problem: \href{https://leetcode.com/problems/product-of-array-except-self/}{Product of Array Except Self}}.
+    \end{itemize}
+    
+    \item \textbf{Hash Maps for Frequency Counting:}
+    \begin{itemize}
+        \item Precompute frequencies of elements or cumulative counts to quickly answer range queries, such as "How many times does a number appear between indices \( i \) and \( j \)?".
+    \end{itemize}
+    
+    \item \textbf{Prefix XOR or Bitwise Operations:}
+    \begin{itemize}
+        \item Used for problems involving cumulative XOR or other bitwise operations over subarrays.
+        \item Enables efficient computation of XOR for any subarray \( [i, j] \) using:
+        \[
+        \text{XOR}(i, j) = \text{prefix\_xor}[j] \oplus \text{prefix\_xor}[i-1]
+        \]
+        \sidenote{This is particularly useful in problems involving parity or flipping operations}.
+    \end{itemize}
+\end{enumerate}

@@ -1,0 +1,150 @@
+% Filename: non_overlapping_intervals.tex
+
+\problemsection{Non-overlapping Intervals}
+\label{problem:NonOverlappingIntervals}
+
+The **Non-overlapping Intervals** problem is a variation of the interval scheduling and merging challenges. It requires determining the minimum number of intervals to remove from a collection so that the remaining intervals are non-overlapping. This problem is pivotal in optimizing resource allocation, such as meeting room scheduling, where minimizing conflicts is essential\sidenote{Efficiently resolving interval overlaps ensures optimal utilization of resources and prevents scheduling conflicts}.
+
+\subsection*{Problem Statement}
+Given a collection of intervals, find the minimum number of intervals you need to remove to make the rest of the intervals non-overlapping\sidenote{Removing the least number of intervals ensures maximum utilization of available intervals while eliminating overlaps}.
+
+\textbf{Example:}
+
+\[
+\begin{aligned}
+\text{Input: } & [[1,2],[2,3],[3,4],[1,3]] \\
+\text{Output: } & 1 \\
+\text{Explanation: } & \text{Removing [1,3] leaves the rest of the intervals as non-overlapping}.
+\end{aligned}
+\]
+
+\subsection*{Algorithmic Approach}
+To solve the Non-overlapping Intervals problem efficiently, a greedy algorithm combined with sorting is employed\sidenote{Sorting intervals allows for the identification of overlaps in a structured manner, facilitating the optimal removal of intervals}.
+
+\begin{enumerate}
+    \item \textbf{Sort the Intervals:} Begin by sorting the intervals based on their end times.
+    \sidenote{Sorting by end times ensures that intervals with earlier end times are considered first, maximizing the number of non-overlapping intervals}.
+    
+    \item \textbf{Initialize Tracking Variables:} 
+    \begin{itemize}
+        \item **End Pointer:** Initialize a pointer to keep track of the end of the last added interval, starting with the first interval's end.
+        \sidenote{This pointer helps in determining whether the current interval overlaps with the last non-overlapping interval}.
+        
+        \item **Removal Counter:** Initialize a counter to track the number of intervals removed\sidenote{This counter will increment each time an overlapping interval is identified and removed}.
+    \end{itemize}
+    
+    \item \textbf{Iterate Through Intervals:} Traverse the sorted list of intervals and compare each interval's start time with the end pointer.
+        \begin{itemize}
+            \item **Check for Overlap:** If the current interval's start time is less than the end pointer, an overlap exists.
+                \begin{itemize}
+                    \item **Increment Removal Counter:** Increment the removal counter as one of the overlapping intervals needs to be removed\sidenote{Choosing which interval to remove is determined by the sorting order, favoring the interval with the earlier end time}.
+                    
+                    \item **Update End Pointer:** Update the end pointer to the minimum of the current interval's end and the last end pointer\sidenote{This ensures that the interval with the earliest end time is retained, allowing more intervals to fit without overlapping}.
+                \end{itemize}
+                
+            \item **No Overlap:** If there is no overlap, update the end pointer to the current interval's end\sidenote{This sets the new reference point for subsequent interval comparisons}.
+        \end{itemize}
+    
+    \item \textbf{Completion:} After processing all intervals, the removal counter will reflect the minimum number of intervals that need to be removed to eliminate all overlaps.
+\end{enumerate}
+
+\subsection*{Python Implementation}
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def eraseOverlapIntervals(intervals):
+    """
+    Finds the minimum number of intervals to remove to make the rest non-overlapping.
+    
+    Parameters:
+    intervals (List[List[int]]): A list of intervals represented as [start, end].
+    
+    Returns:
+    int: The minimum number of intervals that need to be removed.
+    """
+    if not intervals:
+        return 0
+    
+    # Sort the intervals based on the end time
+    intervals.sort(key=lambda x: x[1])
+    
+    end = intervals[0][1]
+    count = 0
+    
+    for current in intervals[1:]:
+        if current[0] < end:
+            # Overlapping interval, increment removal counter
+            count += 1
+            # Update end to the minimum end time to maximize non-overlapping intervals
+            end = min(end, current[1])
+        else:
+            # No overlap, update the end pointer
+            end = current[1]
+    
+    return count
+
+# Example usage:
+intervals = [[1,2],[2,3],[3,4],[1,3]]
+print(eraseOverlapIntervals(intervals))  # Output: 1
+\end{lstlisting}
+\end{fullwidth}
+
+\subsection*{Why This Approach}
+The greedy algorithm combined with sorting by end times is chosen for its **efficiency and optimality**. By sorting the intervals based on their end times, the algorithm ensures that intervals with earlier end times are prioritized, allowing for the maximum number of non-overlapping intervals to be selected\sidenote{This strategy minimizes the chances of future overlaps by choosing the interval that leaves the earliest possible room for subsequent intervals}. Consequently, the algorithm effectively identifies and removes the minimal number of overlapping intervals, achieving optimal performance with a time complexity of \( O(n \log n) \)\sidenote{The sorting step dominates the time complexity, while the subsequent traversal operates in linear time}.
+
+\subsection*{Complexity Analysis}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \( O(n \log n) \)\sidenote{This arises from the sorting step, which is the most time-consuming part of the algorithm}.
+    
+    \item \textbf{Space Complexity:} \( O(1) \) if the sorting is done in-place\sidenote{Otherwise, it requires \( O(n) \) space depending on the sorting algorithm used}.
+\end{itemize}
+
+\subsection*{Similar Problems}
+Other problems that can be efficiently solved using greedy strategies and sorting techniques include:
+\begin{itemize}
+    \item \textbf{Interval Scheduling}: Select the maximum number of non-overlapping intervals\sidenote{Similar to Non-overlapping Intervals, but focuses on maximizing the number of intervals instead of minimizing removals}.
+    
+    \item \textbf{Meeting Rooms}: Determine if a person could attend all meetings given their schedules\sidenote{Requires checking for overlaps in meeting times, which can be efficiently handled by sorting intervals}.
+    
+    \item \textbf{Minimum Number of Arrows to Burst Balloons}: Find the minimum number of arrows needed to burst all balloons represented by intervals\sidenote{Involves identifying overlapping intervals to minimize the number of arrows used}.
+    
+    \item \textbf{Employee Free Time}: Find the common free time across all employees given their schedules\sidenote{Requires merging and identifying gaps between sorted intervals}.
+\end{itemize}
+These problems leverage the foundational principles of greedy algorithms and sorting, demonstrating the versatility and power of these techniques in various algorithmic contexts\sidenote{Mastering these approaches provides a strong foundation for solving a wide range of interval-related problems}.
+
+\subsection*{Things to Keep in Mind and Tricks}
+\begin{itemize}
+    \item \textbf{Sorting by End Time}: Always sort intervals based on their end times to ensure that the earliest finishing intervals are considered first\sidenote{This facilitates the selection of intervals that leave the most room for subsequent non-overlapping intervals}.
+    
+    \item \textbf{Handling Overlaps}: Carefully manage overlapping intervals by retaining the one with the earliest end time and removing others\sidenote{This strategy maximizes the number of non-overlapping intervals and minimizes removals}.
+    
+    \item \textbf{Edge Cases}: Ensure that the algorithm correctly handles edge cases such as empty input, single interval, and all intervals overlapping\sidenote{Robust handling of these scenarios prevents runtime errors and ensures correct results}.
+    
+    \item \textbf{In-Place Sorting}: If space is a concern, perform in-place sorting to reduce space overhead\sidenote{This can be achieved using sorting algorithms that do not require additional space, such as Heap Sort}.
+    
+    \item \textbf{Incrementing the Counter}: Only increment the removal counter when an actual overlap is detected\sidenote{This ensures that the count accurately reflects the number of necessary removals}.
+\end{itemize}
+
+\subsection*{Corner and Special Cases to Test When Writing the Code}
+\begin{itemize}
+    \item \textbf{Empty List}: Ensure the function returns 0 when given no intervals\sidenote{Handles scenarios where no data is provided gracefully}.
+    
+    \item \textbf{Single Interval}: Verify that a single interval results in no removals\sidenote{No overlapping is possible with a single interval}.
+    
+    \item \textbf{All Overlapping Intervals}: Test with all intervals overlapping to ensure that the algorithm correctly identifies the minimum number of removals\sidenote{Confirms that the algorithm consolidates overlaps efficiently}.
+    
+    \item \textbf{No Overlapping Intervals}: Ensure that the algorithm returns 0 when no overlaps are present\sidenote{Checks the algorithm's ability to recognize and preserve distinct intervals}.
+    
+    \item \textbf{Mixed Overlapping and Non-Overlapping Intervals}: Test with a combination of overlapping and non-overlapping intervals\sidenote{Validates the algorithm's capability to handle complex merging and removal scenarios}.
+    
+    \item \textbf{Intervals with Same Start or End Points}: Verify that intervals sharing start or end points are handled correctly\sidenote{Ensures accurate identification of overlaps when intervals have identical boundaries}.
+\end{itemize}
+
+\subsection*{References}
+\begin{itemize}
+    \item [GeeksforGeeks Article:] \sidenote{\href{https://www.geeksforgeeks.org/non-overlapping-intervals/}{Non-overlapping Intervals}}
+    \item [LeetCode Problem:] \sidenote{\href{https://leetcode.com/problems/non-overlapping-intervals/}{Non-overlapping Intervals}}
+    \item [HackerRank Problem:] \sidenote{\href{https://www.hackerrank.com/challenges/non-overlapping-intervals/problem}{Non-overlapping Intervals}}
+\end{itemize}
+
+\subsection*{Conclusion}
+The Non-overlapping Intervals problem exemplifies the effectiveness of greedy algorithms combined with sorting in optimizing interval-related challenges\sidenote{This approach ensures that the minimum number of intervals are removed to eliminate all overlaps}. By prioritizing intervals with earlier end times, the algorithm maximizes the number of non-overlapping intervals while minimizing removals\sidenote{This strategy is both time-efficient and space-efficient, making it suitable for large datasets}. Mastering this technique not only enhances problem-solving skills but also provides a foundation for tackling more intricate interval-based challenges effectively.

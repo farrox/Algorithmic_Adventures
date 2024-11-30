@@ -1,0 +1,180 @@
+% Filename: linked_list_cycle.tex
+
+\problemsection{Linked List Cycle}
+\label{problem:linked_list_cycle}
+\marginnote{Detecting cycles in linked lists is crucial for preventing infinite loops and ensuring the integrity of data structures.}
+
+The \textbf{Linked List Cycle} problem is a common challenge that involves determining if a singly linked list contains a cycle—a situation where a node's `next` pointer points to an earlier node, leading to an infinite loop when traversing the list. This problem is important in the field of computer science because cycles in linked lists can lead to bugs and inefficiencies in software applications. To solve this problem, an effective algorithm needs to be formulated that can detect the presence of a cycle without traversing the entire list repeatedly, which could cause an infinite loop if a cycle is present.\marginnote{Efficient cycle detection is essential for optimizing algorithms that utilize linked lists, ensuring reliable performance and resource management.}
+
+\section*{Problem Statement}
+To determine if a cycle is present in a given linked list, the typical strategy is to use indicators or "pointers" to traverse the list. One widely used method to detect cycles is **Floyd's Cycle Detection Algorithm**, also known as the **Tortoise and Hare algorithm**. In this approach, two pointers are initialized at the head of the linked list:
+
+\begin{itemize}
+    \item \textbf{Slow Pointer (`slow`):} Moves one step at a time.
+    \item \textbf{Fast Pointer (`fast`):} Moves two steps at a time.
+\end{itemize}
+
+If there is a cycle in the list, the fast pointer will loop around and eventually meet the slow pointer within the cycle. If there is no cycle, the fast pointer will reach the end of the list without meeting the slow pointer.
+
+The function signature for this problem, in Python, is as follows:
+
+\begin{verbatim}
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+class Solution:
+    def hasCycle(self, head: ListNode) -> bool:
+        # Implementation goes here
+\end{verbatim}
+
+\marginnote{\href{https://leetcode.com/problems/linked-list-cycle/}{[LeetCode Link]}\index{LeetCode}}
+\marginnote{\href{https://www.geeksforgeeks.org/detect-loop-in-a-linked-list/}{[GeeksForGeeks Link]}\index{GeeksForGeeks}}
+\marginnote{\href{https://www.hackerrank.com/challenges/detect-whether-a-linked-list-contains-a-cycle/problem}{[HackerRank Link]}\index{HackerRank}}
+\marginnote{\href{https://app.codesignal.com/challenges/detect-cycle-in-linked-list}{[CodeSignal Link]}\index{CodeSignal}}
+\marginnote{\href{https://www.interviewbit.com/problems/detect-cycle-in-linked-list/}{[InterviewBit Link]}\index{InterviewBit}}
+\marginnote{\href{https://www.educative.io/courses/grokking-the-coding-interview/RM8y8Y3nLdY}{[Educative Link]}\index{Educative}}
+\marginnote{\href{https://www.codewars.com/kata/detect-cycle-in-linked-list/train/python}{[Codewars Link]}\index{Codewars}}
+
+\section*{Algorithmic Approach}
+
+**Floyd's Cycle Detection Algorithm** is the optimal solution to this problem because it requires only two pointers, satisfying the \(O(1)\) memory constraint of the follow-up challenge. The implementation involves iterating through the list with the slow and fast pointers as described, checking for the condition where the fast pointer equals the slow pointer, which indicates a cycle. If the fast pointer reaches the end of the list (i.e., encounters a `None` reference), the list does not contain a cycle, and the function returns `False`.\marginnote{This method is both time and space-efficient, making it suitable for large linked lists.}
+
+\section*{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:} The time complexity of Floyd's algorithm is \(O(n)\), where \(n\) is the number of nodes in the linked list. In the worst case, this is the time it takes for the fast pointer to meet the slow pointer.
+    \item \textbf{Space Complexity:} The algorithm achieves \(O(1)\) space complexity since it only uses two pointers regardless of the size of the linked list.
+\end{itemize}
+
+\newpage % Start Python Implementation on a new page
+\section*{Python Implementation}
+\marginnote{Implementing Floyd's algorithm ensures efficient detection of cycles with minimal memory overhead.}
+
+Below is the complete Python code for the `Solution` class, which implements the `hasCycle` function using Floyd's Cycle Detection Algorithm to determine whether a linked list has a cycle:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+class Solution:
+    def hasCycle(self, head: ListNode) -> bool:
+        if not head:
+            return False
+            
+        slow = head
+        fast = head.next
+        
+        while fast and fast.next:
+            if slow == fast:
+                return True
+            slow = slow.next
+            fast = fast.next.next
+        
+        return False
+
+# Example Usage:
+# Creating a linked list with a cycle: 1 -> 2 -> 3 -> 4 -> 2 ...
+node1 = ListNode(1)
+node2 = ListNode(2)
+node3 = ListNode(3)
+node4 = ListNode(4)
+node1.next = node2
+node2.next = node3
+node3.next = node4
+node4.next = node2  # Creates a cycle
+
+solution = Solution()
+print(solution.hasCycle(node1))  # Output: True
+
+# Creating a linked list without a cycle: 1 -> 2 -> 3 -> 4 -> None
+node1 = ListNode(1, ListNode(2, ListNode(3, ListNode(4))))
+print(solution.hasCycle(node1))  # Output: False
+
+# Edge Case: Empty List
+print(solution.hasCycle(None))  # Output: False
+
+# Edge Case: Single Node without Cycle
+single_node = ListNode(1)
+print(solution.hasCycle(single_node))  # Output: False
+
+# Edge Case: Single Node with Cycle
+single_node_cycle = ListNode(1)
+single_node_cycle.next = single_node_cycle
+print(solution.hasCycle(single_node_cycle))  # Output: True
+\end{lstlisting}
+\end{fullwidth}
+
+The code first checks for an empty list, which cannot have a cycle. It then initializes the `slow` and `fast` pointers and begins the iteration. If at any point, `slow` is equal to `fast`, a cycle is detected, and the function returns `True`. If `fast` or `fast.next` becomes `None`, meaning the end of the list is reached, the function returns `False`, indicating no cycle.
+
+\section*{Explanation}
+The `hasCycle` function efficiently detects a cycle in a singly linked list by leveraging **Floyd's Cycle Detection Algorithm**. Here's a detailed breakdown of the implementation:
+
+\begin{itemize}
+    \item \textbf{Initialization:}
+    \begin{itemize}
+        \item **Edge Case Handling:** If the list is empty (`head` is `None`), it cannot have a cycle, so the function returns `False`.
+        \item **Pointers Setup:** Two pointers, `slow` and `fast`, are initialized. `slow` starts at the head, while `fast` starts at the second node (`head.next`).
+    \end{itemize}
+    
+    \item \textbf{Cycle Detection Loop:}
+    \begin{itemize}
+        \item **Traversal:** The loop continues as long as `fast` and `fast.next` are not `None`. This ensures that we do not traverse beyond the end of the list.
+        \item \textbf{Meeting Point Check:} If at any point `slow` equals `fast`, a cycle is detected, and the function returns `True`.
+        \item \textbf{Pointer Advancement:} If no cycle is detected at the current positions, `slow` moves one step forward (`slow = slow.next`), and `fast` moves two steps forward (`fast = fast.next.next`).
+    \end{itemize}
+    
+    \item \textbf{Conclusion:}
+    \begin{itemize}
+        \item If the loop terminates without `slow` meeting `fast`, it means the list has no cycle, and the function returns `False`.
+    \end{itemize}
+\end{itemize}
+
+\section*{Why This Approach}
+**Floyd's Cycle Detection Algorithm** is chosen for its efficiency in both time and space. It does not require additional data structures, thereby adhering to the \(O(1)\) space complexity constraint. This algorithm is also intuitive and reliable for detecting cycles in linked lists, making it a preferred choice in both academic and professional settings.\marginnote{The two-pointer technique is versatile and can be applied to various linked list problems, such as finding the middle node or detecting cycles.}
+
+\section*{Alternative Approaches}
+An alternative approach involves using a **hash set** to keep track of visited nodes. Each node visited by the traversal would be added to the hash set. If a node is encountered that already exists in the hash set, a cycle is detected, and the function returns `True`. If the traversal reaches the end of the list (`None`), the function returns `False`, indicating no cycle.
+
+\begin{itemize}
+    \item \textbf{Pros:} Simple to implement and understand.
+    \item \textbf{Cons:} Requires \(O(n)\) additional space to store visited nodes, which is less optimal compared to Floyd's algorithm.
+\end{itemize}
+
+While this method is straightforward, it does not satisfy the \(O(1)\) space complexity requirement of the follow-up challenge, making Floyd's Cycle Detection Algorithm a more optimal solution.\marginnote{Using extra space for hash sets increases memory usage, which may not be ideal for large linked lists.}
+
+\section*{Similar Problems to This One}
+\begin{itemize}
+    \item \hyperref[problem:find_middle_of_linked_list]{Find Middle of Linked List}\index{Find Middle of Linked List}
+    \item \hyperref[problem:reverse_linked_list]{Reverse Linked List}\index{Reverse Linked List}
+    \item \hyperref[problem:merge_two_sorted_lists]{Merge Two Sorted Lists}\index{Merge Two Sorted Lists}
+    \item \hyperref[problem:remove_nth_node_from_end_of_list]{Remove Nth Node From End of List}\index{Remove Nth Node From End of List}
+\end{itemize}
+
+\section*{Things to Keep in Mind and Tricks}
+\begin{itemize}
+    \item \textbf{Edge Cases:} Always consider scenarios where the linked list is empty, contains only one node, or has a cycle starting at the head.\index{Edge Cases}
+    \item \textbf{Pointer Management:} Carefully manage the advancement of pointers to prevent null reference errors or infinite loops.\index{Pointer Management}
+    \item \textbf{Two-Pointer Technique:} This technique is effective not only for cycle detection but also for other linked list problems like finding the middle node or removing elements.\index{Two-Pointer Technique}
+    \item \textbf{Early Termination}: If a cycle is detected early, the function can terminate without traversing the entire list.\index{Early Termination}
+\end{itemize}
+
+\section*{Corner and Special Cases to Test When Implementing}
+\begin{itemize}
+    \item \textbf{Empty List:} \texttt{head = None}\index{Corner Cases}
+    \item \textbf{Single Node without Cycle:} \texttt{head = ListNode(1)}\index{Corner Cases}
+    \item \textbf{Single Node with Cycle:} \texttt{head = ListNode(1, head)}\index{Corner Cases}
+    \item \textbf{Two Nodes with Cycle:} \texttt{head = ListNode(1, ListNode(2, head))}\index{Corner Cases}
+    \item \textbf{Multiple Nodes without Cycle:} \texttt{head = ListNode(1, ListNode(2, ListNode(3, ListNode(4))))}\index{Corner Cases}
+    \item \textbf{Cycle in the Middle:} \texttt{head = ListNode(1, ListNode(2, ListNode(3, ListNode(4, ListNode(2)))))}
+    \index{Corner Cases}
+    \item \textbf{Cycle at the End:} \texttt{head = ListNode(1, ListNode(2, ListNode(3, ListNode(4, ListNode(3)))))}
+    \index{Corner Cases}
+    \item \textbf{Large List with Cycle:} Test with a large number of nodes to ensure the algorithm handles scalability.\index{Corner Cases}
+\end{itemize}
+
+\printindex

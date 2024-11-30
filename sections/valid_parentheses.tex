@@ -1,0 +1,43 @@
+% Filename: valid_parentheses.tex
+
+\problemsection{Valid Parentheses}\marginpar{This classic problem uses stacks to check for balanced parentheses in expressions.}
+
+\textbf{Problem Description:}  
+Given a string containing just the characters \texttt{'('}, \texttt{')'}, \texttt{'{'}, \texttt{'}'}, \texttt{'['}, and \texttt{']'}, determine if the input string is valid.
+
+An input string is valid if:
+\begin{itemize}
+    \item Open brackets must be closed by the same type of brackets.
+    \item Open brackets must be closed in the correct order.
+\end{itemize}
+
+\textbf{Solution Overview:}  
+Use a stack to keep track of opening brackets. Iterate through the string, and for each character:
+\begin{itemize}
+    \item If it's an opening bracket (\texttt{'('}, \texttt{'['}, \texttt{'{'}) push it onto the stack.
+    \item If it's a closing bracket (\texttt{')'}, \texttt{']'}, \texttt{'}'}), check if the stack is not empty and the top of the stack is the matching opening bracket. If so, pop the stack; otherwise, return \texttt{False}.
+\end{itemize}
+At the end, if the stack is empty, return \texttt{True}; otherwise, return \texttt{False}.
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def isValid(s):
+    stack = []
+    mapping = {')': '(', '}': '{', ']': '['}
+    for char in s:
+        if char in mapping.values():
+            stack.append(char)
+        elif char in mapping:
+            if not stack or mapping[char] != stack.pop():
+                return False
+        else:
+            # Invalid character encountered
+            return False
+    return not stack
+
+# Example usage:
+print(isValid("()"))       # Output: True
+print(isValid("()[]{}"))   # Output: True
+print(isValid("(]"))       # Output: False
+\end{lstlisting}
+\end{fullwidth}

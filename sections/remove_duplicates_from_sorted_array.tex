@@ -1,0 +1,167 @@
+% Filename: remove_duplicates_from_sorted_array.tex
+
+\problemsection{Remove Duplicates from a Sorted Array}
+\label{sec:remove-duplicates-from-sorted-array}
+% \addcontentsline{toc}{section}{Remove Duplicates from a Sorted Array} % Adds to TOC
+
+\textbf{Introduction} \\
+The problem of removing duplicates from a sorted array is a classic algorithmic challenge that emphasizes in-place array manipulation and efficient use of space. Leveraging the sorted nature of the array allows for optimal solutions that minimize time and space complexity. This problem not only reinforces fundamental array handling techniques but also serves as a foundational exercise for understanding more complex data manipulation tasks\sidenote{For a comprehensive overview, refer to the \href{https://leetcode.com/problems/remove-duplicates-from-sorted-array/}{LeetCode Remove Duplicates problem}.}.
+
+\subsection*{Problem Statement}
+Given a sorted array of integers, remove the duplicates in-place such that each element appears only once and return the new length. The relative order of the elements should be kept the same. Since it is impossible to change the length of the array in some programming languages, you must instead have the result placed in the first part of the array. More formally, if there are \(k\) elements after removing the duplicates, then the first \(k\) elements of the array should hold the final result. It does not matter what you leave beyond the first \(k\) elements.
+
+\subsection*{Algorithmic Approach}
+The most efficient way to solve this problem is by using the **Two Pointers Technique**. Here's a step-by-step approach:
+
+\begin{enumerate}
+    \item \textbf{Initialize Two Pointers:}
+        \begin{itemize}
+            \item \texttt{slow} pointer starts at index 0, representing the position of the last unique element found\sidenote{This pointer tracks the position where the next unique element should be placed.}.
+            \item \texttt{fast} pointer starts at index 1, traversing the array to find unique elements\sidenote{The \texttt{fast} pointer scans through the array to identify unique elements.}.
+        \end{itemize}
+    \item \textbf{Traverse the Array:}
+        \begin{itemize}
+            \item While \texttt{fast} is less than the length of the array:
+                \begin{itemize}
+                    \item If the element at \texttt{fast} is not equal to the element at \texttt{slow}, it means a new unique element is found\sidenote{Since the array is sorted, duplicates are adjacent, making it easy to detect new unique elements.}.
+                    \item Increment \texttt{slow} and update the element at \texttt{slow} with the element at \texttt{fast}\sidenote{This effectively moves the unique element to the front of the array.}.
+                \end{itemize}
+            \item Increment \texttt{fast} to continue traversing.
+        \end{itemize}
+    \item \textbf{Completion:}
+        \item After traversal, the value of \texttt{slow} + 1 will represent the number of unique elements.
+\end{enumerate}
+
+\subsection*{Python Implementation}
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def remove_duplicates(nums):
+    """
+    Removes duplicates from a sorted array in-place.
+    
+    Parameters:
+    nums (List[int]): The input sorted array of integers.
+    
+    Returns:
+    int: The number of unique elements after removing duplicates.
+    """
+    if not nums:
+        return 0
+    
+    slow = 0
+    for fast in range(1, len(nums)):
+        if nums[fast] != nums[slow]:
+            slow += 1
+            nums[slow] = nums[fast]
+    
+    return slow + 1
+
+# Example usage:
+nums = [1, 1, 2]
+k = remove_duplicates(nums)
+print(k)        # Output: 2
+print(nums[:k]) # Output: [1, 2]
+\end{lstlisting}
+\end{fullwidth}
+
+\subsection*{Example Usage and Test Cases}
+
+\begin{lstlisting}[language=Python]
+# Test case 1: General case with duplicates
+nums = [1, 1, 2]
+k = remove_duplicates(nums)
+print(k)        # Output: 2
+print(nums[:k]) # Output: [1, 2]
+
+# Test case 2: All elements are duplicates
+nums = [2, 2, 2, 2]
+k = remove_duplicates(nums)
+print(k)        # Output: 1
+print(nums[:k]) # Output: [2]
+
+# Test case 3: No duplicates
+nums = [1, 2, 3, 4, 5]
+k = remove_duplicates(nums)
+print(k)        # Output: 5
+print(nums[:k]) # Output: [1, 2, 3, 4, 5]
+
+# Test case 4: Empty array
+nums = []
+k = remove_duplicates(nums)
+print(k)        # Output: 0
+print(nums[:k]) # Output: []
+
+# Test case 5: Single element array
+nums = [1]
+k = remove_duplicates(nums)
+print(k)        # Output: 1
+print(nums[:k]) # Output: [1]
+\end{lstlisting}
+
+\subsection*{Why This Approach}
+
+The **Two Pointers Technique** is particularly effective for this problem due to the following reasons:
+
+\begin{itemize}
+    \item \textbf{In-Place Modification:} Eliminates the need for additional memory by modifying the array directly\sidenote{This is crucial for optimizing space usage, especially with large datasets.}.
+    \item \textbf{Linear Time Complexity:} Traverses the array only once, achieving \(O(n)\) time complexity\sidenote{This ensures that the algorithm remains efficient even as the size of the input grows.}.
+    \item \textbf{Utilizes Sorted Property:} The sorted nature of the array ensures that duplicates are adjacent, simplifying the detection and removal process\sidenote{Sorting guarantees that all duplicates are clustered together, making it easier to identify unique elements.}.
+    \item \textbf{Simplicity:} The algorithm is straightforward, making it easy to implement and understand\sidenote{Clear and concise logic reduces the likelihood of errors during implementation.}.
+\end{itemize}
+
+\subsection*{Complexity Analysis}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(n)\), where \(n\) is the number of elements in the array. Each element is visited at most once\sidenote{The \texttt{fast} pointer ensures a single pass through the array.}.
+    \item \textbf{Space Complexity:} \(O(1)\), as the algorithm uses a constant amount of extra space\sidenote{No additional data structures are required beyond the input array itself.}.
+\end{itemize}
+
+\subsection*{Similar Problems}
+Other problems that can be efficiently solved using the two pointers technique include:
+
+\begin{itemize}
+    \item \textbf{Two Sum II - Input Array Is Sorted}: Find two numbers that add up to a specific target number\sidenote{This problem leverages the sorted property to efficiently locate the desired pair.}.
+    \item \textbf{3Sum Problem}: Find all unique triplets in the array which give the sum of zero\sidenote{Extending the two pointers approach to handle three elements.}.
+    \item \textbf{Container With Most Water}: Find two lines that together with the x-axis form a container that holds the most water\sidenote{Maximizing the area between two pointers.}.
+    \item \textbf{Reverse a String or Array In-Place}: Reverse the elements by swapping from both ends\sidenote{A fundamental application of the two pointers technique.}.
+\end{itemize}
+
+\subsection*{Things to Keep in Mind and Tricks}
+\begin{itemize}
+    \item \textbf{Sorted vs. Unsorted Arrays}: This approach relies on the array being sorted\sidenote{If the array is unsorted, consider sorting it first if the problem allows.}.
+    \item \textbf{In-Place Modification Constraints}: Ensure that the environment or language allows in-place modifications of the data structure\sidenote{Some languages may have immutable data structures, requiring alternative approaches.}.
+    \item \textbf{Handling Edge Cases}: Always consider edge cases such as empty arrays, single-element arrays, and arrays with all duplicates\sidenote{Robustness against various input scenarios is crucial for algorithm reliability.}.
+    \item \textbf{Pointer Initialization}: Correctly initialize the pointers to avoid index out-of-bound errors\sidenote{Proper starting points ensure that the algorithm functions as intended.}.
+    \item \textbf{Understanding Return Values}: Depending on the problem's requirements, ensure that you return the correct value representing the number of unique elements\sidenote{Clarify what the function is expected to return to meet the problem's specifications.}.
+\end{itemize}
+
+\subsection*{Related Problems}
+\begin{enumerate}
+    \item \textbf{Two Sum II - Input Array Is Sorted}: Given a 1-indexed array of integers that is already sorted in non-decreasing order, find two numbers such that they add up to a specific target number\sidenote{Leverage the two pointers technique for an efficient solution.}.
+    
+    \item \textbf{3Sum Problem}: Given an array \(nums\) of \(n\) integers, are there elements \(a, b, c\) in \(nums\) such that \(a + b + c = 0\)? Find all unique triplets in the array which gives the sum of zero\sidenote{This problem extends the two pointers approach to three elements.}.
+    
+    \item \textbf{Move Zeroes}: Given an array \(nums\), write a function to move all 0's to the end of it while maintaining the relative order of the non-zero elements\sidenote{This requires careful pointer management to preserve element order.}.
+    
+    \item \textbf{Valid Palindrome II}: Given a string, determine if it can become a palindrome by removing at most one character\sidenote{Combining two pointers with conditional checks.}.
+    
+    \item \textbf{Minimum Size Subarray Sum}: Given an array of positive integers and a positive integer \(s\), find the minimal length of a contiguous subarray for which the sum is at least \(s\). If there isn't one, return 0 instead\sidenote{This problem can be approached using a sliding window technique, often used alongside two pointers.}.
+\end{enumerate}
+
+\subsection*{Questions for Reflection}
+\begin{itemize}
+    \item How does the two pointers technique optimize space compared to using additional data structures like hash sets?\sidenote{Consider scenarios where space complexity is a critical factor.}.
+    \item In what scenarios might the two pointers technique not be applicable or efficient?\sidenote{Evaluate the limitations based on data structure properties.}.
+    \item How can the two pointers technique be extended to handle more complex problems involving multiple conditions?\sidenote{Think about integrating additional logic or combining with other techniques.}.
+    \item Can the two pointers technique be combined with other algorithmic strategies, such as binary search or dynamic programming, to solve advanced problems?\sidenote{Exploring hybrid approaches for enhanced problem-solving.}.
+\end{itemize}
+
+\subsection*{References}
+\begin{itemize}
+    \item [LeetCode Problem:] \sidenote{\href{https://leetcode.com/problems/remove-duplicates-from-sorted-array/}{Remove Duplicates from Sorted Array}}
+    \item [GeeksforGeeks Article:] \sidenote{\href{https://www.geeksforgeeks.org/remove-duplicates-from-an-unsorted-linked-list/}{Remove Duplicates from an Unsorted Linked List}}
+    \item [HackerRank Problem:] \sidenote{\href{https://www.hackerrank.com/challenges/remove-duplicates/problem}{Remove Duplicates}}
+    \item [Tutorialspoint Article:] \sidenote{\href{https://www.tutorialspoint.com/python/list_remove_duplicates.htm}{Python List Remove Duplicates}}
+\end{itemize}
+
+\subsection*{Conclusion}
+Removing duplicates from a sorted array is a fundamental problem that exemplifies the power of the Two Pointers Technique in optimizing both time and space complexities. By intelligently traversing the array with two pointers, the algorithm efficiently eliminates redundant elements without the need for extra storage\sidenote{This approach is not only efficient but also elegant in its simplicity.}. Mastery of this technique not only aids in solving similar array manipulation problems but also lays the groundwork for tackling more intricate algorithmic challenges in the realm of data structures and computational problem-solving.

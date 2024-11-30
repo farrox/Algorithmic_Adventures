@@ -1,0 +1,181 @@
+% Filename: binary_tree_level_order_traversal.tex
+
+\problemsection{Binary Tree Level Order Traversal}\marginpar{Traverse a binary tree level by level using BFS or DFS.}
+
+\textbf{Problem Statement}
+
+This problem involves performing a level order traversal on a binary tree. In level order traversal, nodes are visited level by level from left to right. The goal is to return a list of lists, where each sublist contains the values of nodes at each respective level of the tree.
+
+\textbf{Algorithmic Approach}
+
+To solve this problem, you can use either an iterative approach with Breadth-First Search (BFS) or a recursive approach with Depth-First Search (DFS). Below, both methods are described:
+
+\begin{enumerate}
+    \item \textbf{Iterative Approach (Breadth-First Search)}:
+    \begin{itemize}
+        \item \textbf{Use a Queue}: Utilize a queue to keep track of nodes at the current level.
+        \item \textbf{Level-by-Level Traversal}:
+        \begin{enumerate}
+            \item Initialize the queue with the root node.
+            \item While the queue is not empty:
+            \begin{enumerate}
+                \item Determine the number of nodes at the current level (size of the queue).
+                \item Iterate through all nodes at this level:
+                \begin{enumerate}
+                    \item Dequeue a node from the queue.
+                    \item Add its value to the current level's list.
+                    \item Enqueue its non-\texttt{NULL} left and right children.
+                \end{enumerate}
+                \item After processing all nodes at the current level, add the level's list to the result.
+            \end{enumerate}
+        \end{enumerate}
+    \end{itemize}
+    
+    \item \textbf{Recursive Approach (Depth-First Search)}:
+    \begin{itemize}
+        \item \textbf{Use a Helper Function}: Create a helper function that takes a node and its current level as arguments.
+        \item \textbf{Traverse the Tree}:
+        \begin{enumerate}
+            \item If the node is \texttt{NULL}, return.
+            \item If the current level is equal to the size of the result list, append a new sublist for this level.
+            \item Add the node's value to the corresponding level's sublist.
+            \item Recursively traverse the left and right children, incrementing the level by one.
+        \end{enumerate}
+    \end{itemize}
+\end{enumerate}
+
+\textbf{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity}: The time complexity is \(O(n)\), where \(n\) is the number of nodes in the tree. Each node is visited exactly once.
+    \item \textbf{Space Complexity}:
+    \begin{itemize}
+        \item \textbf{Iterative Approach (BFS)}: \(O(n)\), as in the worst case, the queue will hold all nodes at the last level.
+        \item \textbf{Recursive Approach (DFS)}: \(O(n)\), due to the space required to store the result and the recursive call stack.
+    \end{itemize}
+\end{itemize}
+
+\textbf{Python Implementation}\marginpar{Implementing both BFS and DFS solutions for flexibility.}
+
+\begin{lstlisting}[language=Python, xleftmargin=0.02\textwidth, xrightmargin=0.02\textwidth]
+# Definition for a binary tree node.
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+# Iterative Approach (BFS)
+from collections import deque
+
+def levelOrderBFS(root: TreeNode) -> list:
+    if not root:
+        return []
+    result = []
+    queue = deque([root])
+    while queue:
+        level_size = len(queue)
+        current_level = []
+        for _ in range(level_size):
+            node = queue.popleft()
+            current_level.append(node.val)
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+        result.append(current_level)
+    return result
+
+# Recursive Approach (DFS)
+def levelOrderDFS(root: TreeNode) -> list:
+    def helper(node: TreeNode, level: int):
+        if not node:
+            return
+        if level == len(result):
+            result.append([])
+        result[level].append(node.val)
+        helper(node.left, level + 1)
+        helper(node.right, level + 1)
+    
+    result = []
+    helper(root, 0)
+    return result
+
+# Example usage:
+# Constructing the following binary tree
+#       3
+#      / \
+#     9  20
+#        / \
+#       15  7
+root = TreeNode(3)
+root.left = TreeNode(9)
+root.right = TreeNode(20, TreeNode(15), TreeNode(7))
+
+print(levelOrderBFS(root))  # Output: [[3], [9, 20], [15, 7]]
+print(levelOrderDFS(root))  # Output: [[3], [9, 20], [15, 7]]
+\end{lstlisting}
+
+\textbf{Explanation}
+
+The function \texttt{levelOrder} performs a level order traversal of a binary tree, returning a list of lists where each sublist contains the values of nodes at each level. 
+
+\begin{itemize}
+    \item \textbf{Iterative Approach (BFS)}:
+    \begin{itemize}
+        \item Uses a queue to traverse the tree level by level.
+        \item For each level, it records the number of nodes, processes each node by dequeuing it, and enqueues its children.
+        \item After processing all nodes at the current level, it appends the collected values to the result list.
+    \end{itemize}
+    
+    \item \textbf{Recursive Approach (DFS)}:
+    \begin{itemize}
+        \item Utilizes a helper function to traverse the tree depth-first while keeping track of the current level.
+        \item If a new level is encountered (i.e., the current level is equal to the length of the result list), a new sublist is appended.
+        \item The node's value is added to its corresponding level's sublist.
+        \item Recursively processes the left and right children, incrementing the level.
+    \end{itemize}
+\end{itemize}
+
+\textbf{Why This Approach}
+
+\begin{itemize}
+    \item \textbf{Iterative Approach (BFS)}: 
+    \begin{itemize}
+        \item Naturally fits the level order traversal requirement by exploring nodes level by level.
+        \item Efficient in terms of time and space for balanced trees.
+    \end{itemize}
+    
+    \item \textbf{Recursive Approach (DFS)}: 
+    \begin{itemize}
+        \item Simplifies the traversal by leveraging the call stack to manage levels.
+        \item Can be more intuitive for those familiar with recursive tree traversals.
+    \end{itemize}
+\end{itemize}
+
+\textbf{Alternative Approaches}
+
+An alternative method involves using a stack to perform an iterative Depth-First Search (DFS) while keeping track of node levels. However, the BFS and recursive DFS approaches are generally more straightforward and easier to implement for level order traversal.
+
+\textbf{Similar Problems to This One}
+
+Similar tree traversal problems include finding the minimum depth of a binary tree (\hyperref[problem:minimum_depth_of_binary_tree]{Minimum Depth of Binary Tree}), checking if a tree is symmetric (\hyperref[problem:symmetric_tree]{Symmetric Tree}), and performing a zigzag level order traversal (\hyperref[problem:binary_tree_zigzag_level_order_traversal]{Binary Tree Zigzag Level Order Traversal}).
+
+\textbf{Things to Keep in Mind and Tricks}
+
+\begin{itemize}
+    \item \textbf{Handling Empty Trees}: Always check if the root is \texttt{NULL} to handle empty trees gracefully.
+    \item \textbf{Level Tracking}: In the iterative approach, keeping track of the current level's size helps in segregating nodes level by level.
+    \item \textbf{Space Optimization}: Be mindful of the space used by the queue in BFS or the recursion stack in DFS, especially for very deep or wide trees.
+    \item \textbf{Consistent Level Identification}: Ensure that nodes are correctly associated with their respective levels to maintain accurate traversal results.
+\end{itemize}
+
+\textbf{Corner and Special Cases to Test When Writing the Code}
+
+\begin{itemize}
+    \item \textbf{Empty Tree}: Should return an empty list.
+    \item \textbf{Single Node}: Should return a list containing one sublist with the single node's value.
+    \item \textbf{Unbalanced Tree}: Trees that are skewed to the left or right should correctly return their respective levels.
+    \item \textbf{Complete Binary Tree}: Ensure that all levels except possibly the last are fully filled.
+    \item \textbf{Large Tree}: Testing with a large number of nodes ensures that the implementation handles depth and breadth efficiently without performance degradation.
+\end{itemize}

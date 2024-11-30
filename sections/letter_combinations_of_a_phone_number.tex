@@ -1,0 +1,137 @@
+% Filename: letter_combinations_of_a_phone_number.tex
+
+\problemsection{Letter Combinations of a Phone Number}
+\label{problem:Letter_Combinations_of_a_Phone_Number}
+
+The **Letter Combinations of a Phone Number** problem is a classic example of recursion and backtracking used to generate all possible combinations of letters mapped to digits on a phone keypad.
+
+\subsection*{Problem Statement}
+Given a string containing digits from \(2\) to \(9\) (inclusive), return all possible letter combinations that the digits could represent. Each digit maps to specific letters as shown on a traditional phone keypad.
+
+\textbf{Input:}
+- A string \texttt{digits}, consisting of digits from \(2\) to \(9\).
+
+\textbf{Output:}
+- A list of strings, where each string represents a possible combination of letters.
+
+\textbf{Example 1:}
+
+Input: \texttt{digits = "23"}
+
+Output: \[
+["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"]
+\]
+
+\textbf{Example 2:}
+
+Input: \texttt{digits = ""}
+
+Output: \[
+[]
+\]
+
+\textbf{Example 3:}
+
+Input: \texttt{digits = "2"}
+
+Output: \[
+["a", "b", "c"]
+\]
+
+\subsection*{Mapping of Digits to Letters}
+The mapping follows the traditional phone keypad:
+\[
+\begin{aligned}
+2 &\rightarrow \{a, b, c\}, \quad
+3 \rightarrow \{d, e, f\}, \quad
+4 \rightarrow \{g, h, i\}, \\
+5 &\rightarrow \{j, k, l\}, \quad
+6 \rightarrow \{m, n, o\}, \quad
+7 \rightarrow \{p, q, r, s\}, \\
+8 &\rightarrow \{t, u, v\}, \quad
+9 \rightarrow \{w, x, y, z\}.
+\end{aligned}
+\]
+
+\subsection*{Algorithmic Approach}
+The problem can be solved using a backtracking approach:
+\begin{itemize}
+    \item If the input string is empty, return an empty list immediately\sidenote{This handles edge cases where there are no digits to process.}.
+    \item Use recursion to explore each possible letter for the current digit and proceed to the next digit.
+    \item Maintain a list to track the current combination of letters.
+    \item Once all digits are processed, add the complete combination to the result list.
+\end{itemize}
+
+\subsection*{Complexities}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(4^n)\), where \(n\) is the length of \texttt{digits}, since each digit maps to at most 4 letters.
+    \item \textbf{Space Complexity:} \(O(n)\), for the recursion stack.
+\end{itemize}
+
+\subsection*{Python Implementation}
+Below is the Python implementation using backtracking:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def letterCombinations(digits):
+    if not digits:
+        return []
+    
+    # Map digits to corresponding letters
+    phone_map = {
+        "2": "abc", "3": "def", "4": "ghi", "5": "jkl",
+        "6": "mno", "7": "pqrs", "8": "tuv", "9": "wxyz"
+    }
+    
+    def backtrack(index, current):
+        # Base case: if the current combination is complete
+        if index == len(digits):
+            result.append("".join(current))
+            return
+        
+        # Get the letters corresponding to the current digit
+        letters = phone_map[digits[index]]
+        for letter in letters:
+            current.append(letter)  # Add the letter
+            backtrack(index + 1, current)  # Recur for the next digit
+            current.pop()  # Backtrack by removing the last letter
+    
+    result = []
+    backtrack(0, [])
+    return result
+
+# Example usage:
+print(letterCombinations("23"))  # Output: ["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"]
+\end{lstlisting}
+\end{fullwidth}
+
+\subsection*{Why This Approach?}
+Backtracking is ideal for this problem because it systematically explores all valid combinations of letters, pruning invalid paths efficiently. The use of recursion makes the implementation clean and intuitive.
+
+\subsection*{Alternative Approaches}
+An iterative approach can also generate combinations using a queue. However, it requires more bookkeeping and is less elegant than the recursive backtracking solution.
+
+\subsection*{Similar Problems}
+\begin{itemize}
+    \item \textbf{Subsets:} Generate all subsets of a given set.
+    \item \textbf{Permutations:} Generate all permutations of a set of numbers.
+    \item \textbf{Word Search:} Find words in a grid using backtracking.
+\end{itemize}
+
+\subsection*{Things to Keep in Mind and Tricks}
+\begin{itemize}
+    \item Handle edge cases like empty input or single-digit input separately.
+    \item Precompute the mapping of digits to letters to avoid redundancy during recursion.
+    \item Optimize by skipping invalid digits (e.g., \(1\) and \(0\) if included in input).
+\end{itemize}
+
+\subsection*{Corner and Special Cases to Test}
+\begin{itemize}
+    \item \textbf{Empty Input:} Input: \texttt{digits = ""}, Output: \texttt{[]}.
+    \item \textbf{Single Digit:} Input: \texttt{digits = "7"}, Output: \texttt{["p", "q", "r", "s"]}.
+    \item \textbf{Multiple Digits:} Input: \texttt{digits = "234"}, Verify all combinations are generated correctly.
+    \item \textbf{Edge Case for Large Input:} Test with longer strings like \texttt{digits = "999"}.
+\end{itemize}
+
+\subsection*{Conclusion}
+The **Letter Combinations of a Phone Number** problem demonstrates the power of backtracking for generating combinatorial solutions efficiently. By systematically exploring all possibilities and pruning invalid paths, the solution ensures correctness and optimal performance.

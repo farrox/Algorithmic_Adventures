@@ -1,0 +1,64 @@
+
+ewpage
+
+\chapter{Reverse Linked List}
+\label{chap:Reverse_Linked_List}
+The "Reverse Linked List" problem is a fundamental challenge often used to assess one's understanding of linked list manipulation and pointer operations. Given the head of a singly linked list, the objective is to reverse the list and return the head of the newly reversed list.
+
+\section*{Problem Statement}
+The task at hand involves modifying the direction of the `next` pointers in each node of a singly linked list such that the list's order is reversed. The input is the head of a singly linked list, and the expected output is the head of the list after it has undergone reversal.
+
+LeetCode link: \href{https://leetcode.com/problems/reverse-linked-list/}{Reverse Linked List}
+
+\section*{Algorithmic Approach}
+A common strategy to reverse a linked list is to iterate through the list while adjusting the next pointers of each node to point to the previous node instead of the next one. This can be done using an iterative method with a temporary node to help in swapping the pointers, or using a recursive approach that reverses the list from the tail back to the head.
+
+\section*{Complexities}
+\begin{itemize}
+	\item \textbf{Time Complexity:} The iterative and recursive solutions both traverse the list once, resulting in a time complexity of \(O(n)\), where \(n\) is the number of nodes in the list.
+	\item \textbf{Space Complexity:} The iterative approach uses constant extra space, giving it a space complexity of \(O(1)\). The recursive approach, however, has a space complexity of \(O(n)\) due to the call stack memory used in the recursion.
+\end{itemize}
+
+
+ewpage % Start Python Implementation on a new page
+\section*{Python Implementation}
+Here is a Python implementation of the iterative method for reversing a linked list:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+class Solution:
+    def reverseList(self, head):
+        prev = None
+        current = head
+        while current:
+            next_temp = current.next
+            current.next = prev
+            prev = current
+            current = next_temp
+        return prev
+\end{lstlisting}
+
+\end{fullwidth}
+
+This code defines a `ListNode` class used to construct the linked list, as well as a `Solution` class with the `reverseList` method. The method takes the list's head node as an argument and reverses the list by reassigning the `next` pointers of each node. 
+
+\section*{Why this approach}
+The iterative method is selected because it is straightforward, elegant, and requires only a few lines of code. It does not use additional space proportional to the size of the list, which makes it space efficient.
+
+\section*{Alternative approaches}
+An alternative is the recursive approach, which is somewhat less intuitive but useful in understanding deeper recursive algorithmic thinking. The primary downside is the extra space required for the recursion call stack.
+
+\section*{Similar problems to this one}
+Similar linked list manipulation problems include "Reverse Linked List II", where only a part of the list is reversed, and "Reverse Nodes in k-Group", where the list is reversed in groups of k nodes.
+
+\section*{Things to keep in mind and tricks}
+When reversing a linked list, it's important to keep track of the \texttt{next} pointer of the current node before changing it, so that you do not lose access to the rest of the list. Using multiple pointers (like \texttt{prev}, \texttt{current}, and \texttt{next\_temp} in the implementation) is a common trick to simplify the process.
+
+
+\section*{Corner and special cases to test when writing the code}
+Be sure to test cases where the list is empty or contains only one node, as these are edge cases that may cause incorrect implementations to fail. Additionally, one must ensure that the last node in the reversed list points to `NULL` (or `None` in Python), indicating the end of the list.

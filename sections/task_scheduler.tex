@@ -1,0 +1,346 @@
+% file: task_scheduler.tex
+
+\problemsection{Task Scheduler}
+\label{problem:task_scheduler}
+\marginnote{This problem utilizes a greedy algorithm and frequency counting to efficiently schedule tasks with cooldown constraints.}
+
+The \textbf{Task Scheduler} problem is a classic algorithmic challenge that involves determining the minimum number of time units required to execute a list of tasks given specific cooldown constraints. Each task is represented by a character, and the cooldown period \( n \) dictates the minimum number of time units that must pass before the same task can be executed again.
+
+\section*{Problem Statement}
+
+Given a list of tasks represented by characters and a non-negative integer \( n \) representing the cooldown period between two identical tasks, return the least number of time units that the CPU will take to finish all the given tasks. The CPU can either execute a task or be idle in each unit of time. Each task takes exactly one unit of time.
+
+\textbf{Example 1:}
+\begin{verbatim}
+Input: tasks = ["A","A","A","B","B","B"], n = 2
+Output: 8
+Explanation: A -> B -> idle -> A -> B -> idle -> A -> B.
+Total time units = 8.
+\end{verbatim}
+
+\textbf{Example 2:}
+\begin{verbatim}
+Input: tasks = ["A","A","A","B","B","B"], n = 0
+Output: 6
+Explanation: A -> A -> A -> B -> B -> B.
+Total time units = 6.
+\end{verbatim}
+
+
+\marginnote{\href{https://leetcode.com/problems/task-scheduler/}{[LeetCode Link]}\index{LeetCode}}
+\marginnote{\href{https://www.geeksforgeeks.org/task-scheduler-problem/}{[GeeksForGeeks Link]}\index{GeeksForGeeks}}
+\marginnote{\href{https://www.hackerrank.com/challenges/task-scheduler/problem}{[HackerRank Link]}\index{HackerRank}}
+\marginnote{\href{https://app.codesignal.com/challenges/task-scheduler}{[CodeSignal Link]}\index{CodeSignal}}
+\marginnote{\href{https://www.interviewbit.com/problems/task-scheduler/}{[InterviewBit Link]}\index{InterviewBit}}
+\marginnote{\href{https://www.educative.io/courses/grokking-the-coding-interview/RM8y8Y3nLdY}{[Educative Link]}\index{Educative}}
+\marginnote{\href{https://www.codewars.com/kata/task-scheduler/train/python}{[Codewars Link]}\index{Codewars}}
+
+\section*{Algorithmic Approach}
+
+\subsection*{Main Concept}
+The main idea to solve this problem is to use a greedy algorithm combined with frequency counting of tasks. The steps are as follows:
+
+\begin{enumerate}
+    \item \textbf{Frequency Count:} Count the frequency of each task.
+    \item \textbf{Identify Maximum Frequency:} Determine the task(s) with the highest frequency.
+    \item \textbf{Calculate Initial Slots:} Calculate the number of idle slots based on the highest frequency and cooldown period.
+    \item \textbf{Fill Idle Slots:} Assign remaining tasks to these idle slots to minimize the total time.
+    \item \textbf{Determine Final Answer:} The final answer is the maximum between the length of the tasks list and the total calculated slots.
+\end{enumerate}
+
+\marginnote{Using frequency counts ensures that the most frequent tasks are scheduled optimally to minimize idle time.}
+
+\section*{Complexities}
+
+\begin{itemize}
+	\item \textbf{Time Complexity:} \( O(N) \), where \( N \) is the number of tasks. Counting frequencies and iterating through the frequency list both take linear time.
+	\item \textbf{Space Complexity:} \( O(1) \) since the frequency array has a fixed size of 26 (for each uppercase English letter).
+\end{itemize}
+
+\newpage
+\section*{Python Implementation}
+
+\marginnote{Multiple implementation approaches demonstrate different trade-offs between readability, efficiency, and visualization.}
+
+Below are three implementations: the standard solution, a heap-based approach, and a solution with visualization:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+from collections import Counter
+from typing import List, Tuple
+import heapq
+
+class Solution:
+    def leastInterval(self, tasks: List[str], n: int) -> int:
+        """Standard greedy solution with frequency counting."""
+        if n == 0:
+            return len(tasks)
+        
+        task_counts = Counter(tasks)
+        max_freq = max(task_counts.values())
+        max_freq_tasks = list(task_counts.values()).count(max_freq)
+        
+        part_count = max_freq - 1
+        part_length = n - (max_freq_tasks - 1)
+        empty_slots = part_count * part_length
+        available_tasks = len(tasks) - max_freq * max_freq_tasks
+        idles = max(0, empty_slots - available_tasks)
+        
+        return len(tasks) + idles
+
+    def leastIntervalHeap(self, tasks: List[str], n: int) -> int:
+        """Heap-based solution that simulates actual task execution."""
+        if n == 0:
+            return len(tasks)
+            
+        # Count task frequencies
+        count = Counter(tasks)
+        
+        # Create max heap (-freq, task)
+        heap = [(-freq, task) for task, freq in count.items()]
+        heapq.heapify(heap)
+        
+        time = 0
+        while heap:
+            cycle = n + 1
+            temp = []
+            task_count = 0
+            
+            # Execute tasks in current cycle
+            while cycle > 0 and heap:
+                freq, task = heapq.heappop(heap)
+                if freq < -1:
+                    temp.append((freq + 1, task))
+                task_count += 1
+                cycle -= 1
+            
+            # Add back tasks that still have remaining frequency
+            for item in temp:
+                heapq.heappush(heap, item)
+            
+            # Add idle time if necessary
+            time += n + 1 if heap else task_count
+            
+        return time
+
+    def visualizeSchedule(self, tasks: List[str], n: int) -> Tuple[int, List[str]]:
+        """Returns both the minimum intervals and the actual schedule."""
+        if n == 0:
+            return len(tasks), tasks
+            
+        count = Counter(tasks)
+        heap = [(-freq, task) for task, freq in count.items()]
+        heapq.heapify(heap)
+        
+        schedule = []
+        time = 0
+        
+        while heap:
+            cycle = n + 1
+            temp = []
+            
+            while cycle > 0 and heap:
+                freq, task = heapq.heappop(heap)
+                schedule.append(task)
+                if freq < -1:
+                    temp.append((freq + 1, task))
+                cycle -= 1
+            
+            # Add idle slots if necessary
+            while cycle > 0 and temp:
+                schedule.append('idle')
+                cycle -= 1
+                
+            for item in temp:
+                heapq.heappush(heap, item)
+                
+        return len(schedule), schedule
+
+# Example usage and visualization
+def test_task_scheduler():
+    solution = Solution()
+    tasks = ["A","A","A","B","B","B"]
+    n = 2
+    
+    # Test all implementations
+    min_time = solution.leastInterval(tasks, n)
+    min_time_heap = solution.leastIntervalHeap(tasks, n)
+    total_time, schedule = solution.visualizeSchedule(tasks, n)
+    
+    print(f"Minimum intervals: {min_time}")
+    print(f"Actual schedule: {' -> '.join(schedule)}")
+\end{lstlisting}
+\end{fullwidth}
+
+\section*{Visual Explanation}
+\begin{figure}[h]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|}
+        \hline
+        Time & Task & Remaining A & Remaining B & State \\
+        \hline
+        0 & A & 2 & 3 & Execute A \\
+        1 & B & 2 & 2 & Execute B \\
+        2 & idle & 2 & 2 & Cooldown \\
+        3 & A & 1 & 2 & Execute A \\
+        4 & B & 1 & 1 & Execute B \\
+        5 & idle & 1 & 1 & Cooldown \\
+        6 & A & 0 & 1 & Execute A \\
+        7 & B & 0 & 0 & Execute B \\
+        \hline
+    \end{tabular}
+    \caption{Step-by-step execution for tasks=["A","A","A","B","B","B"], n=2}
+    \label{fig:task_scheduler}
+\end{figure}
+
+\section*{Implementation Variants}
+\begin{itemize}
+    \item \textbf{Frequency Counting:}
+        \begin{itemize}
+            \item Simple and intuitive
+            \item O(N) time complexity
+            \item Best for interviews
+        \end{itemize}
+    \item \textbf{Heap-based:}
+        \begin{itemize}
+            \item Simulates actual execution
+            \item More flexible for modifications
+            \item Good for real-time scheduling
+        \end{itemize}
+    \item \textbf{Visualization:}
+        \begin{itemize}
+            \item Shows actual schedule
+            \item Useful for debugging
+            \item Good for understanding
+        \end{itemize}
+\end{itemize}
+
+\section*{Common Optimization Techniques}
+\begin{itemize}
+    \item \textbf{Early Termination:} Return early for n=0 or single task
+    \item \textbf{Space Optimization:} Reuse arrays when possible
+    \item \textbf{Cycle Detection:} Identify repeating patterns
+    \item \textbf{Batch Processing:} Handle multiple tasks in cycles
+\end{itemize}
+
+\section*{Real-World Applications}
+\begin{itemize}
+    \item \textbf{CPU Scheduling:} Process execution with cooldown
+    \item \textbf{Network Packet Processing:} Managing request intervals
+    \item \textbf{Resource Management:} Allocating shared resources
+    \item \textbf{Job Scheduling:} Batch processing with constraints
+\end{itemize}
+
+\section*{Explanation}
+
+The provided Python implementation defines a function `leastInterval` which takes a list of tasks and an integer `n` representing the cooldown period. Here's a step-by-step breakdown of the implementation:
+
+\begin{itemize}
+    \item \textbf{Edge Case Handling:}
+    \begin{itemize}
+        \item If the cooldown period `n` is 0, there are no restrictions on task execution order, so the minimum time is simply the number of tasks.
+    \end{itemize}
+    
+    \item \textbf{Frequency Counting:}
+    \begin{itemize}
+        \item Use `Counter` from the `collections` module to count the frequency of each task.
+        \item Identify `max-freq`, the highest frequency among all tasks.
+        \item Determine `max-freq-tasks`, the number of tasks that have this highest frequency.
+    \end{itemize}
+    
+    \item \textbf{Calculating Idle Slots:}
+    \begin{itemize}
+        \item `part-count` is the number of full parts between the most frequent tasks, calculated as `max-freq - 1`.
+        \item `part-length` is the length of each part, which is `n - (max-freq-tasks - 1)`. This accounts for the fact that multiple tasks with the same highest frequency can fill some of the idle slots.
+        \item `empty-slots` is the total number of idle slots available, calculated as `part-count * part-length`.
+    \end{itemize}
+    
+    \item \textbf{Filling Idle Slots:}
+    \begin{itemize}
+        \item `available-tasks` is the number of tasks that are not the most frequent ones.
+        \item `idles` is the number of idle slots that remain after filling with available tasks, calculated as `max(0, empty-slots - available-tasks)`.
+    \end{itemize}
+    
+    \item \textbf{Determining the Final Answer:}
+    \begin{itemize}
+        \item The minimum time required is the sum of the total number of tasks and the number of idle slots.
+    \end{itemize}
+\end{itemize}
+
+This approach ensures that tasks are scheduled in a way that minimizes idle time by prioritizing the most frequent tasks and efficiently utilizing available slots.
+
+\section*{Why This Approach}
+
+The greedy algorithm is chosen for its efficiency and effectiveness in handling the problem's constraints. By focusing on the most frequent tasks and strategically placing them to minimize idle time, this approach ensures an optimal schedule. It avoids the need for more complex methods like dynamic programming, resulting in a simpler and faster solution.
+
+\section*{Alternative Approaches}
+
+An alternative approach involves using a priority queue (max heap) to always select the task with the highest remaining frequency that can be executed next, adhering to the cooldown constraint. This method can also achieve \( O(N) \) time complexity but may have a higher constant factor due to heap operations. Additionally, dynamic programming techniques can be employed, but they tend to be more complex and less intuitive for this specific problem.
+
+\section*{Similar Problems to This One}
+
+Similar problems involve scheduling tasks with specific constraints, such as:
+
+\begin{itemize}
+    \item \hyperref[problem:rearrange_string_k_distance_apart]{Rearrange String k Distance Apart}\index{Rearrange String k Distance Apart}
+    \item \hyperref[problem:task_scheduler_ii]{Task Scheduler II}\index{Task Scheduler II}
+    \item \hyperref[problem:minimum_window_substring]{Minimum Window Substring}\index{Minimum Window Substring}
+    \item \hyperref[problem:reorganize_string]{Reorganize String}\index{Reorganize String}
+    \item \hyperref[problem:cpu_task_scheduler]{CPU Task Scheduler}\index{CPU Task Scheduler}
+\end{itemize}
+
+\section*{Things to Keep in Mind and Tricks}
+
+When solving scheduling problems with cooldown or distance constraints:
+
+\begin{itemize}
+    \item \textbf{Frequency Counts:} Always consider the frequency of each task, as the most frequent tasks often determine the scheduling constraints.
+    \index{Frequency Counts}
+    
+    \item \textbf{Greedy Placement:} Prioritize scheduling the most frequent tasks first to minimize idle time.
+    \index{Greedy Placement}
+    
+    \item \textbf{Idle Slot Calculation:} Carefully calculate idle slots based on the number of tasks and their frequencies.
+    \index{Idle Slot Calculation}
+    
+    \item \textbf{Handling Multiple Maximum Frequency Tasks:} When multiple tasks share the highest frequency, adjust your calculations to account for their combined effect on idle slots.
+    \index{Handling Multiple Maximum Frequency Tasks}
+    
+    \item \textbf{Final Answer Determination:} The answer is the maximum between the total number of tasks and the calculated idle-inclusive schedule length.
+    \index{Final Answer Determination}
+\end{itemize}
+
+\section*{Corner and Special Cases to Test When Writing the Code}
+
+To ensure robustness, consider testing the following corner cases:
+
+\begin{itemize}
+    \item \textbf{All Tasks Identical:} All tasks are the same, requiring maximum cooldown.
+    \index{Corner Cases}
+    
+    \item \textbf{No Cooldown (n = 0):} Should return the length of the tasks list.
+    \index{Corner Cases}
+    
+    \item \textbf{Multiple Tasks with Maximum Frequency:} Multiple tasks share the highest frequency, affecting idle slot calculations.
+    \index{Corner Cases}
+    
+    \item \textbf{Cooldown Greater Than Tasks:} The cooldown period is larger than the number of tasks.
+    \index{Corner Cases}
+    
+    \item \textbf{Single Task:} Only one task is present.
+    \index{Corner Cases}
+    
+    \item \textbf{Empty Task List:} Should handle gracefully, possibly returning 0.
+    \index{Corner Cases}
+    
+    \item \textbf{Large Number of Tasks:} Ensure the algorithm handles large inputs efficiently without exceeding time limits.
+    \index{Corner Cases}
+    
+    \item \textbf{Tasks with High \( k \) Values:} Tasks require large cooldown periods relative to their frequencies.
+    \index{Corner Cases}
+    
+    \item \textbf{Mixed Frequencies and Cooldowns:} A combination of tasks with varying frequencies and different cooldown requirements.
+    \index{Corner Cases}
+\end{itemize}
+
+\printindex

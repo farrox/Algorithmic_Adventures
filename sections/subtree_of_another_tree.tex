@@ -1,0 +1,149 @@
+% Filename: subtree_of_another_tree.tex
+
+\problemsection{Subtree of Another Tree}\marginpar{Determine if one binary tree is a subtree of another using recursive strategies.}
+
+\textbf{Problem Statement}
+
+Given two non-empty binary trees, \texttt{s} and \texttt{t}, check whether tree \texttt{t} has exactly the same structure and node values with a subtree of \texttt{s}. A subtree of \texttt{s} is a tree consisting of a node in \texttt{s} and all of its descendants. The tree \texttt{s} could also be considered as a subtree of itself.
+
+\textbf{Algorithmic Approach}
+
+To solve this problem, we can utilize a recursive approach that traverses tree \texttt{s} and checks for the presence of tree \texttt{t} as a subtree at each node. The approach involves two main functions:
+\begin{enumerate}
+    \item A function to traverse tree \texttt{s} and initiate the subtree comparison.
+    \item A helper function to compare two trees for identical structure and node values.
+\end{enumerate}
+
+\begin{enumerate}
+    \item \textbf{Recursive Traversal and Comparison}:
+    \begin{itemize}
+        \item \textbf{Traverse Tree \texttt{s}}: Start from the root of \texttt{s} and traverse the tree in a depth-first manner.
+        \item \textbf{Initiate Comparison}:
+        \begin{enumerate}
+            \item At each node in \texttt{s}, check if the subtree rooted at that node matches tree \texttt{t} using the helper comparison function.
+            \item If a match is found, return \texttt{True}.
+            \item Otherwise, continue traversing the left and right subtrees of the current node.
+        \end{enumerate}
+    \end{itemize}
+    
+    \item \textbf{Helper Function for Tree Comparison}:
+    \begin{itemize}
+        \item \textbf{Compare Node Values}:
+        \begin{enumerate}
+            \item If both nodes being compared are \texttt{NULL}, return \texttt{True} as empty trees are identical.
+            \item If one node is \texttt{NULL} and the other is not, return \texttt{False}.
+            \item If the values of the current nodes do not match, return \texttt{False}.
+        \end{enumerate}
+        \item \textbf{Recursively Compare Subtrees}:
+        \begin{enumerate}
+            \item Recursively compare the left children of both nodes.
+            \item Recursively compare the right children of both nodes.
+            \item Return \texttt{True} only if both left and right subtree comparisons return \texttt{True}.
+        \end{enumerate}
+    \end{itemize}
+\end{enumerate}
+
+\textbf{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity}: \(O(N \times M)\), where \(N\) is the number of nodes in tree \texttt{s} and \(M\) is the number of nodes in tree \texttt{t}. In the worst case, for each node in \texttt{s}, we may need to compare it with all nodes in \texttt{t}.
+    \item \textbf{Space Complexity}: \(O(H_s + H_t)\), where \(H_s\) is the height of tree \texttt{s} and \(H_t\) is the height of tree \texttt{t}. This accounts for the recursive call stacks of both the traversal and comparison functions.
+\end{itemize}
+
+\textbf{Python Implementation}\marginpar{Implementing a recursive solution to check for subtree existence.}
+
+\begin{lstlisting}[language=Python, xleftmargin=0.02\textwidth, xrightmargin=0.02\textwidth]
+# Definition for a binary tree node.
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+class Solution:
+    def isSubtree(self, s: TreeNode, t: TreeNode) -> bool:
+        if not s:
+            return False
+        if self.isSameTree(s, t):
+            return True
+        return self.isSubtree(s.left, t) or self.isSubtree(s.right, t)
+    
+    def isSameTree(self, s: TreeNode, t: TreeNode) -> bool:
+        if not s and not t:
+            return True
+        if not s or not t:
+            return False
+        if s.val != t.val:
+            return False
+        return self.isSameTree(s.left, t.left) and self.isSameTree(s.right, t.right)
+
+# Example usage:
+# Constructing tree s
+#        3
+#       / \
+#      4   5
+#     / \
+#    1   2
+
+s = TreeNode(3)
+s.left = TreeNode(4, TreeNode(1), TreeNode(2))
+s.right = TreeNode(5)
+
+# Constructing tree t
+#      4
+#     / \
+#    1   2
+
+t = TreeNode(4, TreeNode(1), TreeNode(2))
+
+solution = Solution()
+print(solution.isSubtree(s, t))  # Output: True
+
+# Constructing tree t2
+#      4
+#     / 
+#    1   
+
+t2 = TreeNode(4, TreeNode(1), None)
+print(solution.isSubtree(s, t2))  # Output: False
+\end{lstlisting}
+
+\textbf{Explanation}
+
+The function \texttt{isSubtree} determines whether tree \texttt{t} is a subtree of tree \texttt{s} by recursively traversing tree \texttt{s} and comparing each node's subtree with tree \texttt{t}.
+
+\begin{itemize}
+    \item \textbf{Main Function \texttt{isSubtree}}:
+    \begin{itemize}
+        \item **Base Case**: If the current node in \texttt{s} is \texttt{NULL}, return \texttt{False} as tree \texttt{t} cannot be a subtree.
+        \item **Subtree Check**: 
+        \begin{enumerate}
+            \item Use the helper function \texttt{isSameTree} to check if the subtree rooted at the current node of \texttt{s} matches tree \texttt{t}.
+            \item If a match is found, return \texttt{True}.
+            \item Otherwise, recursively check the left and right subtrees of the current node.
+        \end{enumerate}
+    \end{itemize}
+    
+    \item \textbf{Helper Function \texttt{isSameTree}}:
+    \begin{itemize}
+        \item **Base Cases**:
+        \begin{enumerate}
+            \item If both nodes being compared are \texttt{NULL}, return \texttt{True} as empty trees are identical.
+            \item If one node is \texttt{NULL} and the other is not, return \texttt{False}.
+        \end{enumerate}
+        \item **Value Comparison**: If the values of the current nodes do not match, return \texttt{False}.
+        \item **Recursive Comparison**: Recursively compare the left children and the right children of both nodes.
+    \end{itemize}
+\end{itemize}
+
+\textbf{Why This Approach}
+
+\begin{itemize}
+    \item \textbf{Leverages Tree Structure}: By utilizing the inherent structure of binary trees, the recursive approach efficiently navigates through tree \texttt{s} to find potential matching subtrees.
+    \item \textbf{Simplicity and Readability}: The recursive functions are straightforward, making the implementation easy to understand and maintain.
+    \item \textbf{Optimal Traversal}: Although the time complexity is \(O(N \times M)\), where \(N\) and \(M\) are the number of nodes in \texttt{s} and \texttt{t} respectively, this approach avoids unnecessary comparisons by pruning branches that cannot contain the subtree.
+\end{itemize}
+
+\textbf{Alternative Approaches}
+
+An alternative method involves serializing both trees (for example, using pre-order traversal with null markers) and then checking if the serialized string of tree \texttt{t} is a substring of the serialized string of tree \texttt{s}. This approach leverages string matching

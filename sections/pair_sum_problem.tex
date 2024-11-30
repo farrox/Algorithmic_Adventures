@@ -1,0 +1,93 @@
+% --- Begin Problem Section: Pair Sum Problem ---
+
+\problemsection{Find All Pairs with a Given Target Sum}
+
+\textbf{Problem Statement:}
+
+Given a **sorted** array of integers, find two numbers such that they add up to a specific target number. Return the indices of the two numbers (1-based index) as an integer array of size two, where `1 <= index1 < index2 <= array.length`. You may assume that each input would have exactly one solution, and you may not use the same element twice.
+
+\textbf{Example:}
+
+\begin{itemize}
+    \item \textbf{Input:} numbers = [2, 7, 11, 15], target = 9
+    \item \textbf{Output:} [1, 2]
+    \item \textbf{Explanation:} The numbers at indices 1 and 2 (2 + 7) add up to the target 9.
+\end{itemize}
+
+\textbf{Two Pointer Technique:}
+
+The **Two Pointer Technique** is an efficient method commonly used to solve problems involving arrays or lists, especially when dealing with sorted data. This technique uses two pointers moving through the data structure to find the desired elements without the need for additional storage or excessive computations.
+
+\textbf{Approach for the Pair Sum Problem:}
+
+1. **Initialize Two Pointers:**
+   - **Left Pointer (`left`):** Start at the beginning of the array (`index 0`).
+   - **Right Pointer (`right`):** Start at the end of the array (`index n-1`).
+
+2. **Iterative Process:**
+   - Calculate the sum of the elements pointed to by `left` and `right`.
+   - **If the sum equals the target:**
+     - Return the indices (`left + 1`, `right + 1`) as the solution.
+   - **If the sum is less than the target:**
+     - Move the `left` pointer one step to the right to increase the sum.
+   - **If the sum is greater than the target:**
+     - Move the `right` pointer one step to the left to decrease the sum.
+
+3. **Termination:**
+   - Continue the process until the `left` pointer is no longer less than the `right` pointer.
+   - Since the problem guarantees exactly one solution, the loop will terminate once the solution is found.
+
+\textbf{Advantages of the Two Pointer Technique:}
+
+- **Time Efficiency:** Operates in linear time, \(O(n)\), making it highly efficient for large datasets.
+- **Space Efficiency:** Requires constant space, \(O(1)\), as it uses only a fixed number of additional variables.
+- **Simplicity:** Easy to implement and understand, reducing the likelihood of errors.
+
+\textbf{Sample Solution in Python:}
+
+\begin{lstlisting}[language=Python, caption={Two Pointer Solution for Pair Sum Problem}]
+def two_sum(numbers, target):
+    left, right = 0, len(numbers) - 1
+    while left < right:
+        current_sum = numbers[left] + numbers[right]
+        if current_sum == target:
+            return [left + 1, right + 1]  # 1-based indexing
+        elif current_sum < target:
+            left += 1  # Move left pointer to the right
+        else:
+            right -= 1  # Move right pointer to the left
+    return []  # If no solution is found
+\end{lstlisting}
+
+\textbf{Explanation of the Code:}
+
+1. **Initialization:**
+   - `left` is set to the first index (`0`).
+   - `right` is set to the last index (`len(numbers) - 1`).
+
+2. **Loop Condition:**
+   - The loop continues as long as `left` is less than `right`.
+
+3. **Sum Calculation:**
+   - \texttt{current\_sum} is the sum of the elements at the \texttt{left} and \texttt{right} pointers.
+
+4. **Comparison and Pointer Adjustment:**
+   - **Equal to Target:** Return the 1-based indices.
+   - **Less than Target:** Increment \texttt{left} to increase the sum.
+   - **Greater than Target:** Decrement \texttt{right} to decrease the sum.
+
+5. **Return Statement:**
+   - If no valid pair is found (which shouldn't happen as per problem constraints), return an empty list.
+
+\textbf{Complexity Analysis:}
+
+- **Time Complexity:** \(O(n)\), where \(n\) is the number of elements in the array. Each pointer moves at most \(n\) steps.
+- **Space Complexity:** \(O(1)\), as no additional space proportional to the input size is used.
+
+\textbf{Key Takeaways:}
+
+- The Two Pointer Technique is highly effective for solving problems involving sorted arrays or lists.
+- It optimizes both time and space, making it preferable over brute-force methods in scenarios where efficiency is crucial.
+- Proper initialization and careful movement of pointers based on conditional checks are essential for the correct application of this technique.
+
+% --- End Problem Section: Pair Sum Problem ---

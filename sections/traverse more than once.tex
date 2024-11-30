@@ -1,0 +1,197 @@
+\section{Traversing the Array More Than Once}
+
+\section*{Introduction}
+
+While single-pass algorithms are often ideal for their simplicity and efficiency, there are scenarios where traversing an array multiple times—such as twice or thrice—remains within \(O(n)\) time complexity. Leveraging multiple passes can simplify problem-solving by breaking down complex tasks into manageable steps. This technique is particularly useful when each traversal serves a distinct purpose, such as gathering information in the first pass and processing it in subsequent passes.
+
+Traversing the array more than once can help in scenarios where:
+\begin{itemize}
+    \item Initial passes gather essential data or statistics.
+    \item Subsequent passes utilize the collected information to perform operations that would be cumbersome or inefficient in a single pass.
+    \item Multiple passes maintain linear time complexity while achieving desired outcomes without the need for additional data structures.
+\end{itemize}
+
+In this section, we will explore the advantages of multiple traversals, delve into a representative problem, and provide a Python implementation that demonstrates this technique in action.
+
+\section*{Problem Statement}
+
+\textbf{Find the First Non-Repeating Element in an Array}
+
+Given an array of integers \texttt{nums}, find the first element that does not repeat anywhere in the array. If all elements are repeating, return \texttt{-1}.
+
+\textbf{Input:} An array \texttt{nums} of integers.
+
+\textbf{Output:} The first non-repeating integer in the array, or \texttt{-1} if no such element exists.
+
+\textbf{Example:}
+\begin{verbatim}
+Input: nums = [2, 3, 4, 2, 3, 5]
+Output: 4
+Explanation: The number 4 is the first non-repeating element in the array.
+\end{verbatim}
+
+% LeetCode link: \href{https://leetcode.com/problems/first-unique-number/}{First Unique Number}
+
+\section*{Algorithmic Approach}
+
+Traversing the array multiple times can be instrumental in solving the "First Non-Repeating Element" problem efficiently. Here's how the approach works:
+
+\begin{enumerate}
+    \item \textbf{First Pass - Frequency Counting}: 
+    \begin{itemize}
+        \item Traverse the array to count the frequency of each element.
+        \item Use a hash map (dictionary) to store the count of each number.
+    \end{itemize}
+    
+    \item \textbf{Second Pass - Identifying the First Unique Element}: 
+    \begin{itemize}
+        \item Traverse the array again to find the first element with a frequency of 1.
+        \item Return this element as the first non-repeating number.
+    \end{itemize}
+    
+    \item \textbf{Edge Case Handling}: 
+    \begin{itemize}
+        \item If no unique element is found after the second traversal, return \texttt{-1}.
+    \end{itemize}
+\end{enumerate}
+
+This two-pass method ensures that each element is processed in linear time without requiring additional space proportional to the number of unique elements beyond the hash map.
+
+\section*{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(n)\)
+    \begin{itemize}
+        \item The array is traversed twice, resulting in linear time complexity.
+    \end{itemize}
+    
+    \item \textbf{Space Complexity:} \(O(n)\)
+    \begin{itemize}
+        \item A hash map is used to store the frequency of each element, requiring additional space proportional to the number of unique elements.
+    \end{itemize}
+\end{itemize}
+
+\section*{Python Implementation}
+
+Below is the Python code to solve the "First Non-Repeating Element in an Array" problem using the two-pass traversal technique:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+from typing import List
+from collections import defaultdict
+
+def firstNonRepeating(nums: List[int]) -> int:
+    """
+    Finds the first non-repeating element in the array.
+    
+    Parameters:
+    nums (List[int]): The input array of integers.
+    
+    Returns:
+    int: The first non-repeating integer, or -1 if all elements are repeating.
+    """
+    frequency = defaultdict(int)
+    
+    # First pass: Count the frequency of each element
+    for num in nums:
+        frequency[num] += 1
+    
+    # Second pass: Identify the first element with frequency 1
+    for num in nums:
+        if frequency[num] == 1:
+            return num
+    
+    return -1  # If no unique element is found
+
+# Example usage:
+nums = [2, 3, 4, 2, 3, 5]
+print(firstNonRepeating(nums))  # Output: 4
+\end{lstlisting}
+\end{fullwidth}
+
+\section*{Example Usage and Test Cases}
+
+\begin{lstlisting}[language=Python]
+# Test case 1: General case with a unique element
+nums = [2, 3, 4, 2, 3, 5]
+print(firstNonRepeating(nums))  # Output: 4
+
+# Test case 2: All elements are repeating
+nums = [1, 1, 2, 2, 3, 3]
+print(firstNonRepeating(nums))  # Output: -1
+
+# Test case 3: First element is unique
+nums = [5, 1, 2, 2, 3]
+print(firstNonRepeating(nums))  # Output: 5
+
+# Test case 4: Last element is unique
+nums = [1, 2, 3, 2, 1]
+print(firstNonRepeating(nums))  # Output: 3
+
+# Test case 5: Single element array
+nums = [10]
+print(firstNonRepeating(nums))  # Output: 10
+
+# Test case 6: Empty array
+nums = []
+print(firstNonRepeating(nums))  # Output: -1
+\end{lstlisting}
+
+\section*{Why This Approach}
+
+This two-pass traversal approach is selected for its simplicity and efficiency. By first counting the frequency of each element, the algorithm gathers all necessary information in a single linear pass. The subsequent traversal leverages this precomputed data to identify the first non-repeating element without additional computational overhead. This method ensures that the problem is solved within \(O(n)\) time complexity while maintaining clarity in implementation.
+
+Moreover, the use of a hash map for frequency counting provides constant-time access and update operations, which is crucial for maintaining the overall linear time complexity. This approach is also highly adaptable and can be extended to solve similar problems that require frequency analysis or order preservation.
+
+\section*{Similar Problems}
+
+Other problems that benefit from multiple traversals include:
+
+\begin{itemize}
+    \item \textbf{Two Sum}: Find two numbers in an array that add up to a specific target.
+    \item \textbf{Find the Duplicate Number}: Given an array containing \(n + 1\) integers where each integer is between 1 and \(n\) (inclusive), find the duplicate number.
+    \item \textbf{Intersection of Two Arrays}: Find the intersection of two arrays, returning unique elements.
+    \item \textbf{Most Frequent Element}: Identify the element that appears most frequently in an array.
+\end{itemize}
+
+These problems often require multiple passes to efficiently gather and utilize necessary information, such as element frequencies or specific conditions based on traversal order.
+
+\section*{Things to Keep in Mind and Tricks}
+
+\begin{itemize}
+    \item \textbf{Use of Absolute Values}: When modifying the array in place (if allowed), ensure that you use absolute values to avoid interference with previous markings.
+    
+    \item \textbf{Preserving Data Integrity}: If the original array must remain unchanged, use additional data structures like hash maps to store auxiliary information.
+    
+    \item \textbf{Edge Case Handling}: Always consider edge cases, such as empty arrays, single-element arrays, or arrays where all elements are identical.
+    
+    \item \textbf{Optimizing Space}: While multiple traversals can help maintain linear time complexity, be mindful of space usage, especially when dealing with large datasets.
+    
+    \item \textbf{Consistent Indexing}: Ensure that your index calculations are accurate, especially when mapping elements to specific indices for in-place modifications.
+    
+    \item \textbf{Early Termination}: In some cases, it's possible to terminate the second traversal early once the desired condition is met, potentially saving additional computation time.
+\end{itemize}
+
+\section*{Exercises}
+
+\begin{enumerate}
+    \item \textbf{Two Sum}: Given an array of integers and a target sum, return the indices of the two numbers that add up to the target.
+    
+    \item \textbf{Find the Duplicate Number}: Given an array containing \(n + 1\) integers where each integer is between 1 and \(n\) (inclusive), find the duplicate number without modifying the array.
+    
+    \item \textbf{Intersection of Two Arrays II}: Given two integer arrays, return an array of their intersection, including duplicate elements.
+    
+    \item \textbf{Most Frequent Element}: Given an array of integers, find the element that appears most frequently. If multiple elements have the same highest frequency, return any one of them.
+\end{enumerate}
+
+\section*{Questions for Reflection}
+
+\begin{itemize}
+    \item How can the two-pass traversal technique be adapted to handle cases where elements are not limited to positive integers?
+    
+    \item What are the trade-offs between using multiple traversals versus using additional data structures like hash maps or sets?
+    
+    \item Can you modify the two-pass approach to solve problems where the first unique element needs to be found based on different criteria, such as the smallest unique element?
+    
+    \item How does the presence of duplicate elements affect the efficiency and correctness of the two-pass traversal method?
+\end{itemize}

@@ -1,0 +1,117 @@
+\problemsection{Maximum Subarray}
+\label{problem:Maximum_Subarray}
+
+The **Maximum Subarray** problem is a cornerstone of algorithmic problem-solving, frequently used to introduce concepts like dynamic programming and divide-and-conquer techniques. Its simplicity and depth make it a classic challenge for both beginners and advanced programmers.
+
+\subsection*{Problem Statement}
+Given an integer array \texttt{nums}, find the contiguous subarray (containing at least one number) which has the largest sum, and return its sum\sidenote{A subarray is defined as a contiguous part of the array, meaning the elements are adjacent and sequential}.
+
+\textbf{Example 1:}
+\begin{verbatim}
+Input: nums = [-2,1,-3,4,-1,2,1,-5,4]
+Output: 6
+Explanation: [4,-1,2,1] has the largest sum = 6.
+\end{verbatim}
+
+\textbf{Example 2:}
+\begin{verbatim}
+Input: nums = [1]
+Output: 1
+Explanation: The array contains only one element, which is the subarray.
+\end{verbatim}
+
+\textbf{Example 3:}
+\begin{verbatim}
+Input: nums = [-1,-2,-3]
+Output: -1
+Explanation: The largest sum is the single element -1, as all numbers are negative.
+\end{verbatim}
+
+\textbf{Key Observations:}
+\begin{itemize}
+    \item An array with one element is a valid subarray\sidenote{Single-element arrays must be considered in edge cases}.
+    \item Negative values do not inherently prevent a subarray from being optimal; however, in some cases, starting a new subarray may yield better results.
+\end{itemize}
+
+\subsection*{Algorithmic Approach}
+There are three primary approaches to solving this problem:
+
+\begin{enumerate}
+    \item \textbf{Brute Force:} Examine every possible subarray and calculate their sums, maintaining the maximum encountered sum. This approach has \(O(n^2)\) to \(O(n^3)\) time complexity\sidenote{Avoid brute force unless explicitly required by constraints, as it is computationally expensive for large arrays}.
+    
+    \item \textbf{Divide and Conquer:} Split the array into two halves, recursively find the maximum subarray sum for each half, and compute the maximum sum of a subarray that spans the midpoint. The time complexity is \(O(n \log n)\) due to the recursive divisions\sidenote{Divide and conquer provides a clear demonstration of recursive problem-solving but is less efficient than dynamic programming here}.
+    
+    \item \textbf{Dynamic Programming (Kadane's Algorithm):} Iteratively compute the maximum subarray sum ending at each index by comparing:
+    \[
+    \text{max\_current} = \max(\text{nums}[i], \text{max\_current} + \text{nums}[i])
+    \]
+    Track the global maximum sum as:
+    \[
+    \text{max\_global} = \max(\text{max\_global}, \text{max\_current})
+    \]
+    This approach has \(O(n)\) time complexity and is the most efficient for this problem\sidenote{Kadane's Algorithm is optimal because it processes the array in a single pass with constant space}.
+\end{enumerate}
+
+\subsection*{Python Implementation}
+Below is the Python implementation of Kadane's Algorithm:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class Solution:
+    def maxSubArray(self, nums: List[int]) -> int:
+        # Initialize current and global maximums to the first element
+        max_current = max_global = nums[0]
+
+        # Traverse the array from the second element onward
+        for x in nums[1:]:
+            max_current = max(x, max_current + x)  # Include current element or start new subarray
+            max_global = max(max_global, max_current)  # Update global maximum if needed
+        
+        return max_global
+\end{lstlisting}
+\end{fullwidth}
+
+\textbf{Explanation:}
+\begin{itemize}
+    \item The algorithm initializes both \texttt{max\_current} and \texttt{max\_global} to the first element of the array\sidenote{This ensures that single-element arrays are handled naturally}.
+    \item For each element, it determines whether to include it in the current subarray or start a new subarray\sidenote{This decision is made using the `max` function}.
+    \item \texttt{max\_global} is updated whenever a larger subarray sum is encountered.
+    \item The final value of \texttt{max\_global} is returned as the result.
+\end{itemize}
+
+\subsection*{Why This Approach?}
+Kadane's Algorithm is chosen for its efficiency in both time and space. By maintaining running totals and a global maximum, it avoids the overhead of computing sums for all subarrays or managing recursion.
+
+\subsection*{Alternative Approaches}
+The divide-and-conquer method is an elegant alternative that divides the problem into smaller subproblems. However, it is less efficient due to its higher time complexity of \(O(n \log n)\).
+
+\subsection*{Similar Problems to This One}
+\begin{itemize}
+    \item \textbf{Maximum Product Subarray:} Find the subarray with the largest product instead of the largest sum.
+    \item \textbf{Best Time to Buy and Sell Stock:} Identify the best days to buy and sell stock for maximum profit.
+    \item \textbf{Longest Increasing Subarray:} Find the longest contiguous subarray with increasing elements.
+\end{itemize}
+
+\subsection*{Things to Keep in Mind and Tricks}
+\begin{itemize}
+    \item \textbf{All-Negative Arrays:} When all numbers are negative, the largest sum is the single largest element. Kadane's Algorithm naturally handles this case\sidenote{No need for additional checks; the algorithm inherently accommodates negative numbers}.
+    \item \textbf{Starting New Subarrays:} The decision to start a new subarray is pivotal. Always compare the current element with the sum of the current element and the existing subarray.
+    \item \textbf{Edge Cases:} Consider empty arrays, single-element arrays, and arrays with alternating large positive and negative numbers.
+\end{itemize}
+
+\subsection*{Complexities}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(n)\), as the algorithm processes each element exactly once.
+    \item \textbf{Space Complexity:} \(O(1)\), since it uses only a few variables for tracking sums.
+\end{itemize}
+
+\subsection*{Corner and Special Cases to Test}
+\begin{itemize}
+    \item \textbf{Empty Array:} Confirm the algorithm gracefully handles invalid input or returns a default value\sidenote{Some implementations may raise exceptions for empty arrays}.
+    \item \textbf{Single-Element Array:} Ensure that the output is the element itself.
+    \item \textbf{All-Negative Numbers:} Validate that the largest (least negative) number is returned.
+    \item \textbf{Mixed Positive and Negative Numbers:} Test with arrays containing both large positive and negative numbers to ensure correct subarray selection.
+\end{itemize}
+
+\subsection*{Conclusion}
+The **Maximum Subarray** problem exemplifies the power of dynamic programming in simplifying complex problems. Kadane's Algorithm is the optimal solution, offering both efficiency and elegance. By understanding the nuances of this problem, you can approach similar array challenges with confidence, leveraging dynamic programming concepts to solve them effectively.

@@ -1,0 +1,249 @@
+\section*{Creating and Manipulating Matrices}
+
+\subsection*{Creating an Empty \(N \times M\) Matrix}
+For problems involving matrix traversal or dynamic programming, it is often necessary to create an empty matrix of the same size and dimensions as the given matrix. This new matrix is used to store visited states, dynamic programming values, or intermediate results. Familiarizing yourself with routines for creating and manipulating matrices in your programming language is essential.
+
+In Python, an empty \(N \times M\) matrix can be created easily in a single line:
+
+\begin{lstlisting}[language=Python]
+# Assumes that the matrix is non-empty
+zero_matrix = [[0 for _ in range(len(matrix[0]))] for _ in range(len(matrix))]
+\end{lstlisting}
+
+Here, \texttt{zero\_matrix} will be a matrix filled with zeros, matching the dimensions of the input \texttt{matrix}.
+
+---
+
+\subsection*{Copying a Matrix}
+If you need to create a duplicate of an existing matrix (e.g., to avoid modifying the original), you can use the following approach in Python:
+
+\begin{lstlisting}[language=Python]
+copied_matrix = [row[:] for row in matrix]
+\end{lstlisting}
+
+This ensures that \texttt{copied\_matrix} is a deep copy of the original matrix, meaning that changes to the copy will not affect the original.
+
+---
+
+\subsection*{Transposing a Matrix}
+The transpose of a matrix is obtained by interchanging its rows and columns. For a matrix \(A\), the transpose \(A^T\) is defined such that:
+\[
+A^T[i][j] = A[j][i]
+\]
+
+In Python, transposing a matrix can be done succinctly using the \texttt{zip()} function:
+
+\begin{lstlisting}[language=Python]
+transposed_matrix = list(zip(*matrix))
+\end{lstlisting}
+
+This creates a new matrix where the rows of the original matrix become columns in the transposed version.
+
+---
+
+\subsection*{Applications of Transposing Matrices}
+Transposing matrices has practical applications in many grid-based games and problems where you need to verify conditions both horizontally and vertically. For example:
+\begin{itemize}
+    \item In \textbf{Tic-Tac-Toe}, you can check rows for a winning condition, transpose the matrix, and reuse the same logic to check columns.
+    \item In \textbf{Connect 4}, you can efficiently verify horizontal and vertical alignments by leveraging transposition.
+    \item In \textbf{Sudoku}, you can use transposition to verify constraints across rows and columns consistently.
+\end{itemize}
+
+By transposing a matrix, vertical cells become horizontal, allowing the reuse of horizontal verification logic for originally vertical conditions.
+
+---
+
+\section*{Example: Transposing a Tic-Tac-Toe Board}
+Consider a Tic-Tac-Toe board represented as a matrix:
+\[
+\texttt{board} =
+\begin{bmatrix}
+X & O & X \\
+O & X & O \\
+X & X & O
+\end{bmatrix}
+\]
+
+To verify rows and columns for a winning condition:
+1. Check rows in the original matrix.
+2. Transpose the matrix and reuse the same logic to check columns.
+
+Python Implementation:
+\begin{lstlisting}[language=Python]
+# Tic-Tac-Toe board
+board = [
+    ['X', 'O', 'X'],
+    ['O', 'X', 'O'],
+    ['X', 'X', 'O']
+]
+
+# Function to check if any row has the same value
+def check_rows(matrix):
+    for row in matrix:
+        if len(set(row)) == 1 and row[0] != ' ':
+            return True
+    return False
+
+# Check rows and columns
+if check_rows(board) or check_rows(list(zip(*board))):
+    print("Winning condition met!")
+else:
+    print("No winner yet.")
+\end{lstlisting}
+
+Output:
+\begin{verbatim}
+Winning condition met!
+\end{verbatim}
+
+---
+
+\section*{Conclusion}
+Creating, copying, and transposing matrices are fundamental operations in computational problems involving grids or tables. Mastering these techniques allows for efficient solutions to dynamic programming problems, grid-based games, and multidimensional data manipulations. Transposing a matrix, in particular, provides a versatile approach to reuse logic for horizontal and vertical verifications, simplifying implementation for many problems.
+
+% Filename: set_matrix_zeroes.tex
+
+\problemsection{Set Matrix Zeroes}
+\label{problem:Set_Matrix_Zeroes}
+
+The **Set Matrix Zeroes** problem requires modifying a given \(m \times n\) integer matrix in place such that if any element is zero, the entire row and column containing that element are set to zero. The challenge lies in performing this operation in-place, without using additional space proportional to the size of the matrix.
+
+---
+
+\section*{Problem Statement}
+Given an \(m \times n\) matrix, set the entire row and column of any cell containing a zero to zeros. The transformation must be done in place.
+
+---
+
+\textbf{Input:}
+- \texttt{matrix}: A list of lists representing the \(m \times n\) integer matrix.
+
+\textbf{Output:}
+- Modify \texttt{matrix} directly without returning anything.
+
+\textbf{Example 1:}
+\begin{verbatim}
+Input: matrix = [
+    [1, 1, 1],
+    [1, 0, 1],
+    [1, 1, 1]
+]
+Output: [
+    [1, 0, 1],
+    [0, 0, 0],
+    [1, 0, 1]
+]
+\end{verbatim}
+
+\textbf{Example 2:}
+\begin{verbatim}
+Input: matrix = [
+    [0, 1, 2, 0],
+    [3, 4, 5, 2],
+    [1, 3, 1, 5]
+]
+Output: [
+    [0, 0, 0, 0],
+    [0, 4, 5, 0],
+    [0, 3, 1, 0]
+]
+\end{verbatim}
+
+---
+
+\section*{Algorithmic Approach}
+
+The naive approach involves creating additional storage to track rows and columns that need to be zeroed, but this violates the in-place requirement. Instead, we use the matrix itself as storage.
+
+---
+
+\subsection*{Steps for In-Place Solution}
+1. Use the first row and first column of the matrix to store information about which rows and columns need to be zeroed.
+2. Traverse the matrix:
+    - If \(\texttt{matrix[i][j]} = 0\), set the corresponding first-row and first-column elements (\(\texttt{matrix[0][j]}\) and \(\texttt{matrix[i][0]}\)) to 0.
+3. Update the rest of the matrix using the markers in the first row and column.
+4. Finally, handle the first row and column separately to zero them out if necessary.
+
+---
+
+\subsection*{Complexities}
+1. **Time Complexity:** \(O(m \times n)\), as every cell is visited at least once.
+2. **Space Complexity:** \(O(1)\), since no additional data structures are used.
+
+---
+
+\section*{Python Implementation}
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def setZeroes(matrix):
+    rows, cols = len(matrix), len(matrix[0])
+    first_row_zero = any(matrix[0][j] == 0 for j in range(cols))
+    first_col_zero = any(matrix[i][0] == 0 for i in range(rows))
+    
+    # Use first row and column as markers
+    for i in range(1, rows):
+        for j in range(1, cols):
+            if matrix[i][j] == 0:
+                matrix[i][0] = 0
+                matrix[0][j] = 0
+    
+    # Zero out cells based on markers
+    for i in range(1, rows):
+        for j in range(1, cols):
+            if matrix[i][0] == 0 or matrix[0][j] == 0:
+                matrix[i][j] = 0
+    
+    # Handle first row and first column
+    if first_row_zero:
+        for j in range(cols):
+            matrix[0][j] = 0
+    if first_col_zero:
+        for i in range(rows):
+            matrix[i][0] = 0
+
+# Example usage:
+matrix = [
+    [0, 1, 2, 0],
+    [3, 4, 5, 2],
+    [1, 3, 1, 5]
+]
+setZeroes(matrix)
+print(matrix)
+# Output: [
+#     [0, 0, 0, 0],
+#     [0, 4, 5, 0],
+#     [0, 3, 1, 0]
+# ]
+\end{lstlisting}
+\end{fullwidth}
+
+---
+
+\section*{Why This Approach?}
+The in-place strategy is chosen to minimize space complexity while leveraging the matrix itself to store metadata about rows and columns that need to be zeroed. This avoids the need for auxiliary data structures while adhering to the problem constraints.
+
+---
+
+\section*{Alternative Approaches}
+1. **Using Auxiliary Space:** Create two arrays to track rows and columns with zeros. While simpler to implement, this approach uses \(O(m + n)\) extra space.
+2. **Recursive Approach:** Traverse the matrix recursively, zeroing out rows and columns. However, this is inefficient and can lead to stack overflow for large matrices.
+
+---
+
+\section*{Similar Problems}
+1. **Rotate Matrix:** Rotate an \(N \times N\) matrix by 90 degrees in place.
+2. **Spiral Matrix:** Traverse a matrix in a spiral order.
+3. **Game of Life:** Update the state of a grid based on neighboring cells.
+
+---
+
+\section*{Corner Cases to Test}
+1. Entire matrix is zeros: \(\texttt{matrix} = [[0, 0], [0, 0]]\).
+2. Matrix with no zeros: \(\texttt{matrix} = [[1, 2], [3, 4]]\).
+3. Single row or column with zeros: \(\texttt{matrix} = [[0, 1, 2, 3]]\) or \(\texttt{matrix} = [[1], [0], [3]]\).
+4. Large matrices with sparse zeros.
+
+---
+
+\section*{Conclusion}
+The **Set Matrix Zeroes** problem highlights the importance of in-place data manipulation and efficient space usage. By utilizing the matrix itself as metadata storage, we achieve a balance between simplicity and performance, adhering to the problem's constraints.

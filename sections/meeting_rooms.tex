@@ -1,0 +1,40 @@
+% Filename: meeting_rooms.tex
+
+\problemsection{Meeting Rooms}\marginpar{This problem involves interval scheduling and overlap detection.}
+Meeting Rooms problems are a staple in coding interviews, testing one's ability to analyze interval data and apply sorting or heap-based algorithms. There are two classic variations of this problem: Meeting Rooms I (checking if a person can attend all meetings) and Meeting Rooms II (determining the minimum number of conference rooms needed).
+\textbf{Problem Description:}
+
+Given an array of meeting time intervals consisting of start and end times \texttt{[[} \(s_1\) \texttt{,} \(e_1\) \texttt{],[} \(s_2\) \texttt{,} \(e_2\) \texttt{],...]} where \(s_i < e_i\), determine if a person could attend all meetings. 
+
+\textbf{Example 1:}
+
+\begin{itemize}
+    \item \textbf{Input:} \texttt{[[0,30],[5,10],[15,20]]}
+    \item \textbf{Output:} \texttt{False}
+    \item \textbf{Explanation:} Meetings \texttt{[0,30]} and \texttt{[5,10]} overlap.
+\end{itemize}
+
+\textbf{Example 2:}
+
+\begin{itemize}
+    \item \textbf{Input:} \texttt{[[7,10],[2,4]]}
+    \item \textbf{Output:} \texttt{True}
+    \item \textbf{Explanation:} Meetings do not overlap.
+\end{itemize}
+
+\textbf{Solution Overview:}
+
+Sort the intervals based on their start times. Then, iterate through the sorted intervals and check if the end time of the current interval is greater than the start time of the next interval. If so, return \texttt{False} as the meetings overlap. If no overlaps are found, return \texttt{True}.
+
+\begin{lstlisting}[language=Python]
+def canAttendMeetings(intervals):
+    intervals.sort(key=lambda x: x[0])  # Sort intervals by start time
+    for i in range(1, len(intervals)):
+        if intervals[i-1][1] > intervals[i][0]:
+            return False
+    return True
+
+# Example usage:
+print(canAttendMeetings([[0,30],[5,10],[15,20]]))  # Output: False
+print(canAttendMeetings([[7,10],[2,4]]))           # Output: True
+\end{lstlisting}

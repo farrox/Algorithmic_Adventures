@@ -1,0 +1,46 @@
+% Filename: meeting_rooms_ii.tex
+
+\problemsection{Meeting Rooms II}\marginpar{This problem involves finding the minimum number of meeting rooms required.}
+
+\textbf{Problem Description:}
+
+Given an array of meeting time intervals consisting of start and end times \texttt{[[} \(s_1\)\texttt{,} \(e_1\)\texttt{], [} \(s_2\)\texttt{,} \(e_2\)\texttt{], ...]} where \(s_i < e_i\), find the minimum number of conference rooms required.
+
+\textbf{Example 1:}
+
+\begin{itemize}
+    \item \textbf{Input:} \texttt{[[0,30],[5,10],[15,20]]}
+    \item \textbf{Output:} \texttt{2}
+\end{itemize}
+
+\textbf{Example 2:}
+
+\begin{itemize}
+    \item \textbf{Input:} \texttt{[[7,10],[2,4]]}
+    \item \textbf{Output:} \texttt{1}
+\end{itemize}
+
+\textbf{Solution Overview:}
+
+Separate the start and end times, sort them, and use two pointers to iterate through them. Keep track of the number of rooms needed at each point in time.
+
+% Remove the fullwidth environment
+% \begin{lstlisting}[language=Python, xleftmargin=0.1\textwidth]
+    % def minMeetingRooms(intervals):
+    % starts = sorted([i[0] for i in intervals])
+    % ends = sorted([i[1] for i in intervals])
+    % s, e = 0, 0
+    % numRooms = 0
+    % while s < len(starts):
+    %     if starts[s] < ends[e]:
+    %         numRooms += 1
+    %         s += 1
+    %     else:
+    %         e += 1
+    %             s += 1
+    % return numRooms
+
+% # Example usage:
+% print(minMeetingRooms([[0,30],[5,10],[15,20]]))  # Output: 2
+% print(minMeetingRooms([[7,10],[2,4]]))           # Output: 1
+% \end{lstlisting}

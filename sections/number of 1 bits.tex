@@ -1,0 +1,56 @@
+
+ewpage
+\chapter{Number of 1 Bits}
+\label{chap:Number_of_1_Bits}
+
+The "Number of 1 Bits" problem, typically known as the "Hamming Weight" problem, is a classic bit manipulation challenge. This problem exercises one's understanding of how to work with individual bits and perform binary operations in programming.
+
+\section*{Problem Statement}
+The task is to write a function that takes an unsigned integer as input and returns the number of '1' bits it has, which is also known as the function's Hamming weight.
+
+For instance, given the 32-bit unsigned integer \texttt{11}, its binary representation is \texttt{00000000000000000000000000001011}, and the function should return '3', as there are three bits set to '1'.
+
+Function signature for the \texttt{hammingWeight} function may look like this in C++:
+\begin{lstlisting}[language=C++]
+int hammingWeight(uint32_t n);
+\end{lstlisting}
+
+\end{fullwidth}
+
+The function should accept a 32-bit unsigned integer and return the number of 'Set bits' or '1' bits in its binary representation.
+LeetCode link: \href{https://leetcode.com/problems/number-of-1-bits/}{Number of 1 Bits}
+
+
+ewpage % Start Python Implementation on a new page
+\section*{Python Implementation}
+Below is the complete Python code implementing the \texttt{hammingWeight} function:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class Solution:
+    def hammingWeight(self, n: int) -> int:
+        count = 0
+        while n:
+            n &= n - 1  # Drops the lowest set bit of 'n'
+            count += 1
+        return count
+\end{lstlisting}
+
+\end{fullwidth}
+
+This implementation takes advantage of the Brian Kernighan algorithm, which efficiently counts the number of '1' bits by repeatedly flipping the least significant '1' bit of the number to '0' until the number becomes zero.
+
+\section*{Why this approach}
+The chosen approach uses Brian Kernighan's algorithm, which is highly efficient for counting set bits. The algorithm works in \(O(k)\) time complexity, where \(k\) is the number of set bits, because it performs the operation \texttt{n \&= n - 1} exactly \(k\) times before \(n\) becomes zero. This is typically faster than checking each of the 32 bits individually, especially for numbers with a smaller number of set bits relative to their possible range.
+
+\section*{Alternative Approaches}
+There are alternative ways to count the number of '1' bits in a binary number. A straightforward approach is to iterate over each bit and increment a count if the bit is set. Another method is using lookup tables, which can be faster for higher ranges of numbers, at the cost of extra space.
+
+\section*{Similar Problems}
+Problems that involve bit manipulation are quite common in competitive programming and technical interviews. Some similar problems include "Reverse Bits", "Single Number", and "Bitwise AND of Numbers Range".
+
+\section*{Things to Keep in Mind and Tricks}
+When dealing with bit manipulation, it's crucial to remember how different bitwise operations work and be familiar with binary arithmetic. A trick often used is \(x \& (x-1)\), which clears the lowest set bit; this is a key part of the Brian Kernighan's algorithm used in this solution.
+
+\section*{Corner and Special Cases to Test}
+It's important to test cases where the input is 0, as it should return 0 since there are no set bits. Additionally, testing with the maximum unsigned 32-bit integer value, which is \(2^{32} - 1\), ensures that the function correctly counts all 32 set bits. Cases with a single '1' bit at different positions should also be tested to ensure the bit counting is accurate regardless of the bit's position.

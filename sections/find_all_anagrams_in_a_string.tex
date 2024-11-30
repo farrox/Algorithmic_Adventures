@@ -1,0 +1,124 @@
+% Filename: find_all_anagrams_in_a_string.tex
+
+\problemsection{Find All Anagrams in a String}
+\label{problem:Find_All_Anagrams_in_a_String}
+
+The **Find All Anagrams in a String** problem is a classic application of the sliding window technique combined with character frequency counting. An anagram of a string is a permutation of its characters. The objective is to locate all start indices of substrings in the given string \texttt{s} that are anagrams of another string \texttt{p}.
+
+\subsection*{Problem Statement}
+Given two strings, \texttt{s} and \texttt{p}, find all the start indices of \texttt{p}'s anagrams in \texttt{s}. You may return the answer in any order.
+
+\textbf{Input:}
+- \texttt{s}: The main string to search within.
+- \texttt{p}: The string whose anagrams are to be found.
+
+\textbf{Output:}
+- A list of starting indices of \texttt{p}'s anagrams in \texttt{s}.
+
+\textbf{Example 1:}
+\begin{verbatim}
+Input: s = "cbaebabacd", p = "abc"
+Output: [0, 6]
+\end{verbatim}
+
+\textbf{Example 2:}
+\begin{verbatim}
+Input: s = "abab", p = "ab"
+Output: [0, 1, 2]
+\end{verbatim}
+
+\textbf{Example 3:}
+\begin{verbatim}
+Input: s = "a", p = "a"
+Output: [0]
+\end{verbatim}
+
+\subsection*{Algorithmic Approach}
+This problem can be efficiently solved using a sliding window approach and character frequency counting.
+
+\textbf{Steps:}
+\begin{itemize}
+    \item Compute the frequency count of characters in \texttt{p}.
+    \item Use a sliding window of size equal to the length of \texttt{p} on \texttt{s}, keeping track of the frequency of characters in the current window.
+    \item Compare the character frequency of the current window with that of \texttt{p}. If they match, record the start index of the window.
+    \item Slide the window by moving one character to the right, updating the frequency counts accordingly.
+\end{itemize}
+
+\subsection*{Complexities}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(n + m)\), where \(n\) is the length of \texttt{s} and \(m\) is the length of \texttt{p}. This includes the time to compute the frequency counts and traverse \texttt{s}.
+    \item \textbf{Space Complexity:} \(O(1)\) for the character frequency arrays (constant size for fixed alphabets like English letters).
+\end{itemize}
+
+\subsection*{Python Implementation}
+Below is the Python implementation using the sliding window technique:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+from collections import Counter
+
+def findAnagrams(s: str, p: str):
+    result = []
+    p_count = Counter(p)
+    s_count = Counter()
+    p_len = len(p)
+    
+    for i in range(len(s)):
+        # Add current character to the sliding window
+        s_count[s[i]] += 1
+        
+        # Remove the character that is out of the window
+        if i >= p_len:
+            if s_count[s[i - p_len]] == 1:
+                del s_count[s[i - p_len]]
+            else:
+                s_count[s[i - p_len]] -= 1
+        
+        # Compare window frequency with p frequency
+        if s_count == p_count:
+            result.append(i - p_len + 1)
+    
+    return result
+
+# Example usage:
+s = "cbaebabacd"
+p = "abc"
+print(findAnagrams(s, p))  # Output: [0, 6]
+\end{lstlisting}
+\end{fullwidth}
+
+\subsection*{Why This Approach?}
+The sliding window approach is highly efficient for problems involving substrings with specific properties. By maintaining a running frequency count, it avoids recalculating the count for each window, ensuring linear time complexity.
+
+\subsection*{Alternative Approaches}
+\begin{itemize}
+    \item **Sorting-Based Approach:**  
+    Sort \texttt{p} and each substring of \texttt{s} of length \texttt{p}, then compare. This approach is inefficient with a time complexity of \(O(n \cdot m \log m)\), where \(m\) is the length of \texttt{p}.
+    \item **Hash Set Matching:**  
+    Use a hash set to compare permutations of \texttt{p} against substrings of \texttt{s}, but this is less optimal for larger inputs.
+\end{itemize}
+
+\subsection*{Similar Problems}
+\begin{itemize}
+    \item \textbf{Permutation in String:} Check if one string's permutation is a substring of another string.
+    \item \textbf{Minimum Window Substring:} Find the smallest substring of \texttt{s} that contains all characters of \texttt{p}.
+    \item \textbf{Substring with Concatenation of All Words:} Find substrings that are concatenations of all words in a given list.
+\end{itemize}
+
+\subsection*{Things to Keep in Mind and Tricks}
+\begin{itemize}
+    \item Use Python's \texttt{Counter} to simplify frequency count management.
+    \item Keep the window size fixed at the length of \texttt{p}.
+    \item Handle edge cases such as empty strings or when \texttt{p} is longer than \texttt{s}.
+\end{itemize}
+
+\subsection*{Corner and Special Cases to Test}
+\begin{itemize}
+    \item **Empty Strings:** Input: \texttt{s = ""}, \texttt{p = "a"} (should return an empty list).
+    \item **No Matches:** Input: \texttt{s = "abcdef"}, \texttt{p = "gh"} (should return an empty list).
+    \item **All Matches:** Input: \texttt{s = "aaaa"}, \texttt{p = "a"} (should return \([0, 1, 2, 3]\)).
+    \item **Length Mismatch:** Input: \texttt{s = "abc"}, \texttt{p = "abcd"} (should return an empty list).
+\end{itemize}
+
+\subsection*{Conclusion}
+The **Find All Anagrams in a String** problem is an excellent example of how the sliding window technique and frequency counts can be combined to efficiently solve substring problems. Mastery of this problem equips you to tackle a wide range of challenges involving character permutations and substring matching.

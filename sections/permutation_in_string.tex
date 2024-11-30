@@ -1,0 +1,254 @@
+% Filename: permutation_in_string.tex
+
+\problemsection{Permutation in String}
+\label{chap:permutation_in_string}
+\marginnote{This problem utilizes the sliding window technique combined with hash maps to efficiently check for permutations within a string.}
+
+The \textbf{Permutation in String} problem involves determining whether one string contains a permutation of another string as a substring. This problem effectively demonstrates the application of the sliding window technique along with hash maps to manage character frequencies within dynamic window sizes.
+
+\section*{Problem Statement}
+
+Given two strings \texttt{s1} and \texttt{s2}, return \texttt{true} if \texttt{s2} contains a permutation of \texttt{s1}, or \texttt{false} otherwise.
+
+In other words, one of \texttt{s1}'s permutations is the substring of \texttt{s2}.
+
+\textbf{Note:}
+\begin{itemize}
+    \item The input strings consist of lowercase English letters.
+    \item The length of both strings will not exceed 10,000.
+\end{itemize}
+
+\textbf{Examples:}
+
+\begin{itemize}
+    \item \textbf{Example 1:}
+    \begin{verbatim}
+    Input: s1 = "ab", s2 = "eidbaooo"
+    Output: true
+    Explanation: s2 contains one permutation of s1 ("ba").
+    \end{verbatim}
+
+    \item \textbf{Example 2:}
+    \begin{verbatim}
+    Input: s1 = "ab", s2 = "eidboaoo"
+    Output: false
+    Explanation: There is no substring of s2 that is a permutation of s1.
+    \end{verbatim}
+\end{itemize}
+
+LeetCode link: \href{https://leetcode.com/problems/permutation-in-string/}{Permutation in String}\index{LeetCode}
+
+\marginnote{\href{https://leetcode.com/problems/permutation-in-string/}{[LeetCode Link]}\index{LeetCode}}
+\marginnote{\href{https://www.geeksforgeeks.org/check-permutation-substring/}{[GeeksForGeeks Link]}\index{GeeksForGeeks}}
+\marginnote{\href{https://www.hackerrank.com/challenges/find-permutation-in-string/problem}{[HackerRank Link]}\index{HackerRank}}
+\marginnote{\href{https://app.codesignal.com/challenges/permutation-in-string}{[CodeSignal Link]}\index{CodeSignal}}
+\marginnote{\href{https://www.interviewbit.com/problems/permutation-in-string/}{[InterviewBit Link]}\index{InterviewBit}}
+\marginnote{\href{https://www.educative.io/courses/grokking-the-coding-interview/RM8y8Y3nLdY}{[Educative Link]}\index{Educative}}
+\marginnote{\href{https://www.codewars.com/kata/permutation-in-string/train/python}{[Codewars Link]}\index{Codewars}}
+
+\section*{Algorithmic Approach}
+
+To solve this problem, we utilize the **sliding window** technique combined with **hash maps** to manage character frequencies within substrings. The approach involves the following steps:
+
+\begin{enumerate}
+    \item \textbf{Preprocessing:}
+    \begin{itemize}
+        \item Calculate the length of \texttt{s1} (\texttt{word\_length}).
+        \item Determine the number of characters in \texttt{s1} (\texttt{num\_chars}).
+        \item Create a hash map (\texttt{char\_count}) to store the frequency of each character in \texttt{s1}.
+    \end{itemize}
+    
+    \item \textbf{Sliding Window Traversal:}
+    \begin{itemize}
+        \item Iterate through \texttt{s2} with a window size equal to \texttt{word\_length}.
+        \item For each window, check if the substring is a permutation of \texttt{s1} by comparing character frequencies.
+        \item Use a sliding window to add one character at a time and remove the leftmost character to maintain the window size.
+    \end{itemize}
+    
+    \item \textbf{Early Termination and Optimization:}
+    \begin{itemize}
+        \item If at any point the number of distinct characters exceeds that of \texttt{s1}, adjust the window accordingly.
+        \item Optimize by only checking windows that have the potential to be valid permutations.
+    \end{itemize}
+\end{enumerate}
+
+This method ensures that the entire string \texttt{s2} is traversed efficiently, checking only relevant substrings and maintaining optimal time and space complexities.
+
+\marginnote{Efficient window management and frequency tracking are crucial for maintaining the desired constraints within the sliding window.}
+
+\section*{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(n)\), where \(n\) is the length of \texttt{s2}. Each character is processed at most twice (once by the `end` pointer and once by the `start` pointer).
+    \item \textbf{Space Complexity:} \(O(1)\), since the hash maps store character frequencies limited to the size of the alphabet (constant space).
+\end{itemize}
+
+\section*{Python Implementation}
+
+\marginnote{Implementing the sliding window requires careful management of pointers and character frequencies to ensure efficiency.}
+
+Below is the complete Python code for solving the **"Permutation in String"** problem using the sliding window technique:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def check_inclusion(s1: str, s2: str) -> bool:
+    from collections import defaultdict
+
+    if len(s1) > len(s2):
+        return False
+
+    char_count = defaultdict(int)
+    for char in s1:
+        char_count[char] += 1
+
+    required = len(char_count)
+    formed = 0
+    window_counts = defaultdict(int)
+    left = 0
+
+    for right in range(len(s2)):
+        character = s2[right]
+        window_counts[character] += 1
+
+        if character in char_count and window_counts[character] == char_count[character]:
+            formed += 1
+
+        while left <= right and formed == required:
+            if right - left + 1 == len(s1):
+                return True
+
+            left_char = s2[left]
+            window_counts[left_char] -= 1
+            if left_char in char_count and window_counts[left_char] < char_count[left_char]:
+                formed -= 1
+            left += 1
+
+    return False
+
+# Example usage:
+# s1 = "ab"
+# s2 = "eidbaooo"
+# print(check_inclusion(s1, s2))  # Output: True
+# s1 = "ab"
+# s2 = "eidboaoo"
+# print(check_inclusion(s1, s2))  # Output: False
+\end{lstlisting}
+\end{fullwidth}
+
+This implementation maintains a hash map `\texttt{char\_count}` to record the frequency of each character in \texttt{s1}. It then uses a sliding window defined by `\texttt{left}` and `\texttt{right}` pointers to traverse \texttt{s2}, updating character counts and checking for valid permutations efficiently.
+
+\section*{Explanation}
+
+The `check-inclusion` function efficiently determines whether any permutation of \texttt{s1} exists as a substring within \texttt{s2} by leveraging the sliding window technique. Here's a detailed breakdown of the implementation:
+
+\begin{itemize}
+    \item \textbf{Initialization:}
+    \begin{itemize}
+        \item **Edge Case Handling:** If the length of \texttt{s1} is greater than \texttt{s2}, return \texttt{False} immediately as no permutation can exist.
+        \item **Character Count Map:** Create a hash map `\texttt{char\_count}` to store the frequency of each character in \texttt{s1}.
+        \item **Pointers and Counters:**
+        \begin{itemize}
+            \item `\texttt{required}` denotes the number of unique characters in \texttt{s1}.
+            \item `\texttt{formed}` tracks how many unique characters in the current window match the required frequency.
+            \item `\texttt{window\_counts}` is a hash map to store the frequency of characters in the current window of \texttt{s2}.
+            \item `\texttt{left}` is the left pointer of the sliding window.
+        \end{itemize}
+    \end{itemize}
+    
+    \item \textbf{Sliding Window Traversal:}
+    \begin{itemize}
+        \item **Expanding the Window:** Iterate through \texttt{s2} using the `\texttt{right}` pointer.
+            \begin{itemize}
+                \item Increment the count of the current character in `\texttt{window\_counts}`.
+                \item If the current character's frequency matches its frequency in `\texttt{char\_count}`, increment `\texttt{formed}`.
+            \end{itemize}
+        
+        \item **Contracting the Window:** While the window has all required unique characters (`\texttt{formed} == \texttt{required}`):
+            \begin{itemize}
+                \item **Check for Valid Permutation:** If the current window size equals the length of \texttt{s1}, return \texttt{True} as a valid permutation is found.
+                \item **Shrink the Window:** Decrement the frequency of the character at the `\texttt{left}` pointer in `\texttt{window\_counts}`.
+                \item If the frequency of the left character falls below its required frequency in `\texttt{char\_count}`, decrement `\texttt{formed}`.
+                \item Move the `\texttt{left}` pointer forward to continue sliding the window.
+            \end{itemize}
+    \end{itemize}
+    
+    \item \textbf{Result Compilation:} If no valid permutation is found after traversing \texttt{s2}, return \texttt{False}.
+\end{itemize}
+
+\section*{Why This Approach}
+
+The sliding window technique is chosen for its efficiency in handling dynamic constraints within contiguous sequences. By maintaining a window that adapts based on the number of distinct characters and their frequencies, the algorithm ensures that each character is processed only a limited number of times, achieving optimal \(O(n)\) time complexity.
+
+\section*{Alternative Approaches}
+
+An alternative approach could involve generating all permutations of \texttt{s1} and checking if any of them exist as substrings in \texttt{s2}. However, this method is highly inefficient with a time complexity of \(O(n \times m!)\), where \(m\) is the length of \texttt{s1}, making it impractical for larger strings.
+
+Another approach might use brute force to examine every possible substring of \texttt{s2} with the length equal to \texttt{s1} and compare character frequencies. This method has a time complexity of \(O(n \times m)\), which is less efficient compared to the sliding window technique.
+
+The sliding window method remains the most optimal and straightforward solution for this problem due to its linear time complexity and efficient space usage.
+
+\section*{Similar Problems to This One}
+
+There are several other problems that involve finding substrings or sequences with specific constraints, such as:
+
+\begin{itemize}
+    \item \hyperref[problem:longest_substring_with_at_most_k_distinct_characters]{Longest Substring with At Most K Distinct Characters}\index{Longest Substring with At Most K Distinct Characters}
+    \item \hyperref[problem:longest_substring_without_repeating_characters]{Longest Substring Without Repeating Characters}\index{Longest Substring Without Repeating Characters}
+    \item \hyperref[problem:minimum_window_substring]{Minimum Window Substring}\index{Minimum Window Substring}
+    \item \hyperref[problem:longest_repeating_character_replacement]{Longest Repeating Character Replacement}\index{Longest Repeating Character Replacement}
+    \item \hyperref[problem:word_break]{Word Break}\index{Word Break}
+\end{itemize}
+
+\section*{Things to Keep in Mind and Tricks}
+
+\begin{itemize}
+    \item \textbf{Sliding Window Technique:} Utilize two pointers to define the current window and adjust them based on constraints.
+    \index{Sliding Window Technique}
+    
+    \item \textbf{Hash Map for Frequency Counts:} Use a hash map to keep track of character frequencies within the window for efficient constraint checking.
+    \index{Hash Map for Frequency Counts}
+    
+    \item \textbf{Dynamic Window Adjustment:} Expand the window by moving the `\texttt{right}` pointer and contract it by moving the `\texttt{left}` pointer when constraints are violated.
+    \index{Dynamic Window Adjustment}
+    
+    \item \textbf{Edge Case Handling:} Always consider edge cases such as empty strings, single-character strings, and strings with all identical characters.
+    \index{Edge Case Handling}
+    
+    \item \textbf{Optimizing Updates:} Update the result only after ensuring the current window meets the constraints to avoid unnecessary calculations.
+    \index{Optimizing Updates}
+\end{itemize}
+
+\section*{Corner and Special Cases to Test When Writing the Code}
+
+When implementing the `check-inclusion` function, it is crucial to test the following edge cases to ensure robustness:
+
+\begin{itemize}
+    \item \textbf{Empty Strings:} `s1 = ""`, `s2 = ""` should handle gracefully, possibly returning `False`.
+    \index{Corner Cases}
+    
+    \item \textbf{Single Character:} `s1 = "a"`, `s2 = "a"` should return `True`.
+    \index{Corner Cases}
+    
+    \item \textbf{All Characters the Same:} `s1 = "aa"`, `s2 = "aaaaa"` should return `True`.
+    \index{Corner Cases}
+    
+    \item \textbf{No Permutation Present:} `s1 = "abc"`, `s2 = "defghijk"` should return `False`.
+    \index{Corner Cases}
+    
+    \item \textbf{Multiple Valid Permutations:} `s1 = "ab"`, `s2 = "eidbaooo"` should return `True`.
+    \index{Corner Cases}
+    
+    \item \textbf{Overlapping Permutations:} `s1 = "ab"`, `s2 = "abab"` should return `True`.
+    \index{Corner Cases}
+    
+    \item \textbf{Strings with Repeating Characters:} `s1 = "aab"`, `s2 = "eidbaabooo"` should return `True`.
+    \index{Corner Cases}
+    
+    \item \textbf{Large Input Size:} Test with very long strings to ensure that the implementation performs efficiently without exceeding memory limits.
+    \index{Corner Cases}
+    
+    \item \textbf{Different Lengths:} `s1` longer than `s2`, e.g., `s1 = "abcd"`, `s2 = "abc"` should return `False`.
+    \index{Corner Cases}
+\end{itemize}
+
+\printindex

@@ -1,0 +1,191 @@
+% filename: min_stack.tex
+
+\problemsection{Min Stack}\marginpar{This problem introduces the concept of augmenting stack operations with auxiliary data to achieve additional functionality.}
+
+\textbf{Problem Description:}  
+Design a stack that supports the following operations in constant time:
+
+\begin{itemize}
+    \item \texttt{push(x)}: Push element \texttt{x} onto the stack.
+    \item \texttt{pop()}: Removes the element on top of the stack.
+    \item \texttt{top()}: Get the top element.
+    \item \texttt{getMin()}: Retrieve the minimum element in the stack.
+\end{itemize}
+
+\textbf{Notes:}
+\begin{itemize}
+    \item All operations must run in \(O(1)\) time complexity.
+    \item You may assume that all inputs are valid integers.
+\end{itemize}
+
+\marginpar{Efficient retrieval of the minimum element enhances the utility of the stack in scenarios requiring dynamic minimum tracking.}
+
+\textbf{Solution Overview:}  
+To achieve constant-time retrieval of the minimum element, we can augment the stack to keep track of the current minimum at each level. There are several approaches:
+
+\begin{enumerate}
+    \item \textbf{Using an Auxiliary Stack:}
+        \begin{itemize}
+            \item Maintain an additional stack, \texttt{minStack}, that stores the minimum value at each level.
+            \item When pushing a new element, compare it with the current minimum and push the lesser of the two onto \texttt{minStack}.
+            \item When popping, pop from both the main stack and \texttt{minStack}.
+            \item \texttt{getMin()} simply returns the top of \texttt{minStack}.
+        \end{itemize}
+    \item \textbf{Using a Single Stack with Value-Difference:}
+        \begin{itemize}
+            \item Store the difference between the current value and the minimum value.
+            \item Use a variable to keep track of the minimum.
+            \item This method is more space-efficient but more complex.
+        \end{itemize}
+\end{enumerate}
+
+We will focus on the first approach for its simplicity and clarity.
+
+\textbf{Implementation Details:}  
+Here's an implementation using two stacks in Python:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class MinStack:
+    def __init__(self):
+        self.stack = []
+        self.minStack = []
+    
+    def push(self, x):
+        self.stack.append(x)
+        # If minStack is empty or x is smaller than the current minimum
+        if not self.minStack or x <= self.minStack[-1]:
+            self.minStack.append(x)
+        else:
+            # Repeat the current minimum
+            self.minStack.append(self.minStack[-1])
+    
+    def pop(self):
+        if not self.stack:
+            raise Exception("Stack Underflow")
+        self.stack.pop()
+        self.minStack.pop()
+    
+    def top(self):
+        if not self.stack:
+            raise Exception("Stack is empty")
+        return self.stack[-1]
+    
+    def getMin(self):
+        if not self.minStack:
+            raise Exception("Stack is empty")
+        return self.minStack[-1]
+
+# Example usage:
+min_stack = MinStack()
+min_stack.push(-2)
+min_stack.push(0)
+min_stack.push(-3)
+print(min_stack.getMin())   # Output: -3
+min_stack.pop()
+print(min_stack.top())      # Output: 0
+print(min_stack.getMin())   # Output: -2
+\end{lstlisting}
+\end{fullwidth}\marginpar{By mirroring the main stack's operations in \texttt{minStack}, we maintain synchronization of minimum values.}
+
+\textbf{Complexities:}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:} All operations (\texttt{push}, \texttt{pop}, \texttt{top}, \texttt{getMin}) run in \(O(1)\) time.
+    \item \textbf{Space Complexity:} \(O(n)\), where \(n\) is the number of elements in the stack, due to the additional \texttt{minStack}.
+\end{itemize}\marginpar{The extra space used is proportional to the number of elements but ensures constant-time operations.}
+
+\textbf{Alternative Approach:}  
+Using a single stack with value-difference optimization:
+
+\begin{itemize}
+    \item Keep a variable \texttt{min} to track the current minimum.
+    \item When pushing, if the new element is less than or equal to \texttt{min}, push a special marker or encoded value.
+    \item When popping, if the popped value indicates a change in \texttt{min}, update \texttt{min} accordingly.
+\end{itemize}
+
+\textbf{Implementation Using Single Stack:}
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class MinStack:
+    def __init__(self):
+        self.stack = []
+        self.min = None
+    
+    def push(self, x):
+        if not self.stack:
+            self.stack.append(x)
+            self.min = x
+        elif x <= self.min:
+            # Store previous min
+            self.stack.append(2 * x - self.min)
+            self.min = x
+        else:
+            self.stack.append(x)
+    
+    def pop(self):
+        if not self.stack:
+            raise Exception("Stack Underflow")
+        top = self.stack.pop()
+        if top < self.min:
+            # Retrieve previous min
+            self.min = 2 * self.min - top
+    
+    def top(self):
+        if not self.stack:
+            raise Exception("Stack is empty")
+        top = self.stack[-1]
+        if top < self.min:
+            return self.min
+        else:
+            return top
+    
+    def getMin(self):
+        if not self.stack:
+            raise Exception("Stack is empty")
+        return self.min
+
+# Example usage:
+min_stack = MinStack()
+min_stack.push(-2)
+min_stack.push(0)
+min_stack.push(-3)
+print(min_stack.getMin())   # Output: -3
+min_stack.pop()
+print(min_stack.top())      # Output: 0
+print(min_stack.getMin())   # Output: -2
+\end{lstlisting}
+\end{fullwidth}\marginpar{This method saves space but adds complexity in handling encoded values.}
+
+\textbf{Complexities of Alternative Approach:}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:} All operations run in \(O(1)\) time.
+    \item \textbf{Space Complexity:} \(O(n)\), but potentially less than the two-stack approach in practice.
+\end{itemize}\marginpar{Optimal for environments where space is at a premium and the added complexity is acceptable.}
+
+\textbf{Why This Approach?}
+
+Using an auxiliary stack simplifies the implementation and makes the logic straightforward. It provides clear visibility into the minimum values at each stack level and is less error-prone compared to the single stack method.
+
+\textbf{Corner Cases to Test:}
+
+\begin{itemize}
+    \item \textbf{Empty Stack Operations:} Ensure that calling \texttt{pop}, \texttt{top}, or \texttt{getMin} on an empty stack is handled properly.
+    \item \textbf{Duplicate Minimums:} Test scenarios where multiple elements have the same minimum value.
+    \item \textbf{Negative Values:} Verify that the stack handles negative integers correctly.
+    \item \textbf{Single Element Stack:} Confirm that operations work as expected when only one element is in the stack.
+\end{itemize}\marginpar{Thorough testing ensures robustness against edge cases and potential errors.}
+
+\textbf{Similar Problems:}
+
+\begin{itemize}
+    \item \textbf{Max Stack:} Design a stack that supports retrieving the maximum element in constant time.
+    \item \textbf{Stack with Increment Operation:} Implement a stack with an operation to increment the bottom \(k\) elements by a given value.
+    \item \textbf{Design a Queue using Stacks:} Explore the reverse scenario of implementing a queue using stack operations.
+\end{itemize}\marginpar{Exploring variations of the problem deepens understanding of stack manipulation and augmentation.}
+
+\textbf{Conclusion:}
+
+The Min Stack problem exemplifies how data structures can be enhanced to provide additional functionality without compromising efficiency. By intelligently managing auxiliary data, we can extend the capabilities of a standard stack to meet specific requirements, such as constant-time retrieval of the minimum element. Mastery of such techniques is essential for designing efficient algorithms and solving complex computational problems.\marginpar{Augmenting data structures is a key skill in advanced algorithm design.}

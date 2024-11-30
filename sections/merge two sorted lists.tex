@@ -1,0 +1,74 @@
+
+ewpage
+\chapter{Merge Two Sorted Lists}
+\label{chap:Merge_Two_Sorted_Lists}
+The "Merge Two Sorted Lists" problem requires combining two sorted linked lists into a single, sorted linked list. The new list should be constructed by splicing together the nodes of the first two lists in sorted order.
+
+\section*{Problem Statement}
+Given the heads of two sorted linked lists `list1` and `list2`, the goal is to return the head of the merged linked list that maintains the sorted order. The linked list should be assembled by sequentially connecting nodes from the input lists to maintain overall sort order.
+
+LeetCode link: \href{https://leetcode.com/problems/merge-two-sorted-lists/}{https://leetcode.com/problems/merge-two-sorted-lists/}
+
+\section*{Algorithmic Approach}
+A common technique for merging two sorted lists involves using pointers to traverse each input list. As we move through the lists, we compare the current nodes and attach the node with the smaller value to the end of the merged list. We continue this process until all nodes from both lists are merged. If one list is exhausted before the other, the remaining nodes of the unexhausted list are appended to the merged list.
+
+\section*{Complexities}
+\begin{itemize}
+	\item \textbf{Time Complexity:} The time complexity of the algorithm is \(O(n + m)\), where \(n\) and \(m\) are the lengths of `list1` and `list2`, respectively, since each node in both lists is visited at most once.
+	\item \textbf{Space Complexity:} The space complexity is \(O(1)\) because the merge is performed in-place without allocating any additional data structures for the new list.
+\end{itemize}
+
+
+ewpage % Start Python Implementation on a new page
+\section*{Python Implementation}
+Below is the complete Python code for merging two sorted linked lists:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+# Definition for singly-linked list.
+class ListNode:
+     def __init__(self, val=0, next=None):
+         self.val = val
+         self.next = next
+
+class Solution:
+    def mergeTwoLists(self, list1: ListNode, list2: ListNode) -> ListNode:
+        # Create a dummy node to serve as the starting point of the merged list
+        dummy = ListNode()
+        current = dummy
+        
+        # Loop until either list1 or list2 runs out of elements
+        while list1 and list2:
+            if list1.val < list2.val:
+                current.next = list1
+                list1 = list1.next
+            else:
+                current.next = list2
+                list2 = list2.next
+            current = current.next
+
+        # Attach the remaining elements from list1 or list2, if any
+        current.next = list1 if list1 else list2
+        
+        # Return the head of the merged list, which is the next node after dummy
+        return dummy.next
+\end{lstlisting}
+
+\end{fullwidth}
+
+The above code uses a dummy node as a placeholder to simplify edge cases where either of the input lists might be empty. Since the dummy node acts as the pre-head of the merged list, we can consistently append the next node without checking if the merged list is empty.
+
+\section*{Why this approach}
+This approach is chosen because it is intuitive, easy to implement, and has optimal time and space complexities. Merging the lists in place without extra space allocation aligns with the constraints of the problem, making it an efficient solution.
+
+\section*{Alternative approaches}
+An alternative method could involve recursively merging the two lists. In the recursive approach, the smaller head node is connected to the result of the recursive call, which merges the rest of the lists.
+
+\section*{Similars problems to this one}
+Similar problems include merging k sorted lists, sorting linked lists, and handling variants of merged intervals.
+
+\section*{Things to keep in mind and tricks}
+Keep in mind to handle the edge cases where one or both input lists may be empty. By using a dummy node, we avoid multiple null checks, simplifying the code.
+
+\section*{Corner and special cases to test when writing the code}
+It is essential to test the cases when one list is significantly longer than the other, when one or both lists are empty, and when there are duplicate values in the lists that must be merged. Additionally, verify that the merged list maintains the sorted order and does not contain any unexpected null references.

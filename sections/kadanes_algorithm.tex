@@ -1,0 +1,76 @@
+\section{Kadane's Algorithm}
+\label{sec:Kadane_Algorithm}
+
+**Kadane's Algorithm** is a powerful dynamic programming technique used to solve problems involving contiguous subarrays or subsegments of an array. Named after its inventor, Joseph Kadane, this algorithm efficiently computes the maximum subarray sum in linear time. Its elegance lies in the realization that solving a local problem (maximum subarray ending at a specific index) helps solve the global problem (overall maximum subarray).
+
+\subsection*{Overview of Kadane's Algorithm}
+Kadane's Algorithm is designed to find the maximum sum of a contiguous subarray within a one-dimensional array of numbers. This problem frequently arises in applications such as financial analysis, signal processing, and bioinformatics, where determining an optimal segment of data is critical.
+
+\textbf{Key Idea:}  
+For each element in the array, decide whether to:
+\begin{itemize}
+    \item Include it in the current subarray (adding to the previous sum).
+    \item Start a new subarray beginning at this element\sidenote{Starting a new subarray is preferred when the sum of the current subarray becomes negative, as it would decrease the potential maximum}.
+\end{itemize}
+
+This decision ensures that each element is processed exactly once, making the algorithm highly efficient.
+
+\subsection*{Algorithmic Insight}
+The algorithm maintains two variables:
+\begin{itemize}
+    \item \texttt{max\_current}: The maximum sum of the subarray ending at the current position.
+    \item \texttt{max\_global}: The overall maximum sum encountered so far.
+\end{itemize}
+
+For each element in the array, update \texttt{max\_current} as:
+\[
+\text{max\_current} = \max(\text{nums}[i], \text{max\_current} + \text{nums}[i])
+\]
+This represents the decision to either extend the current subarray or start a new one. Then, update \texttt{max\_global}:
+\[
+\text{max\_global} = \max(\text{max\_global}, \text{max\_current})
+\]
+At the end of the traversal, \texttt{max\_global} contains the maximum subarray sum.
+
+\subsection*{Algorithm Pseudocode}
+\begin{verbatim}
+function Kadane(nums):
+    max_current = nums[0]
+    max_global = nums[0]
+
+    for i from 1 to length(nums):
+        max_current = max(nums[i], max_current + nums[i])
+        if max_current > max_global:
+            max_global = max_current
+
+    return max_global
+\end{verbatim}
+
+\subsection*{Key Features of Kadane's Algorithm}
+\begin{itemize}
+    \item **Time Complexity:** \(O(n)\), since the array is traversed exactly once\sidenote{Kadane's Algorithm is optimal for solving the maximum subarray sum problem}.
+    \item **Space Complexity:** \(O(1)\), as only a constant amount of extra space is required.
+    \item **Iterative Dynamic Programming:** Kadane's Algorithm is an example of iterative DP, where the solution to the global problem is built incrementally from local solutions.
+    \item **Handles Negative Numbers Gracefully:** The algorithm inherently accounts for arrays containing negative numbers by starting a new subarray when necessary.
+\end{itemize}
+
+\subsection*{Applications of Kadane's Algorithm}
+Kadane's Algorithm is not limited to finding maximum sums. Variations of this algorithm can be applied to other problems involving contiguous subarrays:
+\begin{itemize}
+    \item **Maximum Product Subarray:** Modify the algorithm to track both maximum and minimum products to handle negative values.
+    \item **Circular Subarray Maximum Sum:** Extend Kadane’s Algorithm by considering wraparound cases.
+    \item **2D Maximum Subarray:** Use Kadane’s Algorithm as a subroutine in a 2D array to find the maximum sum of a submatrix\sidenote{This involves collapsing the matrix into rows and applying Kadane's Algorithm on the resulting 1D arrays}.
+    \item **Stock Price Analysis:** Solve variations like "Best Time to Buy and Sell Stock."
+\end{itemize}
+
+\subsection*{Things to Keep in Mind}
+\begin{itemize}
+    \item Kadane's Algorithm works only for contiguous subarrays. For non-contiguous subarrays, different approaches like prefix sums or dynamic programming tables may be required.
+    \item Be mindful of edge cases, such as arrays with all negative elements, where the result should be the least negative number.
+\end{itemize}
+
+\subsection*{Example Problem: Maximum Subarray}
+\hyperref[problem:Maximum_Subarray]{The Maximum Subarray problem} is the most direct application of Kadane's Algorithm. Given an array, find the subarray with the largest sum. The algorithm efficiently computes the result in \(O(n)\) time by dynamically updating the local and global maxima as it traverses the array.
+
+\subsection*{Conclusion}
+Kadane's Algorithm is a cornerstone in dynamic programming, demonstrating how local decisions can be combined to solve a global problem efficiently. Its elegance, simplicity, and wide range of applications make it a must-know technique for problem-solving and interviews. By mastering Kadane’s Algorithm, you gain a powerful tool for tackling a variety of contiguous subarray problems with confidence.

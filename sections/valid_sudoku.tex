@@ -1,0 +1,162 @@
+% filename: valid_sudoku.tex
+
+\problemsection{Valid Sudoku}
+\label{problem:Valid_Sudoku}
+
+The **Valid Sudoku** problem involves determining whether a given \(9 \times 9\) Sudoku board is valid according to the rules of Sudoku. This problem highlights the importance of constraint validation and efficient traversal of 2D grids.
+
+---
+
+\section*{Problem Statement}
+Given a \(9 \times 9\) Sudoku board, determine if it is valid. A Sudoku board is valid if:
+1. Each row contains the digits \(1\) to \(9\) without repetition.
+2. Each column contains the digits \(1\) to \(9\) without repetition.
+3. Each of the nine \(3 \times 3\) sub-boxes contains the digits \(1\) to \(9\) without repetition.
+
+Note:
+- The Sudoku board may be partially filled, where empty cells are represented by the character \texttt{'.'}.
+
+---
+
+\textbf{Input:}
+- \texttt{board}: A \(9 \times 9\) list of lists containing digits \texttt{'1'} to \texttt{'9'} and \texttt{'.'}.
+
+\textbf{Output:}
+- \texttt{True} if the board is valid, otherwise \texttt{False}.
+
+---
+
+\textbf{Example 1:}
+\begin{verbatim}
+Input: board = [
+    ["5", "3", ".", ".", "7", ".", ".", ".", "."],
+    ["6", ".", ".", "1", "9", "5", ".", ".", "."],
+    [".", "9", "8", ".", ".", ".", ".", "6", "."],
+    ["8", ".", ".", ".", "6", ".", ".", ".", "3"],
+    ["4", ".", ".", "8", ".", "3", ".", ".", "1"],
+    ["7", ".", ".", ".", "2", ".", ".", ".", "6"],
+    [".", "6", ".", ".", ".", ".", "2", "8", "."],
+    [".", ".", ".", "4", "1", "9", ".", ".", "5"],
+    [".", ".", ".", ".", "8", ".", ".", "7", "9"]
+]
+Output: True
+\end{verbatim}
+
+\textbf{Example 2:}
+\begin{verbatim}
+Input: board = [
+    ["8", "3", ".", ".", "7", ".", ".", ".", "."],
+    ["6", ".", ".", "1", "9", "5", ".", ".", "."],
+    [".", "9", "8", ".", ".", ".", ".", "6", "."],
+    ["8", ".", ".", ".", "6", ".", ".", ".", "3"],
+    ["4", ".", ".", "8", ".", "3", ".", ".", "1"],
+    ["7", ".", ".", ".", "2", ".", ".", ".", "6"],
+    [".", "6", ".", ".", ".", ".", "2", "8", "."],
+    [".", ".", ".", "4", "1", "9", ".", ".", "5"],
+    [".", ".", ".", ".", "8", ".", ".", "7", "9"]
+]
+Output: False
+Explanation: The top-left 3x3 sub-box contains two '8's.
+\end{verbatim}
+
+---
+
+\section*{Algorithmic Approach}
+The problem is solved by validating the rows, columns, and \(3 \times 3\) sub-boxes of the board:
+1. Use three data structures:
+   - A list of sets for rows.
+   - A list of sets for columns.
+   - A dictionary of sets for \(3 \times 3\) sub-boxes.
+2. Traverse each cell in the board:
+   - Skip empty cells (\texttt{'.'}).
+   - Check if the number is already present in the respective row, column, or sub-box.
+   - If valid, add the number to the respective row, column, and sub-box sets.
+3. Return \texttt{False} if a duplicate is found; otherwise, return \texttt{True}.
+
+---
+
+\subsection*{Complexities}
+1. **Time Complexity:** \(O(81) = O(1)\), since the board size is fixed at \(9 \times 9\).
+2. **Space Complexity:** \(O(27)\) for the row, column, and sub-box sets.
+
+---
+
+\section*{Python Implementation}
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def isValidSudoku(board):
+    rows = [set() for _ in range(9)]
+    cols = [set() for _ in range(9)]
+    boxes = {}
+
+    for i in range(9):
+        for j in range(9):
+            num = board[i][j]
+            if num == '.':
+                continue
+
+            # Check the row
+            if num in rows[i]:
+                return False
+            rows[i].add(num)
+
+            # Check the column
+            if num in cols[j]:
+                return False
+            cols[j].add(num)
+
+            # Check the 3x3 sub-box
+            box_index = (i // 3, j // 3)
+            if box_index not in boxes:
+                boxes[box_index] = set()
+            if num in boxes[box_index]:
+                return False
+            boxes[box_index].add(num)
+
+    return True
+
+# Example usage:
+board = [
+    ["5", "3", ".", ".", "7", ".", ".", ".", "."],
+    ["6", ".", ".", "1", "9", "5", ".", ".", "."],
+    [".", "9", "8", ".", ".", ".", ".", "6", "."],
+    ["8", ".", ".", ".", "6", ".", ".", ".", "3"],
+    ["4", ".", ".", "8", ".", "3", ".", ".", "1"],
+    ["7", ".", ".", ".", "2", ".", ".", ".", "6"],
+    [".", "6", ".", ".", ".", ".", "2", "8", "."],
+    [".", ".", ".", "4", "1", "9", ".", ".", "5"],
+    [".", ".", ".", ".", "8", ".", ".", "7", "9"]
+]
+print(isValidSudoku(board))  # Output: True
+\end{lstlisting}
+\end{fullwidth}
+
+---
+
+\section*{Why This Approach?}
+This approach ensures all rows, columns, and sub-boxes are validated in a single traversal of the board. Using sets guarantees efficient membership checking and insertion, making it suitable for this constraint-validation problem.
+
+---
+
+\section*{Alternative Approaches}
+1. **Bitmasking:** Use bitmasks instead of sets to track the presence of digits, reducing space usage but increasing complexity.
+2. **Naive Method:** Traverse rows, columns, and sub-boxes separately. While simple, this method involves redundant checks and is less efficient.
+
+---
+
+\section*{Similar Problems}
+1. **Sudoku Solver:** Solve a given Sudoku puzzle by filling in empty cells.
+2. **Spiral Matrix:** Traverse a matrix in a spiral order.
+3. **Set Matrix Zeroes:** Modify a matrix based on cell values.
+
+---
+
+\section*{Corner Cases to Test}
+1. A completely empty board: \( \texttt{board} = [["."] * 9 for \_ in range(9)] \).
+2. A completely filled valid board.
+3. A board with duplicates in a row, column, or sub-box.
+
+---
+
+\section*{Conclusion}
+The **Valid Sudoku** problem emphasizes efficient grid traversal and constraint validation. By leveraging sets and systematic checks, the solution is both elegant and efficient, adhering to the problem's requirements.

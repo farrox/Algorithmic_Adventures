@@ -1,0 +1,101 @@
+% Filename: symmetric_tree.tex
+
+\problemsection{Symmetric Tree}\marginpar{Determine if a binary tree is symmetric around its center using recursion.}
+
+\textbf{Problem Statement}
+
+This problem involves determining whether a binary tree is symmetric around its center. A binary tree is symmetric if the left subtree is a mirror reflection of the right subtree.
+
+\textbf{Algorithmic Approach}
+
+To solve this problem, a recursive approach is commonly used. The algorithm proceeds as follows:
+
+\begin{enumerate}
+    \item \textbf{Base Case - Both Subtrees are Empty}: If both the left and right subtrees are empty (NULL pointers), the tree is symmetric; return \textit{true}.
+    \item \textbf{One Subtree is Empty}: If only one of the subtrees is empty, the tree is not symmetric; return \textit{false}.
+    \item \textbf{Compare Current Nodes}: Compare the values of the current nodes in both subtrees. If they do not match, the tree is not symmetric; return \textit{false}.
+    \item \textbf{Recurse on Subtrees}: 
+    \begin{itemize}
+        \item Recursively check if the left subtree of the left node is a mirror of the right subtree of the right node.
+        \item Recursively check if the right subtree of the left node is a mirror of the left subtree of the right node.
+    \end{itemize}
+    \item \textbf{Combine Results}: If both recursive checks return \textit{true}, the current subtrees are mirrors of each other; hence, return \textit{true}.
+    \item \textbf{Otherwise}: Return \textit{false}.
+\end{enumerate}
+
+\textbf{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity}: The time complexity is \(O(n)\), where \(n\) is the number of nodes in the tree. Each node is visited exactly once.
+    \item \textbf{Space Complexity}: The space complexity is \(O(h)\), where \(h\) is the height of the tree. This space is utilized by the call stack during recursive calls. In the worst case, the tree is completely unbalanced, resulting in a space complexity of \(O(n)\).
+\end{itemize}
+
+\textbf{Python Implementation}\marginpar{Implementing the solution using recursion for clarity and efficiency.}
+
+\begin{lstlisting}[language=Python, xleftmargin=0.02\textwidth, xrightmargin=0.02\textwidth]
+# Definition for a binary tree node.
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def isSymmetric(root: TreeNode) -> bool:
+    def isMirror(left: TreeNode, right: TreeNode) -> bool:
+        # Both subtrees are empty
+        if not left and not right:
+            return True
+        # One subtree is empty, and the other is not
+        if not left or not right:
+            return False
+        # The values of the current nodes do not match
+        if left.val != right.val:
+            return False
+        # Recursively check the mirrored subtrees
+        return isMirror(left.left, right.right) and isMirror(left.right, right.left)
+    
+    if not root:
+        return True
+    return isMirror(root.left, root.right)
+\end{lstlisting}
+
+\textbf{Explanation}
+
+The function \texttt{isSymmetric} determines whether a binary tree is symmetric around its center by recursively comparing the left and right subtrees. The helper function \texttt{isMirror} checks if two subtrees are mirror images of each other by ensuring that:
+
+\begin{itemize}
+    \item Both subtrees are empty.
+    \item The current nodes have the same value.
+    \item The left subtree of the left node is a mirror of the right subtree of the right node.
+    \item The right subtree of the left node is a mirror of the left subtree of the right node.
+\end{itemize}
+
+\textbf{Why This Approach}
+
+The recursive approach is intuitive for tree problems as it naturally aligns with the hierarchical structure of trees. By breaking down the problem into smaller subproblems (checking mirror symmetry at each level), the solution becomes elegant and efficient.
+
+\textbf{Alternative Approaches}
+
+An alternative method involves using an iterative approach with a queue. By enqueuing pairs of nodes that should be mirrors of each other and iteratively checking their symmetry, we can achieve the same result without recursion. However, the recursive approach is generally more straightforward and easier to implement for this problem.
+
+\textbf{Similar Problems to This One}
+
+Similar tree problems include determining if a tree is a subtree of another tree (\hyperref[problem:subtree_of_another_tree]{Subtree of Another Tree}), checking if two trees are identical (\hyperref[problem:same_tree]{Same Tree}), and verifying if two trees are mirror images of each other (\hyperref[problem:invert_binary_tree]{Invert Binary Tree}).
+
+\textbf{Things to Keep in Mind and Tricks}
+
+\begin{itemize}
+    \item **Base Cases Are Crucial**: Always handle base cases where subtrees are empty to prevent unnecessary recursion and potential errors.
+    \item **Symmetry Checks**: When checking for symmetry, ensure that left and right subtrees are compared in a mirrored manner.
+    \item **Avoiding Redundant Checks**: If at any point the current nodes do not match, terminate early to optimize performance.
+\end{itemize}
+
+\textbf{Corner and Special Cases to Test When Writing the Code}
+
+\begin{itemize}
+    \item **Empty Tree**: A tree with no nodes should be considered symmetric.
+    \item **Single Node**: A tree with only one node is symmetric.
+    \item **Asymmetric Structures**: Trees that have different structures on the left and right should return \textit{false}.
+    \item **Symmetric Values but Asymmetric Structures**: Trees with the same values but arranged differently should return \textit{false}.
+    \item **Large Balanced Trees**: Testing with large, balanced trees ensures that the algorithm handles depth and recursion efficiently.
+\end{itemize}

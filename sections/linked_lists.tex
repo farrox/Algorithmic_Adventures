@@ -1,0 +1,144 @@
+% Filename: linked_lists.tex
+
+\chapter{Linked Lists}
+\label{chap:Linked_Lists}
+
+Like arrays, a linked list is a fundamental data structure used to represent sequential data. Unlike arrays, however, linked lists do not require contiguous blocks of memory for storage. Instead, each element (known as a node) contains both data and a reference to the next node in the sequence. This unique design enables linked lists to dynamically grow and shrink, making them more flexible for certain use cases.
+
+\section*{What is a Linked List?}
+A linked list is a linear collection of data elements, known as nodes, connected through links. Each node contains two components:
+\begin{itemize}
+    \item **Data:** The value stored in the node.
+    \item **Link:** A pointer or reference to the next node in the sequence.
+\end{itemize}
+
+\textbf{Example:}
+\[
+\texttt{[Data: 1] -> [Data: 2] -> [Data: 3] -> NULL}
+\]
+
+In this example, each node points to the next node, and the final node points to \texttt{NULL}, indicating the end of the list.
+
+
+
+\section*{Types of Linked Lists}
+Linked lists come in various forms, each suited for different applications:
+\begin{itemize}
+    \item **Singly Linked List:** Each node has a link to the next node. Traversal is one-way.
+    \item **Doubly Linked List:** Each node has links to both the previous and the next nodes, enabling two-way traversal.
+    \item **Circular Linked List:** The last node links back to the first node, forming a circular structure.
+\end{itemize}
+
+
+
+\section*{Advantages of Linked Lists}
+1. **Dynamic Size:** Unlike arrays, linked lists do not require a predefined size. They can grow or shrink dynamically as elements are added or removed.
+2. **Efficient Insertion and Deletion:** Adding or removing a node (given its location) has a time complexity of \(O(1)\), as no shifting of elements is needed. In arrays, insertion or deletion typically requires shifting all subsequent elements, leading to \(O(n)\) complexity.
+3. **Memory Utilization:** Linked lists allocate memory as needed, which can be more efficient than arrays that may preallocate excessive space.
+
+
+
+\section*{Disadvantages of Linked Lists}
+1. **Linear Access Time:** Accessing an element in a linked list requires traversing the list from the start, resulting in \(O(n)\) complexity. Arrays, in contrast, allow direct access via indexing (e.g., \texttt{arr[4]}).
+2. **Increased Memory Overhead:** Each node requires extra memory to store the reference (or pointer) to the next node.
+3. **Cache Unfriendliness:** Since linked list nodes are scattered across memory, they do not take full advantage of caching mechanisms, unlike arrays which store elements contiguously.
+
+
+
+\section*{Basic Operations on Linked Lists}
+
+\subsection*{1. Traversal}
+To access elements of a linked list, traversal from the head (starting node) to the tail (last node) is necessary.
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+# Node definition
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+# Traversing a linked list
+def traverse(head):
+    current = head
+    while current:
+        print(current.data, end=" -> ")
+        current = current.next
+    print("NULL")
+
+# Example usage
+node1 = Node(1)
+node2 = Node(2)
+node3 = Node(3)
+node1.next = node2
+node2.next = node3
+
+traverse(node1)  # Output: 1 -> 2 -> 3 -> NULL
+\end{lstlisting}
+\end{fullwidth}
+
+
+
+\subsection*{2. Insertion}
+Insertion in a linked list can occur at:
+\begin{itemize}
+    \item **The Head:** Add a new node at the beginning.
+    \item **The Tail:** Add a new node at the end.
+    \item **Middle Positions:** Insert a node at a specified position.
+\end{itemize}
+
+
+
+\subsection*{3. Deletion}
+Nodes can be removed from:
+\begin{itemize}
+    \item **The Head:** Remove the first node.
+    \item **The Tail:** Remove the last node.
+    \item **Middle Positions:** Remove a node from a specific position.
+\end{itemize}
+
+
+
+\subsection*{4. Searching}
+Searching for a value in a linked list involves traversing the list until the value is found or the end is reached.
+
+
+
+\section*{Applications of Linked Lists}
+1. **Dynamic Data Structures:** Used to implement stacks, queues, and other abstract data types.
+2. **Memory-Efficient Data Representation:** Suitable for applications where frequent insertion and deletion of elements are required.
+3. **Graph Representation:** Adjacency lists for graphs are implemented using linked lists.
+4. **Undo Functionality:** Linked lists are used to store states for undo/redo operations.
+
+
+
+\section*{Comparison with Arrays}
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+**Feature**            & **Array**                 & **Linked List**         \\
+\hline
+Memory Allocation      & Fixed (contiguous)        & Dynamic (non-contiguous)\\
+\hline
+Access Time            & \(O(1)\) (direct access)  & \(O(n)\) (sequential)   \\
+\hline
+Insertion/Deletion     & \(O(n)\)                  & \(O(1)\) (at head/tail) \\
+\hline
+Cache Performance      & High                      & Low                     \\
+\hline
+\end{tabular}
+\end{center}
+
+
+
+\section*{Common Problems Involving Linked Lists}
+1. **Reverse a Linked List:** Reverse the order of nodes in a linked list.
+2. **Detect a Cycle in a Linked List:** Check if the linked list has a cycle using Floyd’s Tortoise and Hare algorithm.
+3. **Merge Two Sorted Lists:** Combine two sorted linked lists into one sorted list.
+4. **Remove Nth Node from End:** Remove the \(n\)-th node from the end of the list.
+5. **Find Intersection:** Determine if two linked lists intersect and find the intersection point.
+
+
+
+\section*{Conclusion}
+Linked lists are a versatile and essential data structure for representing sequential data. While they may have some limitations compared to arrays, their dynamic nature and efficient insertion/deletion operations make them a critical tool in computer science and software development. Understanding linked lists is foundational for mastering more advanced data structures and algorithms.

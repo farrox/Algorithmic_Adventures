@@ -1,0 +1,111 @@
+% Filename: longest_repeating_character_replacement.tex
+
+\problemsection{Longest Repeating Character Replacement}
+\label{problem:Longest_Repeating_Character_Replacement}
+
+The "Longest Repeating Character Replacement" problem is a classic example of how a combination of string manipulation and the sliding window technique can be employed to solve complex problems efficiently. In this problem, you are given a string \texttt{s} and an integer \texttt{k}, which represents the maximum number of character replacements you are allowed to perform to create the longest possible substring containing the same letters.
+
+\section*{Problem Statement}
+The objective is to determine the length of the longest substring of \texttt{s} that can be obtained by replacing at most \texttt{k} characters within the substring. Replacements can be done with any uppercase English letter.
+
+\textbf{Example:}
+
+Input: \( s = "AABABBA", k = 1 \)
+
+Output: \( 4 \)
+
+\textbf{Explanation:}
+
+Given the string \( s = "AABABBA" \) and \( k = 1 \), we can replace one occurrence of 'B' in "AABA" with 'A', resulting in "AAAA". This substring has a length of 4, making it the longest substring possible with at most one character replacement.
+
+LeetCode link: \href{https://leetcode.com/problems/longest-repeating-character-replacement/}{Longest Repeating Character Replacement}
+
+\section*{Algorithmic Approach}
+To solve this problem efficiently, we employ the sliding window technique. By maintaining a window of characters, we can dynamically calculate the maximum frequency of a single character within the window and determine whether the remaining characters can be replaced within the allowed limit \( k \). If the number of characters to replace exceeds \( k \), the window is reduced by incrementing the start pointer.
+
+\textbf{Steps:}
+\begin{itemize}
+    \item Use a sliding window to traverse the string, tracking the frequency of characters in the current window using a hash map or counter.
+    \item Maintain the maximum frequency of a single character in the window.
+    \item If the size of the window minus the maximum frequency exceeds \( k \), reduce the window size by moving the start pointer.
+    \item Update the length of the longest valid substring found so far.
+\end{itemize}
+
+\section*{Complexities}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(n)\), where \(n\) is the length of the string. Each character is processed at most twice (once when extending the window and once when shrinking it).
+    \item \textbf{Space Complexity:} \(O(1)\), as the counter only tracks the frequency of 26 possible uppercase English letters.
+\end{itemize}
+
+\section*{Python Implementation}
+Below is the Python implementation of the sliding window approach:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+from collections import Counter
+
+def characterReplacement(s, k):
+    count = Counter()
+    max_count = 0
+    max_length = 0
+    left = 0
+    
+    for right in range(len(s)):
+        count[s[right]] += 1
+        max_count = max(max_count, count[s[right]])
+        
+        # If replacements needed exceed k, shrink the window
+        if right - left + 1 - max_count > k:
+            count[s[left]] -= 1
+            left += 1
+        
+        # Update the maximum length of the valid window
+        max_length = max(max_length, right - left + 1)
+    
+    return max_length
+
+# Example usage:
+s = "AABABBA"
+k = 1
+print(characterReplacement(s, k))  # Output: 4
+\end{lstlisting}
+\end{fullwidth}
+
+\subsection*{Explanation of the Code}
+The algorithm uses a sliding window defined by the pointers \texttt{left} and \texttt{right}. As the \texttt{right} pointer expands the window, the character frequencies are updated. If the number of characters requiring replacement exceeds \( k \), the \texttt{left} pointer is moved forward to shrink the window. At each step, the maximum valid window size is recorded.
+
+\section*{Why This Approach?}
+The sliding window approach is ideal for problems involving substrings and constraints, such as limited replacements. Its linear time complexity ensures efficiency, making it well-suited for large input sizes. The use of a counter to dynamically track character frequencies allows for real-time window validation without rescanning the substring.
+
+\section*{Alternative Approaches}
+\begin{itemize}
+    \item **Dynamic Programming:**  
+    A table-based approach to calculate the maximum length for substrings ending at each position. This method has a higher space complexity compared to the sliding window.
+    \item **Brute Force:**  
+    Check all substrings and calculate the replacements required for each. This method is inefficient with a time complexity of \(O(n^2 \cdot 26)\).
+\end{itemize}
+
+\section*{Similar Problems}
+\begin{itemize}
+    \item \textbf{Longest Substring with At Most Two Distinct Characters:} Find the length of the longest substring containing at most two distinct characters.
+    \item \textbf{Longest Substring Without Repeating Characters:} Determine the length of the longest substring without repeating characters.
+    \item \textbf{Minimum Window Substring:} Find the minimum window in a string that contains all characters of another string.
+\end{itemize}
+
+\section*{Things to Keep in Mind and Tricks}
+\begin{itemize}
+    \item Track the frequency of the most common character in the window to minimize unnecessary calculations.
+    \item Adjust the window size dynamically to ensure that the number of replacements required does not exceed \( k \).
+    \item Handle edge cases like empty strings, strings with only one character, or \( k = 0 \).
+\end{itemize}
+
+\section*{Corner and Special Cases to Test}
+\begin{itemize}
+    \item **Empty String:** Input: \( s = "" \), \( k = 1 \) (should return \(0\)).
+    \item **All Identical Characters:** Input: \( s = "AAAA", k = 2 \) (should return \(4\)).
+    \item **All Unique Characters:** Input: \( s = "ABCD", k = 1 \) (should return \(2\)).
+    \item **No Replacements Allowed:** Input: \( s = "AABABBA", k = 0 \) (should return \(2\)).
+\end{itemize}
+
+\section*{Conclusion}
+The **Longest Repeating Character Replacement** problem demonstrates the effectiveness of the sliding window technique in solving substring-related challenges. Mastering this problem equips you with the tools to tackle similar problems requiring dynamic adjustments to constraints while processing strings.

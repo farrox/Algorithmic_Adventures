@@ -1,0 +1,76 @@
+
+ewpage
+
+\chapter{22. Generate Parentheses}
+\label{chap:generate_parentheses}
+
+The problem at hand requires generation of all well-formed combinations of a given number of pairs of parentheses. A well-formed combination means that the parentheses correctly close and open, with each open parenthesis having a corresponding close parenthesis and vice versa, and that they are correctly nested within each other.
+
+\section*{Problem Statement}
+
+LeetCode link: \href{https://leetcode.com/problems/generate-parentheses/}{22. Generate Parentheses}
+
+To generate all valid combinations of $n$ pairs of parentheses, we can approach the problem recursively by maintaining the count of open and close parentheses used at any stage of the recursion. We start with an empty string and progress by adding an open parenthesis if we have still some left to place, and a close parenthesis if it does not violate the well-formed property. We can add a close parenthesis only if the number of close parentheses added is less than the number of open parentheses added till that point in the recursion.
+
+\section*{Algorithmic Approach}
+
+\begin{itemize}
+    \item Start with a recursive function, \texttt{generate}, which accepts the current combination of parentheses \texttt{current}, the number of open parentheses \texttt{open}, and the number of close parentheses \texttt{close}.
+    \item If the number of open parentheses is less than $n$, you can add an open parenthesis to the current combination and call \texttt{generate} recursively with \texttt{open} incremented by one.
+    \item If the number of close parentheses is less than the number of open parentheses, you can add a close parenthesis to the current combination and call \texttt{generate} recursively with \texttt{close} incremented by one.
+    \item When the current combination has a length of $2n$ (which means all pairs have been used), add it to the result list.
+\end{itemize}
+
+\section*{Complexities}
+
+\begin{itemize}
+    \item Time Complexity: $O(4^n / \sqrt{n})$, which is the $n$th Catalan number - it bounds the number of valid parentheses combinations.
+    \item Space Complexity: $O(4^n / \sqrt{n})$ for storing the combinations, plus the space for the recursive call stack which goes as deep as $2n$.
+\end{itemize}
+
+
+ewpage
+\section*{Python Implementation}
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def generateParenthesis(n):
+    def generate(current, open_p, close_p, n, result):
+        if len(current) == 2 * n:
+            result.append(current)
+            return
+        if open_p < n:
+            generate(current + "(", open_p + 1, close_p, n, result)
+        if close_p < open_p:
+            generate(current + ")", open_p, close_p + 1, n, result)
+    
+    result = []
+    generate("", 0, 0, n, result)
+    return result
+\end{lstlisting}
+
+\end{fullwidth}
+
+\section*{Explanation}
+
+We start with an empty string and recursively add parentheses. At each step, we can choose to add an open parenthesis if we haven't already used up all open parentheses. We can add a close parenthesis if we have an open parenthesis that hasn't been closed yet.
+
+\section*{Why this approach}
+
+The recursive approach is powerful for generating combinations because it simplifies the decision tree into two choices per call - add an open parenthesis or add a close parenthesis, if legal. It also naturally takes care of generating possible combinations without duplicates and maintains the validity of the parenthesis string at every step.
+
+\section*{Alternative approaches}
+
+An alternative could be using a backtracking approach where we build the combination one character at a time and backtrack whenever the current string cannot lead to a valid solution.
+
+\section*{Similars problems to this one}
+
+Problems involving backtracking, such as generating combinations, permutations, or even solving puzzles like Sudoku, share similarities in approach and can often be solved using recursion and backtracking techniques.
+
+\section*{Things to keep in mind and tricks}
+
+Maintain counters for open and close parentheses instead of validating the string after it has been generated. It's much more efficient to ensure validity throughout the generation process.
+
+\section*{Corner and special cases to test when writing the code}
+
+Ensure to test cases where $n=0$ (should return an empty list) and where $n=1$ (should return a list with a single pair of parentheses). Testing the maximum constraints can also help assess performance issues.

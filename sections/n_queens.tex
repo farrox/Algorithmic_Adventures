@@ -1,0 +1,148 @@
+% Filename: n_queens.tex
+
+\problemsection{N-Queens Problem}
+\label{problem:n_queens}
+\marginnote{A classic backtracking problem that tests understanding of constraint satisfaction and recursive problem-solving. Frequently appears in interviews at top tech companies.}
+
+\section*{Problem Statement}
+Place N chess queens on an N×N chessboard so that no two queens threaten each other. A solution requires that no two queens share the same row, column, or diagonal.
+
+% \begin{figure}[h]
+%     \centering
+%     \includegraphics[width=0.7\linewidth]{figs/n_queens_example}
+%     \caption{Example solution for N=8 queens problem}
+%     \label{fig:n_queens}
+% \end{figure}
+
+\section*{Key Insights}
+Understanding these insights is crucial for developing an optimal solution:
+\begin{itemize}
+    \item Each row must contain exactly one queen
+    \item Each column must contain exactly one queen
+    \item Two queens can't share any diagonal
+    \item We can place queens row by row to reduce the search space
+    \item Diagonals can be represented by their row±column values
+\end{itemize}
+
+\section*{Solution Strategy}
+The optimal approach uses \textbf{backtracking} with the following strategy:
+
+\begin{enumerate}
+    \item Place queens row by row, trying each column
+    \item Use sets to track occupied columns and diagonals
+    \item Backtrack when a placement violates constraints
+    \item Record valid solutions when all queens are placed
+\end{enumerate}
+
+\marginnote{Using sets for constraint checking provides O(1) lookup time, significantly improving performance over array-based approaches.}
+
+\section*{Python Implementation}
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class Solution:
+    def solveNQueens(self, n: int) -> List[List[str]]:
+        def create_board() -> List[str]:
+            return [''.join('Q' if j == col else '.' 
+                    for j in range(n))
+                    for col in state]
+        
+        def is_safe(row: int, col: int) -> bool:
+            return (col not in cols and
+                    row + col not in pos_diag and
+                    row - col not in neg_diag)
+        
+        def backtrack(row: int) -> None:
+            if row == n:  # Found a valid solution
+                solutions.append(create_board())
+                return
+            
+            for col in range(n):
+                if is_safe(row, col):
+                    # Place queen and update constraints
+                    cols.add(col)
+                    pos_diag.add(row + col)
+                    neg_diag.add(row - col)
+                    state.append(col)
+                    
+                    backtrack(row + 1)
+                    
+                    # Backtrack: remove queen and constraints
+                    cols.remove(col)
+                    pos_diag.remove(row + col)
+                    neg_diag.remove(row - col)
+                    state.pop()
+        
+        solutions: List[List[str]] = []
+        state: List[int] = []
+        cols: set[int] = set()
+        pos_diag: set[int] = set()  # row + col
+        neg_diag: set[int] = set()  # row - col
+        
+        backtrack(0)
+        return solutions
+
+# Comprehensive test cases
+def test_n_queens():
+    solution = Solution()
+    
+    # Edge cases
+    assert len(solution.solveNQueens(1)) == 1  # Single queen
+    assert len(solution.solveNQueens(2)) == 0  # Impossible
+    assert len(solution.solveNQueens(3)) == 0  # Impossible
+    
+    # Standard cases
+    assert len(solution.solveNQueens(4)) == 2
+    assert len(solution.solveNQueens(8)) == 92
+\end{lstlisting}
+\end{fullwidth}
+
+\section*{Implementation Details}
+\begin{itemize}
+    \item \textbf{State Management:}
+        \begin{itemize}
+            \item \texttt{state}: Records queen positions (column) for each row
+            \item \texttt{cols}: Tracks occupied columns
+            \item \texttt{pos\_diag}: Tracks occupied positive diagonals (row + col)
+            \item \texttt{neg\_diag}: Tracks occupied negative diagonals (row - col)
+        \end{itemize}
+    \item \textbf{Constraint Checking:} O(1) using sets
+    \item \textbf{Board Creation:} Efficient string manipulation
+    \item \textbf{Type Hints:} Added for better code clarity
+\end{itemize}
+
+\section*{Complexity Analysis}
+\begin{itemize}
+    \item \textbf{Time Complexity:} O(N!) - we try N positions for first queen, N-1 for second, etc.
+    \item \textbf{Space Complexity:} O(N) for recursion stack and sets
+\end{itemize}
+
+\section*{Common Mistakes}
+\begin{itemize}
+    \item Forgetting to backtrack (remove constraints)
+    \item Incorrect diagonal calculations
+    \item Using inefficient constraint checking methods
+    \item Not handling edge cases (N=1, N=2, N=3)
+\end{itemize}
+
+\section*{Interview Tips}
+\begin{itemize}
+    \item Start by explaining the constraints and how to check them efficiently
+    \item Mention that placing queens row by row reduces the search space
+    \item Discuss how sets provide O(1) lookup for constraint checking
+    \item Consider mentioning optimizations:
+        \begin{itemize}
+            \item Using bit manipulation for even faster constraint checking
+            \item Leveraging board symmetry to reduce solutions search
+            \item Pre-computing diagonal indices
+        \end{itemize}
+\end{itemize}
+
+\section*{Related Problems}
+\begin{itemize}
+    \item Sudoku Solver
+    \item Permutations
+    \item Combination Sum
+    \item Path with Constraints
+\end{itemize}
+
+\printindex

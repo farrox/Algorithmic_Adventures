@@ -1,0 +1,191 @@
+% Filename: longest_consecutive_sequence.tex
+
+\problemsection{Longest Consecutive Sequence}
+\label{problem:longest_consecutive_sequence}
+\marginnote{A classic array problem that demonstrates the power of hash-based data structures for achieving optimal time complexity.}
+
+The \textbf{Longest Consecutive Sequence} problem requires finding the length of the longest sequence of consecutive numbers in an unsorted array. This must be achieved with a time complexity of \(O(n)\), which rules out the possibility of sorting the array as a pre-processing step.
+
+\section*{Problem Statement}
+Given an unsorted array of integers `nums`, return the length of the longest consecutive elements sequence. It is essential that the algorithm operates in \(O(n)\) time.
+
+\textbf{Examples:}
+
+\begin{itemize}
+	\item \textbf{Example 1:}
+	\begin{verbatim}
+	Input: nums = [100,4,200,1,3,2]
+	Output: 4
+	Explanation: The longest consecutive elements sequence is [1, 2, 3, 4]. Therefore its length is 4.
+	\end{verbatim}
+
+	\item \textbf{Example 2:}
+	\begin{verbatim}
+	Input: nums = [0,3,7,2,5,8,4,6,0,1]
+	Output: 9
+	Explanation: The longest consecutive elements sequence is [0, 1, 2, 3, 4, 5, 6, 7, 8]. Therefore its length is 9.
+	\end{verbatim}
+\end{itemize}
+
+LeetCode link: \href{https://leetcode.com/problems/longest-consecutive-sequence/}{Longest Consecutive Sequence}\index{LeetCode}
+
+\marginnote{\href{https://leetcode.com/problems/longest-consecutive-sequence/}{[LeetCode Link]}\index{LeetCode}}
+\marginnote{\href{https://www.geeksforgeeks.org/longest-consecutive-subsequence/}{[GeeksForGeeks Link]}\index{GeeksForGeeks}}
+\marginnote{\href{https://www.hackerrank.com/challenges/longest-consecutive/problem}{[HackerRank Link]}\index{HackerRank}}
+\marginnote{\href{https://app.codesignal.com/challenges/longest-consecutive-sequence}{[CodeSignal Link]}\index{CodeSignal}}
+\marginnote{\href{https://www.interviewbit.com/problems/longest-consecutive-sequence/}{[InterviewBit Link]}\index{InterviewBit}}
+\marginnote{\href{https://www.educative.io/courses/grokking-the-coding-interview/RM8y8Y3nLdY}{[Educative Link]}\index{Educative}}
+\marginnote{\href{https://www.codewars.com/kata/longest-consecutive-sequence/train/python}{[Codewars Link]}\index{Codewars}}
+
+\section*{Algorithmic Approach}
+The optimal solution uses a \textbf{hash set} to achieve \(O(n)\) time complexity. The key insight is that we only need to check for sequence starts (numbers where num-1 doesn't exist in the set), eliminating redundant checks. For each sequence start, we can efficiently expand the sequence using the set's O(1) lookup.\marginnote{The hash set approach elegantly balances simplicity with optimal performance.}
+
+\section*{Complexities}
+
+\begin{itemize}
+	\item \textbf{Time Complexity:} \(O(n)\), since each number in the array is processed once to insert into the set and at most once when finding a sequence.
+	\item \textbf{Space Complexity:} \(O(n)\), as a set is used to store the elements of the array.
+\end{itemize}
+
+\newpage % Start Python Implementation on a new page
+\section*{Python Implementation}
+\marginnote{This implementation prioritizes readability while maintaining optimal performance.}
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class Solution:
+    def longestConsecutive(self, nums: List[int]) -> int:
+        if not nums:  # Handle empty input
+            return 0
+            
+        num_set = set(nums)
+        max_length = 1
+        
+        for num in num_set:
+            # Only check sequences from their starting point
+            if num - 1 not in num_set:
+                current_length = 1
+                current = num
+                
+                # Expand sequence as far as possible
+                while current + 1 in num_set:
+                    current_length += 1
+                    current += 1
+                
+                max_length = max(max_length, current_length)
+        
+        return max_length
+
+# Test cases demonstrating various scenarios:
+def test_longest_consecutive():
+    solution = Solution()
+    assert solution.longestConsecutive([]) == 0
+    assert solution.longestConsecutive([1]) == 1
+    assert solution.longestConsecutive([1,2,3,5,6,7]) == 3
+    assert solution.longestConsecutive([-1,-2,-3,0,1]) == 5
+\end{lstlisting}
+\end{fullwidth}
+
+This implementation uses a set to achieve constant-time look-up when checking for consecutive numbers. It starts a new count whenever a number is the beginning of a new sequence (i.e., the number just smaller is not in the set). The code efficiently avoids counting consecutive sequences multiple times by counting only from the beginning of such sequences.
+
+\section*{Explanation}
+The `longestConsecutive` function efficiently finds the longest consecutive sequence in an unsorted array by leveraging a set for constant-time look-ups. Here's a detailed breakdown of the implementation:
+
+\begin{itemize}
+	\item \textbf{Initialization:}
+	\begin{itemize}
+		\item \textbf{Set Creation:} Convert the input list `nums` into a set `num-set` to allow for O(1) look-up times.
+		\item \textbf{Variable Setup:} Initialize `longest-streak` to keep track of the maximum sequence length found.
+	\end{itemize}
+	
+	\item \textbf{Iteration:}
+	\begin{itemize}
+		\item \textbf{Sequence Start Check:} For each number `num` in `num-set`, check if `num - 1` is not present. If `num - 1` is absent, it means `num` could be the start of a new sequence.
+		\item \textbf{Streak Counting:} Initialize `current-num` to `num` and `current-streak` to 1. Then, incrementally check if `current-num + 1` exists in `num-set`. If it does, continue to extend the streak.
+		\item \textbf{Maximum Streak Update:} After exiting the while loop, update `longest-streak` if the current streak is longer than the previously recorded maximum.
+	\end{itemize}
+	
+	\item \textbf{Result:}
+	\begin{itemize}
+		\item After iterating through all elements, return `longest-streak` as the length of the longest consecutive sequence.
+	\end{itemize}
+\end{itemize}
+
+\section*{Common Pitfalls and Tips}
+\begin{itemize}
+    \item \textbf{Initialization:} Don't forget to handle empty input arrays explicitly.
+    \item \textbf{Optimization:} Only start sequence checks from actual sequence beginnings.
+    \item \textbf{Set vs List:} Using a list for lookups would degrade performance to O(n²).
+    \item \textbf{Memory:} The set trades space for time - be aware of memory constraints with large inputs.
+\end{itemize}
+
+\section*{Alternative Approaches}
+An alternative method might involve sorting the array first; however, as mentioned, this would violate the \(O(n)\) time complexity requirement. Another idea could be to use a **Union-Find** data structure to group consecutive elements, but that approach is generally more complex and doesn't offer any significant advantages over the set-based method in this context.
+
+\begin{itemize}
+	\item \textbf{Sorting Approach:}
+	\begin{itemize}
+		\item \textbf{Pros:} Intuitive and straightforward to implement.
+		\item \textbf{Cons:} Higher time complexity of \(O(n \log n)\), which is not optimal for large datasets.
+	\end{itemize}
+	
+	\item \textbf{Union-Find Approach:}
+	\begin{itemize}
+		\item \textbf{Pros:} Efficiently groups elements into sets.
+		\item \textbf{Cons:} More complex to implement and doesn't improve upon the set-based approach's time complexity.
+	\end{itemize}
+\end{itemize}
+
+\marginnote{Understanding multiple approaches enhances problem-solving flexibility and depth.}
+
+\section*{Similar Problems to This One}
+There are several other problems that involve finding sequences or patterns within arrays, such as:
+\begin{itemize}
+	\item \hyperref[problem:missing_ranges]{Missing Ranges}\index{Missing Ranges}
+	\item \hyperref[problem:summary_ranges]{Summary Ranges}\index{Summary Ranges}
+	\item \hyperref[problem:longest_substring_without_repeating_characters]{Longest Substring Without Repeating Characters}\index{Longest Substring Without Repeating Characters}
+	\item \hyperref[problem:maximum_subarray]{Maximum Subarray}\index{Maximum Subarray}
+\end{itemize}
+
+\section*{Things to Keep in Mind and Tricks}
+\begin{itemize}
+	\item \textbf{Efficient Look-ups:} Utilizing a set for constant-time element presence checks is crucial for maintaining linear time complexity.
+	\index{Efficient Look-ups}
+	
+	\item \textbf{Sequence Start Identification:} Only initiate sequence counts from numbers that are potential sequence starters (i.e., `num - 1` not in set).
+	\index{Sequence Start Identification}
+	
+	\item \textbf{Avoid Redundant Operations:} By starting counts only at sequence starts, redundant checks and counts are minimized.
+	\index{Avoid Redundant Operations}
+	
+	\item \textbf{Edge Case Handling:} Always consider edge cases such as empty arrays or arrays with all identical elements.
+	\index{Edge Case Handling}
+\end{itemize}
+
+\section*{Corner and Special Cases to Test When Writing the Code}
+When implementing the `longestConsecutive` function, it is crucial to test the following edge cases to ensure robustness:
+
+\begin{itemize}
+	\item \textbf{Empty Array:} `nums = []` should return `0`.
+	\index{Corner Cases}
+	
+	\item \textbf{Single Element:} `nums = [1]` should return `1`.
+	\index{Corner Cases}
+	
+	\item \textbf{All Elements the Same:} `nums = [2,2,2,2]` should return `1`.
+	\index{Corner Cases}
+	
+	\item \textbf{Multiple Sequences of Same Length:} `nums = [1,2,3,10,11,12]` should return `3` as both sequences have the same length.
+	\index{Corner Cases}
+	
+	\item \textbf{Negative Numbers:} `nums = [-1, -2, -3, 0, 1]` should return `5`.
+	\index{Corner Cases}
+	
+	\item \textbf{Large Input Size:} Test with a very large array to ensure that the implementation performs efficiently without exceeding memory limits.
+	\index{Corner Cases}
+	
+	\item \textbf{Non-Consecutive Numbers with Gaps:} `nums = [10, 5, 12, 3, 55, 30, 4, 11, 2]` should return `4` for the sequence `[2, 3, 4, 5]`.
+	\index{Corner Cases}
+\end{itemize}
+
+\printindex

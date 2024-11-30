@@ -1,0 +1,121 @@
+
+ewpage
+\chapter{Set Matrix Zeroes}
+\label{chap:Set_Matrix_Zeroes}
+
+The "Set Matrix Zeroes" problem is a common interview question and falls under the category of array manipulation. It challenges the problem-solver to efficiently work with a two-dimensional array with the constraint of modifying the array in place.
+
+\section*{Problem Statement}
+
+Given an \(m \times n\) matrix, if an element is \(0\), set its entire row and column to \(0\). The key requirement is to perform this operation in place, without utilizing additional memory for another matrix structure.
+
+\textbf{Examples:}
+
+\textit{Example 1:}
+
+\begin{verbatim}
+Input:
+[
+  [1,1,1],
+  [1,0,1],
+  [1,1,1]
+]
+Output:
+[
+  [1,0,1],
+  [0,0,0],
+  [1,0,1]
+]
+\end{verbatim}
+
+\textit{Example 2:}
+
+\begin{verbatim}
+Input:
+[
+  [0,1,2,0],
+  [3,4,5,2],
+  [1,3,1,5]
+]
+Output:
+[
+  [0,0,0,0],
+  [0,4,5,0],
+  [0,3,1,0]
+]
+\end{verbatim}
+
+LeetCode link: \href{https://leetcode.com/problems/set-matrix-zeroes/}{Set Matrix Zeroes}
+
+\section*{Algorithmic Approach}
+
+The solution to this problem can be approached efficiently by using the matrix itself to store state information. By iterating over the matrix, we can use the first element of each row and the first element of each column to mark whether the rest of the rows or columns should be set to zero.
+
+\section*{Complexities}
+\begin{itemize}
+	\item \textbf{Time Complexity:} Overall, the time complexity is \(O(m \times n)\) since we need to traverse the entire matrix at least once.
+	\item \textbf{Space Complexity:} The auxiliary space complexity is \(O(1)\) as we are working in-place.
+\end{itemize}
+
+
+ewpage % Start Python Implementation on a new page
+\section*{Python Implementation}
+
+Below is the complete Python code for the `setZeroes` function which implements the in-place algorithm for setting matrix zeroes:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+	def setZeroes(matrix):
+	    m, n = len(matrix), len(matrix[0])
+	    rowZero = False
+	    
+	    # Determine which rows/cols need to be zeroed 
+	    for i in range(m):
+	        for j in range(n):
+	            if matrix[i][j] == 0:
+	                matrix[0][j] = 0
+	                if i == 0:
+	                    rowZero = True
+	                else:
+	                    matrix[i][0] = 0
+	                    
+	    # Zero out cells based on the first row and column
+	    for i in range(1, m):
+	        for j in range(1, n):
+	            if matrix[i][0] == 0 or matrix[0][j] == 0:
+	                matrix[i][j] = 0
+	                
+	    # Zero out the first column if necessary
+	    if matrix[0][0] == 0:
+	        for i in range(m):
+	            matrix[i][0] = 0
+	            
+	    # Zero out the first row if necessary
+	    if rowZero:
+	        for j in range(n):
+	            matrix[0][j] = 0
+\end{lstlisting}
+
+\end{fullwidth}
+
+The first loop determines which rows and columns should be set to zero, marking them using their first cell. The nested loops zero out matrix elements with the guidance of these markers. Special care is required for the first row, which we handle separately using the `rowZero` flag.
+
+\section*{Why this approach}
+
+This approach was chosen due to its efficiency in both time and space complexity. It uses the input matrix itself to store information about which rows and columns are to be set to zero, avoiding the use of additional storage.
+
+\section*{Alternative approaches}
+
+An alternative could involve the use of extra space where we would create additional arrays to keep track of rows and columns to be zeroed. 
+
+\section*{Similar problems to this one}
+
+Similar problems that also deal with in-place array manipulation include rotating a matrix, and inverting a matrix without using additional space.
+
+\section*{Things to keep in mind and tricks}
+
+When dealing with in-place modifications, one should be cautious of any changes that might affect future decisions in your algorithm. Make sure that the modifications made do not propagate in an unintended manner causing incorrect alterations.
+
+\section*{Corner and special cases to test when writing the code}
+
+It's critical to consider the special cases, especially when the zero occurs in the first row or the first column since these entries are used to mark other rows and columns for modification. Test cases with empty matrices or matrices with a single row or column should also be considered.

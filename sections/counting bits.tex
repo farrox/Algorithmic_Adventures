@@ -1,0 +1,58 @@
+
+ewpage
+
+\chapter{Counting Bits}
+\label{chap:Counting_Bits}
+The "Counting Bits" problem ...
+
+\section*{Problem Statement}
+Given an integer `n`, return an array `ans` that represents the number of `1`'s in the binary representation of each number `i` for all `0 <= i <= n`.
+
+LeetCode link: \href{https://leetcode.com/problems/counting-bits/}{here}
+
+\section*{Algorithmic Approach}
+The solution for counting the number of `1` bits in the binary representation of each number up to `n` utilizes dynamic programming and bit manipulation. We can relate the number of `1` bits in a number to its half; if `i` is even, `ans[i]` is the same as `ans[i/2]`. If `i` is odd, then `ans[i] = ans[i - 1] + 1`.
+
+\section*{Complexities}
+\begin{itemize}
+	\item \textbf{Time Complexity:} The time complexity of this approach is \(O(n)\), as we compute the number of `1` bits for each number up to `n` once, using previously computed values.
+	\item \textbf{Space Complexity:} The space complexity is \(O(n)\), which is required for storing the output array.
+\end{itemize}
+
+
+ewpage % Start Python Implementation on a new page
+\section*{Python Implementation}
+Below is the complete Python code that counts the number of `1` bits for all numbers up to `n`:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class Solution:
+    def countBits(self, n: int) -> List[int]:
+        ans = [0] * (n + 1)
+        for i in range(1, n + 1):
+            ans[i] = ans[i >> 1] + (i & 1)
+        return ans
+\end{lstlisting}
+
+\end{fullwidth}
+
+This implementation initializes an array \texttt{ans} of size \(n + 1\) to store the number of \texttt{1} bits for each value from \texttt{0} to \(n\). It then iterates from \texttt{1} to \(n\), calculating each \texttt{ans[i]} based on the values already computed. The expression \texttt{i >> 1} corresponds to \texttt{i / 2} and \texttt{i \& 1} is \texttt{1} if \texttt{i} is odd and \texttt{0} if even.
+
+
+\section*{Why this approach}
+This dynamic programming approach was chosen due to its efficiency over the brute force method. It effectively breaks down the problem by relating the number of bits in a number to the number of bits in a smaller number (specifically, its half), thereby reusing computations to build up the final result.
+
+\section*{Alternative approaches}
+An alternative method could be the brute force strategy of iterating over each bit of every number using bit masking, but it would be less efficient, having a time complexity of \(O(n\log n)\).
+
+\section*{Similars problems to this one}
+Similar bit manipulation problems include "Number of 1 Bits", "Reverse Bits", and "Bitwise AND of Numbers Range". These problems also involve understanding the binary representation and manipulating bits.
+
+\section*{Things to keep in mind and tricks}
+Key tricks include recognizing that for a given even number `i`, the number of `1` bits is the same as in `i / 2`, and that for an odd number `i`, it is one more than in the number `i - 1`. This understanding is crucial in formulating the dynamic programming relation.
+
+\section*{Corner and special cases to test when writing the code}
+Special cases that should be tested include:
+- The lower bound where `n = 0`.
+- An odd number `n`, to ensure that the addition of the last bit is handled properly.
+- A large even number `n`, to confirm that the computation is efficiently scaled.

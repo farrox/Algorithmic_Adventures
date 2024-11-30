@@ -1,0 +1,71 @@
+
+ewpage
+\chapter{Happy Number}
+\label{chap:happy_number}
+
+The problem is to determine whether a number is "happy". A happy number is one that follows a specific iterative process: starting with any positive integer, the number is replaced by the sum of the squares of its digits. This process is repeated until the number becomes 1, where it will remain as a happy number, or it enters an infinite loop which does not include 1.
+
+\section*{Problem Statement}
+
+Leet code link: \href{https://leetcode.com/problems/happy-number/}{Happy Number}
+
+\section*{Algorithmic Approach}
+
+To solve this problem, we use two pointers approach commonly known as Floyd's Cycle detection algorithm. We move one pointer (the \textit{slow} pointer) one step at a time, and the other (the \textit{fast} pointer) two steps at a time. If at any point, the fast pointer reaches 1, we determine that the number is happy. However, if a cycle is detected signifying that the slow and fast pointers meet and the fast pointer is not 1, we conclude that the number is not happy.
+
+\section*{Complexities}
+
+\begin{itemize}
+	\item \textbf{Time Complexity:} The time complexity is difficult to determine due to the nature of the problem. However, it can be said that once a cycle is detected, the function terminates, which prevents it from running indefinitely.
+	\item \textbf{Space Complexity:} The space complexity is O(1), as we are only using a constant amount of additional space beyond the input size.
+\end{itemize}
+
+
+ewpage
+\section*{Python Implementation}
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class Solution:
+    def isHappy(self, n: int) -> bool:
+        def get_next(number):
+            total_sum = 0
+            while number > 0:
+                number, digit = divmod(number, 10)
+                total_sum += digit ** 2
+            return total_sum
+        
+        slow_runner = n
+        fast_runner = get_next(n)
+        
+        while fast_runner != 1 and slow_runner != fast_runner:
+            slow_runner = get_next(slow_runner)
+            fast_runner = get_next(get_next(fast_runner))
+        
+        return fast_runner == 1
+\end{lstlisting}
+
+\end{fullwidth}
+
+\section*{Explanation}
+
+The Python implementation defines a function \texttt{isHappy}, which accepts an integer \texttt{n} as a parameter. A helper function, \texttt{get\_next}, is also defined to calculate the sum of squares of the digits for the given number.
+
+Two pointers, \texttt{slow\_runner} and \texttt{fast\_runner}, are used to follow the sequence of number transformations. The slow runner moves to the next number in the sequence once, while the fast runner moves twice. If the fast runner reaches 1, the number is declared happy.
+
+The loop continues until the fast runner equals 1, or the slow and fast runners meet, indicating a cycle. The function returns \texttt{True} if the fast runner is 1, and otherwise \texttt{False}, signaling the number is not happy.
+
+\section*{Why this approach}
+Floyd's Cycle detection algorithm is chosen for its efficiency and simplicity. It avoids the use of extra space and also avoids the need to keep track of all the numbers that have already been processed.
+
+\section*{Alternative approaches}
+An alternative approach could be using a hash set to keep track of all the numbers that have occurred to identify cycles. This approach has a higher space complexity but may be more straightforward to understand.
+
+\section*{Similars problems to this one}
+Similar problems include detecting cycles in linked lists or any problem that requires the detection of repetition or cycles within a sequence of data.
+
+\section*{Things to keep in mind and tricks}
+This problem serves as a great example of how the two pointers technique can solve problems that involve sequences and cycles without requiring additional memory for storage.
+
+\section*{Corner and special cases to test when writing the code}
+When implementing the solution, ensure to test against cases where the starting number is very large or when the sequence converges to 1 after many iterations. Also consider edge cases like 0 or negative inputs, even if not explicitly allowed by the problem description.

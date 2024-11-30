@@ -1,0 +1,59 @@
+
+ewpage
+
+\chapter{Group Anagrams}
+\label{chap:Group_Anagrams}
+
+\section*{Problem Statement}
+Given an array of strings \texttt{strs}, the task is to group the anagrams together. An \textbf{Anagram} is a word or phrase that is formed by rearranging the letters of a different word or phrase, using all the original letters exactly once.
+
+LeetCode link: \href{https://leetcode.com/problems/group-anagrams/}{Group Anagrams}
+
+\section*{Algorithmic Approach}
+To solve this problem, we can categorize each string by its character count or sorted version. We will use a hash table to maintain a list of strings that, when sorted, yield the same string. Each key in the hash table will represent a sorted string, and its value will be a list of strings that are anagrams of each other.
+
+\section*{Complexities}
+\begin{itemize}
+	\item \textbf{Time Complexity:} The time complexity is \(O(NK \log K)\), where \(N\) is the length of \texttt{strs}, and \(K\) is the maximum length of a string in \texttt{strs}. This accounts for the sorting of each string.
+	\item \textbf{Space Complexity:} The space complexity is \(O(NK)\), to store the result in the hash table.
+\end{itemize}
+
+
+ewpage % Start Python Implementation on a new page
+\section*{Python Implementation}
+Below is the complete Python code that implements the grouping of anagrams by using a hash table:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+def groupAnagrams(strs):
+    anagrams = {}
+    for s in strs:
+        sorted_s = ''.join(sorted(s))
+        if sorted_s not in anagrams:
+            anagrams[sorted_s] = [s]
+        else:
+            anagrams[sorted_s].append(s)
+    return list(anagrams.values())
+\end{lstlisting}
+
+\end{fullwidth}
+
+The function `groupAnagrams` takes a list of strings and classifies them based on their sorted order, effectively grouping the anagrams together.
+
+\section*{Why This Approach}
+This approach is chosen because it effectively utilizes the property that anagrams share the same sorted sequence of characters. Sorting the strings provides a consistent key to group the anagrams. Sorting each string takes \(O(K \log K)\), and doing this for \(N\) strings results in the time complexity of \(O(NK \log K)\).
+
+\section*{Alternative Approaches}
+An alternative to sorting might be to use a character count as the key in the hash table, which could potentially reduce the time complexity to \(O(NK)\) since calculating the character count of a string takes linear time with respect to the string length.
+
+\section*{Similar Problems to This One}
+There are various problems that require categorization or grouping based on certain characteristics, such as "Valid Sudoku", which asks to categorize numbers based on their positions in a grid, or "Find Duplicate File in System", where files need to be grouped by their content.
+
+\section*{Things to Keep in Mind and Tricks}
+- Utilizing sorting or counting as the way to identify anagrams.
+- Being careful with how the hash table handles collisions and understanding how the lookups work.
+
+\section*{Corner and Special Cases to Test When Writing the Code}
+- Input list containing empty strings.
+- Strings with varying lengths.
+- Ensuring that strings with the same characters but in different orders are grouped correctly.

@@ -1,0 +1,163 @@
+% Filename: kth_smallest_element_bst.tex
+
+\problemsection{Kth Smallest Element in a Binary Search Tree}\marginpar{Find the kth smallest element in a BST using in-order traversal.}
+
+\textbf{Problem Statement}
+
+Given the \texttt{root} of a binary search tree (BST) and an integer \texttt{k}, return the \texttt{kth} smallest element in the BST.
+
+\textbf{Algorithmic Approach}
+
+To efficiently find the \texttt{kth} smallest element in a BST, leverage the in-order traversal property of BSTs, which visits nodes in ascending order. You can implement this traversal either recursively or iteratively.
+
+\begin{enumerate}
+    \item \textbf{Recursive In-Order Traversal}:
+    \begin{itemize}
+        \item \textbf{In-Order Traversal}: Traverse the left subtree, visit the current node, then traverse the right subtree.
+        \item \textbf{Counter Mechanism}: Use a counter to keep track of the number of nodes visited. When the counter reaches \texttt{k}, record the current node's value as the result.
+    \end{itemize}
+    
+    \item \textbf{Iterative In-Order Traversal}:
+    \begin{itemize}
+        \item \textbf{Use a Stack}: Utilize a stack to simulate the recursive in-order traversal.
+        \item \textbf{Traversal Process}:
+        \begin{enumerate}
+            \item Initialize an empty stack and set the current node to the root.
+            \item While the stack is not empty or the current node is not \texttt{NULL}:
+            \begin{enumerate}
+                \item Traverse to the leftmost node, pushing each node onto the stack.
+                \item Pop a node from the stack, decrement \texttt{k}, and check if it is the \texttt{kth} node.
+                \item Move to the right subtree of the popped node.
+            \end{enumerate}
+        \end{enumerate}
+    \end{itemize}
+\end{enumerate}
+
+\textbf{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity}: \(O(n)\), where \(n\) is the number of nodes in the BST. In the worst case, you may need to traverse all nodes.
+    \item \textbf{Space Complexity}: 
+    \begin{itemize}
+        \item \textbf{Recursive Approach}: \(O(h)\), where \(h\) is the height of the tree, due to the recursive call stack.
+        \item \textbf{Iterative Approach}: \(O(h)\), where \(h\) is the height of the tree, due to the stack used for traversal.
+    \end{itemize}
+\end{itemize}
+
+\textbf{Python Implementation}\marginpar{Implementing both recursive and iterative in-order traversal solutions.}
+
+\begin{lstlisting}[language=Python, xleftmargin=0.02\textwidth, xrightmargin=0.02\textwidth]
+# Definition for a binary tree node.
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+# Recursive In-Order Traversal Approach
+def kthSmallestRecursive(root: TreeNode, k: int) -> int:
+    def inorder(node: TreeNode):
+        if node is None:
+            return
+        yield from inorder(node.left)
+        yield node.val
+        yield from inorder(node.right)
+    
+    gen = inorder(root)
+    for _ in range(k):
+        val = next(gen)
+    return val
+
+# Iterative In-Order Traversal Approach
+def kthSmallestIterative(root: TreeNode, k: int) -> int:
+    stack = []
+    current = root
+    while stack or current:
+        while current:
+            stack.append(current)
+            current = current.left
+        current = stack.pop()
+        k -= 1
+        if k == 0:
+            return current.val
+        current = current.right
+    return -1  # If k is out of bounds
+
+# Example usage:
+# Constructing the following BST
+#        5
+#       / \
+#      3   6
+#     / \
+#    2   4
+#   /
+#  1
+
+root = TreeNode(5)
+root.left = TreeNode(3, TreeNode(2, TreeNode(1)), TreeNode(4))
+root.right = TreeNode(6)
+
+k = 3
+print(kthSmallestRecursive(root, k))  # Output: 3
+print(kthSmallestIterative(root, k))  # Output: 3
+\end{lstlisting}
+
+\textbf{Explanation}
+
+The function \texttt{kthSmallest} identifies the \texttt{kth} smallest element in a binary search tree by performing an in-order traversal, which naturally visits the nodes in ascending order.
+
+\begin{itemize}
+    \item \textbf{Recursive In-Order Traversal}:
+    \begin{itemize}
+        \item **Generator Function**: The helper function \texttt{inorder} is a generator that yields node values in in-order sequence.
+        \item **Iteration**: Iterate through the generator \texttt{k} times to retrieve the \texttt{kth} smallest value.
+    \end{itemize}
+    
+    \item \textbf{Iterative In-Order Traversal}:
+    \begin{itemize}
+        \item **Stack Utilization**: A stack is used to traverse the tree without recursion.
+        \item **Traversal Logic**:
+        \begin{enumerate}
+            \item Traverse to the leftmost node, pushing each node onto the stack.
+            \item Pop a node from the stack, decrement \texttt{k}, and check if it is the \texttt{kth} node.
+            \item Move to the right subtree of the popped node and continue the process.
+        \end{enumerate}
+    \end{itemize}
+\end{itemize}
+
+\textbf{Why This Approach}
+
+\begin{itemize}
+    \item \textbf{Leveraging BST Properties}: In-order traversal exploits the BST's inherent property of ordered node values, making it an optimal choice for finding the \texttt{kth} smallest element.
+    \item \textbf{Efficiency}: Both recursive and iterative in-order traversals ensure that each node is visited only once, achieving linear time complexity.
+    \item \textbf{Flexibility}: Providing both recursive and iterative solutions caters to different programming preferences and system constraints (e.g., stack depth limitations).
+\end{itemize}
+
+\textbf{Alternative Approaches}
+
+An alternative method involves augmenting the BST nodes with additional information, such as the count of nodes in their left subtree. This allows for \(O(h)\) time complexity in finding the \texttt{kth} smallest element. However, this approach requires modifying the tree structure and maintaining the counts during insertions and deletions, which can add complexity to the implementation.
+
+\textbf{Similar Problems to This One}
+
+Similar tree-related problems include finding the minimum and maximum elements in a BST, performing in-order traversal, and finding the median in a BST.
+
+\textbf{Things to Keep in Mind and Tricks}
+
+\begin{itemize}
+    \item \textbf{BST Properties}: Always utilize the binary search tree properties to guide the traversal and optimize the search.
+    \item \textbf{Handling Edge Cases}: Ensure that the value of \texttt{k} is within the valid range (1 to the number of nodes in the BST).
+    \item \textbf{Generator Usage}: In the recursive approach, using a generator can make the implementation more elegant and memory-efficient.
+    \item \textbf{Iterative Traversal Efficiency}: In the iterative approach, maintaining a stack ensures that the traversal does not exceed the space complexity related to the tree's height.
+\end{itemize}
+
+\textbf{Corner and Special Cases to Test When Writing the Code}
+
+\begin{itemize}
+    \item \textbf{Empty Tree}: Should handle gracefully, possibly by returning an error or a sentinel value.
+    \item \textbf{Single Node}: When the BST has only one node, and \texttt{k} is 1.
+    \item \textbf{k Equals 1}: Finding the smallest element.
+    \item \textbf{k Equals the Number of Nodes}: Finding the largest element.
+    \item \textbf{k Out of Bounds}: When \texttt{k} is less than 1 or greater than the number of nodes in the BST.
+    \item \textbf{Balanced vs. Unbalanced Trees}: Ensure that both balanced and skewed trees are handled correctly.
+    \item \textbf{Large Tree}: Testing with a large number of nodes to ensure that the implementation scales and performs efficiently.
+\end{itemize}

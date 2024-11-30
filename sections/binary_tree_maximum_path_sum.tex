@@ -1,0 +1,143 @@
+% Filename: binary_tree_maximum_path_sum.tex
+
+\problemsection{Binary Tree Maximum Path Sum}\marginpar{Find the maximum path sum in a binary tree using recursive depth-first search.}
+
+\textbf{Problem Statement}
+
+Given a binary tree, find the maximum path sum within it. The path can start and end at any node in the tree, must follow the parent-child connections, and must contain at least one node.
+
+\textbf{Algorithmic Approach}
+
+To solve this problem, we can use a recursive depth-first search (DFS) algorithm. The recursive function will compute two things for each node:
+\begin{enumerate}
+    \item The maximum path sum that includes the current node and extends to one side (either left or right).
+    \item The maximum path sum that can be formed using the current node as the highest point (turning point) in a path.
+\end{enumerate}
+
+\begin{enumerate}
+    \item \textbf{Recursive Depth-First Search (DFS)}:
+    \begin{itemize}
+        \item \textbf{Define a Helper Function}: Create a helper function that returns the maximum gain from each node.
+        \item \textbf{Compute Maximum Gains}:
+        \begin{enumerate}
+            \item If the current node is \texttt{NULL}, return 0 as it contributes nothing to the path sum.
+            \item Recursively calculate the maximum gain from the left and right subtrees. If a subtree's maximum gain is negative, consider it as 0 to avoid decreasing the overall path sum.
+            \item Calculate the price of the new path that passes through the current node by adding the node's value to the left and right gains.
+            \item Update the global maximum path sum if the new path's price is higher than the current maximum.
+            \item Return the node's value plus the greater of the left or right gains to contribute to the parent node's path sum.
+        \end{enumerate}
+    \end{itemize}
+\end{enumerate}
+
+\textbf{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity}: \(O(N)\), where \(N\) is the number of nodes in the tree. Each node is visited exactly once during the traversal.
+    \item \textbf{Space Complexity}: \(O(H)\), where \(H\) is the height of the tree, due to the recursive call stack. In the worst case of a skewed tree, the space complexity becomes \(O(N)\).
+\end{itemize}
+
+\textbf{Python Implementation}\marginpar{Implementing a recursive DFS solution to find the maximum path sum.}
+
+\begin{lstlisting}[language=Python, xleftmargin=0.02\textwidth, xrightmargin=0.02\textwidth]
+# Definition for a binary tree node.
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+class Solution:
+    def maxPathSum(self, root: TreeNode) -> int:
+        def max_gain(node: TreeNode) -> int:
+            nonlocal max_path_sum
+            if not node:
+                return 0
+            
+            # Recursive call on children
+            left_gain = max(max_gain(node.left), 0)
+            right_gain = max(max_gain(node.right), 0)
+            
+            # Path sum with the current node as the highest point
+            price_newpath = node.val + left_gain + right_gain
+            
+            # Update the global maximum path sum if the new path is better
+            max_path_sum = max(max_path_sum, price_newpath)
+            
+            # Return the maximum gain the current node can contribute to the path
+            return node.val + max(left_gain, right_gain)
+        
+        max_path_sum = float('-inf')
+        max_gain(root)
+        return max_path_sum
+
+# Example usage:
+# Constructing the following binary tree
+#         1
+#        / \
+#       2   3
+#      / \
+#     4   5
+
+root = TreeNode(1)
+root.left = TreeNode(2, TreeNode(4), TreeNode(5))
+root.right = TreeNode(3)
+
+solution = Solution()
+print(solution.maxPathSum(root))  # Output: 11 (4 + 2 + 5)
+\end{lstlisting}
+
+\textbf{Explanation}
+
+The function \texttt{maxPathSum} calculates the maximum path sum in a binary tree by performing a recursive depth-first search (DFS). 
+
+\begin{itemize}
+    \item \textbf{Helper Function \texttt{max\_gain}}:
+    \begin{itemize}
+        \item **Base Case**: If the current node is \texttt{NULL}, it contributes 0 to the path sum.
+        \item **Recursive Calls**: 
+        \begin{enumerate}
+            \item Recursively compute the maximum gain from the left child. If the gain is negative, consider it as 0 to avoid reducing the path sum.
+            \item Recursively compute the maximum gain from the right child. Similarly, treat negative gains as 0.
+        \end{enumerate}
+        \item **Calculate New Path Sum**: The potential new path sum that passes through the current node is the sum of the node's value and the gains from both left and right children.
+        \item **Update Global Maximum**: If the new path sum is greater than the current global maximum, update it.
+        \item **Return Maximum Gain**: Return the node's value plus the greater of the left or right gain. This value is used to compute the path sums for parent nodes.
+    \end{itemize}
+\end{itemize}
+
+\textbf{Why This Approach}
+
+\begin{itemize}
+    \item \textbf{Efficiency}: This recursive DFS approach ensures that each node is visited only once, achieving linear time complexity.
+    \item \textbf{Leveraging Tree Properties}: By considering only positive gains from subtrees, the algorithm efficiently avoids paths that would decrease the overall sum.
+    \item \textbf{Simplicity and Elegance}: The recursive nature of the solution aligns naturally with the hierarchical structure of trees, resulting in clear and maintainable code.
+\end{itemize}
+
+\textbf{Alternative Approaches}
+
+An alternative method involves dynamic programming where each node stores additional information such as the maximum path sum that can be achieved through it. However, this approach typically requires more complex data structures and does not offer a better time complexity compared to the recursive DFS method.
+
+\textbf{Similar Problems to This One}
+
+Similar tree-related problems include finding the diameter of a binary tree, calculating the maximum depth of a binary tree, and determining the lowest common ancestor of two nodes in a binary tree.
+
+\textbf{Things to Keep in Mind and Tricks}
+
+\begin{itemize}
+    \item \textbf{Handling Negative Values}: By using \texttt{max(gain, 0)}, the algorithm effectively ignores paths that would decrease the overall path sum.
+    \item \textbf{Global Variable Usage}: Utilizing a non-local or global variable to keep track of the maximum path sum encountered during traversal simplifies the update mechanism.
+    \item \textbf{Recursive Call Stack}: Be mindful of the recursive depth, especially for very deep or skewed trees, to avoid stack overflow issues.
+    \item \textbf{Base Cases Are Crucial}: Always handle \texttt{NULL} nodes to prevent incorrect calculations and potential runtime errors.
+\end{itemize}
+
+\textbf{Corner and Special Cases to Test When Writing the Code}
+
+\begin{itemize}
+    \item \textbf{All Negative Node Values}: Ensure the algorithm correctly identifies the least negative value as the maximum path sum.
+    \item \textbf{Single Node Tree}: The maximum path sum should be the value of the single node.
+    \item \textbf{Left-Skewed or Right-Skewed Trees}: Test trees that are completely unbalanced to ensure the algorithm handles deep recursion and large stacks.
+    \item \textbf{Multiple Paths with the Same Sum}: Verify that the algorithm correctly identifies one of the maximum paths.
+    \item \textbf{Empty Tree}: Handle gracefully, possibly by returning 0 or an error, depending on the problem constraints.
+    \item \textbf{Balanced Trees}: Ensure that the algorithm correctly computes the maximum path sum in perfectly balanced trees.
+    \item \textbf{Large Trees}: Test with a large number of nodes to ensure that the implementation performs efficiently without exceeding memory limits.
+\end{itemize}

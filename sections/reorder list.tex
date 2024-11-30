@@ -1,0 +1,99 @@
+
+ewpage
+\chapter{Reorder List}
+\label{chap:Reorder_List}
+
+The "Reorder List" problem is a classic example of linked list manipulation. Given a singly linked list \( L: L_0 \rightarrow L_1 \rightarrow \dots \rightarrow L_{n-1} \rightarrow L_n \), the goal is to reorder it to follow a specific pattern \( L_0 \rightarrow L_n \rightarrow L_1 \rightarrow L_{n-1} \rightarrow L_2 \rightarrow L_{n-2} \rightarrow \dots \). This reordering must be done in-place without altering the nodes' values.
+
+\section*{Problem Statement}
+The task is to write a function that reorders a singly linked list in such a way that the first element is followed by the last element, followed by the second element, and so on. The reordering should be done in place with no modification to the node values.
+
+\textbf{Examples:}
+
+\textit{Example 1:}
+\begin{verbatim}
+Input:  1 → 2 → 3 → 4
+Output: 1 → 4 → 2 → 3
+\end{verbatim}
+
+\textit{Example 2:}
+\begin{verbatim}
+Input:  1 → 2 → 3 → 4 → 5
+Output: 1 → 5 → 2 → 4 → 3
+\end{verbatim}
+
+The direct link to the problem: \href{https://leetcode.com/problems/reorder-list/}{Reorder List on LeetCode}.
+
+\section*{Algorithmic Approach}
+To solve the "Reorder List" problem, we follow these general steps:
+
+\begin{enumerate}
+    \item Find the middle point of the linked list by using the fast and slow pointer method.
+    \item Reverse the second half of the list starting from the node right after the middle node found in step 1.
+    \item Reorder the list by alternating the nodes from the first part and the reversed second half.
+\end{enumerate}
+
+\section*{Complexities}
+\begin{itemize}
+    \item \textbf{Time Complexity:} The total time complexity of the solution is \(O(n)\), as we sequentially traverse the linked list a constant number of times.
+    \item \textbf{Space Complexity:} The space complexity is \(O(1)\), as we reorder the list in-place without using additional space proportional to the input size.
+\end{itemize}
+
+
+ewpage
+\section*{Python Implementation}
+Below is the complete Python code for the \texttt{Solution} class, which implements the \texttt{reorderList} method to reorder a singly linked list as specified:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+class Solution:
+    def reorderList(self, head):
+        if not head:
+            return
+        
+        # Step 1: Find the middle of the linked list
+        slow, fast = head, head
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next.next
+        
+        # Step 2: Reverse the second half
+        prev, curr = None, slow
+        while curr:
+            curr.next, prev, curr = prev, curr, curr.next
+        
+        # Step 3: Merge the two halves
+        first, second = head, prev
+        while second.next:
+            first.next, first = second, first.next
+            second.next, second = first, second.next
+\end{lstlisting}
+
+\end{fullwidth}
+
+This implementation follows a three-step approach to reorder the singly linked list.
+
+\section*{Why this approach}
+The chosen approach is efficient as it only requires linear time complexity and constant space complexity. It does the reordering in-place, saving space, and the simplicity of the algorithm makes it an elegant and practical solution.
+
+\section*{Alternative Approaches}
+An alternative approach might be to use additional data structures like arrays or stacks to rearrange the elements, but this would require extra space, making it less optimal than the in-place solution.
+
+\section*{Similar Problems}
+Similar linked list manipulation problems can be found on LeetCode, such as "Palindrome Linked List," "Reverse Linked List II," and "Split Linked List in Parts," all of which involve breaking down the list, modifying portions, and reassembling the list in some way.
+
+\section*{Things to Keep in Mind and Tricks}
+When working with linked lists, careful handling of node pointers is crucial to avoid losing track of nodes, which can lead to memory leaks or incorrect results. In addition, testing with edge cases like a linked list with a single node or an empty linked list is important to ensure robustness.
+
+\section*{Corner and Special Cases to Test}
+\begin{itemize}
+    \item A linked list with a single node.
+    \item An empty linked list.
+    \item A linked list with an even number of nodes.
+    \item A linked list with an odd number of nodes.
+\end{itemize}
