@@ -1,0 +1,418 @@
+%filename: accounts_merge.tex
+
+\problemsection{Accounts Merge}
+\label{problem:accounts_merge}
+\marginnote{This problem utilizes the Union-Find data structure to efficiently merge user accounts based on common email addresses.}
+
+The \textbf{Accounts Merge} problem involves consolidating user accounts that share common email addresses. Each account consists of a user's name and a list of email addresses. If two accounts share at least one email address, they belong to the same user and should be merged into a single account. The challenge is to perform these merges efficiently, especially when dealing with a large number of accounts and email addresses.
+
+\section*{Problem Statement}
+
+You are given a list of accounts where each element \texttt{accounts[i]} is a list of strings. The first element \texttt{accounts[i][0]} is the name of the account, and the rest of the elements are emails representing emails of the account.
+
+Now, we would like to merge these accounts. Two accounts definitely belong to the same person if there is some common email to both accounts. Note that even if two accounts have the same name, they may belong to different people as people could have the same name. A person can have any number of accounts initially, but after merging, each person should have only one account. The merged account should have the name and all emails in sorted order with no duplicates.
+
+Return the accounts after merging. The answer can be returned in any order.
+
+\textbf{Example:}
+
+\textit{Example 1:}
+
+\begin{verbatim}
+Input:
+accounts = [
+    ["John","johnsmith@mail.com","john00@mail.com"],
+    ["John","johnnybravo@mail.com"],
+    ["John","johnsmith@mail.com","john_newyork@mail.com"],
+    ["Mary","mary@mail.com"]
+]
+
+Output:
+[
+    ["John","john00@mail.com","john_newyork@mail.com","johnsmith@mail.com"],
+    ["John","johnnybravo@mail.com"],
+    ["Mary","mary@mail.com"]
+]
+
+Explanation:
+The first and third John's are the same because they have "johnsmith@mail.com".
+\end{verbatim}
+
+\marginnote{\href{https://leetcode.com/problems/accounts-merge/}{[LeetCode Link]}\index{LeetCode}}
+\marginnote{\href{https://www.geeksforgeeks.org/accounts-merge-using-disjoint-set-union/}{[GeeksForGeeks Link]}\index{GeeksForGeeks}}
+\marginnote{\href{https://www.interviewbit.com/problems/accounts-merge/}{[InterviewBit Link]}\index{InterviewBit}}
+\marginnote{\href{https://app.codesignal.com/challenges/accounts-merge}{[CodeSignal Link]}\index{CodeSignal}}
+\marginnote{\href{https://www.codewars.com/kata/accounts-merge/train/python}{[Codewars Link]}\index{Codewars}}
+
+\section*{Algorithmic Approach}
+
+To efficiently merge accounts based on common email addresses, the Union-Find (Disjoint Set Union) data structure is employed. Union-Find is ideal for grouping elements into disjoint sets and determining whether two elements belong to the same set. Here's how to apply it to the Accounts Merge problem:
+
+\begin{enumerate}
+    \item \textbf{Map Emails to Unique Identifiers:}  
+    Assign a unique identifier to each unique email address. This can be done using a hash map where the key is the email and the value is its unique identifier.
+
+    \item \textbf{Initialize Union-Find Structure:}  
+    Initialize the Union-Find structure with the total number of unique emails. Each email starts in its own set.
+
+    \item \textbf{Perform Union Operations:}  
+    For each account, perform union operations on all emails within that account. This effectively groups emails belonging to the same user.
+
+    \item \textbf{Group Emails by Their Root Parents:}  
+    After all union operations, traverse through each email and group them based on their root parent. Emails sharing the same root parent belong to the same user.
+
+    \item \textbf{Prepare the Merged Accounts:}  
+    For each group of emails, sort them and prepend the user's name. Ensure that there are no duplicate emails in the final merged accounts.
+\end{enumerate}
+
+\marginnote{Using Union-Find with path compression and union by rank optimizes the operations, ensuring near-constant time complexity for each union and find operation.}
+
+\section*{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:}
+    \begin{itemize}
+        \item Mapping Emails: \(O(N \cdot \alpha(N))\), where \(N\) is the total number of emails and \(\alpha\) is the inverse Ackermann function.
+        \item Union-Find Operations: \(O(N \cdot \alpha(N))\).
+        \item Grouping Emails: \(O(N \cdot \log N)\) for sorting emails within each group.
+    \end{itemize}
+    \item \textbf{Space Complexity:} \(O(N)\), where \(N\) is the total number of emails. This space is used for the parent and rank arrays, as well as the email mappings.
+\end{itemize}
+
+\section*{Python Implementation}
+
+\marginnote{Implementing Union-Find with path compression and union by rank ensures optimal performance for merging accounts based on common emails.}
+
+Below is the complete Python code using the Union-Find algorithm with path compression for merging accounts:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class UnionFind:
+    def __init__(self, size):
+        self.parent = [i for i in range(size)]
+        self.rank = [1] * size
+
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])  # Path compression
+        return self.parent[x]
+
+    def union(self, x, y):
+        rootX = self.find(x)
+        rootY = self.find(y)
+
+        if rootX == rootY:
+            return False  # Already in the same set
+
+        # Union by rank
+        if self.rank[rootX] > self.rank[rootY]:
+            self.parent[rootY] = rootX
+            self.rank[rootX] += self.rank[rootY]
+        else:
+            self.parent[rootX] = rootY
+            if self.rank[rootX] == self.rank[rootY]:
+                self.rank[rootY] += 1
+        return True
+
+class Solution:
+    def accountsMerge(self, accounts):
+        email_to_id = {}
+        email_to_name = {}
+        id_counter = 0
+
+        # Assign a unique ID to each unique email and map to names
+        for account in accounts:
+            name = account[0]
+            for email in account[1:]:
+                if email not in email_to_id:
+                    email_to_id[email] = id_counter
+                    id_counter += 1
+                email_to_name[email] = name
+
+        uf = UnionFind(id_counter)
+
+        # Union emails within the same account
+        for account in accounts:
+            first_email_id = email_to_id[account[1]]
+            for email in account[2:]:
+                uf.union(first_email_id, email_to_id[email])
+
+        # Group emails by their root parent
+        from collections import defaultdict
+        roots = defaultdict(list)
+        for email, id_ in email_to_id.items():
+            root = uf.find(id_)
+            roots[root].append(email)
+
+        # Prepare the merged accounts
+        merged_accounts = []
+        for emails in roots.values():
+            merged_accounts.append([email_to_name[emails[0]]] + sorted(emails))
+
+        return merged_accounts
+
+# Example usage:
+solution = Solution()
+accounts = [
+    ["John","johnsmith@mail.com","john00@mail.com"],
+    ["John","johnnybravo@mail.com"],
+    ["John","johnsmith@mail.com","john_newyork@mail.com"],
+    ["Mary","mary@mail.com"]
+]
+print(solution.accountsMerge(accounts))
+# Output:
+# [
+#   ["John","john00@mail.com","john_newyork@mail.com","johnsmith@mail.com"],
+#   ["John","johnnybravo@mail.com"],
+#   ["Mary","mary@mail.com"]
+# ]
+\end{lstlisting}
+\end{fullwidth}
+
+\section*{Explanation}
+
+The \texttt{accountsMerge} function consolidates user accounts by merging those that share common email addresses. Here's a step-by-step breakdown of the implementation:
+
+\subsection*{Data Structures}
+
+\begin{itemize}
+    \item \texttt{email\_to\_id}:  
+    A dictionary mapping each unique email to a unique identifier (ID).
+
+    \item \texttt{email\_to\_name}:  
+    A dictionary mapping each email to the corresponding user's name.
+
+    \item \texttt{UnionFind}:  
+    The Union-Find data structure manages the grouping of emails into connected components based on shared ownership.
+    
+    \item \texttt{roots}:  
+    A \texttt{defaultdict} that groups emails by their root parent after all union operations are completed.
+\end{itemize}
+
+\subsection*{Algorithm Steps}
+
+\begin{enumerate}
+    \item \textbf{Mapping Emails to IDs and Names:}
+    \begin{enumerate}
+        \item Iterate through each account.
+        \item Assign a unique ID to each unique email and map it to the user's name.
+    \end{enumerate}
+
+    \item \textbf{Initializing Union-Find:}
+    \begin{enumerate}
+        \item Initialize the Union-Find structure with the total number of unique emails.
+    \end{enumerate}
+
+    \item \textbf{Performing Union Operations:}
+    \begin{enumerate}
+        \item For each account, perform union operations on all emails within that account by uniting the first email with each subsequent email.
+    \end{enumerate}
+
+    \item \textbf{Grouping Emails by Root Parent:}
+    \begin{enumerate}
+        \item After all union operations, traverse each email to determine its root parent.
+        \item Group emails sharing the same root parent.
+    \end{enumerate}
+
+    \item \textbf{Preparing Merged Accounts:}
+    \begin{enumerate}
+        \item For each group of emails, sort the emails and prepend the user's name.
+        \item Add the merged account to the final result list.
+    \end{enumerate}
+\end{enumerate}
+
+This approach ensures that all accounts sharing common emails are merged efficiently, leveraging the Union-Find optimizations to handle large datasets effectively.
+
+\section*{Why this Approach}
+
+The Union-Find algorithm is particularly suited for the Accounts Merge problem due to its ability to efficiently group elements (emails) into disjoint sets based on connectivity (shared ownership). By mapping emails to unique identifiers and performing union operations on them, the algorithm can quickly determine which emails belong to the same user. The use of path compression and union by rank optimizes the performance, making it feasible to handle large numbers of accounts and emails with near-constant time operations.
+
+\section*{Alternative Approaches}
+
+While Union-Find is highly efficient, other methods can also be used to solve the Accounts Merge problem:
+
+\begin{itemize}
+    \item \textbf{Depth-First Search (DFS):}  
+    Construct an adjacency list where each email points to other emails in the same account. Perform DFS to traverse and group connected emails.
+
+    \item \textbf{Breadth-First Search (BFS):}  
+    Similar to DFS, use BFS to traverse the adjacency list and group connected emails.
+
+    \item \textbf{Graph-Based Connected Components:} 
+    Treat emails as nodes in a graph and edges represent shared accounts. Use graph algorithms to find connected components.
+\end{itemize}
+
+However, these methods typically require more memory and have higher constant factors in their time complexities compared to the Union-Find approach, especially when dealing with large datasets. Union-Find remains the preferred choice for its simplicity and efficiency in handling dynamic connectivity.
+
+\section*{Similar Problems to This One}
+
+This problem is closely related to several other connectivity and grouping problems that utilize the Union-Find data structure:
+
+\begin{itemize}
+    \item \textbf{Number of Connected Components in an Undirected Graph:}  
+    Determine the number of distinct connected components in a graph.
+    \index{Number of Connected Components in an Undirected Graph}
+    
+    \item \textbf{Redundant Connection:}  
+    Identify and remove a redundant edge that creates a cycle in a graph.
+    \index{Redundant Connection}
+    
+    \item \textbf{Graph Valid Tree:}  
+    Verify if a given graph is a valid tree by checking for connectivity and absence of cycles.
+    \index{Graph Valid Tree}
+    
+    \item \textbf{Friend Circles:}  
+    Find the number of friend circles in a social network.
+    \index{Friend Circles}
+    
+    \item \textbf{Largest Component Size by Common Factor:}  
+    Determine the size of the largest component in a graph where nodes are connected if they share a common factor.
+    \index{Largest Component Size by Common Factor}
+    
+    \item \textbf{Accounts Merge II:} 
+    A variant where additional constraints or different merging rules apply.
+    \index{Accounts Merge II}
+\end{itemize}
+
+These problems leverage the efficiency of Union-Find to manage and query connectivity among elements effectively.
+
+\section*{Things to Keep in Mind and Tricks}
+
+When implementing the Union-Find data structure for the Accounts Merge problem, consider the following best practices:
+
+\begin{itemize}
+    \item \textbf{Path Compression:}  
+    Always implement path compression in the \texttt{find} operation to flatten the tree structure, reducing the time complexity of future operations.
+    \index{Path Compression}
+    
+    \item \textbf{Union by Rank or Size:}  
+    Use union by rank or size to attach smaller trees under the root of larger trees, keeping the trees balanced and ensuring efficient operations.
+    \index{Union by Rank}
+    
+    \item \textbf{Mapping Emails to Unique IDs:}  
+    Efficiently map each unique email to a unique identifier to simplify union operations and avoid handling strings directly in the Union-Find structure.
+    \index{Mapping Emails to Unique IDs}
+    
+    \item \textbf{Handling Multiple Accounts:} 
+    Ensure that accounts with multiple common emails are correctly merged into a single group.
+    \index{Handling Multiple Accounts}
+    
+    \item \textbf{Sorting Emails:} 
+    After grouping, sort the emails to meet the output requirements and ensure consistency.
+    \index{Sorting Emails}
+    
+    \item \textbf{Efficient Data Structures:} 
+    Utilize appropriate data structures like dictionaries and default dictionaries to manage mappings and groupings effectively.
+    \index{Efficient Data Structures}
+    
+    \item \textbf{Avoiding Redundant Operations:} 
+    Before performing a union, check if the emails are already connected to prevent unnecessary operations.
+    \index{Avoiding Redundant Operations}
+    
+    \item \textbf{Optimizing for Large Inputs:} 
+    Ensure that the implementation can handle large numbers of accounts and emails efficiently by leveraging the optimizations provided by path compression and union by rank.
+    \index{Optimizing for Large Inputs}
+    
+    \item \textbf{Code Readability and Maintenance:} 
+    Write clean, well-documented code with meaningful variable names and comments to facilitate maintenance and future enhancements.
+    \index{Code Readability}
+    
+    \item \textbf{Testing Thoroughly:} 
+    Rigorously test the implementation with various test cases, including all corner cases, to ensure correctness and reliability.
+    \index{Testing Thoroughly}
+\end{itemize}
+
+\section*{Corner and Special Cases to Test When Writing the Code}
+
+When implementing and testing the \texttt{Accounts Merge} class, ensure to cover the following corner and special cases:
+
+\begin{itemize}
+    \item \textbf{Single Account with Multiple Emails:}  
+    An account containing multiple emails that should all be merged correctly.
+    \index{Corner Cases}
+    
+    \item \textbf{Multiple Accounts with Overlapping Emails:} 
+    Accounts that share one or more common emails should be merged into a single account.
+    \index{Corner Cases}
+    
+    \item \textbf{No Overlapping Emails:} 
+    Accounts with completely distinct emails should remain separate after merging.
+    \index{Corner Cases}
+    
+    \item \textbf{Single Email Accounts:} 
+    Accounts that contain only one email address should be handled correctly.
+    \index{Corner Cases}
+    
+    \item \textbf{Large Number of Emails:} 
+    Test the implementation with a large number of emails to ensure performance and scalability.
+    \index{Corner Cases}
+    
+    \item \textbf{Emails with Similar Names:} 
+    Different users with the same name but different email addresses should not be merged incorrectly.
+    \index{Corner Cases}
+    
+    \item \textbf{Duplicate Emails in an Account:} 
+    An account listing the same email multiple times should handle duplicates gracefully.
+    \index{Corner Cases}
+    
+    \item \textbf{Empty Accounts:} 
+    Handle cases where some accounts have no emails, if applicable.
+    \index{Corner Cases}
+    
+    \item \textbf{Mixed Case Emails:} 
+    Ensure that email comparisons are case-sensitive or case-insensitive based on problem constraints.
+    \index{Corner Cases}
+    
+    \item \textbf{Self-Loops and Redundant Entries:} 
+    Accounts containing redundant entries or self-referencing emails should be processed correctly.
+    \index{Corner Cases}
+\end{itemize}
+
+\section*{Implementation Considerations}
+
+When implementing the \texttt{Accounts Merge} class, keep in mind the following considerations to ensure robustness and efficiency:
+
+\begin{itemize}
+    \item \textbf{Exception Handling:}  
+    Implement proper exception handling to manage unexpected inputs, such as null or empty strings and malformed account lists.
+    \index{Exception Handling}
+    
+    \item \textbf{Performance Optimization:}  
+    Optimize the \texttt{union} and \texttt{find} methods by ensuring that path compression and union by rank are correctly implemented to minimize the time complexity.
+    \index{Performance Optimization}
+    
+    \item \textbf{Memory Efficiency:}  
+    Use memory-efficient data structures for the parent and rank arrays to handle large numbers of emails without excessive memory consumption.
+    \index{Memory Efficiency}
+    
+    \item \textbf{Thread Safety:}  
+    If the data structure is to be used in a multithreaded environment, ensure that \texttt{union} and \texttt{find} operations are thread-safe to prevent data races.
+    \index{Thread Safety}
+    
+    \item \textbf{Scalability:}  
+    Design the solution to handle up to \(10^5\) accounts and emails efficiently, considering both time and space constraints.
+    \index{Scalability}
+    
+    \item \textbf{Testing and Validation:}  
+    Rigorously test the implementation with various test cases, including all corner cases, to ensure correctness and reliability.
+    \index{Testing and Validation}
+    
+    \item \textbf{Code Readability and Maintenance:} 
+    Write clean, well-documented code with meaningful variable names and comments to facilitate maintenance and future enhancements.
+    \index{Code Readability}
+    
+    \item \textbf{Initialization Checks:}  
+    Ensure that the Union-Find structure is correctly initialized, with each email initially in its own set.
+    \index{Initialization}
+\end{itemize}
+
+\section*{Conclusion}
+
+The Union-Find data structure provides an efficient and scalable solution for the \textbf{Accounts Merge} problem by effectively grouping emails based on shared ownership. By leveraging path compression and union by rank, the implementation ensures that both union and find operations are performed in near-constant time, making it highly suitable for large datasets with numerous accounts and email addresses. This approach not only simplifies the merging process but also enhances performance, ensuring that the solution remains robust and efficient even as the input size grows. Understanding and implementing Union-Find is essential for solving a wide range of connectivity and equivalence relation problems in computer science.
+
+\printindex
+
+% \input{sections/number_of_connected_components_in_an_undirected_graph}
+% \input{sections/redundant_connection}
+% \input{sections/graph_valid_tree}
+% \input{sections/accounts_merge}

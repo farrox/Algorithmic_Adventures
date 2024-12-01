@@ -1,0 +1,385 @@
+% filename: single_number.tex
+
+\problemsection{Single Number}
+\label{chap:Single_Number}
+\marginnote{\href{https://leetcode.com/problems/single-number/}{[LeetCode Link]}\index{LeetCode}}
+\marginnote{\href{https://www.geeksforgeeks.org/find-the-element-that-appears-once-in-an-array-of-repeating-elements/}{[GeeksForGeeks Link]}\index{GeeksForGeeks}}
+\marginnote{\href{https://www.interviewbit.com/problems/single-number/}{[InterviewBit Link]}\index{InterviewBit}}
+\marginnote{\href{https://app.codesignal.com/challenges/single-number}{[CodeSignal Link]}\index{CodeSignal}}
+\marginnote{\href{https://www.codewars.com/kata/single-number/train/python}{[Codewars Link]}\index{Codewars}}
+
+The \textbf{Single Number} problem is a classic algorithmic challenge that tests one's ability to efficiently identify a unique element in a collection where every other element appears exactly twice. This problem is fundamental in understanding bit manipulation and hash table usage, which are pivotal in optimizing search and retrieval operations in programming.
+
+\section*{Problem Statement}
+
+Given a non-empty array of integers, every element appears twice except for one. Find that single one.
+
+**Note:**
+- Your algorithm should have a linear runtime complexity. Could you implement it without using extra memory?
+
+\textbf{Function signature in Python:}
+\begin{lstlisting}[language=Python]
+def singleNumber(nums: List[int]) -> int:
+\end{lstlisting}
+
+\section*{Examples}
+
+\textbf{Example 1:}
+
+\begin{verbatim}
+Input: nums = [2,2,1]
+Output: 1
+Explanation: Only 1 appears once while 2 appears twice.
+\end{verbatim}
+
+\textbf{Example 2:}
+
+\begin{verbatim}
+Input: nums = [4,1,2,1,2]
+Output: 4
+Explanation: Only 4 appears once while 1 and 2 appear twice.
+\end{verbatim}
+
+\textbf{Example 3:}
+
+\begin{verbatim}
+Input: nums = [1]
+Output: 1
+Explanation: Only 1 is present in the array.
+\end{verbatim}
+
+
+
+\section*{Algorithmic Approach}
+
+To solve the \textbf{Single Number} problem efficiently, Bit Manipulation, specifically the XOR operation, is utilized. The XOR operation has properties that make it ideal for this problem:
+
+\begin{enumerate}
+    \item **XOR of a number with itself is 0:** \(x \oplus x = 0\)
+    \item **XOR of a number with 0 is the number itself:** \(x \oplus 0 = x\)
+    \item **XOR is commutative and associative:** The order of operations does not affect the result.
+\end{enumerate}
+
+By XOR-ing all elements in the array, paired numbers cancel each other out, leaving only the unique number.
+
+\marginnote{Leveraging the properties of XOR allows for an elegant and efficient solution without additional memory usage.}
+
+\section*{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(n)\), where \(n\) is the number of elements in the array. Each element is visited exactly once.
+    
+    \item \textbf{Space Complexity:} \(O(1)\), since no extra space is used other than a few variables.
+\end{itemize}
+
+\section*{Python Implementation}
+
+\marginnote{Implementing the XOR approach provides an optimal solution with linear time complexity and constant space usage.}
+
+Below is the complete Python code implementing the \texttt{singleNumber} function using Bit Manipulation (XOR):
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+from typing import List
+
+class Solution:
+    def singleNumber(self, nums: List[int]) -> int:
+        single = 0
+        for num in nums:
+            single ^= num
+        return single
+
+# Example usage:
+solution = Solution()
+print(solution.singleNumber([2,2,1]))        # Output: 1
+print(solution.singleNumber([4,1,2,1,2]))    # Output: 4
+print(solution.singleNumber([1]))            # Output: 1
+\end{lstlisting}
+\end{fullwidth}
+
+This implementation initializes a variable \texttt{single} to 0. It then iterates through each number in the array, applying the XOR operation between \texttt{single} and the current number. Due to the properties of XOR, all paired numbers cancel out, leaving only the unique number as the final value of \texttt{single}.
+
+\section*{Explanation}
+
+The \texttt{singleNumber} function employs Bit Manipulation to identify the unique element in the array efficiently. Here's a detailed breakdown of how the implementation works:
+
+\subsection*{Bitwise XOR Approach}
+
+\begin{enumerate}
+    \item \textbf{Initialization:}
+    \begin{itemize}
+        \item \texttt{single} is initialized to 0. This variable will accumulate the XOR of all elements in the array.
+    \end{itemize}
+    
+    \item \textbf{Iterative XOR Operations:}
+    \begin{itemize}
+        \item Iterate through each number in the array \texttt{nums}.
+        \item For each number \texttt{num}, perform the XOR operation with \texttt{single}: \texttt{single} $\mathtt{\wedge}=$ \texttt{num}.
+        \item Due to the properties of XOR:
+        \begin{itemize}
+            \item When a number appears twice, it cancels itself out: \(x \oplus x = 0\).
+            \item XOR-ing with 0 leaves the number unchanged: \(x \oplus 0 = x\).
+        \end{itemize}
+    \end{itemize}
+    
+    \item \textbf{Final Result:}
+    \begin{itemize}
+        \item After completing the iteration, \texttt{single} holds the value of the unique number in the array, which is then returned.
+    \end{itemize}
+\end{enumerate}
+
+\subsection*{Example Walkthrough}
+
+Consider the array \([4,1,2,1,2]\):
+
+\begin{itemize}
+    \item **Initial State:**
+    \begin{itemize}
+        \item \texttt{single} = 0
+    \end{itemize}
+    
+    \item **First Iteration (\texttt{num} = 4):**
+    \begin{itemize}
+        \item \texttt{single} = 0 \(\oplus\) 4 = 4
+    \end{itemize}
+    
+    \item **Second Iteration (\texttt{num} = 1):**
+    \begin{itemize}
+        \item \texttt{single} = 4 \(\oplus\) 1 = 5
+    \end{itemize}
+    
+    \item **Third Iteration (\texttt{num} = 2):**
+    \begin{itemize}
+        \item \texttt{single} = 5 \(\oplus\) 2 = 7
+    \end{itemize}
+    
+    \item **Fourth Iteration (\texttt{num} = 1):**
+    \begin{itemize}
+        \item \texttt{single} = 7 \(\oplus\) 1 = 6
+    \end{itemize}
+    
+    \item **Fifth Iteration (\texttt{num} = 2):**
+    \begin{itemize}
+        \item \texttt{single} = 6 \(\oplus\) 2 = 4
+    \end{itemize}
+    
+    \item **Final State:**
+    \begin{itemize}
+        \item \texttt{single} = 4, which is the unique number in the array.
+    \end{itemize}
+\end{itemize}
+
+\section*{Why This Approach}
+
+The Bit Manipulation (XOR) approach is chosen for its optimal time and space complexities. Unlike other methods such as using hash tables or sorting, which may require additional space or increased time complexity, the XOR method achieves the desired result with:
+
+\begin{itemize}
+    \item \textbf{Linear Time Complexity (\(O(n)\)):} Each element is processed exactly once.
+    \item \textbf{Constant Space Complexity (\(O(1)\)):} No additional space is used aside from a single variable.
+\end{itemize}
+
+Furthermore, the XOR approach is elegant and concise, making the code easy to understand and maintain.
+
+\section*{Alternative Approaches}
+
+While the XOR method is the most efficient, there are alternative ways to solve the \textbf{Single Number} problem:
+
+\subsection*{1. Using a Hash Table}
+Store each number in a hash table and count their occurrences. The number with a count of one is the unique number.
+
+\begin{lstlisting}[language=Python]
+from collections import defaultdict
+from typing import List
+
+class Solution:
+    def singleNumber(self, nums: List[int]) -> int:
+        counts = defaultdict(int)
+        for num in nums:
+            counts[num] += 1
+        for num, count in counts.items():
+            if count == 1:
+                return num
+\end{lstlisting}
+
+\textbf{Complexities:}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(n)\)
+    \item \textbf{Space Complexity:} \(O(n)\)
+\end{itemize}
+
+\subsection*{2. Sorting the Array}
+Sort the array and then iterate through it to find the unique number.
+
+\begin{lstlisting}[language=Python]
+from typing import List
+
+class Solution:
+    def singleNumber(self, nums: List[int]) -> int:
+        nums.sort()
+        n = len(nums)
+        for i in range(0, n, 2):
+            if i == n - 1 or nums[i] != nums[i + 1]:
+                return nums[i]
+\end{lstlisting}
+
+\textbf{Complexities:}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(n \log n)\) due to sorting
+    \item \textbf{Space Complexity:} \(O(1)\) or \(O(n)\) depending on the sorting algorithm
+\end{itemize}
+
+\subsection*{3. Using Mathematical Summation}
+Calculate the sum of the unique elements multiplied by two and subtract the sum of all elements. The result is the missing number.
+
+\begin{lstlisting}[language=Python]
+from typing import List
+
+class Solution:
+    def singleNumber(self, nums: List[int]) -> int:
+        return 2 * sum(set(nums)) - sum(nums)
+\end{lstlisting}
+
+\textbf{Complexities:}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(n)\)
+    \item \textbf{Space Complexity:} \(O(n)\)
+\end{itemize}
+
+However, this approach assumes that all elements except one appear exactly twice and leverages the properties of sets for uniqueness.
+
+\section*{Similar Problems to This One}
+
+Several problems revolve around finding unique or duplicate elements in arrays, utilizing similar algorithmic strategies:
+
+\begin{itemize}
+    \item \textbf{Find the Duplicate Number}: Identify the duplicate number in an array containing numbers from \(1\) to \(n\).
+    \item \textbf{Single Number II}: Find the element that appears only once in an array where every other element appears three times.
+    \item \textbf{Find All Numbers Disappeared in an Array}: Locate all numbers within a range that do not appear in the array.
+    \item \textbf{Find the Smallest Missing Positive Number}: Determine the smallest missing positive integer in an unsorted array.
+    \item \textbf{Missing Number}: Find the missing number in an array containing numbers from \(0\) to \(n\).
+\end{itemize}
+
+These problems help reinforce the concepts of Bit Manipulation, Hash Tables, and Sorting in different contexts, enhancing problem-solving skills.
+
+\section*{Things to Keep in Mind and Tricks}
+
+When tackling the \textbf{Single Number} problem, consider the following tips and best practices:
+
+\begin{itemize}
+    \item \textbf{Understand XOR Properties}: Recognize how XOR can cancel out duplicate numbers and isolate the unique number.
+    \index{XOR Properties}
+    
+    \item \textbf{Optimize for Space}: Aim for solutions that use constant space to handle large datasets efficiently.
+    \index{Space Optimization}
+    
+    \item \textbf{Edge Cases}: Always consider edge cases such as arrays with only one element or where the unique number is at the beginning or end of the array.
+    \index{Edge Cases}
+    
+    \item \textbf{Avoid Using Extra Data Structures}: Unless necessary, refrain from using additional data structures like hash tables to save on space complexity.
+    \index{Avoid Extra Data Structures}
+    
+    \item \textbf{Leverage Bitwise Operations}: Bitwise operations are powerful tools for solving problems involving binary representations and can lead to highly efficient solutions.
+    \index{Bitwise Operations}
+    
+    \item \textbf{Code Readability}: While optimizing for performance, maintain clear and readable code through meaningful variable names and comments.
+    \index{Readability}
+    
+    \item \textbf{Practice Common Patterns}: Familiarize yourself with common Bit Manipulation patterns and techniques through practice.
+    \index{Common Patterns}
+    
+    \item \textbf{Testing Thoroughly}: Implement comprehensive test cases covering all possible scenarios, including edge cases, to ensure the correctness of the solution.
+    \index{Testing}
+    
+    \item \textbf{Iterative vs. Mathematical Solutions}: Choose between iterative approaches (like XOR) and mathematical solutions based on the problem constraints and desired efficiencies.
+    \index{Iterative vs. Mathematical Solutions}
+    
+    \item \textbf{Understand Problem Constraints}: Ensure that the chosen approach adheres to the problem's constraints, such as time and space limits.
+    \index{Problem Constraints}
+\end{itemize}
+
+\section*{Corner and Special Cases to Test When Writing the Code}
+
+When implementing solutions for the \textbf{Single Number} problem, it is crucial to consider and rigorously test various edge cases to ensure robustness and correctness:
+
+\begin{itemize}
+    \item \textbf{Single Element Array}: Arrays with only one element should return that element as the unique number.
+    \index{Single Element Array}
+    
+    \item \textbf{All Elements Paired Except One}: Ensure that the function correctly identifies the unique number in arrays where all other elements appear exactly twice.
+    \index{All Elements Paired Except One}
+    
+    \item \textbf{Unique Number is at the Beginning or End}: Test cases where the unique number is the first or last element in the array.
+    \index{Unique Number Positions}
+    
+    \item \textbf{Large Array}: Arrays with a large number of elements to verify that the function handles large inputs efficiently without performance degradation.
+    \index{Large Array}
+    
+    \item \textbf{Negative Numbers}: Arrays containing negative numbers should still correctly identify the unique number.
+    \index{Negative Numbers}
+    
+    \item \textbf{Zero as Unique Number}: Ensure that the function correctly identifies `0` as the unique number when applicable.
+    \index{Zero as Unique Number}
+    
+    \item \textbf{All Elements Same Except One}: Arrays where all elements are the same except one should correctly identify the unique element.
+    \index{All Elements Same Except One}
+    
+    \item \textbf{Array with Maximum and Minimum Integers}: Test with arrays containing the maximum and minimum integer values to ensure no overflow or underflow issues.
+    \index{Maximum and Minimum Integers}
+    
+    \item \textbf{Odd and Even Length Arrays}: Verify that the function works correctly for arrays with both odd and even lengths.
+    \index{Odd and Even Length Arrays}
+    
+    \item \textbf{Duplicate Numbers Non-Consecutive}: Arrays where duplicate numbers are not adjacent should still correctly identify the unique number.
+    \index{Duplicate Numbers Non-Consecutive}
+\end{itemize}
+
+\section*{Implementation Considerations}
+
+When implementing the \texttt{singleNumber} function, keep in mind the following considerations to ensure robustness and efficiency:
+
+\begin{itemize}
+    \item \textbf{Data Type Selection}: Use appropriate data types that can handle the range of input values without overflow or underflow.
+    \index{Data Type Selection}
+    
+    \item \textbf{Optimizing Loops}: Ensure that loops run only the necessary number of times and that each operation within the loop is optimized for performance.
+    \index{Loop Optimization}
+    
+    \item \textbf{Handling Large Inputs}: Design the algorithm to efficiently handle large input sizes without significant performance degradation.
+    \index{Handling Large Inputs}
+    
+    \item \textbf{Language-Specific Optimizations}: Utilize language-specific features or built-in functions that can enhance the performance of Bit Manipulation operations.
+    \index{Language-Specific Optimizations}
+    
+    \item \textbf{Avoiding Unnecessary Operations}: In the XOR approach, ensure that each operation contributes towards isolating the unique number without redundant computations.
+    \index{Avoiding Unnecessary Operations}
+    
+    \item \textbf{Code Readability and Documentation}: Maintain clear and readable code through meaningful variable names and comprehensive comments to facilitate understanding and maintenance.
+    \index{Code Readability}
+    
+    \item \textbf{Edge Case Handling}: Ensure that all edge cases are handled appropriately, preventing incorrect results or runtime errors.
+    \index{Edge Case Handling}
+    
+    \item \textbf{Testing and Validation}: Develop a comprehensive suite of test cases that cover all possible scenarios, including edge cases, to validate the correctness and efficiency of the implementation.
+    \index{Testing and Validation}
+    
+    \item \textbf{Scalability}: Design the algorithm to scale efficiently with increasing input sizes, maintaining performance and resource utilization.
+    \index{Scalability}
+    
+    \item \textbf{Using Built-In Functions}: Where possible, leverage built-in functions or libraries that can perform Bit Manipulation more efficiently.
+    \index{Built-In Functions}
+\end{itemize}
+
+\section*{Conclusion}
+
+The \textbf{Single Number} problem serves as an excellent exercise in applying Bit Manipulation to solve algorithmic challenges efficiently. By leveraging the properties of the XOR operation, the problem can be solved with optimal time and space complexities, making it a preferred method over alternative approaches like hash tables or sorting. Understanding and implementing such techniques not only enhances problem-solving skills but also provides a foundation for tackling a wide range of computational problems that require efficient data manipulation and optimization.
+
+\printindex
+
+% \input{sections/bit_manipulation}
+% \input{sections/sum_of_two_integers}
+% \input{sections/number_of_1_bits}
+% \input{sections/counting_bits}
+% \input{sections/missing_number}
+% \input{sections/reverse_bits}
+% \input{sections/single_number}
+% \input{sections/power_of_two}

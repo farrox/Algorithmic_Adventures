@@ -1,0 +1,506 @@
+% filename: integer_to_english_words.tex
+
+\problemsection{Integer to English Words}
+\label{chap:Integer_to_English_Words}
+\marginnote{\href{https://leetcode.com/problems/integer-to-english-words/}{[LeetCode Link]}\index{LeetCode}}
+\marginnote{\href{https://www.geeksforgeeks.org/convert-number-words/}{[GeeksForGeeks Link]}\index{GeeksForGeeks}}
+\marginnote{\href{https://www.interviewbit.com/problems/convert-number-to-words/}{[InterviewBit Link]}\index{InterviewBit}}
+\marginnote{\href{https://app.codesignal.com/challenges/integer-to-english-words}{[CodeSignal Link]}\index{CodeSignal}}
+\marginnote{\href{https://www.codewars.com/kata/integer-to-english-words/train/python}{[Codewars Link]}\index{Codewars}}
+
+The \textbf{Integer to English Words} problem is a challenging algorithmic task that involves converting a non-negative integer into its corresponding English words representation. This problem tests one's ability to handle string manipulation, recursion, and the systematic mapping of numerical values to linguistic constructs. Mastery of this problem is essential for developing skills in parsing, algorithm design, and handling complex conditional logic in programming.
+
+\section*{Problem Statement}
+
+Convert a non-negative integer \(num\) to its English words representation. The input is guaranteed to be less than or equal to \(2^{31} - 1\).
+
+\textbf{Function signature in Python:}
+\begin{lstlisting}[language=Python]
+def numberToWords(num: int) -> str:
+\end{lstlisting}
+
+\section*{Examples}
+
+\textbf{Example 1:}
+
+\begin{verbatim}
+Input: num = 123
+Output: "One Hundred Twenty Three"
+Explanation: 123 is converted to "One Hundred Twenty Three".
+\end{verbatim}
+
+\textbf{Example 2:}
+
+\begin{verbatim}
+Input: num = 12345
+Output: "Twelve Thousand Three Hundred Forty Five"
+Explanation: 12345 is converted to "Twelve Thousand Three Hundred Forty Five".
+\end{verbatim}
+
+\textbf{Example 3:}
+
+\begin{verbatim}
+Input: num = 1234567
+Output: "One Million Two Hundred Thirty Four Thousand Five Hundred Sixty Seven"
+Explanation: 1234567 is converted to "One Million Two Hundred Thirty Four Thousand Five Hundred Sixty Seven".
+\end{verbatim}
+
+\textbf{Example 4:}
+
+\begin{verbatim}
+Input: num = 1234567891
+Output: "One Billion Two Hundred Thirty Four Million Five Hundred Sixty Seven Thousand Eight Hundred Ninety One"
+Explanation: 1234567891 is converted to "One Billion Two Hundred Thirty Four Million Five Hundred Sixty Seven Thousand Eight Hundred Ninety One".
+\end{verbatim}
+
+\textbf{Example 5:}
+
+\begin{verbatim}
+Input: num = 0
+Output: "Zero"
+Explanation: 0 is converted to "Zero".
+\end{verbatim}
+
+\textbf{Constraints:}
+
+\begin{itemize}
+    \item \(0 \leq num \leq 2^{31} - 1\)
+\end{itemize}
+
+
+
+\section*{Algorithmic Approach}
+
+To convert a non-negative integer into its English words representation, a systematic approach is necessary to handle different magnitudes (units, thousands, millions, billions) and the unique naming conventions in English. The following steps outline an effective strategy:
+
+\subsection*{1. Define Word Mappings}
+
+Establish dictionaries or lists that map numerical values to their corresponding English words:
+
+\begin{itemize}
+    \item \textbf{Less than 20}: Unique words for numbers from 0 to 19.
+    \item \textbf{Tens}: Words for multiples of ten from 20 to 90.
+    \item \textbf{Thousands}: Words for higher magnitudes like Thousand, Million, Billion.
+\end{itemize}
+
+\subsection*{2. Recursive Conversion}
+
+Implement a recursive helper function that processes chunks of the number (three digits at a time) and appends the appropriate magnitude word (e.g., Thousand, Million) based on the current position.
+
+\begin{enumerate}
+    \item **Base Cases:**
+    \begin{itemize}
+        \item If the number is zero, return an empty string.
+        \item If the number is less than 20, return the corresponding word.
+        \item If the number is less than 100, return the tens word plus the result of the remainder.
+    \end{itemize}
+    
+    \item **Recursive Case:**
+    \begin{itemize}
+        \item Process hundreds place: append "Hundred" if applicable.
+        \item Recursively process the remainder of the number.
+    \end{itemize}
+\end{enumerate}
+
+\subsection*{3. Iterate Through Magnitudes}
+
+Iterate through the number, processing three digits at a time, and append the appropriate magnitude word based on the current chunk's position.
+
+\marginnote{Recursion simplifies the handling of different magnitudes by breaking the problem into smaller, manageable subproblems.}
+
+\section*{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(1)\). The number of operations is bounded since the maximum number is \(2^{31} - 1\), which has a fixed number of digits.
+    
+    \item \textbf{Space Complexity:} \(O(1)\). Space used for dictionaries and recursion stack is constant.
+\end{itemize}
+
+\section*{Python Implementation}
+
+\marginnote{Using recursion and predefined mappings ensures an organized and efficient conversion process.}
+
+Below is the complete Python code implementing the \texttt{numberToWords} function:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class Solution:
+    def numberToWords(self, num: int) -> str:
+        if num == 0:
+            return "Zero"
+        
+        less_than_20 = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven",
+                        "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen",
+                        "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen",
+                        "Nineteen"]
+        
+        tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty",
+                "Seventy", "Eighty", "Ninety"]
+        
+        thousands = ["", "Thousand", "Million", "Billion"]
+        
+        def helper(n):
+            if n == 0:
+                return ""
+            elif n < 20:
+                return less_than_20[n] + " "
+            elif n < 100:
+                return tens[n // 10] + " " + helper(n % 10)
+            else:
+                return less_than_20[n // 100] + " Hundred " + helper(n % 100)
+        
+        res = ""
+        for idx, unit in enumerate(thousands):
+            if num % 1000 != 0:
+                res = helper(num % 1000) + unit + " " + res
+            num = num // 1000
+            if num == 0:
+                break
+        return res.strip()
+    
+    # Example usage:
+    solution = Solution()
+    print(solution.numberToWords(123))         # Output: "One Hundred Twenty Three"
+    print(solution.numberToWords(12345))       # Output: "Twelve Thousand Three Hundred Forty Five"
+    print(solution.numberToWords(1234567))     # Output: "One Million Two Hundred Thirty Four Thousand Five Hundred Sixty Seven"
+    print(solution.numberToWords(1234567891))  # Output: "One Billion Two Hundred Thirty Four Million Five Hundred Sixty Seven Thousand Eight Hundred Ninety One"
+    print(solution.numberToWords(0))           # Output: "Zero"
+\end{lstlisting}
+\end{fullwidth}
+
+This implementation leverages recursion to handle segments of the number, effectively mapping each part to its English words representation and appending the appropriate magnitude word (e.g., Thousand, Million) based on its position.
+
+\section*{Explanation}
+
+The \texttt{numberToWords} function systematically converts a non-negative integer into its English words representation by breaking down the number into manageable segments and mapping each segment to its corresponding words. Here's a detailed breakdown:
+
+\subsection*{1. Base Case Handling}
+
+\begin{itemize}
+    \item If the input number is zero, return "Zero" immediately, as this is a unique case.
+\end{itemize}
+
+\subsection*{2. Define Mappings}
+
+\begin{itemize}
+    \item \texttt{less\_than\_20}: A list mapping numbers from 0 to 19 to their English words.
+    \item \texttt{tens}: A list mapping multiples of ten from 20 to 90.
+    \item \texttt{thousands}: A list representing different magnitudes (Thousand, Million, Billion).
+\end{itemize}
+
+\subsection*{3. Recursive Helper Function}
+
+\begin{itemize}
+    \item The helper function processes numbers less than 1000:
+    \begin{itemize}
+        \item If the number is zero, return an empty string.
+        \item If the number is less than 20, return the corresponding word from \texttt{less\_than\_20}.
+        \item If the number is less than 100, return the corresponding word from \texttt{tens} and recursively process the remainder.
+        \item If the number is 100 or greater, process the hundreds place and recursively handle the remainder.
+    \end{itemize}
+\end{itemize}
+
+\subsection*{4. Iterating Through Magnitudes}
+
+\begin{itemize}
+    \item Iterate through the \texttt{thousands} list to handle each segment of the number:
+    \begin{itemize}
+        \item For each magnitude (Thousand, Million, Billion), check if the current segment (last three digits) is non-zero.
+        \item If non-zero, process it using the helper function and append the corresponding magnitude word.
+        \item Update the number by removing the processed segment (divide by 1000).
+        \item Break the loop if the number becomes zero.
+    \end{itemize}
+\end{itemize}
+
+\subsection*{5. Final Formatting}
+
+\begin{itemize}
+    \item Trim any trailing spaces from the result to ensure proper formatting.
+\end{itemize}
+
+\subsection*{Example Walkthrough}
+
+Consider the number \(1234567\):
+
+\begin{itemize}
+    \item \texttt{num} = 1,234,567
+    \item **First Iteration (\texttt{unit} = ""):**
+    \begin{itemize}
+        \item Process \(567\): "Five Hundred Sixty Seven"
+        \item Append magnitude "" (no change): "Five Hundred Sixty Seven "
+    \end{itemize}
+    \item **Second Iteration (\texttt{unit} = "Thousand"):**
+    \begin{itemize}
+        \item Process \(234\): "Two Hundred Thirty Four"
+        \item Append magnitude "Thousand": "Two Hundred Thirty Four Thousand Five Hundred Sixty Seven "
+    \end{itemize}
+    \item **Third Iteration (\texttt{unit} = "Million"):**
+    \begin{itemize}
+        \item Process \(1\): "One"
+        \item Append magnitude "Million": "One Million Two Hundred Thirty Four Thousand Five Hundred Sixty Seven "
+    \end{itemize}
+    \item **Final Result:**
+    \begin{itemize}
+        \item Trimmed: "One Million Two Hundred Thirty Four Thousand Five Hundred Sixty Seven"
+    \end{itemize}
+\end{itemize}
+
+\section*{Why This Approach}
+
+This recursive and iterative combination ensures that each segment of the number is processed efficiently and accurately. By handling three digits at a time and appending the appropriate magnitude word, the algorithm maintains clarity and scalability, effectively managing numbers up to billions with ease.
+
+\section*{Alternative Approaches}
+
+While the recursive helper function is intuitive, there are alternative ways to implement the conversion:
+
+\subsection*{1. Iterative Parsing with Stacks}
+
+Use stacks to reverse the segments and build the English words from least significant to most significant digits.
+
+\begin{lstlisting}[language=Python]
+class Solution:
+    def numberToWords(self, num: int) -> str:
+        if num == 0:
+            return "Zero"
+        
+        less_than_20 = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven",
+                        "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen",
+                        "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen",
+                        "Nineteen"]
+        
+        tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty",
+                "Seventy", "Eighty", "Ninety"]
+        
+        thousands = ["", "Thousand", "Million", "Billion"]
+        
+        def helper(n):
+            if n == 0:
+                return ""
+            elif n < 20:
+                return less_than_20[n] + " "
+            elif n < 100:
+                return tens[n // 10] + " " + helper(n % 10)
+            else:
+                return less_than_20[n // 100] + " Hundred " + helper(n % 100)
+        
+        res = ""
+        unit_idx = 0
+        while num > 0:
+            if num % 1000 != 0:
+                res = helper(num % 1000) + thousands[unit_idx] + " " + res
+            num = num // 1000
+            unit_idx += 1
+        return res.strip()
+\end{lstlisting}
+
+\subsection*{2. Iterative without Recursion}
+
+Implement the helper logic iteratively to avoid recursion stack overhead.
+
+\begin{lstlisting}[language=Python]
+class Solution:
+    def numberToWords(self, num: int) -> str:
+        if num == 0:
+            return "Zero"
+        
+        less_than_20 = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven",
+                        "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen",
+                        "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen",
+                        "Nineteen"]
+        
+        tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty",
+                "Seventy", "Eighty", "Ninety"]
+        
+        thousands = ["", "Thousand", "Million", "Billion"]
+        
+        def convert_chunk(n):
+            words = []
+            if n >= 100:
+                words.append(less_than_20[n // 100] + " Hundred")
+                n %= 100
+            if n >= 20:
+                words.append(tens[n // 10])
+                n %= 10
+            if n > 0:
+                words.append(less_than_20[n])
+            return " ".join(words) + " "
+        
+        res = ""
+        unit_idx = 0
+        while num > 0:
+            if num % 1000 != 0:
+                res = convert_chunk(num % 1000) + thousands[unit_idx] + " " + res
+            num = num // 1000
+            unit_idx += 1
+        return res.strip()
+\end{lstlisting}
+
+\section*{Similar Problems to This One}
+
+Several problems revolve around number conversion, string manipulation, and handling large numbers, utilizing similar algorithmic strategies:
+
+\begin{itemize}
+    \item \textbf{English Words to Integer}: Convert English words representation of a number back to its integer form.
+    \item \textbf{Integer to Roman}: Convert an integer to its corresponding Roman numeral representation.
+    \item \textbf{Roman to Integer}: Convert a Roman numeral to its integer form.
+    \item \textbf{Excel Sheet Column Title}: Convert a number to its corresponding Excel sheet column title.
+    \item \textbf{Number of Digit One}: Count the number of digit one appearing in all non-negative integers less than or equal to \(n\).
+    \item \textbf{Add to Array-Form of Integer}: Add an integer to an array-form integer.
+    \item \textbf{Power of Two}: Determine if a number is a power of two using bitwise operations.
+    \item \textbf{Happy Number}: Determine if a number is a "happy" number based on specific iterative processes.
+\end{itemize}
+
+These problems reinforce concepts of mapping numerical values to different representations, handling edge cases, and implementing efficient algorithms for conversion tasks.
+
+\section*{Things to Keep in Mind and Tricks}
+
+When tackling the \textbf{Integer to English Words} problem, consider the following tips and best practices:
+
+\begin{itemize}
+    \item \textbf{Understand Number Segmentation}: Break down the number into segments of three digits (hundreds, thousands, millions, billions) to simplify processing.
+    \index{Number Segmentation}
+    
+    \item \textbf{Use Recursion or Iteration}: Decide between recursive and iterative approaches based on readability and language-specific recursion limits.
+    \index{Recursion vs. Iteration}
+    
+    \item \textbf{Handle Special Cases}: Pay attention to unique number representations, such as numbers below 20 and exact multiples of ten.
+    \index{Special Cases}
+    
+    \item \textbf{Maintain Clean Mappings}: Ensure that all number-to-word mappings are accurate and comprehensive, covering all necessary ranges.
+    \index{Number-to-Word Mappings}
+    
+    \item \textbf{Optimize for Readability}: Structure your code with clear variable names and modular functions to enhance readability and maintainability.
+    \index{Code Readability}
+    
+    \item \textbf{Avoid Redundant Spaces}: Manage spaces carefully to prevent trailing or multiple spaces in the final output.
+    \index{Space Management}
+    
+    \item \textbf{Test Extensively}: Implement a wide range of test cases, including edge cases like zero, single-digit numbers, and large magnitudes, to ensure correctness.
+    \index{Extensive Testing}
+    
+    \item \textbf{Use Helper Functions}: Create helper functions for repetitive tasks, such as processing three-digit segments, to keep the main function concise.
+    \index{Helper Functions}
+    
+    \item \textbf{Leverage Predefined Lists or Dictionaries}: Utilize lists or dictionaries to store number-to-word mappings for efficient retrieval.
+    \index{Predefined Lists and Dictionaries}
+    
+    \item \textbf{Understand English Numbering Rules}: Familiarize yourself with English numbering conventions, such as the placement of "Hundred," "Thousand," "Million," etc.
+    \index{English Numbering Rules}
+    
+    \item \textbf{Consider Iterative Refinement}: Start with a basic implementation and iteratively refine it to handle more complex cases and optimize performance.
+    \index{Iterative Refinement}
+    
+    \item \textbf{Edge Case Handling}: Ensure that all edge cases are handled appropriately to prevent incorrect results or runtime errors.
+    \index{Edge Case Handling}
+    
+    \item \textbf{Avoid Floating-Point Operations}: Since the problem deals with integers, stick to integer operations to maintain precision and avoid unnecessary complexity.
+    \index{Avoid Floating-Point Operations}
+    
+    \item \textbf{Code Modularization}: Divide your code into logical sections or functions to enhance clarity and facilitate debugging.
+    \index{Code Modularization}
+    
+    \item \textbf{Consistency in Capitalization}: Maintain consistent capitalization in the output to match expected formats.
+    \index{Capitalization Consistency}
+\end{itemize}
+
+\section*{Corner and Special Cases to Test When Writing the Code}
+
+When implementing solutions for the \textbf{Integer to English Words} problem, it is crucial to consider and rigorously test various edge cases to ensure robustness and correctness:
+
+\begin{itemize}
+    \item \textbf{Zero (\(num = 0\))}: Should return "Zero".
+    \index{Zero}
+    
+    \item \textbf{Single-Digit Numbers (\(1 \leq num \leq 9\))}: Ensure that single-digit numbers are correctly converted.
+    \index{Single-Digit Numbers}
+    
+    \item \textbf{Teens (\(10 \leq num \leq 19\))}: Verify correct handling of unique teen numbers.
+    \index{Teens}
+    
+    \item \textbf{Exact Tens (\(20, 30, \dots, 90\))}: Ensure that exact multiples of ten are handled without trailing words.
+    \index{Exact Tens}
+    
+    \item \textbf{Hundreds (\(100 \leq num \leq 999\))}: Test numbers that include hundreds, such as 100, 200, ..., 900.
+    \index{Hundreds}
+    
+    \item \textbf{Thousands, Millions, and Billions}: Verify correct conversion of numbers that include these magnitudes.
+    \index{Thousands, Millions, Billions}
+    
+    \item \textbf{Numbers with Mixed Segments}: Test numbers that include combinations of hundreds, tens, and units across different magnitudes, such as 1,234,567.
+    \index{Mixed Segments}
+    
+    \item \textbf{Large Numbers (\(1,000,000,000 \leq num \leq 2^{31} - 1\))}: Ensure that the algorithm correctly handles the largest possible input.
+    \index{Large Numbers}
+    
+    \item \textbf{Numbers Ending with Zero}: Verify that trailing zeros in different segments do not produce unnecessary words, e.g., 1000, 10000.
+    \index{Numbers Ending with Zero}
+    
+    \item \textbf{Consecutive Magnitudes}: Test numbers where multiple magnitude segments are present consecutively, such as 1,000,000.
+    \index{Consecutive Magnitudes}
+    
+    \item \textbf{Numbers with Missing Segments}: Ensure that the algorithm correctly skips segments that are zero, e.g., 1,000,001.
+    \index{Missing Segments}
+    
+    \item \textbf{Boundary Values}: Test with the smallest and largest possible values, such as 0 and 2,147,483,647.
+    \index{Boundary Values}
+    
+    \item \textbf{Repeated Numbers}: Ensure that numbers with repeated digits are correctly converted, e.g., 111, 222.
+    \index{Repeated Numbers}
+    
+    \item \textbf{Palindromic Numbers}: Test numbers that read the same backward and forward to ensure no unintended patterns.
+    \index{Palindromic Numbers}
+    
+    \item \textbf{Numbers with All Segments Zero Except One}: For example, 1,000,000,001.
+    \index{All Segments Zero Except One}
+\end{itemize}
+
+\section*{Implementation Considerations}
+
+When implementing the \texttt{numberToWords} function, keep in mind the following considerations to ensure robustness and efficiency:
+
+\begin{itemize}
+    \item \textbf{Data Type Selection}: Use appropriate data types that can handle the range of input values without overflow or underflow.
+    \index{Data Type Selection}
+    
+    \item \textbf{Optimizing Recursion or Iteration}: Ensure that recursive calls are optimized to prevent stack overflow and that iterative solutions do not have unnecessary loops.
+    \index{Recursion vs. Iteration}
+    
+    \item \textbf{Handling Large Inputs}: Design the algorithm to efficiently handle large input sizes (up to 2,147,483,647) without significant performance degradation.
+    \index{Handling Large Inputs}
+    
+    \item \textbf{Language-Specific Optimizations}: Utilize language-specific features or built-in functions that can enhance the performance of string manipulation and recursion.
+    \index{Language-Specific Optimizations}
+    
+    \item \textbf{Avoiding Redundant Operations}: Ensure that each operation contributes towards building the final English words representation without redundant computations.
+    \index{Avoiding Redundant Operations}
+    
+    \item \textbf{Code Readability and Documentation}: Maintain clear and readable code through meaningful variable names and comprehensive comments to facilitate understanding and maintenance.
+    \index{Code Readability}
+    
+    \item \textbf{Edge Case Handling}: Ensure that all edge cases are handled appropriately, preventing incorrect results or runtime errors.
+    \index{Edge Case Handling}
+    
+    \item \textbf{Testing and Validation}: Develop a comprehensive suite of test cases that cover all possible scenarios, including edge cases, to validate the correctness and efficiency of the implementation.
+    \index{Testing and Validation}
+    
+    \item \textbf{Scalability}: Design the algorithm to scale efficiently with increasing input sizes, maintaining performance and resource utilization.
+    \index{Scalability}
+    
+    \item \textbf{Using Helper Functions}: Consider creating helper functions for repetitive tasks, such as converting three-digit segments to words, to enhance modularity and reusability.
+    \index{Helper Functions}
+    
+    \item \textbf{Consistent Formatting}: Ensure consistent use of spaces and capitalization in the final output to match expected formats.
+    \index{Consistent Formatting}
+\end{itemize}
+
+\section*{Conclusion}
+
+The \textbf{Integer to English Words} problem exemplifies the application of systematic algorithm design, recursion, and string manipulation to convert numerical values into their linguistic representations. By breaking down the number into manageable segments and leveraging predefined mappings, the algorithm efficiently handles a wide range of inputs, from single-digit numbers to billions. Understanding and implementing such techniques not only enhances problem-solving skills but also provides a foundation for tackling complex algorithmic challenges in fields like natural language processing, data formatting, and software localization. Mastery of this problem is a testament to a programmer's ability to blend mathematical logic with practical coding skills to deliver accurate and efficient solutions.
+
+\printindex
+
+% \input{sections/mathematical_algorithms}
+% \input{sections/pow_x_n}
+% \input{sections/sqrt_x}
+% \input{sections/integer_to_english_words}
+% \input{sections/happy_number}

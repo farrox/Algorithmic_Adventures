@@ -1,0 +1,329 @@
+% filename: reverse_bits.tex
+
+\problemsection{Reverse Bits}
+\label{chap:Reverse_Bits}
+\marginnote{\href{https://leetcode.com/problems/reverse-bits/}{[LeetCode Link]}\index{LeetCode}}
+\marginnote{\href{https://www.geeksforgeeks.org/program-reverse-bits-integer/}{[GeeksForGeeks Link]}\index{GeeksForGeeks}}
+\marginnote{\href{https://www.interviewbit.com/problems/reverse-bits/}{[InterviewBit Link]}\index{InterviewBit}}
+\marginnote{\href{https://app.codesignal.com/challenges/reverse-bits}{[CodeSignal Link]}\index{CodeSignal}}
+\marginnote{\href{https://www.codewars.com/kata/reverse-bits/train/python}{[Codewars Link]}\index{Codewars}}
+
+The \textbf{Reverse Bits} problem is a classic exercise in Bit Manipulation that requires reversing the bits of a given 32-bit unsigned integer. This problem tests one's ability to perform low-level binary operations efficiently, which is crucial in areas such as computer architecture, cryptography, and network programming.
+
+\section*{Problem Statement}
+
+The task is to reverse the bits of a given 32-bit unsigned integer. The input is provided as an integer, and the output should also be an integer, representing the decimal value of the binary bits reversed.
+
+\textbf{Function signature in Python:}
+\begin{lstlisting}[language=Python]
+def reverseBits(n: int) -> int:
+\end{lstlisting}
+
+\textbf{Example 1:}
+\begin{verbatim}
+Input: n = 43261596
+Output: 964176192
+Explanation: 
+43261596 in binary is 00000010100101000001111010011100.
+Reversed, it becomes 00111001011110000010100101000000, which is 964176192.
+\end{verbatim}
+
+\textbf{Example 2:}
+\begin{verbatim}
+Input: n = 00000010100101000001111010011100
+Output: 964176192
+Explanation: 
+00000010100101000001111010011100 reversed is 00111001011110000010100101000000.
+\end{verbatim}
+
+\textbf{Constraints:}
+\begin{itemize}
+    \item The input must be a binary string of length 32.
+    \item The input must be a valid unsigned integer.
+\end{itemize}
+
+LeetCode link: \href{https://leetcode.com/problems/reverse-bits/}{Reverse Bits}\index{LeetCode}
+
+\section*{Algorithmic Approach}
+
+To reverse the bits in an integer, a bitwise approach is taken, shifting through each bit and accumulating the result. The key operations involve bitwise shifts and bitwise OR. Here's a step-by-step method:
+
+\begin{enumerate}
+    \item \textbf{Initialize a Result Variable:} Start with a result variable \texttt{rev} set to 0. This variable will store the reversed bits.
+    
+    \item \textbf{Iterate Through Each Bit:} Loop through all 32 bits of the integer.
+    
+    \item \textbf{Shift and Accumulate:}
+    \begin{itemize}
+        \item Left-shift \texttt{rev} by 1 to make space for the next bit.
+        \item Use bitwise AND (\texttt{\&}) to extract the least significant bit (LSB) of the input number \texttt{n}.
+        \item Use bitwise OR (\texttt{|}) to add the extracted bit to \texttt{rev}.
+        \item Right-shift \texttt{n} by 1 to process the next bit in the subsequent iteration.
+    \end{itemize}
+    
+    \item \textbf{Return the Result:} After processing all bits, \texttt{rev} contains the reversed bits of the original integer.
+\end{enumerate}
+
+\marginnote{Bitwise manipulation allows for efficient processing of individual bits, making it ideal for problems requiring low-level data handling.}
+
+\section*{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(1)\). The algorithm processes a fixed number of bits (32), making the time complexity constant.
+    
+    \item \textbf{Space Complexity:} \(O(1)\). The algorithm uses a fixed amount of extra space for variables, irrespective of the input size.
+\end{itemize}
+
+\section*{Python Implementation}
+
+\marginnote{Implementing bit reversal using bitwise operations ensures optimal performance and minimal space usage.}
+
+Below is the complete Python code to reverse the bits of a given 32-bit unsigned integer:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class Solution:
+    def reverseBits(self, n: int) -> int:
+        rev = 0
+        for i in range(32):
+            rev = (rev << 1) | (n & 1)
+            n >>= 1
+        return rev
+
+# Example usage:
+solution = Solution()
+print(solution.reverseBits(43261596))  # Output: 964176192
+print(solution.reverseBits(00000010100101000001111010011100))  # Output: 964176192
+\end{lstlisting}
+\end{fullwidth}
+
+This implementation is straightforward, using a loop to iterate through each of the 32 bits. It initially sets \texttt{rev} to 0 and then, for each bit in the input \texttt{n}, shifts \texttt{rev} one bit to the left, reads the least significant bit of \texttt{n}, and adds it to \texttt{rev} using a bitwise OR. The input \texttt{n} is then shifted one bit to the right to continue the process with the next bit until all bits have been reversed.
+
+\section*{Explanation}
+
+The \texttt{reverseBits} function reverses the bits of a 32-bit unsigned integer using Bit Manipulation. Here's a detailed breakdown of the implementation:
+
+\subsection*{Bitwise Operations}
+
+\begin{itemize}
+    \item \textbf{Bitwise AND (\texttt{\&})}: Extracts the least significant bit (LSB) of the number \texttt{n}.
+    
+    \item \textbf{Bitwise OR (\texttt{|})}: Adds the extracted bit to the result \texttt{rev}.
+    
+    \item \textbf{Left Shift (\texttt{<<})}: Shifts the bits of \texttt{rev} to the left by one position to make space for the next bit.
+    
+    \item \textbf{Right Shift (\texttt{>>})}: Shifts the bits of \texttt{n} to the right by one position to process the next bit.
+\end{itemize}
+
+\subsection*{Step-by-Step Process}
+
+\begin{enumerate}
+    \item **Initialization:**
+    \begin{itemize}
+        \item \texttt{rev} is initialized to 0. This variable will accumulate the reversed bits.
+    \end{itemize}
+    
+    \item **Bit Processing Loop:**
+    \begin{itemize}
+        \item Iterate through each of the 32 bits using a loop.
+        \item In each iteration:
+        \begin{itemize}
+            \item Shift \texttt{rev} left by 1 bit: \texttt{rev = rev << 1}
+            \item Extract the LSB of \texttt{n}: \texttt{n \& 1}
+            \item Add the extracted bit to \texttt{rev}: \texttt{rev = rev | (n \& 1)}
+            \item Shift \texttt{n} right by 1 bit to process the next bit: \texttt{n = n >> 1}
+        \end{itemize}
+    \end{itemize}
+    
+    \item **Final Result:**
+    \begin{itemize}
+        \item After processing all 32 bits, \texttt{rev} contains the reversed bits of the original integer \texttt{n}.
+        \item Return \texttt{rev} as the result.
+    \end{itemize}
+\end{enumerate}
+
+\subsection*{Example Walkthrough}
+
+Consider \texttt{n = 43261596} (binary: \texttt{00000010100101000001111010011100}):
+
+\begin{itemize}
+    \item **Iteration 1:**
+    \begin{itemize}
+        \item \texttt{rev = 0 << 1 | (43261596 \& 1)} = \texttt{0 | 0} = 0
+        \item \texttt{n} becomes \texttt{21630798}
+    \end{itemize}
+    
+    \item **Iteration 2:**
+    \begin{itemize}
+        \item \texttt{rev = 0 << 1 | (21630798 \& 1)} = \texttt{0 | 0} = 0
+        \item \texttt{n} becomes \texttt{10815399}
+    \end{itemize}
+    
+    \item **Iteration 3:**
+    \begin{itemize}
+        \item \texttt{rev = 0 << 1 | (10815399 \& 1)} = \texttt{0 | 1} = 1
+        \item \texttt{n} becomes \texttt{5407699}
+    \end{itemize}
+    
+    \item \textbf{...}
+    
+    \item **Final Iteration (32nd):**
+    \begin{itemize}
+        \item \texttt{rev} accumulates all reversed bits.
+        \item \texttt{n} becomes 0.
+    \end{itemize}
+    
+    \item **Result:**
+    \begin{itemize}
+        \item \texttt{rev} = 964176192 (binary: \texttt{00111001011110000010100101000000})
+    \end{itemize}
+\end{itemize}
+
+\section*{Why this Approach}
+
+Bitwise manipulation is chosen for this problem due to its efficiency in handling binary operations at a low level. Since the problem requires reversing individual bits of an integer, using bitwise operators is the most direct and fastest approach. This method ensures that each bit is processed in constant time, leading to an overall efficient solution with minimal space usage.
+
+\section*{Alternative Approaches}
+
+Though the problem could theoretically be solved by converting the integer to a binary string, reversing the string, and then converting back to an integer, this approach would not fulfill the constraints laid out in the problem statement where string manipulation is not allowed. Additionally, string-based methods are generally less efficient in terms of both time and space compared to bitwise operations.
+
+\section*{Similar Problems to This One}
+
+Variations of bit manipulation problems could include:
+
+\begin{itemize}
+    \item \textbf{Number of 1 Bits}: Count the number of set bits in a single integer.
+    \item \textbf{Single Number}: Find the element that appears only once in an array where every other element appears twice.
+    \item \textbf{Add Binary}: Add two binary strings and return their sum as a binary string.
+    \item \textbf{Power of Two}: Determine if a given number is a power of two using bitwise operations.
+    \item \textbf{Missing Number}: Find the missing number in an array containing numbers from 0 to n.
+    \item \textbf{Counting Bits}: Return the number of 1 bits for every number from 0 to a given number.
+\end{itemize}
+
+These problems also involve understanding the binary representation and manipulating bits, reinforcing the concepts and techniques used in the \textbf{Reverse Bits} problem.
+
+\section*{Things to Keep in Mind and Tricks}
+
+When performing bitwise operations, it's essential to consider the size of the integers you are working with, especially when dealing with language-specific peculiarities related to signed and unsigned numbers. Here are some key tips and best practices:
+
+\begin{itemize}
+    \item \textbf{Understand Bitwise Operators}: Familiarize yourself with all bitwise operators and their behaviors, such as AND (\texttt{\&}), OR (\texttt{|}), XOR (\texttt{\^}), NOT (\texttt{\~}), and bit shifts (\texttt{<<}, \texttt{>>}).
+    \index{Bitwise Operators}
+    
+    \item \textbf{Bit Shifting}: Use bit shifts effectively to manipulate bits. Left shifting (\texttt{<<}) can be used to make space for new bits, while right shifting (\texttt{>>}) can extract bits.
+    \index{Bit Shifting}
+    
+    \item \textbf{Masking}: Create masks to isolate, set, clear, or toggle specific bits.
+    \index{Masking}
+    
+    \item \textbf{Loop Optimization}: When using loops for bit manipulation, ensure that the loop runs a fixed number of times (e.g., 32 for 32-bit integers) to maintain constant time complexity.
+    \index{Loop Optimization}
+    
+    \item \textbf{Handle Unsigned Integers}: Ensure that the input is treated as an unsigned integer to avoid complications with sign bits.
+    \index{Unsigned Integers}
+    
+    \item \textbf{Language-Specific Behaviors}: Be aware of how your programming language handles bitwise operations, especially with regards to integer overflow and sign bits.
+    \index{Language-Specific Behaviors}
+    
+    \item \textbf{Testing}: Always test your implementation with various test cases, including edge cases such as the maximum and minimum integer values.
+    \index{Testing}
+    
+    \item \textbf{Code Readability}: While bitwise operations can lead to concise code, ensure that your code remains readable by using meaningful variable names and comments to explain complex operations.
+    \index{Readability}
+    
+    \item \textbf{Practice Common Patterns}: Familiarize yourself with common bit manipulation patterns and techniques through practice.
+    \index{Common Patterns}
+    
+    \item \textbf{Use Helper Functions}: Create helper functions for repetitive bitwise operations to enhance code modularity and reusability.
+    \index{Helper Functions}
+\end{itemize}
+
+\section*{Corner and Special Cases to Test When Writing the Code}
+
+When implementing bitwise operations, it's crucial to test various edge cases to ensure that the code correctly handles all possible bit configurations. Here are some key cases to consider:
+
+\begin{itemize}
+    \item \textbf{Zero}: Ensure that the function correctly handles the input `0`, which should return `0` when reversed.
+    \index{Zero}
+    
+    \item \textbf{Single Bit Set}: Test cases where only one bit is set (e.g., `1`, `2`, `4`, `8`, etc.) to verify basic bit operations.
+    \index{Single Bit Set}
+    
+    \item \textbf{All Bits Set}: Handle cases where all bits are set (e.g., `4294967295` for 32 bits) to ensure that operations do not cause unintended overflows or errors.
+    \index{All Bits Set}
+    
+    \item \textbf{Maximum Integer Value}: Test with the maximum 32-bit unsigned integer value (`4294967295`) to ensure correct bit reversal.
+    \index{Maximum Integer Value}
+    
+    \item \textbf{Minimum Integer Value}: Although unsigned integers start at `0`, ensure that edge cases are handled if the context changes.
+    \index{Minimum Integer Value}
+    
+    \item \textbf{Alternating Bits}: Inputs like `2863311530` (`10101010101010101010101010101010` in binary) to test alternating bit patterns.
+    \index{Alternating Bits}
+    
+    \item \textbf{Palindromic Bits}: Numbers whose binary representation is the same forwards and backwards.
+    \index{Palindromic Bits}
+    
+    \item \textbf{Large Numbers}: Ensure that the implementation can handle large numbers within the 32-bit range without performance degradation.
+    \index{Large Numbers}
+    
+    \item \textbf{Repeated Operations}: Perform multiple bitwise operations in sequence to ensure stability and correctness.
+    \index{Repeated Operations}
+    
+    \item \textbf{Boundary Bit Positions}: Test operations on the least significant bit (LSB) and the most significant bit (MSB) to ensure correct behavior.
+    \index{Boundary Bit Positions}
+    
+    \item \textbf{Non-Power of Two Numbers}: Numbers that are not powers of two to verify general correctness.
+    \index{Non-Power of Two Numbers}
+\end{itemize}
+
+\section*{Implementation Considerations}
+
+When implementing the \texttt{reverseBits} function, keep in mind the following considerations to ensure robustness and efficiency:
+
+\begin{itemize}
+    \item \textbf{Unsigned Integers}: Ensure that the input is treated as an unsigned integer to prevent issues with sign bits during bitwise operations.
+    \index{Unsigned Integers}
+    
+    \item \textbf{Fixed Bit Length}: The problem specifies a 32-bit unsigned integer. Ensure that the loop iterates exactly 32 times, regardless of the input size.
+    \index{Fixed Bit Length}
+    
+    \item \textbf{Bit Overflow}: Although the space complexity is \(O(1)\), ensure that shifting operations do not cause unintended overflows by using appropriate data types.
+    \index{Bit Overflow}
+    
+    \item \textbf{Language-Specific Behaviors}: Be aware of how your programming language handles bitwise operations, especially with regards to integer sizes and overflow.
+    \index{Language-Specific Behaviors}
+    
+    \item \textbf{Optimization}: While the current approach is optimal for 32-bit integers, consider how the algorithm might be adapted for different bit lengths if needed.
+    \index{Optimization}
+    
+    \item \textbf{Code Readability}: Maintain clear and readable code through meaningful variable names and comprehensive comments, especially when dealing with low-level bitwise operations.
+    \index{Code Readability}
+    
+    \item \textbf{Testing}: Implement thorough testing with various test cases, including edge cases, to ensure the correctness of the bit reversal.
+    \index{Testing}
+    
+    \item \textbf{Helper Functions}: If extending the functionality, consider creating helper functions for repetitive bitwise operations to enhance modularity and reusability.
+    \index{Helper Functions}
+    
+    \item \textbf{Performance}: Although the time complexity is constant, ensure that the implementation does not include unnecessary operations that could affect performance.
+    \index{Performance}
+    
+    \item \textbf{Documentation}: Document your bit manipulation logic thoroughly to aid understanding and maintenance.
+    \index{Documentation}
+\end{itemize}
+
+\section*{Conclusion}
+
+Bit Manipulation is a powerful technique that allows developers to perform efficient low-level data processing tasks by directly interacting with the binary representations of integers. The \textbf{Reverse Bits} problem exemplifies how bitwise operations can be leveraged to solve computational challenges with optimal time and space complexities. By mastering bitwise operators and understanding their properties, programmers can tackle a wide array of problems in areas such as cryptography, computer graphics, and network programming. Additionally, the skills developed through solving such problems enhance one's ability to write optimized and high-performance code.
+
+\printindex
+
+% \input{sections/bit_manipulation}
+% \input{sections/sum_of_two_integers}
+% \input{sections/number_of_1_bits}
+% \input{sections/counting_bits}
+% \input{sections/missing_number}
+% \input{sections/reverse_bits}
+% \input{sections/single_number}
+% \input{sections/power_of_two}

@@ -1,0 +1,103 @@
+% filename: computational_geometry.tex
+
+\chapter{Computational Geometry}
+\label{chap:Computational_Geometry}
+\marginnote{\href{https://en.wikipedia.org/wiki/Computational_geometry}{[Wikipedia Link]}\index{Wikipedia}}
+\marginnote{\href{https://www.geeksforgeeks.org/computational-geometry/}{[GeeksForGeeks Link]}\index{GeeksForGeeks}}
+\marginnote{\href{https://www.interviewbit.com/topics/computational-geometry/}{[InterviewBit Link]}\index{InterviewBit}}
+\marginnote{\href{https://app.codesignal.com/challenges/computational-geometry}{[CodeSignal Link]}\index{CodeSignal}}
+\marginnote{\href{https://www.codewars.com/kata/search/computational-geometry}{[Codewars Link]}\index{Codewars}}
+
+Computational Geometry is a branch of computer science dedicated to the study of algorithms which can be stated in terms of geometry. It encompasses a wide range of problems involving geometric objects such as points, lines, polygons, and other shapes. These problems are fundamental in various applications including computer graphics, computer-aided design (CAD), robotics, geographic information systems (GIS), and more.
+
+\section*{Overview}
+This chapter explores essential concepts and algorithms in Computational Geometry. It provides a foundation for understanding how geometric problems are approached and solved using algorithmic techniques. The chapter is structured to introduce key geometric principles, common algorithmic strategies, and problem-solving methodologies. The included problems demonstrate practical applications of these concepts, reinforcing the theoretical knowledge through hands-on examples.
+
+\section{Key Geometric Concepts}
+To effectively tackle Computational Geometry problems, it is crucial to understand several foundational geometric concepts:
+
+\subsection{Points and Coordinates}
+A point is a fundamental unit in geometry, represented by its coordinates in a plane or space. Understanding coordinate systems is essential for describing and manipulating geometric objects.
+
+\subsection{Lines and Segments}
+Lines extend infinitely in both directions, while line segments have finite length with distinct start and end points. Key properties include slope, intercepts, and orientation.
+
+\subsection{Angles}
+Angles measure the rotation between two intersecting lines or segments. They are pivotal in understanding the relationships between geometric shapes.
+
+\subsection{Polygons}
+Polygons are closed shapes with straight sides, classified by the number of sides (e.g., triangles, quadrilaterals). Important properties include convexity, concavity, and regularity.
+
+\subsection{Circles and Spheres}
+Circles (in 2D) and spheres (in 3D) are sets of points equidistant from a central point. They are integral in various geometric computations and problem formulations.
+
+\subsection{Convex Hull}
+The convex hull of a set of points is the smallest convex polygon that contains all the points. It is a fundamental concept with applications in pattern recognition, image processing, and more.
+
+\section{Common Algorithmic Techniques}
+Several algorithmic strategies are frequently employed in Computational Geometry to solve complex geometric problems efficiently:
+
+\subsection{Divide and Conquer}
+This technique involves breaking down a problem into smaller, more manageable subproblems, solving each independently, and then combining their solutions to solve the original problem. It is particularly effective in problems like finding the convex hull or closest pair of points.
+
+\subsection{Sweep Line Algorithm}
+The sweep line technique involves moving a line across the plane and processing events (such as the start or end of a geometric object) in a sorted order. It is widely used in problems like detecting intersections among line segments.
+
+\subsection{Dynamic Programming}
+Dynamic programming solves problems by breaking them down into overlapping subproblems and storing the results to avoid redundant computations. It is useful in optimization problems involving geometric configurations.
+
+\subsection{Greedy Algorithms}
+Greedy algorithms make locally optimal choices at each step with the hope of finding a global optimum. They are often applied in covering and packing problems within geometry.
+
+\subsection{Binary Search}
+Binary search is employed to efficiently search through sorted data, which can be useful in various geometric contexts such as finding specific points or boundaries.
+
+\subsection{Graph Algorithms}
+Graph-based approaches model geometric problems as graphs, allowing the use of graph traversal and optimization techniques to find solutions.
+
+\section{Problem-Solving Strategies}
+When approaching Computational Geometry problems, consider the following strategies to enhance problem-solving efficiency and accuracy:
+
+\subsection{Understand the Problem}
+Thoroughly read and comprehend the problem statement. Identify the geometric objects involved, their properties, and the desired outcome.
+
+\subsection{Visualize the Problem}
+Draw diagrams or sketches to gain a clearer understanding of the spatial relationships and constraints within the problem.
+
+\subsection{Identify Patterns and Invariants}
+Look for recurring patterns or properties that remain unchanged throughout the problem. These can provide insights into potential algorithmic solutions.
+
+\subsection{Choose the Right Data Structures}
+Select appropriate data structures (e.g., arrays, trees, graphs) that facilitate efficient access and manipulation of geometric data.
+
+\subsection{Optimize for Efficiency}
+Aim for algorithms with optimal time and space complexities. Analyze whether a solution can be improved using better algorithmic techniques or data structures.
+
+\subsection{Handle Edge Cases}
+Consider special scenarios, such as degenerate cases or boundary conditions, to ensure that the solution is robust and comprehensive.
+
+\subsection{Implement Incrementally}
+Build the solution step-by-step, testing each component thoroughly before integrating it into the final algorithm.
+
+\subsection{Validate with Examples}
+Use provided examples and create additional test cases to verify the correctness and efficiency of the solution.
+
+\section{Overview of Included Problems}
+The following sections present specific problems that exemplify the application of Computational Geometry concepts and algorithmic techniques discussed in this chapter. Each problem includes a detailed problem statement, algorithmic approach, complexity analysis, Python implementation, explanation, alternative approaches, similar problems, key considerations, and corner cases.
+
+\subsection{Rectangle Overlap}
+\input{sections/rectangle_overlap}
+
+\subsection{Rectangle Area}
+\input{sections/rectangle_area}
+
+\subsection{K Closest Points to Origin}
+\input{sections/k_closest_points_to_origin}
+
+\subsection{The Skyline Problem}
+\input{sections/the_skyline_problem}
+
+\section{Conclusion}
+Computational Geometry is a vital area of computer science that bridges theoretical mathematics and practical algorithm design. By understanding key geometric concepts and mastering common algorithmic techniques, one can efficiently solve a wide range of spatial problems encountered in various applications. The problems included in this chapter serve as practical examples that reinforce these concepts, providing a solid foundation for more advanced studies and real-world implementations in fields such as computer graphics, robotics, and geographic information systems.
+
+\printindex

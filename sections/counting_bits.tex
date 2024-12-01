@@ -1,0 +1,326 @@
+% filename: counting_bits.tex
+
+\problemsection{Counting Bits}
+\label{problem:counting_bits}
+\marginnote{This problem leverages Bit Manipulation and Dynamic Programming to efficiently count the number of set bits in integers up to \(n\).}
+
+The \textbf{Counting Bits} problem involves determining the number of '1' bits (set bits) in the binary representation of every number from \(0\) to a given integer \(n\). The goal is to return an array where each element at index \(i\) represents the number of set bits in the binary form of \(i\).
+
+\section*{Problem Statement}
+
+Given an integer `n`, return an array `ans` that contains the number of `1`'s in the binary representation of each number `i` for all \(0 \leq i \leq n\).
+
+\textbf{Function signature in Python:}
+\begin{lstlisting}[language=Python]
+def countBits(n: int) -> List[int]:
+\end{lstlisting}
+
+\section*{Examples}
+
+\textbf{Example 1:}
+
+\begin{verbatim}
+Input: n = 2
+Output: [0,1,1]
+Explanation:
+- 0 in binary is 0, which has 0 '1' bits.
+- 1 in binary is 1, which has 1 '1' bit.
+- 2 in binary is 10, which has 1 '1' bit.
+\end{verbatim}
+
+\textbf{Example 2:}
+
+\begin{verbatim}
+Input: n = 5
+Output: [0,1,1,2,1,2]
+Explanation:
+- 0 in binary is 000, which has 0 '1' bits.
+- 1 in binary is 001, which has 1 '1' bit.
+- 2 in binary is 010, which has 1 '1' bit.
+- 3 in binary is 011, which has 2 '1' bits.
+- 4 in binary is 100, which has 1 '1' bit.
+- 5 in binary is 101, which has 2 '1' bits.
+\end{verbatim}
+
+LeetCode link: \href{https://leetcode.com/problems/counting-bits/}{Counting Bits}\index{LeetCode}
+
+\section*{Algorithmic Approach}
+
+The solution for counting the number of `1` bits in the binary representation of each number up to `n` utilizes Dynamic Programming combined with Bit Manipulation. The key insight is to recognize a relationship between the number of set bits in a number and its half. Specifically:
+
+\begin{enumerate}
+    \item \textbf{Dynamic Programming Relation:}
+    \begin{itemize}
+        \item If a number `i` is even, then the number of set bits in `i` is the same as in `i / 2`.
+        \item If a number `i` is odd, then the number of set bits in `i` is one more than in `i - 1`.
+    \end{itemize}
+    
+    \item \textbf{Bit Manipulation:}
+    \begin{itemize}
+        \item Use right shift (`>>`) to efficiently compute `i / 2`.
+        \item Use bitwise AND (`\&`) to determine if `i` is odd (`i \& 1`).
+    \end{itemize}
+    
+    \item \textbf{Iterative Computation:}
+    \begin{itemize}
+        \item Initialize an array `ans` of size `n + 1` with all elements set to `0`.
+        \item Iterate from `1` to `n`, applying the Dynamic Programming relation to compute `ans[i]`.
+    \end{itemize}
+\end{enumerate}
+
+\marginnote{Leveraging the relationship between a number and its half optimizes the computation by reusing previously calculated results.}
+
+\section*{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(n)\). The algorithm iterates through all numbers from `1` to `n`, performing constant-time operations for each.
+    
+    \item \textbf{Space Complexity:} \(O(n)\). An array of size `n + 1` is used to store the count of set bits for each number.
+\end{itemize}
+
+\section*{Python Implementation}
+
+\marginnote{Implementing Dynamic Programming with Bit Manipulation ensures that the solution runs efficiently even for large values of `n`.}
+
+Below is the complete Python code that counts the number of `1` bits for all numbers up to `n`:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+from typing import List
+
+class Solution:
+    def countBits(self, n: int) -> List[int]:
+        ans = [0] * (n + 1)
+        for i in range(1, n + 1):
+            ans[i] = ans[i >> 1] + (i & 1)
+        return ans
+
+# Example usage:
+solution = Solution()
+print(solution.countBits(2))  # Output: [0, 1, 1]
+print(solution.countBits(5))  # Output: [0, 1, 1, 2, 1, 2]
+\end{lstlisting}
+\end{fullwidth}
+
+This implementation initializes an array `ans` of size \(n + 1\) to store the number of `1` bits for each value from `0` to `n`. It then iterates from `1` to `n`, calculating each `ans[i]` based on the values already computed. The expression `i >> 1` corresponds to integer division by `2`, and `i \& 1` determines if `i` is odd (`1`) or even (`0`).
+
+\section*{Explanation}
+
+The \texttt{countBits} function employs a Dynamic Programming approach combined with Bit Manipulation to efficiently calculate the number of set bits for each number from `0` to `n`. Here's a step-by-step breakdown:
+
+\subsection*{Dynamic Programming Relation}
+
+The core idea is to build the solution iteratively by relating the number of set bits in a number to that of a smaller number. Specifically:
+
+\begin{itemize}
+    \item **Even Numbers:** For an even number `i`, the number of set bits is identical to that of `i / 2` (or `i >> 1`). This is because shifting right by one bit effectively divides the number by two, removing the least significant bit (which is `0` for even numbers).
+    
+    \item **Odd Numbers:** For an odd number `i`, the number of set bits is one more than that of `i - 1` (or `i - 1` is even). This is because the least significant bit for odd numbers is `1`, contributing an additional set bit.
+\end{itemize}
+
+\subsection*{Bit Manipulation Operations}
+
+\begin{itemize}
+    \item **Right Shift (`>>`):** Shifting the bits of a number to the right by one position (`i >> 1`) effectively divides the number by two, discarding the least significant bit.
+    
+    \item **Bitwise AND (`\&`):** Performing `i \& 1` checks whether the least significant bit of `i` is set (`1`) or not (`0`), effectively determining if `i` is odd or even.
+\end{itemize}
+
+\subsection*{Iterative Computation}
+
+\begin{enumerate}
+    \item **Initialization:** Create an array `ans` with `n + 1` elements, all initialized to `0`. This array will hold the count of set bits for each number.
+    
+    \item **Iteration:** Loop through each number `i` from `1` to `n`:
+    \begin{itemize}
+        \item Calculate `ans[i >> 1]`, which is the number of set bits in `i / 2`.
+        \item Add `(i \& 1)` to account for the least significant bit of `i`. If `i` is odd, `(i \& 1)` is `1`; otherwise, it's `0`.
+        \item Assign the sum to `ans[i]`.
+    \end{itemize}
+    
+    \item **Result:** After completing the iteration, the array `ans` contains the number of set bits for each number from `0` to `n`.
+\end{enumerate}
+
+\subsection*{Example Walkthrough}
+
+Consider `n = 5`:
+
+\begin{itemize}
+    \item **i = 0:** Binary `000`, set bits `0`.
+    \item **i = 1:** Binary `001`, set bits `1`.
+    \item **i = 2:** Binary `010`, set bits `1`.
+    \item **i = 3:** Binary `011`, set bits `2` (`ans[1] + 1`).
+    \item **i = 4:** Binary `100`, set bits `1` (`ans[2] + 0`).
+    \item **i = 5:** Binary `101`, set bits `2` (`ans[2] + 1`).
+\end{itemize}
+
+Thus, the output array is `[0, 1, 1, 2, 1, 2]`.
+
+\section*{Why this Approach}
+
+This Dynamic Programming approach is chosen for its optimal efficiency and simplicity. By reusing previously computed results, the algorithm avoids redundant calculations, ensuring that each number's set bits are determined in constant time. The use of Bit Manipulation operations like right shift and bitwise AND further enhances performance by enabling quick bit-level computations.
+
+\section*{Alternative Approaches}
+
+While the Dynamic Programming approach combined with Bit Manipulation is highly efficient, other methods can also be employed:
+
+\begin{itemize}
+    \item \textbf{Iterative Bit Checking:}
+    \begin{itemize}
+        \item Iterate through each bit of every number and count the set bits using bitwise operations.
+        \item \textbf{Time Complexity:} \(O(n \cdot \log n)\), where \(\log n\) represents the number of bits in `n`.
+    \end{itemize}
+    
+    \item \textbf{Lookup Table:}
+    \begin{itemize}
+        \item Precompute the number of set bits for all possible byte values and use this table to count bits in larger integers.
+        \item \textbf{Space Complexity:} Requires additional space for the lookup table.
+    \end{itemize}
+    
+    \item \textbf{Built-In Functions:}
+    \begin{itemize}
+        \item Utilize language-specific built-in functions to count the number of set bits.
+        \item Example in Python: `bin(i).count('1')`.
+        \item \textbf{Note}: This method is straightforward but may not be as efficient as the Dynamic Programming approach for large `n`.
+    \end{itemize}
+\end{itemize}
+
+However, these alternatives generally involve higher time complexities or additional space requirements, making the Dynamic Programming approach the preferred method for its balance of efficiency and simplicity.
+
+\section*{Similar Problems to This One}
+
+Several problems involve Bit Manipulation and share similarities with the \textbf{Counting Bits} problem:
+
+\begin{itemize}
+    \item \textbf{Number of 1 Bits}: Count the number of set bits in a single integer.
+    \item \textbf{Reverse Bits}: Reverse the bits of a given integer.
+    \item \textbf{Single Number}: Find the element that appears only once in an array where every other element appears twice.
+    \item \textbf{Add Binary}: Add two binary strings and return their sum as a binary string.
+    \item \textbf{Power of Two}: Determine if a given number is a power of two using bitwise operations.
+    \item \textbf{Missing Number}: Find the missing number in an array containing numbers from 0 to n.
+\end{itemize}
+
+These problems reinforce the concepts of Bit Manipulation and encourage the development of efficient, bit-level algorithms.
+
+\section*{Things to Keep in Mind and Tricks}
+
+When working with Bit Manipulation and Dynamic Programming, consider the following tips and best practices to enhance efficiency and correctness:
+
+\begin{itemize}
+    \item \textbf{Leverage Bitwise Operations}: Utilize operators like right shift (`>>`) and bitwise AND (`\&`) to perform quick bit-level computations.
+    \index{Bitwise Operations}
+    
+    \item \textbf{Identify Subproblems}: Recognize how a problem can be broken down into smaller subproblems that can be solved using previously computed results.
+    \index{Subproblems}
+    
+    \item \textbf{Optimize Using Dynamic Programming}: Reuse results from smaller subproblems to build up the solution for larger problems, avoiding redundant calculations.
+    \index{Dynamic Programming}
+    
+    \item \textbf{Understand Binary Representation}: A strong grasp of how numbers are represented in binary is essential for effective Bit Manipulation.
+    \index{Binary Representation}
+    
+    \item \textbf{Edge Cases}: Always consider and test edge cases, such as `n = 0`, `n` being a power of two, or `n` being very large.
+    \index{Edge Cases}
+    
+    \item \textbf{Space Efficiency}: Ensure that the space used by your algorithm is proportional to the input size and doesn't lead to unnecessary memory consumption.
+    \index{Space Efficiency}
+    
+    \item \textbf{Readability and Maintainability}: While optimizing for performance, maintain code readability through meaningful variable names and comments.
+    \index{Readability}
+    
+    \item \textbf{Iterative vs. Recursive Solutions}: Prefer iterative solutions for problems where recursion might lead to stack overflow or increased space complexity.
+    \index{Iterative Solutions}
+    
+    \item \textbf{Practice Common Patterns}: Familiarize yourself with common Bit Manipulation patterns and Dynamic Programming relations to speed up problem-solving.
+    \index{Common Patterns}
+    
+    \item \textbf{Testing Thoroughly}: Implement comprehensive test cases that cover all possible scenarios, including boundary and special cases.
+    \index{Testing}
+\end{itemize}
+
+\section*{Corner and Special Cases to Test When Writing the Code}
+
+When implementing solutions involving Bit Manipulation and Dynamic Programming, it is crucial to consider and rigorously test various edge cases to ensure robustness and correctness:
+
+\begin{itemize}
+    \item \textbf{Lower Bound (`n = 0`)}: Verify that the function correctly handles the smallest input, returning `[0]`.
+    \index{Lower Bound}
+    
+    \item \textbf{Single Bit Set}: Test cases where only one bit is set (e.g., `n = 1`, `n = 2`, `n = 4`, etc.) to ensure that the function accurately counts the single set bit.
+    \index{Single Bit Set}
+    
+    \item \textbf{All Bits Set}: Handle cases where all bits up to a certain position are set (e.g., `n = 7` for 3 bits) to ensure that the function counts multiple set bits correctly.
+    \index{All Bits Set}
+    
+    \item \textbf{Maximum Integer Value}: Test with the maximum value of `n` within the problem constraints to ensure that the algorithm scales efficiently.
+    \index{Maximum Integer Value}
+    
+    \item \textbf{Even and Odd Numbers}: Ensure that the function correctly differentiates between even and odd numbers, accurately reflecting the number of set bits.
+    \index{Even and Odd Numbers}
+    
+    \item \textbf{Large `n` Values}: Verify that the function performs efficiently and correctly for large values of `n`, such as \(n = 10^5\) or higher.
+    \index{Large `n` Values}
+    
+    \item \textbf{Sequential Numbers}: Test sequences where set bits increment predictably (e.g., `n = 3` resulting in `[0,1,1,2]`) to confirm that the dynamic programming relation holds.
+    \index{Sequential Numbers}
+    
+    \item \textbf{Non-Sequential and Random Patterns}: Ensure that the function correctly handles numbers with non-sequential set bits and random patterns.
+    \index{Random Patterns}
+    
+    \item \textbf{Zero Bits}: Handle numbers with no set bits beyond `0` appropriately.
+    \index{Zero Bits}
+    
+    \item \textbf{Boundary Bit Positions}: Test operations on the least significant bit (LSB) and the most significant bit (MSB) to ensure correct behavior.
+    \index{Boundary Bit Positions}
+\end{itemize}
+
+\section*{Implementation Considerations}
+
+When implementing the \texttt{countBits} function, keep in mind the following considerations to ensure robustness and efficiency:
+
+\begin{itemize}
+    \item \textbf{Data Type Selection}: Use appropriate data types that can handle the range of input values without overflow or underflow.
+    \index{Data Type Selection}
+    
+    \item \textbf{Optimizing Loops}: Ensure that the loop iterates only the necessary number of times and that each operation within the loop is optimized for performance.
+    \index{Loop Optimization}
+    
+    \item \textbf{Memory Management}: Allocate memory efficiently for the output array to prevent excessive memory usage, especially for large `n`.
+    \index{Memory Management}
+    
+    \item \textbf{Language-Specific Optimizations}: Utilize language-specific features or optimizations that can enhance the performance of Bit Manipulation operations.
+    \index{Language-Specific Optimizations}
+    
+    \item \textbf{Avoiding Redundant Computations}: Ensure that each set bit count is computed only once and reused for related computations to enhance efficiency.
+    \index{Redundant Computations}
+    
+    \item \textbf{Code Readability and Documentation}: Maintain clear and readable code with meaningful variable names and comments to facilitate understanding and maintenance.
+    \index{Code Readability}
+    
+    \item \textbf{Error Handling}: Implement checks to handle unexpected or invalid inputs gracefully, such as negative numbers if applicable.
+    \index{Error Handling}
+    
+    \item \textbf{Testing and Validation}: Develop a comprehensive suite of test cases that cover all possible scenarios, including edge cases, to validate the correctness of the implementation.
+    \index{Testing and Validation}
+    
+    \item \textbf{Scalability}: Design the algorithm to handle the maximum input size efficiently without significant performance degradation.
+    \index{Scalability}
+    
+    \item \textbf{Utilizing Built-In Functions}: Where possible, leverage built-in functions or libraries that can perform bit counting more efficiently.
+    \index{Built-In Functions}
+\end{itemize}
+
+\section*{Conclusion}
+
+The \textbf{Counting Bits} problem serves as an excellent exercise in applying Bit Manipulation and Dynamic Programming to solve computational challenges efficiently. By recognizing the relationship between a number and its half, the algorithm reuses previously computed results to determine the number of set bits in a scalable and optimized manner. Mastery of such techniques is invaluable for tackling a wide array of problems that require low-level data processing and optimization. Understanding and implementing this approach not only enhances problem-solving skills but also deepens the comprehension of fundamental computer science concepts related to binary data manipulation.
+
+\printindex
+
+% \input{sections/bit_manipulation}
+% \input{sections/sum_of_two_integers}
+% \input{sections/number_of_1_bits}
+% \input{sections/counting_bits}
+% \input{sections/missing_number}
+% \input{sections/reverse_bits}
+% \input{sections/single_number}
+% \input{sections/power_of_two}

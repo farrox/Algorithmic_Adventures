@@ -1,0 +1,447 @@
+% filename: power_of_two.tex
+
+\problemsection{Power of Two}
+\label{chap:Power_of_Two}
+\marginnote{\href{https://leetcode.com/problems/power-of-two/}{[LeetCode Link]}\index{LeetCode}}
+\marginnote{\href{https://www.geeksforgeeks.org/find-whether-a-given-number-is-power-of-two/}{[GeeksForGeeks Link]}\index{GeeksForGeeks}}
+\marginnote{\href{https://www.interviewbit.com/problems/power-of-two/}{[InterviewBit Link]}\index{InterviewBit}}
+\marginnote{\href{https://app.codesignal.com/challenges/power-of-two}{[CodeSignal Link]}\index{CodeSignal}}
+\marginnote{\href{https://www.codewars.com/kata/power-of-two/train/python}{[Codewars Link]}\index{Codewars}}
+
+The \textbf{Power of Two} problem is a fundamental exercise in Bit Manipulation. It requires determining whether a given integer is a power of two. This problem is essential for understanding binary representations and efficient bit-level operations, which are crucial in various domains such as computer graphics, networking, and cryptography.
+
+\section*{Problem Statement}
+
+Given an integer `n`, write a function to determine if it is a power of two.
+
+\textbf{Function signature in Python:}
+\begin{lstlisting}[language=Python]
+def isPowerOfTwo(n: int) -> bool:
+\end{lstlisting}
+
+\section*{Examples}
+
+\textbf{Example 1:}
+
+\begin{verbatim}
+Input: n = 1
+Output: True
+Explanation: 2^0 = 1
+\end{verbatim}
+
+\textbf{Example 2:}
+
+\begin{verbatim}
+Input: n = 16
+Output: True
+Explanation: 2^4 = 16
+\end{verbatim}
+
+\textbf{Example 3:}
+
+\begin{verbatim}
+Input: n = 3
+Output: False
+Explanation: 3 is not a power of two.
+\end{verbatim}
+
+\textbf{Example 4:}
+
+\begin{verbatim}
+Input: n = 4
+Output: True
+Explanation: 2^2 = 4
+\end{verbatim}
+
+\textbf{Example 5:}
+
+\begin{verbatim}
+Input: n = 5
+Output: False
+Explanation: 5 is not a power of two.
+\end{verbatim}
+
+\textbf{Constraints:}
+
+\begin{itemize}
+    \item \(-2^{31} \leq n \leq 2^{31} - 1\)
+\end{itemize}
+
+
+\section*{Algorithmic Approach}
+
+To determine whether a number `n` is a power of two, we can utilize Bit Manipulation. The key insight is that powers of two have exactly one bit set in their binary representation. For example:
+
+\begin{itemize}
+    \item \(1 = 0001_2\)
+    \item \(2 = 0010_2\)
+    \item \(4 = 0100_2\)
+    \item \(8 = 1000_2\)
+\end{itemize}
+
+Given this property, we can use the following approaches:
+
+\subsection*{1. Bitwise AND Operation}
+
+A number `n` is a power of two if and only if \texttt{n > 0} and \texttt{n \& (n - 1) == 0}.
+
+\begin{enumerate}
+    \item Check if `n` is greater than zero.
+    \item Perform a bitwise AND between `n` and `n - 1`.
+    \item If the result is zero, `n` is a power of two; otherwise, it is not.
+\end{enumerate}
+
+\subsection*{2. Left Shift Operation}
+
+Repeatedly left-shift `1` until it is greater than or equal to `n`, and check for equality.
+
+\begin{enumerate}
+    \item Initialize a variable `power` to `1`.
+    \item While `power` is less than `n`:
+    \begin{itemize}
+        \item Left-shift `power` by `1` (equivalent to multiplying by `2`).
+    \end{itemize}
+    \item After the loop, check if `power` equals `n`.
+\end{enumerate}
+
+\subsection*{3. Mathematical Logarithm}
+
+Use logarithms to determine if the logarithm base `2` of `n` is an integer.
+
+\begin{enumerate}
+    \item Compute the logarithm of `n` with base `2`.
+    \item Check if the result is an integer (within a tolerance to account for floating-point precision).
+\end{enumerate}
+
+\marginnote{The Bitwise AND approach is the most efficient, offering constant time complexity without the need for loops or floating-point operations.}
+
+\section*{Complexities}
+
+\begin{itemize}
+    \item \textbf{Bitwise AND Operation:}
+    \begin{itemize}
+        \item \textbf{Time Complexity:} \(O(1)\)
+        \item \textbf{Space Complexity:} \(O(1)\)
+    \end{itemize}
+    
+    \item \textbf{Left Shift Operation:}
+    \begin{itemize}
+        \item \textbf{Time Complexity:} \(O(\log n)\), since it may require up to \(\log n\) shifts.
+        \item \textbf{Space Complexity:} \(O(1)\)
+    \end{itemize}
+    
+    \item \textbf{Mathematical Logarithm:}
+    \begin{itemize}
+        \item \textbf{Time Complexity:} \(O(1)\)
+        \item \textbf{Space Complexity:} \(O(1)\)
+    \end{itemize}
+\end{itemize}
+
+\section*{Python Implementation}
+
+\marginnote{Implementing the Bitwise AND approach provides an optimal solution with constant time complexity and minimal space usage.}
+
+Below is the complete Python code to determine if a given integer is a power of two using the Bitwise AND approach:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class Solution:
+    def isPowerOfTwo(self, n: int) -> bool:
+        return n > 0 and (n \& (n - 1)) == 0
+
+# Example usage:
+solution = Solution()
+print(solution.isPowerOfTwo(1))    # Output: True
+print(solution.isPowerOfTwo(16))   # Output: True
+print(solution.isPowerOfTwo(3))    # Output: False
+print(solution.isPowerOfTwo(4))    # Output: True
+print(solution.isPowerOfTwo(5))    # Output: False
+\end{lstlisting}
+\end{fullwidth}
+
+This implementation leverages the properties of the XOR operation to efficiently determine if a number is a power of two. By checking that only one bit is set in the binary representation of `n`, it confirms the power of two condition.
+
+\section*{Explanation}
+
+The \texttt{isPowerOfTwo} function determines whether a given integer `n` is a power of two using Bit Manipulation. Here's a detailed breakdown of how the implementation works:
+
+\subsection*{Bitwise AND Approach}
+
+\begin{enumerate}
+    \item \textbf{Initial Check:} 
+    \begin{itemize}
+        \item Ensure that `n` is greater than zero. Powers of two are positive integers.
+    \end{itemize}
+    
+    \item \textbf{Bitwise AND Operation:}
+    \begin{itemize}
+        \item Perform \texttt{n \& (n - 1)}.
+        \item If \texttt{n} is a power of two, its binary representation has exactly one bit set. Subtracting one from \texttt{n} flips all the bits after the set bit, including the set bit itself.
+        \item Thus, \texttt{n \& (n - 1)} will result in \texttt{0} if and only if \texttt{n} is a power of two.
+    \end{itemize}
+    
+    \item \textbf{Return the Result:}
+    \begin{itemize}
+        \item If both conditions (\texttt{n > 0} and \texttt{n \& (n - 1) == 0}) are met, return \texttt{True}.
+        \item Otherwise, return \texttt{False}.
+    \end{itemize}
+\end{enumerate}
+
+\subsection*{Why XOR Works}
+
+The XOR operation has the following properties that make it ideal for this problem:
+\begin{itemize}
+    \item \(x \oplus x = 0\): A number XOR-ed with itself results in zero.
+    \item \(x \oplus 0 = x\): A number XOR-ed with zero remains unchanged.
+    \item XOR is commutative and associative: The order of operations does not affect the result.
+\end{itemize}
+
+By applying \texttt{n \& (n - 1)}, we effectively remove the lowest set bit of \texttt{n}. If the result is zero, it implies that there was only one set bit in \texttt{n}, confirming that \texttt{n} is a power of two.
+
+\subsection*{Example Walkthrough}
+
+Consider \texttt{n = 16} (binary: \texttt{00010000}):
+
+\begin{itemize}
+    \item **Initial Check:**
+    \begin{itemize}
+        \item \texttt{16 > 0} is \texttt{True}.
+    \end{itemize}
+    
+    \item **Bitwise AND Operation:**
+    \begin{itemize}
+        \item \texttt{n - 1 = 15} (binary: \texttt{00001111}).
+        \item \texttt{n \& (n - 1) = 00010000 \& 00001111 = 00000000}.
+    \end{itemize}
+    
+    \item **Result:**
+    \begin{itemize}
+        \item Since \texttt{n \& (n - 1) == 0}, the function returns \texttt{True}.
+    \end{itemize}
+\end{itemize}
+
+Thus, \texttt{16} is correctly identified as a power of two.
+
+\section*{Why This Approach}
+
+The Bitwise AND approach is chosen for its optimal efficiency and simplicity. Compared to other methods like iterative bit checking or mathematical logarithms, the XOR method offers:
+
+\begin{itemize}
+    \item \textbf{Optimal Time Complexity:} Constant time \(O(1)\), as it involves a fixed number of operations regardless of the input size.
+    \item \textbf{Minimal Space Usage:} Constant space \(O(1)\), requiring no additional memory beyond a few variables.
+    \item \textbf{Elegance and Simplicity:} The approach leverages fundamental bitwise properties, resulting in concise and readable code.
+\end{itemize}
+
+Additionally, this method avoids potential issues related to floating-point precision or integer overflow that might arise with mathematical approaches.
+
+\section*{Alternative Approaches}
+
+While the Bitwise AND method is the most efficient, there are alternative ways to solve the \textbf{Power of Two} problem:
+
+\subsection*{1. Iterative Bit Checking}
+
+Check each bit of the number to ensure that only one bit is set.
+
+\begin{lstlisting}[language=Python]
+class Solution:
+    def isPowerOfTwo(self, n: int) -> bool:
+        if n <= 0:
+            return False
+        count = 0
+        while n:
+            count += n \& 1
+            if count > 1:
+                return False
+            n >>= 1
+        return count == 1
+\end{lstlisting}
+
+\textbf{Complexities:}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(\log n)\), since it iterates through all bits.
+    \item \textbf{Space Complexity:} \(O(1)\)
+\end{itemize}
+
+\subsection*{2. Mathematical Logarithm}
+
+Use logarithms to determine if the logarithm base `2` of `n` is an integer.
+
+\begin{lstlisting}[language=Python]
+import math
+
+class Solution:
+    def isPowerOfTwo(self, n: int) -> bool:
+        if n <= 0:
+            return False
+        log_val = math.log2(n)
+        return log_val == int(log_val)
+\end{lstlisting}
+
+\textbf{Complexities:}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(1)\)
+    \item \textbf{Space Complexity:} \(O(1)\)
+\end{itemize}
+
+\textbf{Note}: This method may suffer from floating-point precision issues.
+
+\subsection*{3. Left Shift Operation}
+
+Repeatedly left-shift `1` until it is greater than or equal to `n`, and check for equality.
+
+\begin{lstlisting}[language=Python]
+class Solution:
+    def isPowerOfTwo(self, n: int) -> bool:
+        if n <= 0:
+            return False
+        power = 1
+        while power < n:
+            power <<= 1
+        return power == n
+\end{lstlisting}
+
+\textbf{Complexities:}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(\log n)\)
+    \item \textbf{Space Complexity:} \(O(1)\)
+\end{itemize}
+
+However, this approach is less efficient than the Bitwise AND method due to the potential number of iterations.
+
+\section*{Similar Problems to This One}
+
+Several problems revolve around identifying unique elements or specific bit patterns in integers, utilizing similar algorithmic strategies:
+
+\begin{itemize}
+    \item \textbf{Single Number}: Find the element that appears only once in an array where every other element appears twice.
+    \item \textbf{Number of 1 Bits}: Count the number of set bits in a single integer.
+    \item \textbf{Reverse Bits}: Reverse the bits of a given integer.
+    \item \textbf{Missing Number}: Find the missing number in an array containing numbers from 0 to n.
+    \item \textbf{Power of Three}: Determine if a number is a power of three.
+    \item \textbf{Is Subset}: Check if one number is a subset of another in terms of bit representation.
+\end{itemize}
+
+These problems help reinforce the concepts of Bit Manipulation and efficient algorithm design, providing a comprehensive understanding of binary data handling.
+
+\section*{Things to Keep in Mind and Tricks}
+
+When working with Bit Manipulation and the \textbf{Power of Two} problem, consider the following tips and best practices to enhance efficiency and correctness:
+
+\begin{itemize}
+    \item \textbf{Understand Bitwise Operators}: Familiarize yourself with all bitwise operators and their behaviors, such as AND (\texttt{\&}), OR (\texttt{\textbar}), XOR (\texttt{\^{}}), NOT (\texttt{\~{}}), and bit shifts (\texttt{<<}, \texttt{>>}).
+    \index{Bitwise Operators}
+    
+    \item \textbf{Recognize Power of Two Patterns}: Powers of two have exactly one bit set in their binary representation.
+    \index{Power of Two Patterns}
+    
+    \item \textbf{Leverage XOR Properties}: Utilize the properties of XOR to simplify and optimize solutions.
+    \index{XOR Properties}
+    
+    \item \textbf{Handle Edge Cases}: Always consider edge cases such as `n = 0`, `n = 1`, and negative numbers.
+    \index{Edge Cases}
+    
+    \item \textbf{Optimize for Space and Time}: Aim for solutions that run in constant time and use minimal space when possible.
+    \index{Space and Time Optimization}
+    
+    \item \textbf{Avoid Floating-Point Operations}: Bitwise methods are generally more reliable and efficient compared to floating-point approaches like logarithms.
+    \index{Avoid Floating-Point Operations}
+    
+    \item \textbf{Use Helper Functions}: Create helper functions for repetitive bitwise operations to enhance code modularity and reusability.
+    \index{Helper Functions}
+    
+    \item \textbf{Code Readability}: While bitwise operations can lead to concise code, ensure that your code remains readable by using meaningful variable names and comments to explain complex operations.
+    \index{Readability}
+    
+    \item \textbf{Practice Common Patterns}: Familiarize yourself with common Bit Manipulation patterns and techniques through regular practice.
+    \index{Common Patterns}
+    
+    \item \textbf{Testing Thoroughly}: Implement comprehensive test cases covering all possible scenarios, including edge cases, to ensure the correctness of your solution.
+    \index{Testing}
+\end{itemize}
+
+\section*{Corner and Special Cases to Test When Writing the Code}
+
+When implementing solutions involving Bit Manipulation, it is crucial to consider and rigorously test various edge cases to ensure robustness and correctness. Here are some key cases to consider:
+
+\begin{itemize}
+    \item \textbf{Zero (\texttt{n = 0})}: Should return `False` as zero is not a power of two.
+    \index{Zero}
+    
+    \item \textbf{One (\texttt{n = 1})}: Should return `True` since \(2^0 = 1\).
+    \index{One}
+    
+    \item \textbf{Negative Numbers}: Any negative number should return `False`.
+    \index{Negative Numbers}
+    
+    \item \textbf{Maximum 32-bit Integer (\texttt{n = 2\^{31} - 1})}: Ensure that the function correctly identifies whether this large number is a power of two.
+    \index{Maximum 32-bit Integer}
+    
+    \item \textbf{Large Powers of Two}: Test with large powers of two within the integer range (e.g., \texttt{n = 2\^{30}}).
+    \index{Large Powers of Two}
+    
+    \item \textbf{Non-Power of Two Numbers}: Numbers that are not powers of two should correctly return `False`.
+    \index{Non-Power of Two Numbers}
+    
+    \item \textbf{Powers of Two Minus One}: Numbers like `3` (`4 - 1`), `7` (`8 - 1`), etc., should return `False`.
+    \index{Powers of Two Minus One}
+    
+    \item \textbf{Powers of Two Plus One}: Numbers like `5` (`4 + 1`), `9` (`8 + 1`), etc., should return `False`.
+    \index{Powers of Two Plus One}
+    
+    \item \textbf{Boundary Conditions}: Test numbers around the powers of two to ensure accurate detection.
+    \index{Boundary Conditions}
+    
+    \item \textbf{Sequential Powers of Two}: Ensure that multiple sequential powers of two are correctly identified.
+    \index{Sequential Powers of Two}
+\end{itemize}
+
+\section*{Implementation Considerations}
+
+When implementing the \texttt{isPowerOfTwo} function, keep in mind the following considerations to ensure robustness and efficiency:
+
+\begin{itemize}
+    \item \textbf{Data Type Selection}: Use appropriate data types that can handle the range of input values without overflow or underflow.
+    \index{Data Type Selection}
+    
+    \item \textbf{Language-Specific Behaviors}: Be aware of how your programming language handles bitwise operations, especially with regards to integer sizes and overflow.
+    \index{Language-Specific Behaviors}
+    
+    \item \textbf{Optimizing Bitwise Operations}: Ensure that bitwise operations are used efficiently without unnecessary computations.
+    \index{Optimizing Bitwise Operations}
+    
+    \item \textbf{Avoiding Unnecessary Operations}: In the Bitwise AND approach, ensure that each operation contributes towards isolating the power of two condition without redundant computations.
+    \index{Avoiding Unnecessary Operations}
+    
+    \item \textbf{Code Readability and Documentation}: Maintain clear and readable code through meaningful variable names and comprehensive comments to facilitate understanding and maintenance.
+    \index{Code Readability}
+    
+    \item \textbf{Edge Case Handling}: Ensure that all edge cases are handled appropriately, preventing incorrect results or runtime errors.
+    \index{Edge Case Handling}
+    
+    \item \textbf{Testing and Validation}: Develop a comprehensive suite of test cases that cover all possible scenarios, including edge cases, to validate the correctness and efficiency of the implementation.
+    \index{Testing and Validation}
+    
+    \item \textbf{Scalability}: Design the algorithm to scale efficiently with increasing input sizes, maintaining performance and resource utilization.
+    \index{Scalability}
+    
+    \item \textbf{Utilizing Built-In Functions}: Where possible, leverage built-in functions or libraries that can perform Bit Manipulation more efficiently.
+    \index{Built-In Functions}
+    
+    \item \textbf{Handling Signed Integers}: Although the problem specifies unsigned integers, ensure that the implementation correctly handles signed integers if applicable.
+    \index{Handling Signed Integers}
+\end{itemize}
+
+\section*{Conclusion}
+
+The \textbf{Power of Two} problem serves as an excellent exercise in applying Bit Manipulation to solve algorithmic challenges efficiently. By leveraging the properties of the XOR operation, particularly the Bitwise AND method, the problem can be solved with optimal time and space complexities. Understanding and implementing such techniques not only enhances problem-solving skills but also provides a foundation for tackling a wide range of computational problems that require efficient data manipulation and optimization. Mastery of Bit Manipulation is invaluable in fields such as computer graphics, cryptography, and systems programming, where low-level data processing is essential.
+
+\printindex
+
+% \input{sections/bit_manipulation}
+% \input{sections/sum_of_two_integers}
+% \input{sections/number_of_1_bits}
+% \input{sections/counting_bits}
+% \input{sections/missing_number}
+% \input{sections/reverse_bits}
+% \input{sections/single_number}
+% \input{sections/power_of_two}

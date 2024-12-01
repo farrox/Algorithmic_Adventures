@@ -1,0 +1,339 @@
+% filename: number_of_1_bits.tex
+
+\problemsection{Number of 1 Bits}
+\label{chap:Number_of_1_Bits}
+\marginnote{This problem focuses on using Bit Manipulation to count the number of set bits in an integer efficiently.}
+
+The \textbf{Number of 1 Bits} problem, also known as the \textbf{Hamming Weight} problem, is a fundamental bit manipulation challenge. It tests one's ability to work with individual bits and perform binary operations effectively in programming. Understanding this problem is crucial for optimizing algorithms that require low-level data processing and manipulation.
+
+\section*{Problem Statement}
+
+The task is to write a function that takes an unsigned integer as input and returns the number of '1' bits it has, which is also known as the function's Hamming weight.
+
+For instance, given the 32-bit unsigned integer \texttt{11}, its binary representation is \texttt{00000000000000000000000000001011}, and the function should return '3', as there are three bits set to '1'.
+
+Function signature for the \texttt{hammingWeight} function may look like this in C++:
+\begin{lstlisting}[language=C++]
+int hammingWeight(uint32_t n);
+\end{lstlisting}
+
+The function should accept a 32-bit unsigned integer and return the number of 'Set bits' or '1' bits in its binary representation.
+
+LeetCode link: \href{https://leetcode.com/problems/number-of-1-bits/}{Number of 1 Bits}\index{LeetCode}
+
+\section*{Algorithmic Approach}
+
+To solve the \textbf{Number of 1 Bits} problem efficiently, Bit Manipulation techniques are employed. The most common and efficient method to count the number of set bits in an integer is **Brian Kernighan’s Algorithm**. This algorithm reduces the number of iterations to the number of set bits, making it highly efficient, especially for integers with a small number of set bits.
+
+\begin{enumerate}
+    \item \textbf{Initialize a Counter:} Start with a counter set to zero. This counter will keep track of the number of set bits.
+    
+    \item \textbf{Iteratively Remove the Lowest Set Bit:} 
+    \begin{itemize}
+        \item Use the operation \texttt{n \&= (n - 1)}. This operation removes the lowest set bit from \texttt{n}.
+        \item Increment the counter each time a set bit is removed.
+    \end{itemize}
+    
+    \item \textbf{Termination:} Repeat the above step until \texttt{n} becomes zero.
+    
+    \item \textbf{Result:} The counter now contains the number of set bits in the original integer.
+\end{enumerate}
+
+\marginnote{Brian Kernighan’s Algorithm efficiently counts set bits by iteratively removing the lowest set bit, reducing the problem size with each iteration.}
+
+\section*{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(k)\), where \(k\) is the number of set bits in the integer. Since the algorithm removes one set bit per iteration, the number of iterations equals the number of set bits.
+    
+    \item \textbf{Space Complexity:} \(O(1)\). The algorithm uses a fixed amount of extra space regardless of the input size.
+\end{itemize}
+
+\section*{Python Implementation}
+
+\marginnote{Implementing Brian Kernighan’s Algorithm in Python provides an efficient way to count the number of '1' bits in an integer.}
+
+Below is the complete Python code implementing the \texttt{hammingWeight} function:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class Solution:
+    def hammingWeight(self, n: int) -> int:
+        count = 0
+        while n:
+            n &= n - 1  # Drops the lowest set bit of 'n'
+            count += 1
+        return count
+
+# Example usage:
+solution = Solution()
+print(solution.hammingWeight(11))  # Output: 3
+print(solution.hammingWeight(128)) # Output: 1
+print(solution.hammingWeight(4294967293)) # Output: 31
+\end{lstlisting}
+\end{fullwidth}
+
+This implementation utilizes Brian Kernighan’s Algorithm to count the number of '1' bits efficiently. By repeatedly removing the lowest set bit, the algorithm ensures that it only iterates as many times as there are set bits, optimizing performance.
+
+\section*{Explanation}
+
+The \texttt{hammingWeight} function counts the number of '1' bits in an unsigned integer using Bit Manipulation. Here's a detailed breakdown of how the implementation works:
+
+\subsection*{Brian Kernighan’s Algorithm}
+
+\begin{enumerate}
+    \item \textbf{Initialization:} 
+    \begin{itemize}
+        \item \texttt{count} is initialized to 0. This variable will store the number of set bits.
+    \end{itemize}
+    
+    \item \textbf{Loop Until \texttt{n} Becomes Zero:}
+    \begin{itemize}
+        \item \texttt{n \&= (n - 1)}:
+        \begin{itemize}
+            \item This operation removes the lowest set bit from \texttt{n}.
+            \item For example, if \texttt{n = 11} (binary: \texttt{1011}), then \texttt{n - 1 = 10} (binary: \texttt{1010}).
+            \item \texttt{n \& (n - 1)} results in \texttt{1011 \& 1010 = 1010}, effectively removing the lowest set bit.
+        \end{itemize}
+        
+        \item \texttt{count += 1}:
+        \begin{itemize}
+            \item Increment the counter each time a set bit is removed.
+        \end{itemize}
+    \end{itemize}
+    
+    \item \textbf{Termination:} 
+    \begin{itemize}
+        \item The loop terminates when \texttt{n} becomes zero, indicating that all set bits have been counted and removed.
+    \end{itemize}
+    
+    \item \textbf{Return the Count:} 
+    \begin{itemize}
+        \item The function returns the final value of \texttt{count}, which represents the number of '1' bits in the original integer.
+    \end{itemize}
+\end{enumerate}
+
+\subsection*{Example Walkthrough}
+
+Consider \texttt{n = 11} (binary: \texttt{1011}):
+
+\begin{itemize}
+    \item **First Iteration:**
+    \begin{itemize}
+        \item \texttt{n = 1011}
+        \item \texttt{n - 1 = 1010}
+        \item \texttt{n \& (n - 1) = 1010}
+        \item \texttt{count = 1}
+    \end{itemize}
+    
+    \item **Second Iteration:**
+    \begin{itemize}
+        \item \texttt{n = 1010}
+        \item \texttt{n - 1 = 1001}
+        \item \texttt{n \& (n - 1) = 1000}
+        \item \texttt{count = 2}
+    \end{itemize}
+    
+    \item **Third Iteration:**
+    \begin{itemize}
+        \item \texttt{n = 1000}
+        \item \texttt{n - 1 = 0111}
+        \item \texttt{n \& (n - 1) = 0000}
+        \item \texttt{count = 3}
+    \end{itemize}
+    
+    \item **Termination:**
+    \begin{itemize}
+        \item \texttt{n = 0000}, loop terminates.
+        \item \texttt{count = 3} is returned.
+    \end{itemize}
+\end{itemize}
+
+\section*{Why This Approach}
+
+Brian Kernighan’s Algorithm is chosen for its efficiency and simplicity in counting the number of set bits in an integer. Unlike iterating through each bit individually, this algorithm only iterates as many times as there are set bits, which can significantly reduce the number of operations for integers with fewer set bits. Additionally, Bit Manipulation operations are generally faster and more efficient than their arithmetic counterparts, making this approach optimal for performance-critical applications.
+
+\section*{Alternative Approaches}
+
+While Brian Kernighan’s Algorithm is highly efficient, there are alternative methods to solve the \textbf{Number of 1 Bits} problem:
+
+\begin{itemize}
+    \item \textbf{Iterative Bit Checking:} 
+    \begin{itemize}
+        \item Iterate through each bit of the integer and check if it is set using bitwise AND.
+        \item Example:
+        \begin{lstlisting}[language=Python]
+        def hammingWeight(n):
+            count = 0
+            for i in range(32):
+                if n & (1 << i):
+                    count += 1
+            return count
+        \end{lstlisting}
+    \end{itemize}
+    
+    \item \textbf{Lookup Table:}
+    \begin{itemize}
+        \item Precompute the number of set bits for all possible byte values and use this table to count bits in larger integers.
+        \item Example:
+        \begin{lstlisting}[language=Python]
+        lookup = [0] * 256
+        for i in range(256):
+            lookup[i] = (i & 1) + lookup[i >> 1]
+        
+        def hammingWeight(n):
+            count = 0
+            while n:
+                count += lookup[n & 0xFF]
+                n >>= 8
+            return count
+        \end{lstlisting}
+    \end{itemize}
+    
+    \item \textbf{Built-In Functions:}
+    \begin{itemize}
+        \item Utilize language-specific built-in functions to count set bits.
+        \item Example in Python:
+        \begin{lstlisting}[language=Python]
+        def hammingWeight(n):
+            return bin(n).count('1')
+        \end{lstlisting}
+    \end{itemize}
+\end{itemize}
+
+However, these alternatives often involve more iterations or additional space, making Brian Kernighan’s Algorithm the preferred choice for its optimal balance of time and space efficiency.
+
+\section*{Similar Problems}
+
+Several problems revolve around Bit Manipulation and offer similar challenges in terms of low-level data handling:
+
+\begin{itemize}
+    \item \textbf{Reverse Bits}: Reverse the bits of a given 32 bits unsigned integer.
+    \item \textbf{Single Number}: Find the element that appears only once in an array where every other element appears twice.
+    \item \textbf{Add Binary}: Add two binary strings and return their sum as a binary string.
+    \item \textbf{Power of Two}: Determine if a given number is a power of two using bitwise operations.
+    \item \textbf{Missing Number}: Find the missing number in an array containing numbers from 0 to n.
+    \item \textbf{Counting Bits}: Return the number of 1 bits for every number from 0 to a given number.
+\end{itemize}
+
+These problems help reinforce the concepts and techniques involved in Bit Manipulation, providing a comprehensive understanding of binary data handling.
+
+\section*{Things to Keep in Mind and Tricks}
+
+When working with Bit Manipulation, consider the following tips and best practices to enhance efficiency and correctness:
+
+\begin{itemize}
+    \item \textbf{Understand Binary Representation}: Grasp how numbers are represented in binary, including two's complement for negative numbers.
+    \index{Binary Representation}
+    
+    \item \textbf{Use Masks Effectively}: Create masks to isolate, set, clear, or toggle specific bits.
+    \index{Masks}
+    
+    \item \textbf{Leverage Bitwise Operators}: Familiarize yourself with all bitwise operators and their behaviors.
+    \index{Bitwise Operators}
+    
+    \item \textbf{Handle Negative Numbers Carefully}: Ensure that operations account for the sign bit and two's complement representation.
+    \index{Negative Numbers}
+    
+    \item \textbf{Avoid Overflows}: Be cautious of the data type sizes and ensure that bit shifts do not exceed the number of bits in the data type.
+    \index{Overflow}
+    
+    \item \textbf{Optimize Bit Counting}: Utilize efficient algorithms like Brian Kernighan’s method to count set bits.
+    \index{Bit Counting}
+    
+    \item \textbf{Visualize Bit Positions}: Drawing the binary form of numbers can aid in understanding and debugging bitwise operations.
+    \index{Visualization}
+    
+    \item \textbf{Combine Operations for Efficiency}: Often, combining multiple bitwise operations can achieve complex tasks more efficiently.
+    \index{Combining Operations}
+    
+    \item \textbf{Practice Common Patterns}: Regular practice with common Bit Manipulation patterns solidifies understanding and improves problem-solving speed.
+    \index{Common Patterns}
+    
+    \item \textbf{Maintain Readability}: While Bit Manipulation can lead to concise code, ensure that your code remains readable and maintainable by using meaningful variable names and comments.
+    \index{Readability}
+\end{itemize}
+
+\section*{Corner and Special Cases to Test When Writing the Code}
+
+When implementing solutions involving Bit Manipulation, it is crucial to consider and rigorously test various edge cases to ensure robustness and correctness:
+
+\begin{itemize}
+    \item \textbf{Zero and Negative Numbers}: Ensure that the algorithm correctly handles zero and negative integers, considering two's complement representation for negatives.
+    \index{Zero and Negative Numbers}
+    
+    \item \textbf{Single Bit Set}: Test cases where only one bit is set to verify basic bit operations.
+    \index{Single Bit Set}
+    
+    \item \textbf{All Bits Set}: Handle cases where all bits in a number are set, ensuring that operations do not cause unintended overflows or errors.
+    \index{All Bits Set}
+    
+    \item \textbf{Maximum and Minimum Integer Values}: Verify that the code correctly handles the largest and smallest possible integer values.
+    \index{Maximum and Minimum Integers}
+    
+    \item \textbf{Bit Shifts Beyond Range}: Test shifting bits beyond the size of the data type to ensure graceful handling.
+    \index{Bit Shifts Beyond Range}
+    
+    \item \textbf{Repeated Operations}: Perform multiple bitwise operations on the same number to ensure stability and correctness.
+    \index{Repeated Operations}
+    
+    \item \textbf{Boundary Bit Positions}: Test operations on the least significant bit (LSB) and the most significant bit (MSB) to ensure correct behavior.
+    \index{Boundary Bit Positions}
+    
+    \item \textbf{No Bits Set}: Handle cases where no bits are set (i.e., the number is zero) appropriately.
+    \index{No Bits Set}
+    
+    \item \textbf{Multiple Bit Set Operations}: Verify that multiple bit set, clear, or toggle operations work correctly in sequence.
+    \index{Multiple Bit Set Operations}
+    
+    \item \textbf{Large Numbers}: Ensure that the implementation can handle large numbers with many bits without performance degradation.
+    \index{Large Numbers}
+\end{itemize}
+
+\section*{Implementation Considerations}
+
+When implementing the \texttt{hammingWeight} function, keep in mind the following considerations to ensure robustness and efficiency:
+
+\begin{itemize}
+    \item \textbf{Language-Specific Behavior}: Understand how your programming language handles bitwise operations, especially regarding signed integers and overflow behavior.
+    \index{Language-Specific Behavior}
+    
+    \item \textbf{Operator Precedence}: Be mindful of the precedence of bitwise operators to avoid unexpected results. Use parentheses to clarify expressions.
+    \index{Operator Precedence}
+    
+    \item \textbf{Data Type Sizes}: Ensure that the data types used have sufficient bit widths to accommodate the operations being performed.
+    \index{Data Type Sizes}
+    
+    \item \textbf{Efficiency}: Optimize the use of bitwise operations to minimize computational overhead, especially in performance-critical applications.
+    \index{Efficiency}
+    
+    \item \textbf{Readability vs. Conciseness}: Balance the conciseness of bitwise operations with the readability of the code. Use comments to explain complex manipulations.
+    \index{Readability vs. Conciseness}
+    
+    \item \textbf{Avoiding Common Pitfalls}: Be aware of common mistakes, such as using the wrong operator or misaligning bit positions.
+    \index{Common Pitfalls}
+    
+    \item \textbf{Testing and Validation}: Implement comprehensive tests to cover all possible bit scenarios, ensuring the correctness of your Bit Manipulation logic.
+    \index{Testing and Validation}
+    
+    \item \textbf{Use of Helper Functions}: Create helper functions for repetitive bitwise operations to enhance code modularity and reusability.
+    \index{Helper Functions}
+    
+    \item \textbf{Documentation}: Document your bit manipulation logic thoroughly to aid understanding and maintenance.
+    \index{Documentation}
+\end{itemize}
+
+\section*{Conclusion}
+
+Bit Manipulation is a fundamental technique that empowers developers to write efficient and optimized code by directly interacting with the binary representations of data. The \textbf{Number of 1 Bits} problem exemplifies how Bit Manipulation can be harnessed to perform low-level data processing tasks effectively. By mastering algorithms like Brian Kernighan’s and understanding the intricacies of bitwise operations, programmers can tackle a wide array of computational challenges with enhanced performance and elegance.
+
+\printindex
+
+% \input{sections/bit_manipulation}
+% \input{sections/sum_of_two_integers}
+% \input{sections/number_of_1_bits}
+% \input{sections/counting_bits}
+% \input{sections/missing_number}
+% \input{sections/reverse_bits}
+% \input{sections/single_number}
+% \input{sections/power_of_two}

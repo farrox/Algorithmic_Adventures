@@ -1,0 +1,442 @@
+% filename: sqrt_x.tex
+
+\problemsection{Sqrt(x)}
+\label{chap:Sqrt_x}
+\marginnote{\href{https://leetcode.com/problems/sqrtx/}{[LeetCode Link]}\index{LeetCode}}
+\marginnote{\href{https://www.geeksforgeeks.org/calculate-square-root-number-using-bitwise-operation/}{[GeeksForGeeks Link]}\index{GeeksForGeeks}}
+\marginnote{\href{https://www.interviewbit.com/problems/square-root/}{[InterviewBit Link]}\index{InterviewBit}}
+\marginnote{\href{https://app.codesignal.com/challenges/sqrtx}{[CodeSignal Link]}\index{CodeSignal}}
+\marginnote{\href{https://www.codewars.com/kata/sqrtx/train/python}{[Codewars Link]}\index{Codewars}}
+
+The \textbf{Sqrt(x)} problem is a fundamental algorithmic challenge that involves finding the square root of a non-negative integer \(x\). This problem tests one's understanding of binary search, numerical methods, and bit manipulation. Efficiently computing the integer square root is crucial in various applications, including computer graphics, scientific computations, and optimization problems.
+
+\section*{Problem Statement}
+
+Implement a function \texttt{mySqrt(x)} that computes and returns the square root of a non-negative integer \(x\). Since the return type is an integer, the decimal digits are truncated, and only the integer part of the result is returned.
+
+\textbf{Function signature in Python:}
+\begin{lstlisting}[language=Python]
+def mySqrt(x: int) -> int:
+\end{lstlisting}
+
+\section*{Examples}
+
+\textbf{Example 1:}
+
+\begin{verbatim}
+Input: x = 4
+Output: 2
+Explanation: The square root of 4 is 2.
+\end{verbatim}
+
+\textbf{Example 2:}
+
+\begin{verbatim}
+Input: x = 8
+Output: 2
+Explanation: The square root of 8 is 2.82842..., and after truncation, it becomes 2.
+\end{verbatim}
+
+\textbf{Example 3:}
+
+\begin{verbatim}
+Input: x = 0
+Output: 0
+Explanation: The square root of 0 is 0.
+\end{verbatim}
+
+\textbf{Example 4:}
+
+\begin{verbatim}
+Input: x = 1
+Output: 1
+Explanation: The square root of 1 is 1.
+\end{verbatim}
+
+\textbf{Constraints:}
+
+\begin{itemize}
+    \item \(0 \leq x \leq 2^{31} - 1\)
+\end{itemize}
+
+\section*{Algorithmic Approach}
+
+To efficiently compute the integer square root of a non-negative integer \(x\), several algorithmic strategies can be employed. The most optimal solutions typically run in logarithmic time \(O(\log x)\) with constant space \(O(1)\). Below are the primary methods:
+
+\subsection*{1. Binary Search}
+
+Utilize the binary search algorithm to find the largest integer \(m\) such that \(m^2 \leq x\).
+
+\begin{enumerate}
+    \item Initialize two pointers, \texttt{left} and \texttt{right}, to \(0\) and \(x\) respectively.
+    \item While \texttt{left} is less than or equal to \texttt{right}:
+    \begin{itemize}
+        \item Compute the midpoint: \texttt{mid} = \texttt{left + (right - left) // 2}.
+        \item If \texttt{mid} squared equals \(x\), return \texttt{mid}.
+        \item If \texttt{mid} squared is less than \(x\), move the \texttt{left} pointer to \texttt{mid + 1}.
+        \item If \texttt{mid} squared is greater than \(x\), move the \texttt{right} pointer to \texttt{mid - 1}.
+    \end{itemize}
+    \item If no exact square root is found, return \texttt{right}, which holds the truncated integer part of the square root.
+\end{enumerate}
+
+\subsection*{2. Newton's Method (Iterative Approach)}
+
+Employ Newton's iterative method to approximate the square root by successively improving the estimate.
+
+\begin{enumerate}
+    \item If \(x = 0\) or \(x = 1\), return \(x\).
+    \item Initialize a variable \texttt{guess} to \(x / 2\).
+    \item While \texttt{guess} squared is greater than \(x\):
+    \begin{itemize}
+        \item Update \texttt{guess} to \((\texttt{guess} + x / \texttt{guess}) / 2\).
+    \end{itemize}
+    \item Return the integer part of \texttt{guess}.
+\end{enumerate}
+
+\subsection*{3. Bit Manipulation}
+
+Use bit manipulation to construct the square root bit by bit, starting from the highest bit.
+
+\begin{enumerate}
+    \item Initialize the result to \(0\).
+    \item Iterate from the highest bit to the lowest (e.g., 16 to 0 for 32-bit integers).
+    \item For each bit position \(i\):
+    \begin{itemize}
+        \item Tentatively set the bit in the result: \texttt{temp} = \texttt{result | (1 << i)}.
+        \item If \texttt{temp} squared is less than or equal to \(x\), update the result to \texttt{temp}.
+    \end{itemize}
+    \item Return the final result.
+\end{enumerate}
+
+\marginnote{Binary Search and Newton's Method offer efficient and intuitive approaches for finding the integer square root with optimal time complexity.}
+
+\section*{Complexities}
+
+\begin{itemize}
+    \item \textbf{Binary Search:}
+    \begin{itemize}
+        \item \textbf{Time Complexity:} \(O(\log x)\)
+        \item \textbf{Space Complexity:} \(O(1)\)
+    \end{itemize}
+    
+    \item \textbf{Newton's Method:}
+    \begin{itemize}
+        \item \textbf{Time Complexity:} \(O(\log x)\)
+        \item \textbf{Space Complexity:} \(O(1)\)
+    \end{itemize}
+    
+    \item \textbf{Bit Manipulation:}
+    \begin{itemize}
+        \item \textbf{Time Complexity:} \(O(1)\), since the number of bits is fixed (32 bits)
+        \item \textbf{Space Complexity:} \(O(1)\)
+    \end{itemize}
+\end{itemize}
+
+\section*{Python Implementation}
+
+\marginnote{Implementing Binary Search provides a clear and efficient solution with logarithmic time complexity.}
+
+Below is the complete Python code implementing the \texttt{mySqrt} function using the Binary Search approach:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class Solution:
+    def mySqrt(self, x: int) -> int:
+        if x < 2:
+            return x
+        
+        left, right = 1, x // 2
+        while left <= right:
+            mid = left + (right - left) // 2
+            square = mid * mid
+            if square == x:
+                return mid
+            elif square < x:
+                left = mid + 1
+            else:
+                right = mid - 1
+        return right
+
+# Example usage:
+solution = Solution()
+print(solution.mySqrt(4))   # Output: 2
+print(solution.mySqrt(8))   # Output: 2
+print(solution.mySqrt(0))   # Output: 0
+print(solution.mySqrt(1))   # Output: 1
+print(solution.mySqrt(16))  # Output: 4
+\end{lstlisting}
+\end{fullwidth}
+
+This implementation efficiently finds the integer square root by narrowing down the search range using binary search. It iteratively adjusts the search boundaries based on the comparison between the square of the midpoint and the target number \(x\).
+
+\section*{Explanation}
+
+The \texttt{mySqrt} function employs the Binary Search algorithm to determine the integer square root of a non-negative integer \(x\). Here's a detailed breakdown of the implementation:
+
+\subsection*{Binary Search Approach}
+
+\begin{enumerate}
+    \item \textbf{Initial Check:}
+    \begin{itemize}
+        \item If \(x < 2\), return \(x\) immediately since the square root of \(0\) is \(0\) and the square root of \(1\) is \(1\).
+    \end{itemize}
+    
+    \item \textbf{Initialize Search Boundaries:}
+    \begin{itemize}
+        \item Set \texttt{left} to \(1\) and \texttt{right} to \(x // 2\). The integer square root of \(x\) will not exceed \(x // 2\) for \(x \geq 2\).
+    \end{itemize}
+    
+    \item \textbf{Iterative Search:}
+    \begin{itemize}
+        \item While \texttt{left} is less than or equal to \texttt{right}:
+        \begin{itemize}
+            \item Compute the midpoint: \texttt{mid} = \texttt{left + (right - left) // 2}.
+            \item Calculate the square of \texttt{mid}: \texttt{square} = \texttt{mid * mid}.
+            \item Compare \texttt{square} with \(x\):
+            \begin{itemize}
+                \item If \texttt{square} equals \(x\), return \texttt{mid} as the exact square root.
+                \item If \texttt{square} is less than \(x\), move the \texttt{left} boundary to \texttt{mid + 1} to search in the higher half.
+                \item If \texttt{square} is greater than \(x\), move the \texttt{right} boundary to \texttt{mid - 1} to search in the lower half.
+            \end{itemize}
+        \end{itemize}
+    \end{itemize}
+    
+    \item \textbf{Final Result:}
+    \begin{itemize}
+        \item If no exact square root is found, \texttt{right} will hold the integer part of the square root of \(x\), which is returned.
+    \end{itemize}
+\end{enumerate}
+
+\subsection*{Example Walkthrough}
+
+Consider \(x = 8\):
+
+\begin{itemize}
+    \item \texttt{left} = 1, \texttt{right} = 4
+    \item First Iteration:
+    \begin{itemize}
+        \item \texttt{mid} = 2, \texttt{square} = 4
+        \item \(4 < 8\), move \texttt{left} to \(3\)
+    \end{itemize}
+    \item Second Iteration:
+    \begin{itemize}
+        \item \texttt{mid} = 3, \texttt{square} = 9
+        \item \(9 > 8\), move \texttt{right} to \(2\)
+    \end{itemize}
+    \item Loop terminates as \texttt{left} > \texttt{right}
+    \item Return \texttt{right} = 2
+\end{itemize}
+
+Thus, the integer square root of \(8\) is correctly identified as \(2\).
+
+\section*{Why This Approach}
+
+The Binary Search approach is chosen for its optimal time complexity of \(O(\log x)\) and constant space usage. Unlike the naive iterative multiplication method, which has linear time complexity \(O(x)\), Binary Search efficiently narrows down the search space by repeatedly halving it based on comparisons. This makes it highly suitable for large input values where performance is critical.
+
+\section*{Alternative Approaches}
+
+While Binary Search is the most efficient and straightforward method for this problem, there are alternative ways to compute the integer square root:
+
+\subsection*{1. Newton's Method (Iterative Approach)}
+
+Employ Newton's iterative method to approximate the square root by successively improving the estimate.
+
+\begin{lstlisting}[language=Python]
+class Solution:
+    def mySqrt(self, x: int) -> int:
+        if x == 0:
+            return 0
+        guess = x
+        while guess * guess > x:
+            guess = (guess + x // guess) // 2
+        return guess
+\end{lstlisting}
+
+\textbf{Complexities:}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(\log x)\)
+    \item \textbf{Space Complexity:} \(O(1)\)
+\end{itemize}
+
+\subsection*{2. Bit Manipulation}
+
+Construct the square root bit by bit, starting from the highest bit.
+
+\begin{lstlisting}[language=Python]
+class Solution:
+    def mySqrt(self, x: int) -> int:
+        res = 0
+        bit = 1 << 15  # The second-to-top bit is set: 1 << 30 for 32-bit
+        while bit > x:
+            bit >>= 2
+        while bit != 0:
+            if x >= res + bit:
+                x -= res + bit
+                res = (res >> 1) + bit
+            else:
+                res >>= 1
+            bit >>= 2
+        return res
+\end{lstlisting}
+
+\textbf{Complexities:}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(1)\), since the number of bits is fixed
+    \item \textbf{Space Complexity:} \(O(1)\)
+\end{itemize}
+
+\subsection*{3. Math Libraries}
+
+Use built-in math libraries to compute the square root and then truncate the decimal part.
+
+\begin{lstlisting}[language=Python]
+import math
+
+class Solution:
+    def mySqrt(self, x: int) -> int:
+        return int(math.sqrt(x))
+\end{lstlisting}
+
+\textbf{Note}: This method relies on the accuracy and performance of the language's math library implementation and may not provide insights into algorithmic problem-solving.
+
+\section*{Similar Problems to This One}
+
+Several problems involve computing roots, handling integer truncation, and optimizing numerical computations, utilizing similar algorithmic strategies:
+
+\begin{itemize}
+    \item \textbf{Pow(x, n)}: Compute \(x\) raised to the power of \(n\).
+    \item \textbf{Integer to English Words}: Convert an integer to its English words representation.
+    \item \textbf{Happy Number}: Determine if a number is a "happy" number based on specific iterative processes.
+    \item \textbf{Perfect Square}: Determine if a number is a perfect square.
+    \item \textbf{Nth Fibonacci Number}: Compute the \(n^{th}\) Fibonacci number using dynamic programming or matrix exponentiation.
+    \item \textbf{Modular Exponentiation}: Compute \(x^n \mod m\) efficiently using exponentiation by squaring.
+    \item \textbf{Find Square Root Without Using Library}: Compute the square root without relying on built-in functions.
+\end{itemize}
+
+These problems reinforce the concepts of binary search, iterative approximation, and bit manipulation in different contexts, enhancing problem-solving skills.
+
+\section*{Things to Keep in Mind and Tricks}
+
+When working with the \textbf{Sqrt(x)} problem, consider the following tips and best practices to enhance efficiency and correctness:
+
+\begin{itemize}
+    \item \textbf{Understand Binary Search}: Grasp how binary search can be applied to range-based problems, not just search in sorted arrays.
+    \index{Binary Search}
+    
+    \item \textbf{Handle Edge Cases}: Always consider edge cases such as \(x = 0\), \(x = 1\), and negative inputs if applicable.
+    \index{Edge Cases}
+    
+    \item \textbf{Avoid Floating-Point Precision Issues}: When using iterative methods like Newton's, be cautious of floating-point precision and integer division.
+    \index{Floating-Point Precision}
+    
+    \item \textbf{Optimize for Performance}: Choose an approach that minimizes the number of operations, especially for large inputs.
+    \index{Performance Optimization}
+    
+    \item \textbf{Use Integer Operations}: Prefer integer arithmetic over floating-point to avoid precision errors and enhance performance.
+    \index{Integer Operations}
+    
+    \item \textbf{Implement Iterative Solutions Carefully}: Ensure that loop conditions are correctly defined to prevent infinite loops or incorrect terminations.
+    \index{Iterative Solutions}
+    
+    \item \textbf{Leverage Bit Manipulation}: Understand how bitwise operations can be used to manipulate and compute numerical values efficiently.
+    \index{Bit Manipulation}
+    
+    \item \textbf{Code Readability}: Maintain clear and readable code through meaningful variable names and comprehensive comments.
+    \index{Readability}
+    
+    \item \textbf{Testing Thoroughly}: Implement comprehensive test cases covering all possible scenarios, including edge cases, to ensure the correctness of the solution.
+    \index{Testing}
+    
+    \item \textbf{Understand Problem Constraints}: Ensure that your solution adheres to the problem's constraints, such as input size and time limits.
+    \index{Problem Constraints}
+\end{itemize}
+
+\section*{Corner and Special Cases to Test When Writing the Code}
+
+When implementing solutions for the \textbf{Sqrt(x)} problem, it is crucial to consider and rigorously test various edge cases to ensure robustness and correctness:
+
+\begin{itemize}
+    \item \textbf{Zero (\(x = 0\))}: Should return \(0\) as the square root of \(0\) is \(0\).
+    \index{Zero}
+    
+    \item \textbf{One (\(x = 1\))}: Should return \(1\) as the square root of \(1\) is \(1\).
+    \index{One}
+    
+    \item \textbf{Perfect Squares}: Numbers like \(4, 9, 16, 25\) should return their exact square roots.
+    \index{Perfect Squares}
+    
+    \item \textbf{Non-Perfect Squares}: Numbers like \(2, 3, 5, 10\) should return the integer part of their square roots.
+    \index{Non-Perfect Squares}
+    
+    \item \textbf{Large Numbers}: Test with large values of \(x\) (e.g., \(2^{31} - 1\)) to ensure that the algorithm handles large inputs efficiently.
+    \index{Large Numbers}
+    
+    \item \textbf{Maximum and Minimum Values}: Depending on the language's integer limits, ensure that the function handles the maximum and minimum possible integer values without overflow.
+    \index{Maximum and Minimum Values}
+    
+    \item \textbf{Boundary Conditions}: Numbers around perfect squares (e.g., \(15, 16, 17\)) to verify correct truncation.
+    \index{Boundary Conditions}
+    
+    \item \textbf{Sequential Perfect Squares}: Test a sequence of perfect squares to ensure consistent correctness.
+    \index{Sequential Perfect Squares}
+    
+    \item \textbf{Repeating Calls}: Ensure that multiple calls to the function with different inputs do not interfere with each other.
+    \index{Repeating Calls}
+    
+    \item \textbf{Floating-Point Precision}: Although the function returns an integer, ensure that the method handles floating-point operations accurately if used.
+    \index{Floating-Point Precision}
+\end{itemize}
+
+\section*{Implementation Considerations}
+
+When implementing the \texttt{mySqrt} function, keep in mind the following considerations to ensure robustness and efficiency:
+
+\begin{itemize}
+    \item \textbf{Data Type Selection}: Use appropriate data types that can handle large input values without overflow or underflow.
+    \index{Data Type Selection}
+    
+    \item \textbf{Optimizing Loops}: Ensure that loops run only the necessary number of times and that each operation within the loop is optimized for performance.
+    \index{Loop Optimization}
+    
+    \item \textbf{Handling Large Inputs}: Design the algorithm to efficiently handle large input sizes without significant performance degradation.
+    \index{Handling Large Inputs}
+    
+    \item \textbf{Language-Specific Optimizations}: Utilize language-specific features or built-in functions that can enhance the performance of binary search or iterative methods.
+    \index{Language-Specific Optimizations}
+    
+    \item \textbf{Avoiding Redundant Calculations}: In the Binary Search approach, ensure that each comparison contributes towards narrowing the search range without redundant operations.
+    \index{Avoiding Redundant Calculations}
+    
+    \item \textbf{Code Readability and Documentation}: Maintain clear and readable code through meaningful variable names and comprehensive comments to facilitate understanding and maintenance.
+    \index{Code Readability}
+    
+    \item \textbf{Edge Case Handling}: Ensure that all edge cases are handled appropriately, preventing incorrect results or runtime errors.
+    \index{Edge Case Handling}
+    
+    \item \textbf{Testing and Validation}: Develop a comprehensive suite of test cases that cover all possible scenarios, including edge cases, to validate the correctness and efficiency of the implementation.
+    \index{Testing and Validation}
+    
+    \item \textbf{Scalability}: Design the algorithm to scale efficiently with increasing input sizes, maintaining performance and resource utilization.
+    \index{Scalability}
+    
+    \item \textbf{Floating-Point Operations}: If using methods involving floating-point arithmetic, ensure precision is maintained to prevent inaccurate truncation.
+    \index{Floating-Point Operations}
+    
+    \item \textbf{Use of Helper Functions}: Consider creating helper functions for repetitive tasks, such as computing midpoints or handling boundary conditions.
+    \index{Helper Functions}
+    
+    \item \textbf{Iterative vs. Recursive Implementations}: Prefer iterative solutions to avoid potential stack overflow issues associated with deep recursion.
+    \index{Iterative vs. Recursive Implementations}
+\end{itemize}
+
+\section*{Conclusion}
+
+The \textbf{Sqrt(x)} problem serves as an excellent exercise in applying binary search and other mathematical algorithmic techniques to compute numerical results efficiently. By leveraging the properties of binary search, the algorithm achieves logarithmic time complexity and constant space usage, making it highly suitable for large input values. Understanding and implementing such methods not only enhances problem-solving skills but also provides a foundation for tackling a wide range of computational challenges that involve numerical computations and optimization. Mastery of these concepts is essential for developing optimized and high-performance software solutions in various domains, including scientific computing, data analysis, and computer graphics.
+
+\printindex
+
+% \input{sections/power_of_two}
+% \input{sections/pow_x_n}
+% \input{sections/sqrt_x}
+% \input{sections/integer_to_english_words}
+% \input{sections/happy_number}

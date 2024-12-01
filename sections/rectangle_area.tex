@@ -1,0 +1,437 @@
+% filename: rectangle_area.tex
+
+\problemsection{Rectangle Area}
+\label{chap:Rectangle_Area}
+\marginnote{\href{https://leetcode.com/problems/rectangle-area/}{[LeetCode Link]}\index{LeetCode}}
+\marginnote{\href{https://www.geeksforgeeks.org/find-area-two-overlapping-rectangles/}{[GeeksForGeeks Link]}\index{GeeksForGeeks}}
+\marginnote{\href{https://www.interviewbit.com/problems/rectangle-area/}{[InterviewBit Link]}\index{InterviewBit}}
+\marginnote{\href{https://app.codesignal.com/challenges/rectangle-area}{[CodeSignal Link]}\index{CodeSignal}}
+\marginnote{\href{https://www.codewars.com/kata/rectangle-area/train/python}{[Codewars Link]}\index{Codewars}}
+
+The \textbf{Rectangle Area} problem is a classic Computational Geometry challenge that involves calculating the total area covered by two axis-aligned rectangles in a 2D plane. This problem tests one's ability to perform geometric calculations, handle overlapping scenarios, and implement efficient algorithms. Mastery of this problem is essential for applications in computer graphics, spatial analysis, and computational modeling.
+
+\section*{Problem Statement}
+
+Given two axis-aligned rectangles in a 2D plane, compute the total area covered by the two rectangles. The area covered by the overlapping region should be counted only once.
+
+Each rectangle is represented as a list of four integers \([x1, y1, x2, y2]\), where \((x1, y1)\) are the coordinates of the bottom-left corner, and \((x2, y2)\) are the coordinates of the top-right corner.
+
+\textbf{Function signature in Python:}
+\begin{lstlisting}[language=Python]
+def computeArea(A: List[int], B: List[int]) -> int:
+\end{lstlisting}
+
+\section*{Examples}
+
+\textbf{Example 1:}
+
+\begin{verbatim}
+Input: A = [-3,0,3,4], B = [0,-1,9,2]
+Output: 45
+Explanation:
+Area of A = (3 - (-3)) * (4 - 0) = 6 * 4 = 24
+Area of B = (9 - 0) * (2 - (-1)) = 9 * 3 = 27
+Overlapping Area = (3 - 0) * (2 - 0) = 3 * 2 = 6
+Total Area = 24 + 27 - 6 = 45
+\end{verbatim}
+
+\textbf{Example 2:}
+
+\begin{verbatim}
+Input: A = [0,0,0,0], B = [0,0,0,0]
+Output: 0
+Explanation:
+Both rectangles are degenerate points with zero area.
+\end{verbatim}
+
+\textbf{Example 3:}
+
+\begin{verbatim}
+Input: A = [0,0,2,2], B = [1,1,3,3]
+Output: 7
+Explanation:
+Area of A = 4
+Area of B = 4
+Overlapping Area = 1
+Total Area = 4 + 4 - 1 = 7
+\end{verbatim}
+
+\textbf{Example 4:}
+
+\begin{verbatim}
+Input: A = [0,0,1,1], B = [1,0,2,1]
+Output: 2
+Explanation:
+Rectangles touch at the edge but do not overlap.
+Area of A = 1
+Area of B = 1
+Overlapping Area = 0
+Total Area = 1 + 1 = 2
+\end{verbatim}
+
+\textbf{Constraints:}
+
+\begin{itemize}
+    \item All coordinates are integers in the range \([-10^9, 10^9]\).
+    \item For each rectangle, \(x1 < x2\) and \(y1 < y2\).
+\end{itemize}
+
+LeetCode link: \href{https://leetcode.com/problems/rectangle-area/}{Rectangle Area}\index{LeetCode}
+
+\section*{Algorithmic Approach}
+
+To compute the total area covered by two axis-aligned rectangles, we can follow these steps:
+
+1. **Calculate Individual Areas:**
+   - Compute the area of the first rectangle.
+   - Compute the area of the second rectangle.
+
+2. **Determine Overlapping Area:**
+   - Calculate the coordinates of the overlapping rectangle, if any.
+   - If the rectangles overlap, compute the area of the overlapping region.
+
+3. **Compute Total Area:**
+   - Sum the individual areas and subtract the overlapping area to avoid double-counting.
+
+\marginnote{This approach ensures accurate area calculation by handling overlapping regions appropriately.}
+
+\section*{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(1)\). The algorithm performs a constant number of calculations.
+    
+    \item \textbf{Space Complexity:} \(O(1)\). Only a fixed amount of extra space is used for variables.
+\end{itemize}
+
+\section*{Python Implementation}
+
+\marginnote{Implementing the area calculation with overlap consideration ensures an accurate and efficient solution.}
+
+Below is the complete Python code implementing the \texttt{computeArea} function:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+from typing import List
+
+class Solution:
+    def computeArea(self, A: List[int], B: List[int]) -> int:
+        # Calculate area of rectangle A
+        areaA = (A[2] - A[0]) * (A[3] - A[1])
+        
+        # Calculate area of rectangle B
+        areaB = (B[2] - B[0]) * (B[3] - B[1])
+        
+        # Determine overlap coordinates
+        overlap_x1 = max(A[0], B[0])
+        overlap_y1 = max(A[1], B[1])
+        overlap_x2 = min(A[2], B[2])
+        overlap_y2 = min(A[3], B[3])
+        
+        # Calculate overlapping area
+        overlap_width = overlap_x2 - overlap_x1
+        overlap_height = overlap_y2 - overlap_y1
+        overlap_area = 0
+        if overlap_width > 0 and overlap_height > 0:
+            overlap_area = overlap_width * overlap_height
+        
+        # Total area is sum of individual areas minus overlapping area
+        total_area = areaA + areaB - overlap_area
+        return total_area
+
+# Example usage:
+solution = Solution()
+print(solution.computeArea([-3,0,3,4], [0,-1,9,2]))  # Output: 45
+print(solution.computeArea([0,0,0,0], [0,0,0,0]))    # Output: 0
+print(solution.computeArea([0,0,2,2], [1,1,3,3]))    # Output: 7
+print(solution.computeArea([0,0,1,1], [1,0,2,1]))    # Output: 2
+\end{lstlisting}
+\end{fullwidth}
+
+This implementation accurately computes the total area covered by two rectangles by accounting for any overlapping regions. It ensures that the overlapping area is not double-counted.
+
+\section*{Explanation}
+
+The \texttt{computeArea} function calculates the combined area of two axis-aligned rectangles by following these steps:
+
+\subsection*{1. Calculate Individual Areas}
+
+\begin{itemize}
+    \item **Rectangle A:**
+    \begin{itemize}
+        \item Width: \(A[2] - A[0]\)
+        \item Height: \(A[3] - A[1]\)
+        \item Area: Width \(\times\) Height
+    \end{itemize}
+    
+    \item **Rectangle B:**
+    \begin{itemize}
+        \item Width: \(B[2] - B[0]\)
+        \item Height: \(B[3] - B[1]\)
+        \item Area: Width \(\times\) Height
+    \end{itemize}
+\end{itemize}
+
+\subsection*{2. Determine Overlapping Area}
+
+\begin{itemize}
+    \item **Overlap Coordinates:**
+    \begin{itemize}
+        \item Left (x-coordinate): \(\text{max}(A[0], B[0])\)
+        \item Bottom (y-coordinate): \(\text{max}(A[1], B[1])\)
+        \item Right (x-coordinate): \(\text{min}(A[2], B[2])\)
+        \item Top (y-coordinate): \(\text{min}(A[3], B[3])\)
+    \end{itemize}
+    
+    \item **Overlap Dimensions:**
+    \begin{itemize}
+        \item Width: \(\text{overlap\_x2} - \text{overlap\_x1}\)
+        \item Height: \(\text{overlap\_y2} - \text{overlap\_y1}\)
+    \end{itemize}
+    
+    \item **Overlap Area:**
+    \begin{itemize}
+        \item If both width and height are positive, the rectangles overlap, and the overlapping area is their product.
+        \item Otherwise, there is no overlap, and the overlapping area is zero.
+    \end{itemize}
+\end{itemize}
+
+\subsection*{3. Compute Total Area}
+
+\begin{itemize}
+    \item Total Area = Area of Rectangle A + Area of Rectangle B - Overlapping Area
+\end{itemize}
+
+\subsection*{4. Example Walkthrough}
+
+Consider the first example:
+\begin{verbatim}
+Input: A = [-3,0,3,4], B = [0,-1,9,2]
+Output: 45
+\end{verbatim}
+
+\begin{enumerate}
+    \item **Calculate Areas:**
+    \begin{itemize}
+        \item Area of A = (3 - (-3)) * (4 - 0) = 6 * 4 = 24
+        \item Area of B = (9 - 0) * (2 - (-1)) = 9 * 3 = 27
+    \end{itemize}
+    
+    \item **Determine Overlap:**
+    \begin{itemize}
+        \item overlap\_x1 = max(-3, 0) = 0
+        \item overlap\_y1 = max(0, -1) = 0
+        \item overlap\_x2 = min(3, 9) = 3
+        \item overlap\_y2 = min(4, 2) = 2
+        \item overlap\_width = 3 - 0 = 3
+        \item overlap\_height = 2 - 0 = 2
+        \item overlap\_area = 3 * 2 = 6
+    \end{itemize}
+    
+    \item **Compute Total Area:**
+    \begin{itemize}
+        \item Total Area = 24 + 27 - 6 = 45
+    \end{itemize}
+\end{enumerate}
+
+Thus, the function correctly returns \texttt{45}.
+
+\section*{Why This Approach}
+
+This approach is chosen for its straightforwardness and optimal efficiency. By directly calculating the individual areas and intelligently handling the overlapping region, the algorithm ensures accurate results without unnecessary computations. Its constant time complexity makes it highly efficient, even for large coordinate values.
+
+\section*{Alternative Approaches}
+
+\subsection*{1. Using Intersection Dimensions}
+
+Instead of separately calculating areas, directly compute the dimensions of the overlapping region and subtract it from the sum of individual areas.
+
+\begin{lstlisting}[language=Python]
+def computeArea(A: List[int], B: List[int]) -> int:
+    # Sum of individual areas
+    area = (A[2] - A[0]) * (A[3] - A[1]) + (B[2] - B[0]) * (B[3] - B[1])
+    
+    # Overlapping area
+    overlap_width = min(A[2], B[2]) - max(A[0], B[0])
+    overlap_height = min(A[3], B[3]) - max(A[1], B[1])
+    
+    if overlap_width > 0 and overlap_height > 0:
+        area -= overlap_width * overlap_height
+    
+    return area
+\end{lstlisting}
+
+\subsection*{2. Using Geometry Libraries}
+
+Leverage computational geometry libraries to handle area calculations and overlapping detections.
+
+\begin{lstlisting}[language=Python]
+from shapely.geometry import box
+
+def computeArea(A: List[int], B: List[int]) -> int:
+    rect1 = box(A[0], A[1], A[2], A[3])
+    rect2 = box(B[0], B[1], B[2], B[3])
+    intersection = rect1.intersection(rect2)
+    return int(rect1.area + rect2.area - intersection.area)
+\end{lstlisting}
+
+\textbf{Note}: This approach requires the \texttt{shapely} library and is more suitable for complex geometric operations.
+
+\section*{Similar Problems to This One}
+
+Several problems involve calculating areas, handling geometric overlaps, and spatial reasoning, utilizing similar algorithmic strategies:
+
+\begin{itemize}
+    \item \textbf{Rectangle Overlap}: Determine if two rectangles overlap.
+    \item \textbf{Circle Area Overlap}: Calculate the overlapping area between two circles.
+    \item \textbf{Polygon Area}: Compute the area of a given polygon.
+    \item \textbf{Union of Rectangles}: Calculate the total area covered by multiple rectangles, accounting for overlaps.
+    \item \textbf{Intersection of Lines}: Find the intersection point of two lines.
+    \item \textbf{Closest Pair of Points}: Find the closest pair of points in a set.
+    \item \textbf{Convex Hull}: Compute the convex hull of a set of points.
+    \item \textbf{Point Inside Polygon}: Determine if a point lies inside a given polygon.
+\end{itemize}
+
+These problems reinforce concepts of geometric calculations, area computations, and efficient algorithm design in various contexts.
+
+\section*{Things to Keep in Mind and Tricks}
+
+When tackling the \textbf{Rectangle Area} problem, consider the following tips and best practices to enhance efficiency and correctness:
+
+\begin{itemize}
+    \item \textbf{Understand Geometric Relationships}: Grasp the positional relationships between rectangles to simplify area calculations.
+    \index{Geometric Relationships}
+    
+    \item \textbf{Leverage Coordinate Comparisons}: Use direct comparisons of rectangle coordinates to determine overlapping regions.
+    \index{Coordinate Comparisons}
+    
+    \item \textbf{Handle Overlapping Scenarios}: Accurately calculate the overlapping area to avoid double-counting.
+    \index{Overlapping Scenarios}
+    
+    \item \textbf{Optimize for Efficiency}: Aim for a constant time \(O(1)\) solution by avoiding unnecessary computations or iterations.
+    \index{Efficiency Optimization}
+    
+    \item \textbf{Avoid Floating-Point Precision Issues}: Since all coordinates are integers, floating-point precision is not a concern, simplifying the implementation.
+    \index{Floating-Point Precision}
+    
+    \item \textbf{Use Helper Functions}: Create helper functions to encapsulate repetitive tasks, such as calculating overlap dimensions or areas.
+    \index{Helper Functions}
+    
+    \item \textbf{Code Readability}: Maintain clear and readable code through meaningful variable names and structured logic.
+    \index{Code Readability}
+    
+    \item \textbf{Test Extensively}: Implement a wide range of test cases, including overlapping, non-overlapping, and edge-touching rectangles, to ensure robustness.
+    \index{Extensive Testing}
+    
+    \item \textbf{Understand Axis-Aligned Constraints}: Recognize that axis-aligned rectangles simplify area calculations compared to rotated rectangles.
+    \index{Axis-Aligned Constraints}
+    
+    \item \textbf{Simplify Logical Conditions}: Combine multiple conditions logically to streamline the area calculation process.
+    \index{Logical Conditions}
+    
+    \item \textbf{Use Absolute Values}: When calculating differences, ensure that the dimensions are positive by using absolute values or proper ordering.
+    \index{Absolute Values}
+    
+    \item \textbf{Consider Edge Cases}: Handle cases where rectangles have zero area or touch at edges/corners without overlapping.
+    \index{Edge Cases}
+\end{itemize}
+
+\section*{Corner and Special Cases to Test When Writing the Code}
+
+When implementing the solution for the \textbf{Rectangle Area} problem, it is crucial to consider and rigorously test various edge cases to ensure robustness and correctness:
+
+\begin{itemize}
+    \item \textbf{No Overlap}: Rectangles are completely separate.
+    \index{No Overlap}
+    
+    \item \textbf{Partial Overlap}: Rectangles overlap in one or more regions.
+    \index{Partial Overlap}
+    
+    \item \textbf{Edge Touching}: Rectangles touch exactly at one edge without overlapping.
+    \index{Edge Touching}
+    
+    \item \textbf{Corner Touching}: Rectangles touch exactly at one corner without overlapping.
+    \index{Corner Touching}
+    
+    \item \textbf{One Rectangle Inside Another}: One rectangle is entirely within the other.
+    \index{Rectangle Inside}
+    
+    \item \textbf{Identical Rectangles}: Both rectangles have the same coordinates.
+    \index{Identical Rectangles}
+    
+    \item \textbf{Degenerate Rectangles}: Rectangles with zero area (e.g., \(x1 = x2\) or \(y1 = y2\)).
+    \index{Degenerate Rectangles}
+    
+    \item \textbf{Large Coordinates}: Rectangles with very large coordinate values to test performance and integer handling.
+    \index{Large Coordinates}
+    
+    \item \textbf{Negative Coordinates}: Rectangles positioned in negative coordinate space.
+    \index{Negative Coordinates}
+    
+    \item \textbf{Mixed Overlapping Scenarios}: Combinations of the above cases to ensure comprehensive coverage.
+    \index{Mixed Overlapping Scenarios}
+    
+    \item \textbf{Minimum and Maximum Bounds}: Rectangles at the minimum and maximum limits of the coordinate range.
+    \index{Minimum and Maximum Bounds}
+    
+    \item \textbf{Sequential Rectangles}: Multiple rectangles placed sequentially without overlapping.
+    \index{Sequential Rectangles}
+    
+    \item \textbf{Multiple Overlaps}: Scenarios where more than two rectangles overlap in different regions.
+    \index{Multiple Overlaps}
+\end{itemize}
+
+\section*{Implementation Considerations}
+
+When implementing the \texttt{computeArea} function, keep in mind the following considerations to ensure robustness and efficiency:
+
+\begin{itemize}
+    \item \textbf{Data Type Selection}: Use appropriate data types that can handle large input values without overflow or underflow.
+    \index{Data Type Selection}
+    
+    \item \textbf{Optimizing Comparisons}: Structure logical conditions to efficiently determine overlap dimensions.
+    \index{Optimizing Comparisons}
+    
+    \item \textbf{Handling Large Inputs}: Design the algorithm to efficiently handle large input sizes without significant performance degradation.
+    \index{Handling Large Inputs}
+    
+    \item \textbf{Language-Specific Constraints}: Be aware of how the programming language handles large integers and arithmetic operations.
+    \index{Language-Specific Constraints}
+    
+    \item \textbf{Avoiding Redundant Calculations}: Ensure that each calculation contributes towards determining the final area without unnecessary repetitions.
+    \index{Avoiding Redundant Calculations}
+    
+    \item \textbf{Code Readability and Documentation}: Maintain clear and readable code through meaningful variable names and comprehensive comments to facilitate understanding and maintenance.
+    \index{Code Readability}
+    
+    \item \textbf{Edge Case Handling}: Implement checks for edge cases to prevent incorrect results or runtime errors.
+    \index{Edge Case Handling}
+    
+    \item \textbf{Testing and Validation}: Develop a comprehensive suite of test cases that cover all possible scenarios, including edge cases, to validate the correctness and efficiency of the implementation.
+    \index{Testing and Validation}
+    
+    \item \textbf{Scalability}: Design the algorithm to scale efficiently with increasing input sizes, maintaining performance and resource utilization.
+    \index{Scalability}
+    
+    \item \textbf{Using Helper Functions}: Consider creating helper functions for repetitive tasks, such as calculating overlap dimensions, to enhance modularity and reusability.
+    \index{Helper Functions}
+    
+    \item \textbf{Consistent Naming Conventions}: Use consistent and descriptive naming conventions for variables to improve code clarity.
+    \index{Naming Conventions}
+    
+    \item \textbf{Implementing Unit Tests}: Develop unit tests for each logical condition to ensure that all scenarios are correctly handled.
+    \index{Unit Tests}
+    
+    \item \textbf{Error Handling}: Incorporate error handling to manage invalid inputs gracefully.
+    \index{Error Handling}
+\end{itemize}
+
+\section*{Conclusion}
+
+The \textbf{Rectangle Area} problem showcases the application of fundamental geometric principles and efficient algorithm design to compute spatial properties accurately. By systematically calculating individual areas and intelligently handling overlapping regions, the algorithm ensures precise results without redundant computations. Understanding and implementing such techniques not only enhances problem-solving skills but also provides a foundation for tackling more complex Computational Geometry challenges involving multiple geometric entities and intricate spatial relationships.
+
+\printindex
+
+% \input{sections/rectangle_overlap}
+% \input{sections/rectangle_area}
+% \input{sections/k_closest_points_to_origin}
+% \input{sections/the_skyline_problem}

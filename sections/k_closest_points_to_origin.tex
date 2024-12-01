@@ -1,0 +1,483 @@
+% filename: k_closest_points_to_origin.tex
+
+\problemsection{K Closest Points to Origin}
+\label{chap:K_Closest_Points_to_Origin}
+\marginnote{\href{https://leetcode.com/problems/k-closest-points-to-origin/}{[LeetCode Link]}\index{LeetCode}}
+\marginnote{\href{https://www.geeksforgeeks.org/find-k-closest-points-origin/}{[GeeksForGeeks Link]}\index{GeeksForGeeks}}
+\marginnote{\href{https://www.interviewbit.com/problems/k-closest-points/}{[InterviewBit Link]}\index{InterviewBit}}
+\marginnote{\href{https://app.codesignal.com/challenges/k-closest-points-to-origin}{[CodeSignal Link]}\index{CodeSignal}}
+\marginnote{\href{https://www.codewars.com/kata/k-closest-points-to-origin/train/python}{[Codewars Link]}\index{Codewars}}
+
+The \textbf{K Closest Points to Origin} problem is a popular algorithmic challenge in Computational Geometry that involves identifying the \(k\) points closest to the origin in a 2D plane. This problem tests one's ability to apply efficient sorting and selection algorithms, understand distance computations, and optimize for performance. Mastery of this problem is essential for applications in spatial data analysis, nearest neighbor searches, and clustering algorithms.
+
+\section*{Problem Statement}
+
+Given an array of points where each point is represented as \([x, y]\) in the 2D plane, and an integer \(k\), return the \(k\) closest points to the origin \((0, 0)\).
+
+The distance between two points \((x_1, y_1)\) and \((x_2, y_2)\) is the Euclidean distance \(\sqrt{(x_1 - x_2)^2 + (y_1 - y_2)^2}\). The origin is \((0, 0)\).
+
+\textbf{Function signature in Python:}
+\begin{lstlisting}[language=Python]
+def kClosest(points: List[List[int]], K: int) -> List[List[int]]:
+\end{lstlisting}
+
+\section*{Examples}
+
+\textbf{Example 1:}
+
+\begin{verbatim}
+Input: points = [[1,3],[-2,2]], K = 1
+Output: [[-2,2]]
+Explanation: 
+The distance between (1, 3) and the origin is sqrt(10).
+The distance between (-2, 2) and the origin is sqrt(8).
+Since sqrt(8) < sqrt(10), (-2, 2) is closer to the origin.
+\end{verbatim}
+
+\textbf{Example 2:}
+
+\begin{verbatim}
+Input: points = [[3,3],[5,-1],[-2,4]], K = 2
+Output: [[3,3],[-2,4]]
+Explanation: 
+The distances are sqrt(18), sqrt(26), and sqrt(20) respectively.
+The two closest points are [3,3] and [-2,4].
+\end{verbatim}
+
+\textbf{Example 3:}
+
+\begin{verbatim}
+Input: points = [[0,1],[1,0]], K = 2
+Output: [[0,1],[1,0]]
+Explanation: 
+Both points are equally close to the origin.
+\end{verbatim}
+
+\textbf{Example 4:}
+
+\begin{verbatim}
+Input: points = [[1,0],[0,1]], K = 1
+Output: [[1,0]]
+Explanation: 
+Both points are equally close; returning any one is acceptable.
+\end{verbatim}
+
+\textbf{Constraints:}
+
+\begin{itemize}
+    \item \(1 \leq K \leq \text{points.length} \leq 10^4\)
+    \item \(-10^4 < x_i, y_i < 10^4\)
+\end{itemize}
+
+LeetCode link: \href{https://leetcode.com/problems/k-closest-points-to-origin/}{K Closest Points to Origin}\index{LeetCode}
+
+\section*{Algorithmic Approach}
+
+To identify the \(k\) closest points to the origin, several algorithmic strategies can be employed. The most efficient methods aim to reduce the time complexity by avoiding the need to sort the entire list of points.
+
+\subsection*{1. Sorting Based on Distance}
+
+Calculate the Euclidean distance of each point from the origin and sort the points based on these distances. Select the first \(k\) points from the sorted list.
+
+\begin{enumerate}
+    \item Compute the distance for each point using the formula \(distance = x^2 + y^2\).
+    \item Sort the points based on the computed distances.
+    \item Return the first \(k\) points from the sorted list.
+\end{enumerate}
+
+\subsection*{2. Max Heap (Priority Queue)}
+
+Use a max heap to maintain the \(k\) closest points. Iterate through each point, add it to the heap, and if the heap size exceeds \(k\), remove the farthest point.
+
+\begin{enumerate}
+    \item Initialize a max heap.
+    \item For each point, compute its distance and add it to the heap.
+    \item If the heap size exceeds \(k\), remove the point with the largest distance.
+    \item After processing all points, the heap contains the \(k\) closest points.
+\end{enumerate}
+
+\subsection*{3. QuickSelect (Quick Sort Partitioning)}
+
+Utilize the QuickSelect algorithm to find the \(k\) closest points without fully sorting the list.
+
+\begin{enumerate}
+    \item Choose a pivot point and partition the list based on distances relative to the pivot.
+    \item Recursively apply QuickSelect to the partition containing the \(k\) closest points.
+    \item Once the \(k\) closest points are identified, return them.
+\end{enumerate}
+
+\marginnote{QuickSelect offers an average time complexity of \(O(n)\), making it highly efficient for large datasets.}
+
+\section*{Complexities}
+
+\begin{itemize}
+    \item \textbf{Sorting Based on Distance:}
+    \begin{itemize}
+        \item \textbf{Time Complexity:} \(O(n \log n)\)
+        \item \textbf{Space Complexity:} \(O(n)\)
+    \end{itemize}
+    
+    \item \textbf{Max Heap (Priority Queue):}
+    \begin{itemize}
+        \item \textbf{Time Complexity:} \(O(n \log k)\)
+        \item \textbf{Space Complexity:} \(O(k)\)
+    \end{itemize}
+    
+    \item \textbf{QuickSelect (Quick Sort Partitioning):}
+    \begin{itemize}
+        \item \textbf{Time Complexity:} Average case \(O(n)\), worst case \(O(n^2)\)
+        \item \textbf{Space Complexity:} \(O(1)\) (in-place)
+    \end{itemize}
+\end{itemize}
+
+\section*{Python Implementation}
+
+\marginnote{Implementing QuickSelect provides an optimal average-case solution with linear time complexity.}
+
+Below is the complete Python code implementing the \texttt{kClosest} function using the QuickSelect approach:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+from typing import List
+import random
+
+class Solution:
+    def kClosest(self, points: List[List[int]], K: int) -> List[List[int]]:
+        def quickselect(left, right, K_smallest):
+            if left == right:
+                return
+            
+            # Select a random pivot_index
+            pivot_index = random.randint(left, right)
+            
+            # Partition the array
+            pivot_index = partition(left, right, pivot_index)
+            
+            # The pivot is in its final sorted position
+            if K_smallest == pivot_index:
+                return
+            elif K_smallest < pivot_index:
+                quickselect(left, pivot_index - 1, K_smallest)
+            else:
+                quickselect(pivot_index + 1, right, K_smallest)
+        
+        def partition(left, right, pivot_index):
+            pivot_distance = distance(points[pivot_index])
+            # Move pivot to end
+            points[pivot_index], points[right] = points[right], points[pivot_index]
+            store_index = left
+            for i in range(left, right):
+                if distance(points[i]) < pivot_distance:
+                    points[store_index], points[i] = points[i], points[store_index]
+                    store_index += 1
+            # Move pivot to its final place
+            points[right], points[store_index] = points[store_index], points[right]
+            return store_index
+        
+        def distance(point):
+            return point[0] ** 2 + point[1] ** 2
+        
+        n = len(points)
+        quickselect(0, n - 1, K)
+        return points[:K]
+
+# Example usage:
+solution = Solution()
+print(solution.kClosest([[1,3],[-2,2]], 1))            # Output: [[-2,2]]
+print(solution.kClosest([[3,3],[5,-1],[-2,4]], 2))     # Output: [[3,3],[-2,4]]
+print(solution.kClosest([[0,1],[1,0]], 2))             # Output: [[0,1],[1,0]]
+print(solution.kClosest([[1,0],[0,1]], 1))             # Output: [[1,0]] or [[0,1]]
+\end{lstlisting}
+\end{fullwidth}
+
+This implementation uses the QuickSelect algorithm to efficiently find the \(k\) closest points to the origin without fully sorting the entire list. It ensures optimal performance even with large datasets.
+
+\section*{Explanation}
+
+The \texttt{kClosest} function identifies the \(k\) closest points to the origin using the QuickSelect algorithm. Here's a detailed breakdown of the implementation:
+
+\subsection*{1. Distance Calculation}
+
+\begin{itemize}
+    \item The Euclidean distance is calculated as \(distance = x^2 + y^2\). Since we only need relative distances for comparison, the square root is omitted for efficiency.
+\end{itemize}
+
+\subsection*{2. QuickSelect Algorithm}
+
+\begin{itemize}
+    \item **Pivot Selection:**
+    \begin{itemize}
+        \item A random pivot is chosen to enhance the average-case performance.
+    \end{itemize}
+    
+    \item **Partitioning:**
+    \begin{itemize}
+        \item The array is partitioned such that points with distances less than the pivot are moved to the left, and others to the right.
+        \item The pivot is placed in its correct sorted position.
+    \end{itemize}
+    
+    \item **Recursive Selection:**
+    \begin{itemize}
+        \item If the pivot's position matches \(K\), the selection is complete.
+        \item Otherwise, recursively apply QuickSelect to the relevant partition.
+    \end{itemize}
+\end{itemize}
+
+\subsection*{3. Final Selection}
+
+\begin{itemize}
+    \item After partitioning, the first \(K\) points in the list are the \(k\) closest points to the origin.
+\end{itemize}
+
+\subsection*{4. Example Walkthrough}
+
+Consider the first example:
+\begin{verbatim}
+Input: points = [[1,3],[-2,2]], K = 1
+Output: [[-2,2]]
+\end{verbatim}
+
+\begin{enumerate}
+    \item **Calculate Distances:**
+    \begin{itemize}
+        \item [1,3] : \(1^2 + 3^2 = 10\)
+        \item [-2,2] : \((-2)^2 + 2^2 = 8\)
+    \end{itemize}
+    
+    \item **QuickSelect Process:**
+    \begin{itemize}
+        \item Choose a pivot, say [1,3] with distance 10.
+        \item Compare and rearrange:
+        \begin{itemize}
+            \item [-2,2] has a smaller distance (8) and is moved to the left.
+        \end{itemize}
+        \item After partitioning, the list becomes [[-2,2], [1,3]].
+        \item Since \(K = 1\), return the first point: [[-2,2]].
+    \end{itemize}
+\end{enumerate}
+
+Thus, the function correctly identifies \([-2,2]\) as the closest point to the origin.
+
+\section*{Why This Approach}
+
+The QuickSelect algorithm is chosen for its average-case linear time complexity \(O(n)\), making it highly efficient for large datasets compared to sorting-based methods with \(O(n \log n)\) time complexity. By avoiding the need to sort the entire list, QuickSelect provides an optimal solution for finding the \(k\) closest points.
+
+\section*{Alternative Approaches}
+
+\subsection*{1. Sorting Based on Distance}
+
+Sort all points based on their distances from the origin and select the first \(k\) points.
+
+\begin{lstlisting}[language=Python]
+class Solution:
+    def kClosest(self, points: List[List[int]], K: int) -> List[List[int]]:
+        points.sort(key=lambda P: P[0]**2 + P[1]**2)
+        return points[:K]
+\end{lstlisting}
+
+\textbf{Complexities:}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(n \log n)\)
+    \item \textbf{Space Complexity:} \(O(1)\)
+\end{itemize}
+
+\subsection*{2. Max Heap (Priority Queue)}
+
+Use a max heap to maintain the \(k\) closest points.
+
+\begin{lstlisting}[language=Python]
+import heapq
+
+class Solution:
+    def kClosest(self, points: List[List[int]], K: int) -> List[List[int]]:
+        heap = []
+        for (x, y) in points:
+            dist = -(x**2 + y**2)  # Max heap using negative distances
+            heapq.heappush(heap, (dist, [x, y]))
+            if len(heap) > K:
+                heapq.heappop(heap)
+        return [item[1] for item in heap]
+\end{lstlisting}
+
+\textbf{Complexities:}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(n \log k)\)
+    \item \textbf{Space Complexity:} \(O(k)\)
+\end{itemize}
+
+\subsection*{3. Using Built-In Functions}
+
+Leverage built-in functions for distance calculation and selection.
+
+\begin{lstlisting}[language=Python]
+import math
+
+class Solution:
+    def kClosest(self, points: List[List[int]], K: int) -> List[List[int]]:
+        points.sort(key=lambda P: math.sqrt(P[0]**2 + P[1]**2))
+        return points[:K]
+\end{lstlisting}
+
+\textbf{Note}: This method is similar to the sorting approach but uses the actual Euclidean distance.
+
+\section*{Similar Problems to This One}
+
+Several problems involve nearest neighbor searches, spatial data analysis, and efficient selection algorithms, utilizing similar algorithmic strategies:
+
+\begin{itemize}
+    \item \textbf{Closest Pair of Points}: Find the closest pair of points in a set.
+    \item \textbf{Top K Frequent Elements}: Identify the most frequent elements in a dataset.
+    \item \textbf{Kth Largest Element in an Array}: Find the \(k\)-th largest element in an unsorted array.
+    \item \textbf{Sliding Window Maximum}: Find the maximum in each sliding window of size \(k\) over an array.
+    \item \textbf{Merge K Sorted Lists}: Merge multiple sorted lists into a single sorted list.
+    \item \textbf{Find Median from Data Stream}: Continuously find the median of a stream of numbers.
+    \item \textbf{Top K Closest Stars}: Find the \(k\) closest stars to Earth based on their distances.
+\end{itemize}
+
+These problems reinforce concepts of efficient selection, heap usage, and distance computations in various contexts.
+
+\section*{Things to Keep in Mind and Tricks}
+
+When solving the \textbf{K Closest Points to Origin} problem, consider the following tips and best practices to enhance efficiency and correctness:
+
+\begin{itemize}
+    \item \textbf{Understand Distance Calculations}: Grasp the Euclidean distance formula and recognize that the square root can be omitted for comparison purposes.
+    \index{Distance Calculations}
+    
+    \item \textbf{Leverage Efficient Algorithms}: Use QuickSelect or heap-based methods to optimize time complexity, especially for large datasets.
+    \index{Efficient Algorithms}
+    
+    \item \textbf{Handle Ties Appropriately}: Decide how to handle points with identical distances when \(k\) is less than the number of such points.
+    \index{Handling Ties}
+    
+    \item \textbf{Optimize Space Usage}: Choose algorithms that minimize additional space, such as in-place QuickSelect.
+    \index{Space Optimization}
+    
+    \item \textbf{Use Appropriate Data Structures}: Utilize heaps, lists, and helper functions effectively to manage and process data.
+    \index{Data Structures}
+    
+    \item \textbf{Implement Helper Functions}: Create helper functions for distance calculation and partitioning to enhance code modularity.
+    \index{Helper Functions}
+    
+    \item \textbf{Code Readability}: Maintain clear and readable code through meaningful variable names and structured logic.
+    \index{Code Readability}
+    
+    \item \textbf{Test Extensively}: Implement a wide range of test cases, including edge cases like multiple points with the same distance, to ensure robustness.
+    \index{Extensive Testing}
+    
+    \item \textbf{Understand Algorithm Trade-offs}: Recognize the trade-offs between different approaches in terms of time and space complexities.
+    \index{Algorithm Trade-offs}
+    
+    \item \textbf{Use Built-In Sorting Functions}: When using sorting-based approaches, leverage built-in functions for efficiency and simplicity.
+    \index{Built-In Sorting}
+    
+    \item \textbf{Avoid Redundant Calculations}: Ensure that distance calculations are performed only when necessary to optimize performance.
+    \index{Avoiding Redundant Calculations}
+    
+    \item \textbf{Language-Specific Features}: Utilize language-specific features or libraries that can simplify implementation, such as heapq in Python.
+    \index{Language-Specific Features}
+\end{itemize}
+
+\section*{Corner and Special Cases to Test When Writing the Code}
+
+When implementing the solution for the \textbf{K Closest Points to Origin} problem, it is crucial to consider and rigorously test various edge cases to ensure robustness and correctness:
+
+\begin{itemize}
+    \item \textbf{Multiple Points with Same Distance}: Ensure that the algorithm handles multiple points having the same distance from the origin.
+    \index{Same Distance Points}
+    
+    \item \textbf{Points at Origin}: Include points that are exactly at the origin \((0,0)\).
+    \index{Points at Origin}
+    
+    \item \textbf{Negative Coordinates}: Ensure that the algorithm correctly computes distances for points with negative \(x\) or \(y\) coordinates.
+    \index{Negative Coordinates}
+    
+    \item \textbf{Large Coordinates}: Test with points having very large or very small coordinate values to verify integer handling.
+    \index{Large Coordinates}
+    
+    \item \textbf{K Equals Number of Points}: When \(K\) is equal to the number of points, the algorithm should return all points.
+    \index{K Equals Number of Points}
+    
+    \item \textbf{K is One}: Test with \(K = 1\) to ensure the closest point is correctly identified.
+    \index{K is One}
+    
+    \item \textbf{All Points Same}: All points have the same coordinates.
+    \index{All Points Same}
+    
+    \item \textbf{K is Zero}: Although \(K\) is defined to be at least 1, ensure that the algorithm gracefully handles \(K = 0\) if allowed.
+    \index{K is Zero}
+    
+    \item \textbf{Single Point}: Only one point is provided, and \(K = 1\).
+    \index{Single Point}
+    
+    \item \textbf{Mixed Coordinates}: Points with a mix of positive and negative coordinates.
+    \index{Mixed Coordinates}
+    
+    \item \textbf{Points with Zero Distance}: Multiple points at the origin.
+    \index{Zero Distance Points}
+    
+    \item \textbf{Sparse and Dense Points}: Densely packed points and sparsely distributed points.
+    \index{Sparse and Dense Points}
+    
+    \item \textbf{Duplicate Points}: Multiple identical points in the input list.
+    \index{Duplicate Points}
+    
+    \item \textbf{K Greater Than Number of Unique Points}: Ensure that the algorithm handles cases where \(K\) exceeds the number of unique points if applicable.
+    \index{K Greater Than Unique Points}
+\end{itemize}
+
+\section*{Implementation Considerations}
+
+When implementing the \texttt{kClosest} function, keep in mind the following considerations to ensure robustness and efficiency:
+
+\begin{itemize}
+    \item \textbf{Data Type Selection}: Use appropriate data types that can handle large input values without overflow or precision loss.
+    \index{Data Type Selection}
+    
+    \item \textbf{Optimizing Distance Calculations}: Avoid calculating the square root since it is unnecessary for comparison purposes.
+    \index{Optimizing Distance Calculations}
+    
+    \item \textbf{Choosing the Right Algorithm}: Select an algorithm based on the size of the input and the value of \(K\) to optimize time and space complexities.
+    \index{Choosing the Right Algorithm}
+    
+    \item \textbf{Language-Specific Libraries}: Utilize language-specific libraries and functions (e.g., \texttt{heapq} in Python) to simplify implementation and enhance performance.
+    \index{Language-Specific Libraries}
+    
+    \item \textbf{Avoiding Redundant Calculations}: Ensure that each point's distance is calculated only once to optimize performance.
+    \index{Avoiding Redundant Calculations}
+    
+    \item \textbf{Implementing Helper Functions}: Create helper functions for tasks like distance calculation and partitioning to enhance modularity and readability.
+    \index{Helper Functions}
+    
+    \item \textbf{Edge Case Handling}: Implement checks for edge cases to prevent incorrect results or runtime errors.
+    \index{Edge Case Handling}
+    
+    \item \textbf{Testing and Validation}: Develop a comprehensive suite of test cases that cover all possible scenarios, including edge cases, to validate the correctness and efficiency of the implementation.
+    \index{Testing and Validation}
+    
+    \item \textbf{Scalability}: Design the algorithm to scale efficiently with increasing input sizes, maintaining performance and resource utilization.
+    \index{Scalability}
+    
+    \item \textbf{Consistent Naming Conventions}: Use consistent and descriptive naming conventions for variables and functions to improve code clarity.
+    \index{Naming Conventions}
+    
+    \item \textbf{Memory Management}: Ensure that the algorithm manages memory efficiently, especially when dealing with large datasets.
+    \index{Memory Management}
+    
+    \item \textbf{Avoiding Stack Overflow}: If implementing recursive approaches, be mindful of recursion limits and potential stack overflow issues.
+    \index{Avoiding Stack Overflow}
+    
+    \item \textbf{Implementing Iterative Solutions}: Prefer iterative solutions when recursion may lead to increased space complexity or stack overflow.
+    \index{Implementing Iterative Solutions}
+\end{itemize}
+
+\section*{Conclusion}
+
+The \textbf{K Closest Points to Origin} problem exemplifies the application of efficient selection algorithms and geometric computations to solve spatial challenges effectively. By leveraging QuickSelect or heap-based methods, the algorithm achieves optimal time and space complexities, making it highly suitable for large datasets. Understanding and implementing such techniques not only enhances problem-solving skills but also provides a foundation for tackling more advanced Computational Geometry problems involving nearest neighbor searches, clustering, and spatial data analysis.
+
+\printindex
+
+% \input{sections/rectangle_overlap}
+% \input{sections/rectangle_area}
+% \input{sections/k_closest_points_to_origin}
+% \input{sections/the_skyline_problem}

@@ -1,0 +1,893 @@
+% file: tries.tex
+
+\chapter{Tries}
+\label{chapter:tries}
+\marginnote{Tries, also known as prefix trees, are specialized tree data structures used for efficient retrieval of keys in datasets of strings. They are particularly useful in applications like autocomplete systems, spell checkers, and IP routing.}
+
+\section*{Introduction}
+
+A \textbf{Trie}, also known as a \textbf{prefix tree}, is a specialized tree data structure that is used to store a dynamic set or associative array where the keys are usually strings. Unlike binary search trees, no node in the tree stores the key associated with that node; instead, its position in the tree defines the key with which it is associated. All descendants of a node have a common prefix of the string associated with that node, and the root is associated with the empty string.
+
+\section*{Problem Statement}
+
+Implement a Trie with the following methods:
+
+\begin{itemize}
+    \item \texttt{insert(word)}: Inserts the string \texttt{word} into the trie.
+    \item \texttt{search(word)}: Returns \texttt{True} if the string \texttt{word} is in the trie (i.e., was inserted before), and \texttt{False} otherwise.
+    \item \texttt{startsWith(prefix)}: Returns \texttt{True} if there is any previously inserted string in the trie that starts with the given \texttt{prefix}, and \texttt{False} otherwise.
+\end{itemize}
+
+\textbf{Example:}
+
+\begin{verbatim}
+Input:
+Trie trie = new Trie();
+trie.insert("apple");
+trie.search("apple");   // returns True
+trie.search("app");     // returns False
+trie.startsWith("app"); // returns True
+trie.insert("app");   
+trie.search("app");     // returns True
+\end{verbatim}
+
+
+\marginnote{\href{https://leetcode.com/problems/implement-trie-prefix-tree/}{[LeetCode Link]}\index{LeetCode}}
+\marginnote{\href{https://www.geeksforgeeks.org/trie-insert-and-search/}{[GeeksForGeeks Link]}\index{GeeksForGeeks}}
+\marginnote{\href{https://www.hackerrank.com/challenges/trie-contacts/problem}{[HackerRank Link]}\index{HackerRank}}
+\marginnote{\href{https://app.codesignal.com/challenges/implement-trie-prefix-tree}{[CodeSignal Link]}\index{CodeSignal}}
+\marginnote{\href{https://www.interviewbit.com/problems/trie-insert-and-search/}{[InterviewBit Link]}\index{InterviewBit}}
+\marginnote{\href{https://www.educative.io/courses/grokking-the-coding-interview/RM8y8Y3nLdY}{[Educative Link]}\index{Educative}}
+\marginnote{\href{https://www.codewars.com/kata/implement-trie-prefix-tree/train/python}{[Codewars Link]}\index{Codewars}}
+
+\section*{Algorithmic Approach}
+
+Tries are particularly well-suited for problems involving dynamic datasets of strings, where common prefixes can be shared among multiple keys. The primary operations supported by a Trie include insertion, search, and prefix matching. Here's how each operation can be efficiently implemented:
+
+\begin{enumerate}
+    \item \textbf{Insertion (\texttt{insert(word)}):}
+    \begin{itemize}
+        \item Start from the root node.
+        \item For each character in the word, check if a child node exists for that character.
+        \item If not, create a new child node.
+        \item Move to the child node and continue with the next character.
+        \item After inserting all characters, mark the end node as a terminal node to indicate the completion of a word.
+    \end{itemize}
+    
+    \item \textbf{Search (\texttt{search(word)}):}
+    \begin{itemize}
+        \item Start from the root node.
+        \item For each character in the word, navigate to the corresponding child node.
+        \item If at any point the child node does not exist, return \texttt{False}.
+        \item After traversing all characters, check if the current node is marked as a terminal node.
+        \item Return \texttt{True} if it is; otherwise, return \texttt{False}.
+    \end{itemize}
+    
+    \item \textbf{Prefix Search (\texttt{startsWith(prefix)}):}
+    \begin{itemize}
+        \item Similar to the search operation.
+        \item Traverse the Trie based on the prefix characters.
+        \item If all characters in the prefix are found, return \texttt{True}; otherwise, return \texttt{False}.
+    \end{itemize}
+\end{enumerate}
+
+\marginnote{Tries allow for efficient prefix-based operations by sharing common prefixes among multiple keys, reducing redundant storage and speeding up search operations.}
+
+\section*{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:}
+    \begin{itemize}
+        \item \texttt{insert(word)}: \(O(L)\), where \(L\) is the length of the word.
+        \item \texttt{search(word)}: \(O(L)\), where \(L\) is the length of the word.
+        \item \texttt{startsWith(prefix)}: \(O(P)\), where \(P\) is the length of the prefix.
+    \end{itemize}
+    
+    \item \textbf{Space Complexity:} \(O(N \times L)\), where \(N\) is the number of words inserted and \(L\) is the average length of the words. However, in practice, space usage is often less due to shared prefixes.
+\end{itemize}
+
+\section*{Python Implementation}
+
+\marginnote{Implementing a Trie in Python typically involves defining a \texttt{TrieNode} class and a \texttt{Trie} class that utilizes these nodes for storage and retrieval operations.}
+
+Below is the complete Python code that implements the \textbf{Trie} data structure with the required methods:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class TrieNode:
+    def init(self):
+        self.children = {}
+        self.is_end_of_word = False
+
+class Trie:
+    def init(self):
+        """
+        Initialize your data structure here.
+        """
+        self.root = TrieNode()
+
+    def insert(self, word: str) -> None:
+        """
+        Inserts a word into the trie.
+        """
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                node.children[char] = TrieNode()
+            node = node.children[char]
+        node.is_end_of_word = True
+
+    def search(self, word: str) -> bool:
+        """
+        Returns if the word is in the trie.
+        """
+        node = self._search_node(word)
+        return node.is_end_of_word if node else False
+
+    def startsWith(self, prefix: str) -> bool:
+        """
+        Returns if there is any word in the trie that starts with the given prefix.
+        """
+        node = self._search_node(prefix)
+        return True if node else False
+
+    def _search_node(self, string: str) -> TrieNode:
+        """
+        Helper function to traverse the trie based on the input string.
+        """
+        node = self.root
+        for char in string:
+            if char not in node.children:
+                return None
+            node = node.children[char]
+        return node
+
+# Example usage:
+trie = Trie()
+trie.insert("apple")
+print(trie.search("apple"))   # Output: True
+print(trie.search("app"))     # Output: False
+print(trie.startsWith("app")) # Output: True
+trie.insert("app")
+print(trie.search("app"))     # Output: True
+\end{lstlisting}
+\end{fullwidth}
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class TrieNode:
+    def init(self):
+        self.children = {}
+        self.is_end_of_word = False
+
+class Trie:
+    def init(self):
+        """
+        Initialize your data structure here.
+        """
+        self.root = TrieNode()
+
+    def insert(self, word: str) -> None:
+        """
+        Inserts a word into the trie.
+        """
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                node.children[char] = TrieNode()
+            node = node.children[char]
+        node.is_end_of_word = True
+
+    def search(self, word: str) -> bool:
+        """
+        Returns if the word is in the trie.
+        """
+        node = self._search_node(word)
+        return node.is_end_of_word if node else False
+
+    def startsWith(self, prefix: str) -> bool:
+        """
+        Returns if there is any word in the trie that starts with the given prefix.
+        """
+        node = self._search_node(prefix)
+        return True if node else False
+
+    def _search_node(self, string: str) -> TrieNode:
+        """
+        Helper function to traverse the trie based on the input string.
+        """
+        node = self.root
+        for char in string:
+            if char not in node.children:
+                return None
+            node = node.children[char]
+        return node
+\end{lstlisting}
+\end{fullwidth}
+
+\section*{Explanation}
+
+The provided Python implementation defines two classes: \texttt{TrieNode} and \texttt{Trie}.
+
+\begin{itemize}
+    \item \textbf{TrieNode Class:}
+    \begin{itemize}
+        \item Each \texttt{TrieNode} contains a dictionary \texttt{children} that maps characters to their corresponding child nodes.
+        \item The boolean flag \texttt{is\_end\_of\_word} indicates whether the node represents the end of a valid word.
+    \end{itemize}
+    
+    \item \textbf{Trie Class:}
+    \begin{itemize}
+        \item The \texttt{Trie} class initializes with a root \texttt{TrieNode}.
+        
+        \item \texttt{insert(word)}:
+        \begin{itemize}
+            \item Starts from the root and iterates through each character in the word.
+            \item For each character, checks if it exists in the current node's \texttt{children}.
+            \item If not, creates a new \texttt{TrieNode} for that character.
+            \item Moves to the child node and continues with the next character.
+            \item After inserting all characters, marks the last node as the end of a word.
+        \end{itemize}
+        
+        \item \texttt{search(word)}:
+        \begin{itemize}
+            \item Utilizes the helper method \texttt{\_search\_node(word)} to traverse the Trie based on the input word.
+            \item Returns \texttt{True} if the node corresponding to the last character is marked as the end of a word; otherwise, returns \texttt{False}.
+        \end{itemize}
+        
+        \item \texttt{startsWith(prefix)}:
+        \begin{itemize}
+            \item Similar to the \texttt{search} method, but only checks if the prefix exists in the Trie without verifying the end of a word.
+            \item Returns \texttt{True} if the prefix exists; otherwise, returns \texttt{False}.
+        \end{itemize}
+        
+        \item \texttt{\_search\_node(string)}:
+        \begin{itemize}
+            \item A helper method that traverses the Trie based on the input string (word or prefix).
+            \item Returns the node corresponding to the last character of the string if found; otherwise, returns \texttt{None}.
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\section*{Why This Approach}
+
+Using a Trie offers several benefits for string storage and retrieval:
+
+\begin{itemize}
+    \item \textbf{Efficient Prefix Searches:} Tries allow for rapid prefix-based queries, making operations like \texttt{startsWith} highly efficient.
+    
+    \item \textbf{Predictable Time Complexity:} The time complexity of operations depends solely on the length of the input string, not on the number of words stored in the Trie.
+    
+    \item \textbf{Memory Optimization for Shared Prefixes:} By sharing common prefixes, Tries reduce redundant storage, especially in datasets with many overlapping prefixes.
+    
+    \item \textbf{Scalability:} Tries handle large datasets effectively, supporting operations even with millions of entries.
+\end{itemize}
+
+\section*{Alternative Approaches}
+
+While Tries are highly efficient for specific use cases, alternative data structures can be employed based on different requirements:
+
+\begin{itemize}
+    \item \textbf{Hash Tables:} Provide average-case \(O(1)\) time complexity for insertion and search operations. However, they do not support efficient prefix searches.
+    
+    \item \textbf{Binary Search Trees (BSTs):} Allow for ordered storage and can perform prefix searches with additional logic, but generally have higher time complexities compared to Tries.
+    
+    \item \textbf{Suffix Trees/Arrays:} Useful for solving problems related to substrings but are more complex to implement and require more space.
+\end{itemize}
+
+Tries are preferred when prefix-based operations are essential, and the dataset contains a large number of strings with common prefixes.
+
+\section*{Similar Problems to This One}
+
+Several algorithmic problems leverage the Trie data structure for efficient solutions:
+
+\begin{itemize}
+    \item \textbf{Longest Word in Dictionary:} Finding the longest word in a dictionary that can be built one character at a time by other words in the dictionary.
+    \index{Longest Word in Dictionary}
+    
+    \item \textbf{Word Search II:} Finding all words from a given list that can be formed by sequentially adjacent cells in a grid.
+    \index{Word Search II}
+    
+    \item \textbf{Implement Magic Dictionary:} Creating a dictionary that allows modification of exactly one character to match a given word.
+    \index{Implement Magic Dictionary}
+    
+    \item \textbf{Autocomplete System:} Designing a system that suggests the top \(k\) most frequent words with a given prefix.
+    \index{Autocomplete System}
+    
+    \item \textbf{Spelling Checker:} Detecting and suggesting corrections for misspelled words based on a dictionary.
+    \index{Spelling Checker}
+\end{itemize}
+
+These problems benefit from the efficient storage and retrieval capabilities of Tries, especially when dealing with large datasets and prefix-based queries.
+
+\section*{Things to Keep in Mind and Tricks}
+
+\begin{itemize}
+    \item \textbf{Handling Edge Cases:} Ensure that the Trie correctly handles empty strings, single-character strings, and cases where multiple words share common prefixes.
+    \index{Handling Edge Cases}
+    
+    \item \textbf{Memory Optimization:} While Tries are space-efficient for datasets with common prefixes, they can consume more memory for datasets with few or no shared prefixes. Consider using compressed Tries (e.g., Radix Trees) for such scenarios.
+    \index{Memory Optimization}
+    
+    \item \textbf{Iterative vs. Recursive Traversal:} While recursive implementations are intuitive, iterative approaches can be more efficient and prevent stack overflow issues for large datasets.
+    \index{Iterative vs. Recursive Traversal}
+    
+    \item \textbf{Lazy Deletion:} When implementing deletion operations, consider lazy deletion techniques to avoid restructuring the Trie unnecessarily.
+    \index{Lazy Deletion}
+    
+    \item \textbf{Storing Additional Information:} Tries can store additional data at each node, such as the frequency of words or pointers to other data structures, to support more complex queries.
+    \index{Storing Additional Information}
+    
+    \item \textbf{Using Default Dictionaries:} In Python, utilizing \texttt{defaultdict} can simplify the TrieNode implementation by automatically initializing child nodes.
+    \index{Using Default Dictionaries}
+    
+    \item \textbf{Case Sensitivity:} Decide whether the Trie should be case-sensitive. Normalize input strings to a consistent case if necessary.
+    \index{Case Sensitivity}
+\end{itemize}
+
+\section*{Corner and Special Cases to Test When Writing the Code}
+
+\begin{itemize}
+    \item \textbf{Empty String:} Inserting, searching, and deleting an empty string.
+    \index{Corner Cases}
+    
+    \item \textbf{Single Character Words:} Handling words consisting of a single character.
+    \index{Corner Cases}
+    
+    \item \textbf{Duplicate Insertions:} Inserting the same word multiple times and ensuring it does not affect search results.
+    \index{Corner Cases}
+    
+    \item \textbf{Prefixes vs. Whole Words:} Inserting words that are prefixes of other words and verifying search and prefix operations.
+    \index{Corner Cases}
+    
+    \item \textbf{Non-Alphabet Characters:} Handling words with non-alphabet characters if the application requires it.
+    \index{Corner Cases}
+    
+    \item \textbf{Case Variations:} Ensuring consistent behavior for words with different cases (e.g., "Apple" vs. "apple") based on the implementation's case sensitivity.
+    \index{Corner Cases}
+    
+    \item \textbf{Very Long Words:} Testing the Trie with unusually long words to ensure there are no performance bottlenecks or memory issues.
+    \index{Corner Cases}
+    
+    \item \textbf{Non-Existent Searches:} Searching for words that were never inserted into the Trie.
+    \index{Corner Cases}
+    
+    \item \textbf{All Words Share the Same Prefix:} Inserting multiple words that share a common prefix and verifying efficient storage and retrieval.
+    \index{Corner Cases}
+    
+    \item \textbf{Deleting Words:} Ensuring that deletion operations correctly remove words without affecting other words sharing common prefixes.
+    \index{Corner Cases}
+\end{itemize}
+
+\section*{Python Implementation}
+
+\marginnote{Implementing Tries in Python can be efficiently done using classes and dictionaries. Leveraging Python's dynamic typing and data structures like dictionaries simplifies the implementation of child node mappings.}
+
+Below is the complete Python code that implements the \textbf{Trie} data structure with \texttt{insert}, \texttt{search}, and \texttt{startsWith} methods:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class TrieNode:
+    def init(self):
+        self.children = {}
+        self.is_end_of_word = False
+
+class Trie:
+    def init(self):
+        """
+        Initialize your data structure here.
+        """
+        self.root = TrieNode()
+
+    def insert(self, word: str) -> None:
+        """
+        Inserts a word into the trie.
+        """
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                node.children[char] = TrieNode()
+            node = node.children[char]
+        node.is_end_of_word = True
+
+    def search(self, word: str) -> bool:
+        """
+        Returns if the word is in the trie.
+        """
+        node = self._search_node(word)
+        return node.is_end_of_word if node else False
+
+    def startsWith(self, prefix: str) -> bool:
+        """
+        Returns if there is any word in the trie that starts with the given prefix.
+        """
+        node = self._search_node(prefix)
+        return True if node else False
+
+    def _search_node(self, string: str) -> TrieNode:
+        """
+        Helper function to traverse the trie based on the input string.
+        """
+        node = self.root
+        for char in string:
+            if char not in node.children:
+                return None
+            node = node.children[char]
+        return node
+
+# Example usage:
+trie = Trie()
+trie.insert("apple")
+print(trie.search("apple"))   # Output: True
+print(trie.search("app"))     # Output: False
+print(trie.startsWith("app")) # Output: True
+trie.insert("app")
+print(trie.search("app"))     # Output: True
+\end{lstlisting}
+\end{fullwidth}
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class TrieNode:
+    def init(self):
+        self.children = {}
+        self.is_end_of_word = False
+
+class Trie:
+    def init(self):
+        """
+        Initialize your data structure here.
+        """
+        self.root = TrieNode()
+
+    def insert(self, word: str) -> None:
+        """
+        Inserts a word into the trie.
+        """
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                node.children[char] = TrieNode()
+            node = node.children[char]
+        node.is_end_of_word = True
+
+    def search(self, word: str) -> bool:
+        """
+        Returns if the word is in the trie.
+        """
+        node = self._search_node(word)
+        return node.is_end_of_word if node else False
+
+    def startsWith(self, prefix: str) -> bool:
+        """
+        Returns if there is any word in the trie that starts with the given prefix.
+        """
+        node = self._search_node(prefix)
+        return True if node else False
+
+    def _search_node(self, string: str) -> TrieNode:
+        """
+        Helper function to traverse the trie based on the input string.
+        """
+        node = self.root
+        for char in string:
+            if char not in node.children:
+                return None
+            node = node.children[char]
+        return node
+\end{lstlisting}
+\end{fullwidth}
+
+\section*{Explanation}
+
+The provided Python implementation consists of two classes: \texttt{TrieNode} and \texttt{Trie}.
+
+\begin{itemize}
+    \item \textbf{TrieNode Class:}
+    \begin{itemize}
+        \item Each \texttt{TrieNode} represents a single character in the Trie.
+        \item The \texttt{children} dictionary maps characters to their corresponding child \texttt{TrieNode}s.
+        \item The boolean flag \texttt{is\_end\_of\_word} indicates whether the node marks the end of a complete word.
+    \end{itemize}
+    
+    \item \textbf{Trie Class:}
+    \begin{itemize}
+        \item \texttt{init}: Initializes the Trie with a root \texttt{TrieNode}.
+        
+        \item \texttt{insert(word)}:
+        \begin{itemize}
+            \item Begins at the root and iterates through each character in the input \texttt{word}.
+            \item For each character, checks if it exists in the current node's \texttt{children}.
+            \item If the character is not present, creates a new \texttt{TrieNode} and adds it to the \texttt{children}.
+            \item Moves to the child node corresponding to the character.
+            \item After processing all characters, marks the last node as the end of a word.
+        \end{itemize}
+        
+        \item \texttt{search(word)}:
+        \begin{itemize}
+            \item Utilizes the helper method \texttt{\_search\_node(word)} to traverse the Trie based on the input \texttt{word}.
+            \item Returns \texttt{True} if the traversal successfully reaches a node marked as the end of a word; otherwise, returns \texttt{False}.
+        \end{itemize}
+        
+        \item \texttt{startsWith(prefix)}:
+        \begin{itemize}
+            \item Similar to the \texttt{search} method, but only checks if the prefix exists in the Trie without verifying the end of a word.
+            \item Returns \texttt{True} if the prefix exists; otherwise, returns \texttt{False}.
+        \end{itemize}
+        
+        \item \texttt{\_search\_node(string)}:
+        \begin{itemize}
+            \item A helper method that traverses the Trie based on the input \texttt{string} (word or prefix).
+            \item Returns the node corresponding to the last character of the \texttt{string} if found; otherwise, returns \texttt{None}.
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\section*{Why This Approach}
+
+Using a Trie offers several benefits for string storage and retrieval:
+
+\begin{itemize}
+    \item \textbf{Efficient Prefix Searches:} Tries allow for rapid prefix-based queries, making operations like \texttt{startsWith} highly efficient.
+    
+    \item \textbf{Predictable Time Complexity:} The time complexity of operations depends solely on the length of the input string, not on the number of words stored in the Trie.
+    
+    \item \textbf{Memory Optimization for Shared Prefixes:} By sharing common prefixes, Tries reduce redundant storage, especially in datasets with many overlapping prefixes.
+    
+    \item \textbf{Scalability:} Tries handle large datasets effectively, supporting operations even with millions of entries.
+\end{itemize}
+
+\section*{Alternative Approaches}
+
+While Tries are highly efficient for specific use cases, alternative data structures can be employed based on different requirements:
+
+\begin{itemize}
+    \item \textbf{Hash Tables:} Provide average-case \(O(1)\) time complexity for insertion and search operations. However, they do not support efficient prefix searches.
+    
+    \item \textbf{Binary Search Trees (BSTs):} Allow for ordered storage and can perform prefix searches with additional logic, but generally have higher time complexities compared to Tries.
+    
+    \item \textbf{Suffix Trees/Arrays:} Useful for solving problems related to substrings but are more complex to implement and require more space.
+\end{itemize}
+
+Tries are preferred when prefix-based operations are essential, and the dataset contains a large number of strings with common prefixes.
+
+\section*{Similar Problems to This One}
+
+Several algorithmic problems leverage the Trie data structure for efficient solutions:
+
+\begin{itemize}
+    \item \textbf{Longest Word in Dictionary:} Finding the longest word in a dictionary that can be built one character at a time by other words in the dictionary.
+    \index{Longest Word in Dictionary}
+    
+    \item \textbf{Word Search II:} Finding all words from a given list that can be formed by sequentially adjacent cells in a grid.
+    \index{Word Search II}
+    
+    \item \textbf{Implement Magic Dictionary:} Creating a dictionary that allows modification of exactly one character to match a given word.
+    \index{Implement Magic Dictionary}
+    
+    \item \textbf{Autocomplete System:} Designing a system that suggests the top \(k\) most frequent words with a given prefix.
+    \index{Autocomplete System}
+    
+    \item \textbf{Spelling Checker:} Detecting and suggesting corrections for misspelled words based on a dictionary.
+    \index{Spelling Checker}
+\end{itemize}
+
+These problems benefit from the efficient storage and retrieval capabilities of Tries, especially when dealing with large datasets and prefix-based queries.
+
+\section*{Things to Keep in Mind and Tricks}
+
+\begin{itemize}
+    \item \textbf{Handling Edge Cases:} Ensure that the Trie correctly handles empty strings, single-character strings, and cases where multiple words share common prefixes.
+    \index{Handling Edge Cases}
+    
+    \item \textbf{Memory Optimization:} While Tries are space-efficient for datasets with common prefixes, they can consume more memory for datasets with few or no shared prefixes. Consider using compressed Tries (e.g., Radix Trees) for such scenarios.
+    \index{Memory Optimization}
+    
+    \item \textbf{Iterative vs. Recursive Traversal:} While recursive implementations are intuitive, iterative approaches can be more efficient and prevent stack overflow issues for large datasets.
+    \index{Iterative vs. Recursive Traversal}
+    
+    \item \textbf{Lazy Deletion:} When implementing deletion operations, consider lazy deletion techniques to avoid restructuring the Trie unnecessarily.
+    \index{Lazy Deletion}
+    
+    \item \textbf{Storing Additional Information:} Tries can store additional data at each node, such as the frequency of words or pointers to other data structures, to support more complex queries.
+    \index{Storing Additional Information}
+    
+    \item \textbf{Using Default Dictionaries:} In Python, utilizing \texttt{defaultdict} can simplify the TrieNode implementation by automatically initializing child nodes.
+    \index{Using Default Dictionaries}
+    
+    \item \textbf{Case Sensitivity:} Decide whether the Trie should be case-sensitive. Normalize input strings to a consistent case if necessary.
+    \index{Case Sensitivity}
+\end{itemize}
+
+\section*{Corner and Special Cases to Test When Writing the Code}
+
+\begin{itemize}
+    \item \textbf{Empty String:} Inserting, searching, and deleting an empty string.
+    \index{Corner Cases}
+    
+    \item \textbf{Single Character Words:} Handling words consisting of a single character.
+    \index{Corner Cases}
+    
+    \item \textbf{Duplicate Insertions:} Inserting the same word multiple times and ensuring it does not affect search results.
+    \index{Corner Cases}
+    
+    \item \textbf{Prefixes vs. Whole Words:} Inserting words that are prefixes of other words and verifying search and prefix operations.
+    \index{Corner Cases}
+    
+    \item \textbf{Non-Alphabet Characters:} Handling words with non-alphabet characters if the application requires it.
+    \index{Corner Cases}
+    
+    \item \textbf{Case Variations:} Ensuring consistent behavior for words with different cases (e.g., "Apple" vs. "apple") based on the implementation's case sensitivity.
+    \index{Corner Cases}
+    
+    \item \textbf{Very Long Words:} Testing the Trie with unusually long words to ensure there are no performance bottlenecks or memory issues.
+    \index{Corner Cases}
+    
+    \item \textbf{Non-Existent Searches:} Searching for words that were never inserted into the Trie.
+    \index{Corner Cases}
+    
+    \item \textbf{All Words Share the Same Prefix:} Inserting multiple words that share a common prefix and verifying efficient storage and retrieval.
+    \index{Corner Cases}
+    
+    \item \textbf{Deleting Words:} Ensuring that deletion operations correctly remove words without affecting other words sharing common prefixes.
+    \index{Corner Cases}
+\end{itemize}
+
+\section*{Python Implementation (Extended with Deletion)}
+
+\marginnote{Implementing deletion in a Trie requires careful handling to ensure that nodes are only removed when they are no longer part of any other word's path.}
+
+Below is an extended Python implementation of the \textbf{Trie} data structure that includes a \texttt{delete} method:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+class TrieNode:
+    def init(self):
+        self.children = {}
+        self.is_end_of_word = False
+
+class Trie:
+    def init(self):
+        """
+        Initialize your data structure here.
+        """
+        self.root = TrieNode()
+
+    def insert(self, word: str) -> None:
+        """
+        Inserts a word into the trie.
+        """
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                node.children[char] = TrieNode()
+            node = node.children[char]
+        node.is_end_of_word = True
+
+    def search(self, word: str) -> bool:
+        """
+        Returns if the word is in the trie.
+        """
+        node = self._search_node(word)
+        return node.is_end_of_word if node else False
+
+    def startsWith(self, prefix: str) -> bool:
+        """
+        Returns if there is any word in the trie that starts with the given prefix.
+        """
+        node = self._search_node(prefix)
+        return True if node else False
+
+    def delete(self, word: str) -> None:
+        """
+        Deletes a word from the trie. If the word does not exist, do nothing.
+        """
+        self._delete_helper(self.root, word, 0)
+
+    def _delete_helper(self, node: TrieNode, word: str, depth: int) -> bool:
+        """
+        Helper function to delete a word from the trie.
+        Returns True if the node can be deleted, False otherwise.
+        """
+        if depth == len(word):
+            if not node.is_end_of_word:
+                return False  # Word does not exist
+            node.is_end_of_word = False
+            return len(node.children) == 0  # If no children, node can be deleted
+        char = word[depth]
+        if char not in node.children:
+            return False  # Word does not exist
+        should_delete_child = self._delete_helper(node.children[char], word, depth + 1)
+        if should_delete_child:
+            del node.children[char]
+            return not node.is_end_of_word and len(node.children) == 0
+        return False
+
+    def _search_node(self, string: str) -> TrieNode:
+        """
+        Helper function to traverse the trie based on the input string.
+        """
+        node = self.root
+        for char in string:
+            if char not in node.children:
+                return None
+            node = node.children[char]
+        return node
+
+# Example usage:
+trie = Trie()
+trie.insert("apple")
+print(trie.search("apple"))   # Output: True
+trie.delete("apple")
+print(trie.search("apple"))   # Output: False
+\end{lstlisting}
+\end{fullwidth}
+
+\section*{Explanation}
+
+The extended implementation introduces a \texttt{delete} method to remove words from the Trie. Here's how the deletion process works:
+
+\begin{itemize}
+    \item \textbf{Deletion Process:}
+    \begin{enumerate}
+        \item Start from the root and traverse the Trie based on the characters of the word to be deleted.
+        \item Use a helper method \texttt{\_delete\_helper} that recursively traverses the Trie.
+        \item Once the end of the word is reached:
+        \begin{itemize}
+            \item Check if the current node marks the end of a word. If not, the word does not exist in the Trie.
+            \item If it does, unset the \texttt{is\_end\_of\_word} flag.
+            \item Determine if the node has any children. If it doesn't, it can be deleted.
+        \end{itemize}
+        \item As the recursion unwinds, delete child nodes that are no longer part of any other word's path.
+    \end{enumerate}
+    
+    \item \textbf{Handling Non-Existent Words:}
+    \begin{itemize}
+        \item If the word to be deleted does not exist in the Trie, the method exits without making any changes.
+    \end{itemize}
+    
+    \item \textbf{Space Optimization:}
+    \begin{itemize}
+        \item By removing nodes that are no longer necessary, the Trie maintains its space efficiency by eliminating unused branches.
+    \end{itemize}
+\end{itemize}
+
+\section*{Why This Approach}
+
+Incorporating a deletion method into the Trie enhances its flexibility, allowing it to handle dynamic datasets where words can be added and removed over time. This is particularly useful in applications like:
+
+\begin{itemize}
+    \item \textbf{Dynamic Dictionaries:} Updating the set of valid words by adding or removing entries.
+    \item \textbf{Autocomplete Systems:} Adjusting suggestions based on user interactions and deletions.
+    \item \textbf{Search Engines:} Managing dynamic keyword lists for efficient search and retrieval.
+\end{itemize}
+
+By implementing lazy deletion techniques, the Trie maintains its integrity without incurring significant overhead, ensuring that only necessary nodes are retained.
+
+\section*{Alternative Approaches}
+
+While the recursive deletion method is intuitive, alternative approaches can be considered:
+
+\begin{itemize}
+    \item \textbf{Iterative Deletion:} Implementing the deletion process iteratively using a stack to track nodes and decide whether to delete them.
+    \item \textbf{Reference Counting:} Keeping track of the number of words passing through each node to decide when a node can be safely deleted.
+\end{itemize}
+
+These alternatives can offer performance benefits or simplify the implementation based on specific use cases and programming languages.
+
+\section*{Similar Problems to This One}
+
+Several algorithmic problems utilize the Trie data structure or its variants for efficient solutions:
+
+\begin{itemize}
+    \item \textbf{Longest Word in Dictionary:} Finding the longest word in a dictionary that can be built one character at a time by other words in the dictionary.
+    \index{Longest Word in Dictionary}
+    
+    \item \textbf{Word Search II:} Finding all words from a given list that can be formed by sequentially adjacent cells in a grid.
+    \index{Word Search II}
+    
+    \item \textbf{Implement Magic Dictionary:} Creating a dictionary that allows modification of exactly one character to match a given word.
+    \index{Implement Magic Dictionary}
+    
+    \item \textbf{Autocomplete System:} Designing a system that suggests the top \(k\) most frequent words with a given prefix.
+    \index{Autocomplete System}
+    
+    \item \textbf{Spelling Checker:} Detecting and suggesting corrections for misspelled words based on a dictionary.
+    \index{Spelling Checker}
+\end{itemize}
+
+These problems benefit from the efficient prefix-based operations and dynamic nature of Tries, enabling quick insertion, search, and retrieval of words based on prefixes.
+
+\section*{Things to Keep in Mind and Tricks}
+
+\begin{itemize}
+    \item \textbf{Using Default Dictionaries:} Leveraging Python's \texttt{defaultdict} can simplify the TrieNode implementation by automatically initializing child nodes.
+    \index{Using Default Dictionaries}
+    
+    \item \textbf{Optimizing Space:} While Tries are efficient for shared prefixes, they can consume significant memory for datasets with few or no shared prefixes. Consider implementing compressed Tries or other optimizations if memory usage becomes a concern.
+    \index{Optimizing Space}
+    
+    \item \textbf{Handling Case Sensitivity:} Decide whether the Trie should be case-sensitive. Normalize input strings to a consistent case to simplify implementation.
+    \index{Handling Case Sensitivity}
+    
+    \item \textbf{Efficient Traversal:} Implement traversal methods (e.g., depth-first search) for operations like listing all words or finding the longest word.
+    \index{Efficient Traversal}
+    
+    \item \textbf{Avoiding Redundant Nodes:} Ensure that nodes are only created when necessary, especially in the \texttt{insert} method, to maintain space efficiency.
+    \index{Avoiding Redundant Nodes}
+    
+    \item \textbf{Implementing Deletion Carefully:} When deleting words, ensure that nodes are only removed if they are not part of other words to prevent accidental deletion of shared prefixes.
+    \index{Implementing Deletion Carefully}
+    
+    \item \textbf{Testing Thoroughly:} Rigorously test the Trie implementation with various edge cases, including empty strings, duplicate words, and overlapping prefixes, to ensure robustness.
+    \index{Testing Thoroughly}
+\end{itemize}
+
+\section*{Corner and Special Cases to Test When Writing the Code}
+
+\begin{itemize}
+    \item \textbf{Empty String:} Inserting, searching, and deleting an empty string.
+    \index{Corner Cases}
+    
+    \item \textbf{Single Character Words:} Handling words consisting of a single character.
+    \index{Corner Cases}
+    
+    \item \textbf{Duplicate Insertions:} Inserting the same word multiple times and ensuring it does not affect search results.
+    \index{Corner Cases}
+    
+    \item \textbf{Prefixes vs. Whole Words:} Inserting words that are prefixes of other words and verifying search and prefix operations.
+    \index{Corner Cases}
+    
+    \item \textbf{Non-Alphabet Characters:} Handling words with non-alphabet characters if the application requires it.
+    \index{Corner Cases}
+    
+    \item \textbf{Case Variations:} Ensuring consistent behavior for words with different cases (e.g., "Apple" vs. "apple") based on the implementation's case sensitivity.
+    \index{Corner Cases}
+    
+    \item \textbf{Very Long Words:} Testing the Trie with unusually long words to ensure there are no performance bottlenecks or memory issues.
+    \index{Corner Cases}
+    
+    \item \textbf{Non-Existent Searches:} Searching for words that were never inserted into the Trie.
+    \index{Corner Cases}
+    
+    \item \textbf{All Words Share the Same Prefix:} Inserting multiple words that share a common prefix and verifying efficient storage and retrieval.
+    \index{Corner Cases}
+    
+    \item \textbf{Deleting Words:} Ensuring that deletion operations correctly remove words without affecting other words sharing common prefixes.
+    \index{Corner Cases}
+\end{itemize}
+
+\section*{Visualization of a Trie}
+
+\marginnote{Visual representations can greatly aid in understanding the structure and operations of a Trie.}
+
+Consider the following example where we insert the words "apple", "app", and "apex" into an empty Trie:
+
+\begin{verbatim}
+          root
+           |
+           a
+           |
+           p
+           |
+           p
+         /   \
+        l     e
+        |     |
+        e     x
+\end{verbatim}
+
+\begin{itemize}
+    \item The root node is associated with an empty string.
+    \item Each level of the Trie represents a character in the inserted words.
+    \item Shared prefixes are stored only once, reducing redundant storage.
+    \item Terminal nodes (\texttt{e} in "apple" and \texttt{p} in "app") are marked to indicate the end of a valid word.
+\end{itemize}
+
+This visualization highlights how Tries efficiently store multiple words with common prefixes by sharing nodes up to the point where the words diverge.
+
+\section*{Conclusion}
+
+Tries are powerful data structures that offer efficient solutions for a variety of string-based problems. Their ability to handle prefix-based operations with predictable time complexities makes them indispensable in applications like autocomplete systems, spell checkers, and efficient word storage mechanisms. By understanding the underlying mechanics of Tries and their implementation nuances, developers and algorithm enthusiasts can leverage them to solve complex problems involving dynamic string datasets effectively.
+
+\printindex

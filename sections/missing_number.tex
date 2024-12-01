@@ -1,0 +1,394 @@
+% filename: missing_number.tex
+
+\problemsection{Missing Number}
+\label{problem:missing_number}
+\marginnote{\href{https://leetcode.com/problems/missing-number/}{[LeetCode Link]}\index{LeetCode}}
+\marginnote{\href{https://www.geeksforgeeks.org/find-the-missing-number-in-an-array/}{[GeeksForGeeks Link]}\index{GeeksForGeeks}}
+\marginnote{\href{https://www.interviewbit.com/problems/missing-number/}{[InterviewBit Link]}\index{InterviewBit}}
+\marginnote{\href{https://app.codesignal.com/challenges/missing-number}{[CodeSignal Link]}\index{CodeSignal}}
+\marginnote{\href{https://www.codewars.com/kata/missing-number/train/python}{[Codewars Link]}\index{Codewars}}
+
+The \textbf{Missing Number} problem involves identifying a single missing number from a sequence containing all numbers from \(0\) to \(n\) exactly once, except for one missing number. This challenge tests one's ability to apply various algorithmic techniques such as Bit Manipulation, Arithmetic Summation, and Binary Search to achieve an optimal solution.
+
+\section*{Problem Statement}
+
+Given an array containing \(n\) distinct numbers taken from the range \(0\) to \(n\), find the one that is missing from the array.
+
+\textbf{Examples:}
+
+\textbf{Example 1:}
+
+\begin{verbatim}
+Input: nums = [3,0,1]
+Output: 2
+Explanation: n = 3 since there are 3 numbers, so all numbers are from 0 to 3. 2 is missing.
+\end{verbatim}
+
+\textbf{Example 2:}
+
+\begin{verbatim}
+Input: nums = [0,1]
+Output: 2
+Explanation: n = 2 since there are 2 numbers, so all numbers are from 0 to 2. 2 is missing.
+\end{verbatim}
+
+\textbf{Example 3:}
+
+\begin{verbatim}
+Input: nums = [9,6,4,2,3,5,7,0,1]
+Output: 8
+Explanation: n = 9 since there are 9 numbers, so all numbers are from 0 to 9. 8 is missing.
+\end{verbatim}
+
+\textbf{Constraints:}
+
+\begin{itemize}
+    \item \(n == \texttt{nums.length}\)
+    \item \(1 \leq n \leq 10^4\)
+    \item \(0 \leq \texttt{nums[i]} \leq n\)
+    \item All the numbers in \texttt{nums} are unique.
+\end{itemize}
+
+Function signature for the \texttt{missingNumber} function in Python:
+
+\begin{lstlisting}[language=Python]
+def missingNumber(nums: List[int]) -> int:
+\end{lstlisting}
+
+LeetCode link: \href{https://leetcode.com/problems/missing-number/}{Missing Number}\index{LeetCode}
+
+\section*{Algorithmic Approach}
+
+To solve the \textbf{Missing Number} problem efficiently, several approaches can be employed. The most optimal solutions typically run in linear time \(O(n)\) with constant space \(O(1)\). Below are three primary methods:
+
+\subsection*{1. Bit Manipulation (XOR)}
+Utilize the XOR operation to identify the missing number by leveraging the property that \(x \oplus x = 0\) and \(x \oplus 0 = x\).
+
+\begin{enumerate}
+    \item Initialize a variable \texttt{missing} to \(n\) (the length of the array).
+    \item Iterate through the array, XOR-ing each element with its index.
+    \item After the iteration, the value of \texttt{missing} will be the missing number.
+\end{enumerate}
+
+\subsection*{2. Arithmetic Summation}
+Calculate the expected sum of numbers from \(0\) to \(n\) and subtract the actual sum of the array to find the missing number.
+
+\begin{enumerate}
+    \item Compute the expected sum using the formula \(\frac{n(n+1)}{2}\).
+    \item Calculate the actual sum of the array elements.
+    \item The difference between the expected sum and the actual sum is the missing number.
+\end{enumerate}
+
+\subsection*{3. Binary Search}
+If the array is sorted, perform a binary search to find the point where the index does not match the element, indicating the missing number.
+
+\begin{enumerate}
+    \item Sort the array.
+    \item Initialize two pointers, \texttt{left} and \texttt{right}, to the start and end of the array, respectively.
+    \item Perform binary search:
+    \begin{itemize}
+        \item Calculate the midpoint.
+        \item If the element at the midpoint matches the index, search the right half.
+        \item Otherwise, search the left half.
+    \end{itemize}
+    \item The \texttt{left} pointer will indicate the missing number.
+\end{enumerate}
+
+\marginnote{Each approach offers a unique perspective on the problem, with Bit Manipulation and Arithmetic Summation providing optimal time and space complexities.}
+
+\section*{Complexities}
+
+\begin{itemize}
+    \item \textbf{Bit Manipulation (XOR):}
+    \begin{itemize}
+        \item \textbf{Time Complexity:} \(O(n)\)
+        \item \textbf{Space Complexity:} \(O(1)\)
+    \end{itemize}
+    
+    \item \textbf{Arithmetic Summation:}
+    \begin{itemize}
+        \item \textbf{Time Complexity:} \(O(n)\)
+        \item \textbf{Space Complexity:} \(O(1)\)
+    \end{itemize}
+    
+    \item \textbf{Binary Search:}
+    \begin{itemize}
+        \item \textbf{Time Complexity:} \(O(n \log n)\) due to sorting
+        \item \textbf{Space Complexity:} \(O(1)\) or \(O(n)\) depending on the sorting algorithm
+    \end{itemize}
+\end{itemize}
+
+\section*{Python Implementation}
+
+\marginnote{Implementing the XOR approach provides an elegant and efficient solution with optimal time and space complexities.}
+
+Below is the complete Python code implementing the \texttt{missingNumber} function using the Bit Manipulation (XOR) approach:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+from typing import List
+
+class Solution:
+    def missingNumber(self, nums: List[int]) -> int:
+        missing = len(nums)  # Start with n
+        for i, num in enumerate(nums):
+            missing ^= i ^ num
+        return missing
+
+# Example usage:
+solution = Solution()
+print(solution.missingNumber([3,0,1]))       # Output: 2
+print(solution.missingNumber([0,1]))         # Output: 2
+print(solution.missingNumber([9,6,4,2,3,5,7,0,1]))  # Output: 8
+\end{lstlisting}
+\end{fullwidth}
+
+This implementation initializes the \texttt{missing} variable with \(n\) (the length of the array). It then iterates through the array, XOR-ing each index and the corresponding element. The final value of \texttt{missing} after the loop will be the missing number.
+
+\section*{Explanation}
+
+The \texttt{missingNumber} function leverages the properties of the XOR operation to efficiently determine the missing number without additional space or sorting. Here's a detailed breakdown of the implementation:
+
+\subsection*{Bitwise XOR Approach}
+
+\begin{enumerate}
+    \item \textbf{Initialization:}
+    \begin{itemize}
+        \item \texttt{missing} is initialized to \(n\), the length of the array. This accounts for the case where the missing number is \(n\).
+    \end{itemize}
+    
+    \item \textbf{Iterative XOR Operations:}
+    \begin{itemize}
+        \item Iterate through the array using \texttt{enumerate}, which provides both the index \(i\) and the element \texttt{num} at that index.
+        \item For each index and number, perform XOR between \texttt{missing}, the index \(i\), and the number \texttt{num}.
+        \item The XOR operation effectively cancels out numbers that appear in both the expected sequence and the array, leaving only the missing number.
+    \end{itemize}
+    
+    \item \textbf{Final Result:}
+    \begin{itemize}
+        \item After completing the iteration, the variable \texttt{missing} holds the value of the missing number, which is then returned.
+    \end{itemize}
+\end{enumerate}
+
+\subsection*{Why XOR Works}
+
+The XOR operation has the following properties:
+\begin{itemize}
+    \item \(x \oplus x = 0\): A number XOR-ed with itself results in zero.
+    \item \(x \oplus 0 = x\): A number XOR-ed with zero remains unchanged.
+    \item XOR is commutative and associative: The order of operations does not affect the result.
+\end{itemize}
+
+By XOR-ing all indices and all numbers in the array, the paired numbers cancel each other out, leaving the missing number as the final result.
+
+\subsection*{Example Walkthrough}
+
+Consider the array \([3,0,1]\):
+
+\begin{itemize}
+    \item \texttt{missing} starts as \(3\) (the length of the array).
+    
+    \item Iteration:
+    \begin{itemize}
+        \item \(i = 0\), \texttt{num} = 3:
+        \[
+        \texttt{missing} = 3 \oplus 0 \oplus 3 = (3 \oplus 3) \oplus 0 = 0 \oplus 0 = 0
+        \]
+        
+        \item \(i = 1\), \texttt{num} = 0:
+        \[
+        \texttt{missing} = 0 \oplus 1 \oplus 0 = 1 \oplus 0 = 1
+        \]
+        
+        \item \(i = 2\), \texttt{num} = 1:
+        \[
+        \texttt{missing} = 1 \oplus 2 \oplus 1 = (1 \oplus 1) \oplus 2 = 0 \oplus 2 = 2
+        \]
+    \end{itemize}
+    
+    \item Final \texttt{missing} value is \(2\), which is the correct missing number.
+\end{itemize}
+
+\section*{Why This Approach}
+
+The Bit Manipulation (XOR) approach is chosen for its optimal time and space complexities. Unlike the arithmetic summation method, which could be susceptible to integer overflow for large \(n\), the XOR method remains robust and efficient. Additionally, it avoids the need for sorting, which would increase the time complexity to \(O(n \log n)\). This approach is both elegant and grounded in fundamental bitwise operation properties, making it a preferred choice for this problem.
+
+\section*{Alternative Approaches}
+
+\subsection*{1. Arithmetic Summation}
+Calculate the expected sum of numbers from \(0\) to \(n\) using the formula \(\frac{n(n+1)}{2}\) and subtract the actual sum of the array elements.
+
+\begin{lstlisting}[language=Python]
+class Solution:
+    def missingNumber(self, nums: List[int]) -> int:
+        n = len(nums)
+        expected_sum = n * (n + 1) // 2
+        actual_sum = sum(nums)
+        return expected_sum - actual_sum
+\end{lstlisting}
+
+\textbf{Complexities:}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(n)\)
+    \item \textbf{Space Complexity:} \(O(1)\)
+\end{itemize}
+
+\subsection*{2. Binary Search}
+If the array is sorted, perform a binary search to find the point where the index does not match the element, indicating the missing number.
+
+\begin{lstlisting}[language=Python]
+class Solution:
+    def missingNumber(self, nums: List[int]) -> int:
+        nums.sort()
+        left, right = 0, len(nums) - 1
+        while left <= right:
+            mid = left + (right - left) // 2
+            if nums[mid] > mid:
+                right = mid - 1
+            else:
+                left = mid + 1
+        return left
+\end{lstlisting}
+
+\textbf{Complexities:}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(n \log n)\) due to sorting
+    \item \textbf{Space Complexity:} \(O(1)\) or \(O(n)\) depending on the sorting algorithm
+\end{itemize}
+
+\section*{Similar Problems to This One}
+
+Several problems revolve around finding missing or duplicate elements in sequences, utilizing similar algorithmic strategies:
+
+\begin{itemize}
+    \item \textbf{Single Number}: Find the element that appears only once in an array where every other element appears twice.
+    \item \textbf{Find the Duplicate Number}: Identify the duplicate number in an array containing numbers from \(1\) to \(n\).
+    \item \textbf{Missing Number II}: Extend the missing number problem to scenarios with multiple missing numbers.
+    \item \textbf{Find All Numbers Disappeared in an Array}: Locate all numbers within a range that do not appear in the array.
+    \item \textbf{Find the Smallest Missing Positive Number}: Determine the smallest missing positive integer in an unsorted array.
+\end{itemize}
+
+These problems help reinforce the concepts of Bit Manipulation, Arithmetic Summation, and Binary Search in different contexts, enhancing problem-solving skills.
+
+\section*{Things to Keep in Mind and Tricks}
+
+When tackling the \textbf{Missing Number} problem, consider the following tips and best practices:
+
+\begin{itemize}
+    \item \textbf{Understanding XOR Properties}: Recognize how XOR can cancel out duplicate numbers and isolate the missing number.
+    \index{XOR Properties}
+    
+    \item \textbf{Arithmetic Summation Formula}: Utilize the formula for the sum of the first \(n\) natural numbers to simplify calculations.
+    \index{Summation Formula}
+    
+    \item \textbf{Edge Cases}: Always consider edge cases such as when the missing number is \(0\) or \(n\).
+    \index{Edge Cases}
+    
+    \item \textbf{Avoiding Overflow}: The XOR method inherently avoids integer overflow issues that might arise with large \(n\).
+    \index{Overflow}
+    
+    \item \textbf{Optimizing Space}: Strive for solutions that use constant space, especially when dealing with large input sizes.
+    \index{Space Optimization}
+    
+    \item \textbf{Sorting Considerations}: If opting for a binary search approach, remember that sorting can increase time complexity.
+    \index{Sorting Considerations}
+    
+    \item \textbf{Iterative vs. Mathematical Solutions}: Choose between iterative approaches (like XOR) and mathematical solutions based on the problem constraints and desired efficiencies.
+    \index{Iterative vs. Mathematical Solutions}
+    
+    \item \textbf{Efficient Looping}: When implementing iterative solutions, ensure that loops are optimized to run only the necessary number of times.
+    \index{Loop Optimization}
+    
+    \item \textbf{Readability and Maintainability}: While optimizing for performance, maintain clear and readable code through meaningful variable names and comments.
+    \index{Readability}
+    
+    \item \textbf{Testing Thoroughly}: Implement comprehensive test cases covering all possible scenarios, including edge cases, to ensure the correctness of the solution.
+    \index{Testing}
+\end{itemize}
+
+\section*{Corner and Special Cases to Test When Writing the Code}
+
+When implementing solutions for the \textbf{Missing Number} problem, it is crucial to consider and rigorously test various edge cases to ensure robustness and correctness:
+
+\begin{itemize}
+    \item \textbf{Missing Number is 0}: Test cases where the missing number is the smallest number in the range.
+    \index{Missing Number is 0}
+    
+    \item \textbf{Missing Number is \(n\)}: Ensure that the function correctly identifies when the missing number is the largest number in the range.
+    \index{Missing Number is \(n\)}
+    
+    \item \textbf{Single Element Array}: Arrays with only one element, either \(0\) or \(1\), to verify basic functionality.
+    \index{Single Element Array}
+    
+    \item \textbf{Large Array}: Test with a large value of \(n\) (e.g., \(n = 10^4\)) to ensure that the algorithm handles large inputs efficiently.
+    \index{Large Array}
+    
+    \item \textbf{All Numbers Present Except One}: Confirm that the function accurately identifies the missing number regardless of its position in the range.
+    \index{All Numbers Present Except One}
+    
+    \item \textbf{Unordered Array}: Arrays where the numbers are not in any particular order to ensure that the solution does not rely on sorting.
+    \index{Unordered Array}
+    
+    \item \textbf{Array with Negative Numbers}: Although the problem specifies numbers from \(0\) to \(n\), testing with negative numbers can ensure robustness against invalid inputs.
+    \index{Array with Negative Numbers}
+    
+    \item \textbf{Array with Non-Consecutive Numbers}: Ensure that the function handles arrays where numbers are not consecutive.
+    \index{Non-Consecutive Numbers}
+    
+    \item \textbf{Duplicate Numbers}: Although the problem states that all numbers are distinct, testing with duplicates can verify the function's resilience against invalid inputs.
+    \index{Duplicate Numbers}
+    
+    \item \textbf{Empty Array}: Depending on problem constraints, handle cases where the array is empty.
+    \index{Empty Array}
+\end{itemize}
+
+\section*{Implementation Considerations}
+
+When implementing the \texttt{missingNumber} function, keep in mind the following considerations to ensure robustness and efficiency:
+
+\begin{itemize}
+    \item \textbf{Input Validation}: Although the problem constraints guarantee certain conditions, implementing checks can prevent unexpected behavior with invalid inputs.
+    \index{Input Validation}
+    
+    \item \textbf{Data Type Selection}: Ensure that the data types used can handle the range of input values without overflow, especially when using arithmetic summation.
+    \index{Data Type Selection}
+    
+    \item \textbf{Optimizing Loops}: In iterative solutions, ensure that loops run only the necessary number of times to maintain optimal time complexity.
+    \index{Loop Optimization}
+    
+    \item \textbf{Handling Large Inputs}: Design the algorithm to efficiently handle large input sizes without significant performance degradation.
+    \index{Handling Large Inputs}
+    
+    \item \textbf{Language-Specific Optimizations}: Utilize language-specific features or built-in functions that can enhance the performance of Bit Manipulation or summation operations.
+    \index{Language-Specific Optimizations}
+    
+    \item \textbf{Avoiding Unnecessary Operations}: In the XOR approach, ensure that each operation contributes towards isolating the missing number without redundant computations.
+    \index{Avoiding Unnecessary Operations}
+    
+    \item \textbf{Code Readability and Documentation}: Maintain clear and readable code through meaningful variable names and comprehensive comments to facilitate understanding and maintenance.
+    \index{Code Readability}
+    
+    \item \textbf{Edge Case Handling}: Ensure that all edge cases are handled appropriately, preventing incorrect results or runtime errors.
+    \index{Edge Case Handling}
+    
+    \item \textbf{Testing and Validation}: Develop a comprehensive suite of test cases that cover all possible scenarios, including edge cases, to validate the correctness and efficiency of the implementation.
+    \index{Testing and Validation}
+    
+    \item \textbf{Scalability}: Design the algorithm to scale efficiently with increasing input sizes, maintaining performance and resource utilization.
+    \index{Scalability}
+\end{itemize}
+
+\section*{Conclusion}
+
+The \textbf{Missing Number} problem serves as an excellent exercise in applying Bit Manipulation, Arithmetic Summation, and Binary Search to solve computational challenges efficiently. By leveraging the properties of XOR and the mathematical summation formula, the problem can be solved with optimal time and space complexities. Understanding these techniques not only enhances problem-solving skills but also provides a foundation for tackling a wide range of algorithmic challenges that involve data manipulation and optimization.
+
+\printindex
+
+% \input{sections/bit_manipulation}
+% \input{sections/sum_of_two_integers}
+% \input{sections/number_of_1_bits}
+% \input{sections/counting_bits}
+% \input{sections/missing_number}
+% \input{sections/reverse_bits}
+% \input{sections/single_number}
+% \input{sections/power_of_two}

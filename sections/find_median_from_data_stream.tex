@@ -1,5 +1,3 @@
-% file: find_median_from_data_stream.tex
-
 \problemsection{Find Median from Data Stream}
 \label{problem:find_median_from_data_stream}
 \marginnote{This problem utilizes two heaps (a max heap and a min heap) to efficiently track the median of a dynamically changing data stream.}
@@ -130,76 +128,30 @@ print(medianFinder.findMedian())  # Output: 2.0
 \end{lstlisting}
 \end{fullwidth}
 
-\begin{fullwidth}
-\begin{lstlisting}[language=Python]
-import heapq
-
-class MedianFinder:
-    def __init__(self):
-        # Max heap for the lower half numbers
-        self.small = []
-        # Min heap for the upper half numbers
-        self.large = []
-    
-    def addNum(self, num: int) -> None:
-        # Add to max heap (invert the number for max heap simulation)
-        heapq.heappush(self.small, -num)
-        
-        # Ensure every num in small is <= every num in large
-        if self.small and self.large and (-self.small[0] > self.large[0]):
-            val = -heapq.heappop(self.small)
-            heapq.heappush(self.large, val)
-        
-        # Balance the sizes of the two heaps
-        if len(self.small) > len(self.large) + 1:
-            val = -heapq.heappop(self.small)
-            heapq.heappush(self.large, val)
-        if len(self.large) > len(self.small):
-            val = heapq.heappop(self.large)
-            heapq.heappush(self.small, -val)
-    
-    def findMedian(self) -> float:
-        if len(self.small) > len(self.large):
-            return -self.small[0]
-        return (-self.small[0] + self.large[0]) / 2.0
-\end{lstlisting}
-\end{fullwidth}
-
-This implementation uses two heaps to efficiently track the median as new numbers are added:
-
-\begin{itemize}
-    \item \texttt{self.small}: A max heap (simulated using negated values) that stores the smaller half of the numbers.
-    \item \texttt{self.large}: A min heap that stores the larger half of the numbers.
-\end{itemize}
-
-The \texttt{addNum} method adds a new number to the appropriate heap and ensures that the size difference between the heaps does not exceed one, maintaining the balance required for median calculation. The \texttt{findMedian} method retrieves the median based on the current state of the heaps.
-
 \section*{Explanation}
 
 The \textbf{MedianFinder} class is designed to efficiently handle dynamic data streams and provide quick median retrieval. Here's a detailed breakdown of the implementation:
 
+\subsection*{Data Structures}
 \begin{itemize}
-    \item \textbf{Data Structures:}
+    \item \texttt{self.small}: A max heap that stores the lower half of the numbers. Since Python's \texttt{heapq} module only provides a min heap, we simulate a max heap by inserting negated values.
+    \item \texttt{self.large}: A min heap that stores the upper half of the numbers.
+\end{itemize}
+
+\subsection*{Adding a Number (\texttt{addNum})}
+\begin{enumerate}
+    \item \textbf{Insert into \texttt{self.small}:} Add the negated number to the max heap to maintain the lower half.
+    \item \textbf{Balance Heaps:}
     \begin{itemize}
-        \item \texttt{self.small}: A max heap that stores the lower half of the numbers. Since Python's \texttt{heapq} module only provides a min heap, we simulate a max heap by inserting the negated values.
-        \item \texttt{self.large}: A min heap that stores the upper half of the numbers.
+        \item If the largest number in \texttt{self.small} (i.e., the smallest in the negated heap) is greater than the smallest number in \texttt{self.large}, move the number from \texttt{self.small} to \texttt{self.large}.
+        \item Ensure that the sizes of the heaps differ by at most one by moving elements between heaps if necessary.
     \end{itemize}
-    
-    \item \textbf{Adding a Number (\texttt{addNum}):}
-    \begin{enumerate}
-        \item \textbf{Insert into \texttt{self.small}:} Add the negated number to the max heap to maintain the lower half.
-        \item \textbf{Balance Heaps:}
-        \begin{itemize}
-            \item If the largest number in \texttt{self.small} (i.e., the smallest in the negated heap) is greater than the smallest number in \texttt{self.large}, move the number from \texttt{self.small} to \texttt{self.large}.
-            \item Ensure that the sizes of the heaps differ by at most one by moving elements between heaps if necessary.
-        \end{itemize}
-    \end{enumerate}
-    
-    \item \textbf{Finding the Median (\texttt{findMedian}):}
-    \begin{itemize}
-        \item If \texttt{self.small} has more elements, the median is the top element of \texttt{self.small}.
-        \item If both heaps have the same number of elements, the median is the average of the top elements of both heaps.
-    \end{itemize}
+\end{enumerate}
+
+\subsection*{Finding the Median (\texttt{findMedian})}
+\begin{itemize}
+    \item If \texttt{self.small} has more elements, the median is the top element of \texttt{self.small}.
+    \item If both heaps have the same number of elements, the median is the average of the top elements of both heaps.
 \end{itemize}
 
 This approach ensures that both adding a number and finding the median are performed in \(O(\log n)\) and \(O(1)\) time respectively, making it highly efficient for large data streams.
@@ -347,4 +299,10 @@ These problems share the common theme of maintaining dynamic statistics on a dat
     \end{itemize}
 \end{itemize}
 
+\section*{Conclusion}
+
+The two-heaps method offers an optimal solution for dynamically finding the median in a data stream. By maintaining a balanced partition of the data, it ensures efficient insertion and retrieval operations, making it suitable for handling large-scale data with up to \(10^5\) elements. This approach leverages the strengths of heap data structures to provide both speed and accuracy in median calculations, making it a preferred choice over more complex alternatives like self-balancing binary search trees.
+
 \printindex
+
+\end{document}

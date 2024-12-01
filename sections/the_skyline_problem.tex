@@ -1,0 +1,559 @@
+% filename: the_skyline_problem.tex
+
+\problemsection{The Skyline Problem}
+\label{chap:The_Skyline_Problem}
+\marginnote{\href{https://leetcode.com/problems/the-skyline-problem/}{[LeetCode Link]}\index{LeetCode}}
+\marginnote{\href{https://www.geeksforgeeks.org/the-skyline-problem/}{[GeeksForGeeks Link]}\index{GeeksForGeeks}}
+\marginnote{\href{https://www.interviewbit.com/problems/the-skyline-problem/}{[InterviewBit Link]}\index{InterviewBit}}
+\marginnote{\href{https://app.codesignal.com/challenges/the-skyline-problem}{[CodeSignal Link]}\index{CodeSignal}}
+\marginnote{\href{https://www.codewars.com/kata/the-skyline-problem/train/python}{[Codewars Link]}\index{Codewars}}
+
+The \textbf{Skyline Problem} is a complex Computational Geometry challenge that involves computing the skyline formed by a collection of buildings in a 2D cityscape. Each building is represented by its left and right x-coordinates and its height. The skyline is defined by a list of "key points" where the height changes. This problem tests one's ability to handle large datasets, implement efficient sweep line algorithms, and manage event-driven processing. Mastery of this problem is essential for applications in computer graphics, urban planning simulations, and geographic information systems (GIS).
+
+\section*{Problem Statement}
+
+You are given a list of buildings in a cityscape. Each building is represented as a triplet \([Li, Ri, Hi]\), where \(Li\) and \(Ri\) are the x-coordinates of the left and right edges of the building, respectively, and \(Hi\) is the height of the building.
+
+The skyline should be represented as a list of key points \([x, y]\) in sorted order by \(x\)-coordinate, where \(y\) is the height of the skyline at that point. The skyline should only include critical points where the height changes.
+
+\textbf{Function signature in Python:}
+\begin{lstlisting}[language=Python]
+def getSkyline(buildings: List[List[int]]) -> List[List[int]]:
+\end{lstlisting}
+
+\section*{Examples}
+
+\textbf{Example 1:}
+
+\begin{verbatim}
+Input: buildings = [[2,9,10], [3,7,15], [5,12,12], [15,20,10], [19,24,8]]
+Output: [[2,10], [3,15], [7,12], [12,0], [15,10], [20,8], [24,0]]
+Explanation:
+- At x=2, the first building starts, height=10.
+- At x=3, the second building starts, height=15.
+- At x=7, the second building ends, the third building is still ongoing, height=12.
+- At x=12, the third building ends, height drops to 0.
+- At x=15, the fourth building starts, height=10.
+- At x=20, the fourth building ends, the fifth building is still ongoing, height=8.
+- At x=24, the fifth building ends, height drops to 0.
+\end{verbatim}
+
+\textbf{Example 2:}
+
+\begin{verbatim}
+Input: buildings = [[0,2,3], [2,5,3]]
+Output: [[0,3], [5,0]]
+Explanation:
+- The two buildings are contiguous and have the same height, so the skyline drops to 0 at x=5.
+\end{verbatim}
+
+\textbf{Example 3:}
+
+\begin{verbatim}
+Input: buildings = [[1,3,3], [2,4,4], [5,6,1]]
+Output: [[1,3], [2,4], [4,0], [5,1], [6,0]]
+Explanation:
+- At x=1, first building starts, height=3.
+- At x=2, second building starts, height=4.
+- At x=4, second building ends, height drops to 0.
+- At x=5, third building starts, height=1.
+- At x=6, third building ends, height drops to 0.
+\end{verbatim}
+
+\textbf{Example 4:}
+
+\begin{verbatim}
+Input: buildings = [[0,5,0]]
+Output: []
+Explanation:
+- A building with height 0 does not contribute to the skyline.
+\end{verbatim}
+
+\textbf{Constraints:}
+
+\begin{itemize}
+    \item \(1 \leq \text{buildings.length} \leq 10^4\)
+    \item \(0 \leq Li < Ri \leq 10^9\)
+    \item \(0 \leq Hi \leq 10^4\)
+\end{itemize}
+
+\section*{Algorithmic Approach}
+
+The \textbf{Sweep Line Algorithm} is an efficient method for solving the Skyline Problem. It involves processing events (building start and end points) in sorted order while maintaining a data structure (typically a max heap) to keep track of active buildings. Here's a step-by-step approach:
+
+\subsection*{1. Event Representation}
+
+Transform each building into two events:
+\begin{itemize}
+    \item **Start Event:** \((Li, -Hi)\) – Negative height indicates a building starts.
+    \item **End Event:** \((Ri, Hi)\) – Positive height indicates a building ends.
+\end{itemize}
+
+Sorting the events ensures that start events are processed before end events at the same x-coordinate, and taller buildings are processed before shorter ones.
+
+\subsection*{2. Sorting the Events}
+
+Sort all events based on:
+\begin{enumerate}
+    \item **x-coordinate:** Ascending order.
+    \item **Height:**
+    \begin{itemize}
+        \item For start events, taller buildings come first.
+        \item For end events, shorter buildings come first.
+    \end{itemize}
+\end{enumerate}
+
+\subsection*{3. Processing the Events}
+
+Use a max heap to keep track of active building heights. Iterate through the sorted events:
+\begin{enumerate}
+    \item **Start Event:**
+    \begin{itemize}
+        \item Add the building's height to the heap.
+    \end{itemize}
+    
+    \item **End Event:**
+    \begin{itemize}
+        \item Remove the building's height from the heap.
+    \end{itemize}
+    
+    \item **Determine Current Max Height:**
+    \begin{itemize}
+        \item The current max height is the top of the heap.
+    \end{itemize}
+    
+    \item **Update Skyline:**
+    \begin{itemize}
+        \item If the current max height differs from the previous max height, add a new key point \([x, current\_max\_height]\).
+    \end{itemize}
+\end{enumerate}
+
+\subsection*{4. Finalizing the Skyline}
+
+After processing all events, the accumulated key points represent the skyline.
+
+\marginnote{The Sweep Line Algorithm efficiently handles dynamic changes in active buildings, ensuring accurate skyline construction.}
+
+\section*{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(n \log n)\), where \(n\) is the number of buildings. Sorting the events takes \(O(n \log n)\), and each heap operation takes \(O(\log n)\).
+    
+    \item \textbf{Space Complexity:} \(O(n)\), due to the storage of events and the heap.
+\end{itemize}
+
+\section*{Python Implementation}
+
+\marginnote{Implementing the Sweep Line Algorithm with a max heap ensures an efficient and accurate solution.}
+
+Below is the complete Python code implementing the \texttt{getSkyline} function:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+from typing import List
+import heapq
+
+class Solution:
+    def getSkyline(self, buildings: List[List[int]]) -> List[List[int]]:
+        # Create a list of all events
+        # For start events, use negative height to ensure they are processed before end events
+        events = []
+        for L, R, H in buildings:
+            events.append((L, -H))
+            events.append((R, H))
+        
+        # Sort the events
+        # First by x-coordinate, then by height
+        events.sort()
+        
+        # Max heap to keep track of active buildings
+        heap = [0]  # Initialize with ground level
+        heapq.heapify(heap)
+        active_heights = {0: 1}  # Dictionary to count heights
+        
+        result = []
+        prev_max = 0
+        
+        for x, h in events:
+            if h < 0:
+                # Start of a building, add height to heap and dictionary
+                heapq.heappush(heap, h)
+                active_heights[h] = active_heights.get(h, 0) + 1
+            else:
+                # End of a building, remove height from dictionary
+                active_heights[h] -= 1
+                if active_heights[h] == 0:
+                    del active_heights[h]
+            
+            # Current max height
+            while heap and active_heights.get(heap[0], 0) == 0:
+                heapq.heappop(heap)
+            current_max = -heap[0] if heap else 0
+            
+            # If the max height has changed, add to result
+            if current_max != prev_max:
+                result.append([x, current_max])
+                prev_max = current_max
+        
+        return result
+
+# Example usage:
+solution = Solution()
+print(solution.getSkyline([[2,9,10], [3,7,15], [5,12,12], [15,20,10], [19,24,8]]))
+# Output: [[2,10], [3,15], [7,12], [12,0], [15,10], [20,8], [24,0]]
+
+print(solution.getSkyline([[0,2,3], [2,5,3]]))
+# Output: [[0,3], [5,0]]
+
+print(solution.getSkyline([[1,3,3], [2,4,4], [5,6,1]]))
+# Output: [[1,3], [2,4], [4,0], [5,1], [6,0]]
+
+print(solution.getSkyline([[0,5,0]]))
+# Output: []
+\end{lstlisting}
+\end{fullwidth}
+
+This implementation efficiently constructs the skyline by processing all building events in sorted order and maintaining active building heights using a max heap. It ensures that only critical points where the skyline changes are recorded.
+
+\section*{Explanation}
+
+The \texttt{getSkyline} function constructs the skyline formed by a set of buildings by leveraging the Sweep Line Algorithm and a max heap to track active buildings. Here's a detailed breakdown of the implementation:
+
+\subsection*{1. Event Representation}
+
+\begin{itemize}
+    \item Each building is transformed into two events:
+    \begin{itemize}
+        \item **Start Event:** \((Li, -Hi)\) – Negative height indicates the start of a building.
+        \item **End Event:** \((Ri, Hi)\) – Positive height indicates the end of a building.
+    \end{itemize}
+\end{itemize}
+
+\subsection*{2. Sorting the Events}
+
+\begin{itemize}
+    \item Events are sorted primarily by their x-coordinate in ascending order.
+    \item For events with the same x-coordinate:
+    \begin{itemize}
+        \item Start events (with negative heights) are processed before end events.
+        \item Taller buildings are processed before shorter ones.
+    \end{itemize}
+\end{itemize}
+
+\subsection*{3. Processing the Events}
+
+\begin{itemize}
+    \item **Heap Initialization:**
+    \begin{itemize}
+        \item A max heap is initialized with a ground level height of 0.
+        \item A dictionary \texttt{active\_heights} tracks the count of active building heights.
+    \end{itemize}
+    
+    \item **Iterating Through Events:**
+    \begin{enumerate}
+        \item **Start Event:**
+        \begin{itemize}
+            \item Add the building's height to the heap.
+            \item Increment the count of the height in \texttt{active\_heights}.
+        \end{itemize}
+        
+        \item **End Event:**
+        \begin{itemize}
+            \item Decrement the count of the building's height in \texttt{active\_heights}.
+            \item If the count reaches zero, remove the height from the dictionary.
+        \end{itemize}
+        
+        \item **Determine Current Max Height:**
+        \begin{itemize}
+            \item Remove heights from the heap that are no longer active.
+            \item The current max height is the top of the heap.
+        \end{itemize}
+        
+        \item **Update Skyline:**
+        \begin{itemize}
+            \item If the current max height differs from the previous max height, add a new key point \([x, current\_max\_height]\).
+        \end{itemize}
+    \end{enumerate}
+\end{itemize}
+
+\subsection*{4. Finalizing the Skyline}
+
+\begin{itemize}
+    \item After processing all events, the \texttt{result} list contains the key points defining the skyline.
+\end{itemize}
+
+\subsection*{5. Example Walkthrough}
+
+Consider the first example:
+\begin{verbatim}
+Input: buildings = [[2,9,10], [3,7,15], [5,12,12], [15,20,10], [19,24,8]]
+Output: [[2,10], [3,15], [7,12], [12,0], [15,10], [20,8], [24,0]]
+\end{verbatim}
+
+\begin{enumerate}
+    \item **Event Transformation:**
+    \begin{itemize}
+        \item \((2, -10)\), \((9, 10)\)
+        \item \((3, -15)\), \((7, 15)\)
+        \item \((5, -12)\), \((12, 12)\)
+        \item \((15, -10)\), \((20, 10)\)
+        \item \((19, -8)\), \((24, 8)\)
+    \end{itemize}
+    
+    \item **Sorting Events:**
+    \begin{itemize}
+        \item Sorted order: \((2, -10)\), \((3, -15)\), \((5, -12)\), \((7, 15)\), \((9, 10)\), \((12, 12)\), \((15, -10)\), \((19, -8)\), \((20, 10)\), \((24, 8)\)
+    \end{itemize}
+    
+    \item **Processing Events:**
+    \begin{itemize}
+        \item At each event, update the heap and determine if the skyline height changes.
+    \end{itemize}
+    
+    \item **Result Construction:**
+    \begin{itemize}
+        \item The resulting skyline key points are accumulated as \([[2,10], [3,15], [7,12], [12,0], [15,10], [20,8], [24,0]]\).
+    \end{itemize}
+\end{enumerate}
+
+Thus, the function correctly constructs the skyline based on the buildings' positions and heights.
+
+\section*{Why This Approach}
+
+The Sweep Line Algorithm combined with a max heap offers an optimal solution with \(O(n \log n)\) time complexity and efficient handling of overlapping buildings. By processing events in sorted order and maintaining active building heights, the algorithm ensures that all critical points in the skyline are accurately identified without redundant computations.
+
+\section*{Alternative Approaches}
+
+\subsection*{1. Divide and Conquer}
+
+Divide the set of buildings into smaller subsets, compute the skyline for each subset, and then merge the skylines.
+
+\begin{lstlisting}[language=Python]
+class Solution:
+    def getSkyline(self, buildings: List[List[int]]) -> List[List[int]]:
+        def merge(left, right):
+            h1, h2 = 0, 0
+            i, j = 0, 0
+            merged = []
+            while i < len(left) and j < len(right):
+                if left[i][0] < right[j][0]:
+                    x, h1 = left[i]
+                    i += 1
+                elif left[i][0] > right[j][0]:
+                    x, h2 = right[j]
+                    j += 1
+                else:
+                    x, h1 = left[i]
+                    _, h2 = right[j]
+                    i += 1
+                    j += 1
+                max_h = max(h1, h2)
+                if not merged or merged[-1][1] != max_h:
+                    merged.append([x, max_h])
+            merged.extend(left[i:])
+            merged.extend(right[j:])
+            return merged
+        
+        def divide(buildings):
+            if not buildings:
+                return []
+            if len(buildings) == 1:
+                L, R, H = buildings[0]
+                return [[L, H], [R, 0]]
+            mid = len(buildings) // 2
+            left = divide(buildings[:mid])
+            right = divide(buildings[mid:])
+            return merge(left, right)
+        
+        return divide(buildings)
+\end{lstlisting}
+
+\textbf{Complexities:}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(n \log n)\)
+    \item \textbf{Space Complexity:} \(O(n)\)
+\end{itemize}
+
+\subsection*{2. Using Segment Trees}
+
+Implement a segment tree to manage and query overlapping building heights dynamically.
+
+\textbf{Note}: This approach is more complex and is generally used for advanced scenarios with multiple dynamic queries.
+
+\section*{Similar Problems to This One}
+
+Several problems involve skyline-like constructions, spatial data analysis, and efficient event processing, utilizing similar algorithmic strategies:
+
+\begin{itemize}
+    \item \textbf{Merge Intervals}: Merge overlapping intervals in a list.
+    \item \textbf{Largest Rectangle in Histogram}: Find the largest rectangular area in a histogram.
+    \item \textbf{Interval Partitioning}: Assign intervals to resources without overlap.
+    \item \textbf{Line Segment Intersection}: Detect intersections among line segments.
+    \item \textbf{Closest Pair of Points}: Find the closest pair of points in a set.
+    \item \textbf{Convex Hull}: Compute the convex hull of a set of points.
+    \item \textbf{Point Inside Polygon}: Determine if a point lies inside a given polygon.
+    \item \textbf{Range Searching}: Efficiently query geometric data within a specified range.
+\end{itemize}
+
+These problems reinforce concepts of event-driven processing, spatial reasoning, and efficient algorithm design in various contexts.
+
+\section*{Things to Keep in Mind and Tricks}
+
+When tackling the \textbf{Skyline Problem}, consider the following tips and best practices to enhance efficiency and correctness:
+
+\begin{itemize}
+    \item \textbf{Understand Sweep Line Technique}: Grasp how the sweep line algorithm processes events in sorted order to handle dynamic changes efficiently.
+    \index{Sweep Line Technique}
+    
+    \item \textbf{Leverage Priority Queues (Heaps)}: Use max heaps to keep track of active buildings' heights, enabling quick access to the current maximum height.
+    \index{Priority Queues}
+    
+    \item \textbf{Handle Start and End Events Differently}: Differentiate between building start and end events to accurately manage active heights.
+    \index{Start and End Events}
+    
+    \item \textbf{Optimize Event Sorting}: Sort events primarily by x-coordinate and secondarily by height to ensure correct processing order.
+    \index{Event Sorting}
+    
+    \item \textbf{Manage Active Heights Efficiently}: Use data structures that allow efficient insertion, deletion, and retrieval of maximum elements.
+    \index{Active Heights Management}
+    
+    \item \textbf{Avoid Redundant Key Points}: Only record key points when the skyline height changes to minimize the output list.
+    \index{Avoiding Redundant Key Points}
+    
+    \item \textbf{Implement Helper Functions}: Create helper functions for tasks like distance calculation, event handling, and heap management to enhance modularity.
+    \index{Helper Functions}
+    
+    \item \textbf{Code Readability}: Maintain clear and readable code through meaningful variable names and structured logic.
+    \index{Code Readability}
+    
+    \item \textbf{Test Extensively}: Implement a wide range of test cases, including overlapping, non-overlapping, and edge-touching buildings, to ensure robustness.
+    \index{Extensive Testing}
+    
+    \item \textbf{Handle Degenerate Cases}: Manage cases where buildings have zero height or identical coordinates gracefully.
+    \index{Degenerate Cases}
+    
+    \item \textbf{Understand Geometric Relationships}: Grasp how buildings overlap and influence the skyline to simplify the algorithm.
+    \index{Geometric Relationships}
+    
+    \item \textbf{Use Appropriate Data Structures}: Utilize appropriate data structures like heaps, lists, and dictionaries to manage and process data efficiently.
+    \index{Appropriate Data Structures}
+    
+    \item \textbf{Optimize for Large Inputs}: Design the algorithm to handle large numbers of buildings without significant performance degradation.
+    \index{Optimizing for Large Inputs}
+    
+    \item \textbf{Implement Iterative Solutions Carefully}: Ensure that loop conditions are correctly defined to prevent infinite loops or incorrect terminations.
+    \index{Iterative Solutions}
+    
+    \item \textbf{Consistent Naming Conventions}: Use consistent and descriptive naming conventions for variables and functions to improve code clarity.
+    \index{Naming Conventions}
+\end{itemize}
+
+\section*{Corner and Special Cases to Test When Writing the Code}
+
+When implementing the solution for the \textbf{Skyline Problem}, it is crucial to consider and rigorously test various edge cases to ensure robustness and correctness:
+
+\begin{itemize}
+    \item \textbf{No Overlapping Buildings}: All buildings are separate and do not overlap.
+    \index{No Overlapping Buildings}
+    
+    \item \textbf{Fully Overlapping Buildings}: Multiple buildings completely overlap each other.
+    \index{Fully Overlapping Buildings}
+    
+    \item \textbf{Buildings Touching at Edges}: Buildings share common edges without overlapping.
+    \index{Buildings Touching at Edges}
+    
+    \item \textbf{Buildings Touching at Corners}: Buildings share common corners without overlapping.
+    \index{Buildings Touching at Corners}
+    
+    \item \textbf{Single Building}: Only one building is present.
+    \index{Single Building}
+    
+    \item \textbf{Multiple Buildings with Same Start or End}: Multiple buildings start or end at the same x-coordinate.
+    \index{Same Start or End}
+    
+    \item \textbf{Buildings with Zero Height}: Buildings that have zero height should not affect the skyline.
+    \index{Buildings with Zero Height}
+    
+    \item \textbf{Large Number of Buildings}: Test with a large number of buildings to ensure performance and scalability.
+    \index{Large Number of Buildings}
+    
+    \item \textbf{Buildings with Negative Coordinates}: Buildings positioned in negative coordinate space.
+    \index{Negative Coordinates}
+    
+    \item \textbf{Boundary Values}: Buildings at the minimum and maximum limits of the coordinate range.
+    \index{Boundary Values}
+    
+    \item \textbf{Buildings with Identical Coordinates}: Multiple buildings with the same coordinates.
+    \index{Identical Coordinates}
+    
+    \item \textbf{Sequential Buildings}: Buildings placed sequentially without gaps.
+    \index{Sequential Buildings}
+    
+    \item \textbf{Overlapping and Non-Overlapping Mixed}: A mix of overlapping and non-overlapping buildings.
+    \index{Overlapping and Non-Overlapping Mixed}
+    
+    \item \textbf{Buildings with Very Large Heights}: Buildings with heights at the upper limit of the constraints.
+    \index{Very Large Heights}
+    
+    \item \textbf{Empty Input}: No buildings are provided.
+    \index{Empty Input}
+\end{itemize}
+
+\section*{Implementation Considerations}
+
+When implementing the \texttt{getSkyline} function, keep in mind the following considerations to ensure robustness and efficiency:
+
+\begin{itemize}
+    \item \textbf{Data Type Selection}: Use appropriate data types that can handle large input values and avoid overflow or precision issues.
+    \index{Data Type Selection}
+    
+    \item \textbf{Optimizing Event Sorting}: Efficiently sort events based on x-coordinates and heights to ensure correct processing order.
+    \index{Optimizing Event Sorting}
+    
+    \item \textbf{Handling Large Inputs}: Design the algorithm to handle up to \(10^4\) buildings efficiently without significant performance degradation.
+    \index{Handling Large Inputs}
+    
+    \item \textbf{Using Efficient Data Structures}: Utilize heaps, lists, and dictionaries effectively to manage and process events and active heights.
+    \index{Efficient Data Structures}
+    
+    \item \textbf{Avoiding Redundant Calculations}: Ensure that distance and overlap calculations are performed only when necessary to optimize performance.
+    \index{Avoiding Redundant Calculations}
+    
+    \item \textbf{Code Readability and Documentation}: Maintain clear and readable code through meaningful variable names and comprehensive comments to facilitate understanding and maintenance.
+    \index{Code Readability}
+    
+    \item \textbf{Edge Case Handling}: Implement checks for edge cases to prevent incorrect results or runtime errors.
+    \index{Edge Case Handling}
+    
+    \item \textbf{Implementing Helper Functions}: Create helper functions for tasks like distance calculation, event handling, and heap management to enhance modularity.
+    \index{Helper Functions}
+    
+    \item \textbf{Consistent Naming Conventions}: Use consistent and descriptive naming conventions for variables and functions to improve code clarity.
+    \index{Naming Conventions}
+    
+    \item \textbf{Memory Management}: Ensure that the algorithm manages memory efficiently, especially when dealing with large datasets.
+    \index{Memory Management}
+    
+    \item \textbf{Implementing Iterative Solutions Carefully}: Ensure that loop conditions are correctly defined to prevent infinite loops or incorrect terminations.
+    \index{Iterative Solutions}
+    
+    \item \textbf{Avoiding Floating-Point Precision Issues}: Since the problem deals with integers, floating-point precision is not a concern, simplifying the implementation.
+    \index{Floating-Point Precision}
+    
+    \item \textbf{Testing and Validation}: Develop a comprehensive suite of test cases that cover all possible scenarios, including edge cases, to validate the correctness and efficiency of the implementation.
+    \index{Testing and Validation}
+    
+    \item \textbf{Performance Considerations}: Optimize the loop conditions and operations to ensure that the function runs efficiently, especially for large input numbers.
+    \index{Performance Considerations}
+\end{itemize}
+
+\section*{Conclusion}
+
+The \textbf{Skyline Problem} is a quintessential example of applying advanced algorithmic techniques and geometric reasoning to solve complex spatial challenges. By leveraging the Sweep Line Algorithm and maintaining active building heights using a max heap, the solution efficiently constructs the skyline with optimal time and space complexities. Understanding and implementing such sophisticated algorithms not only enhances problem-solving skills but also provides a foundation for tackling a wide array of Computational Geometry problems in various domains, including computer graphics, urban planning simulations, and geographic information systems.
+
+\printindex
+
+% \input{sections/rectangle_overlap}
+% \input{sections/rectangle_area}
+% \input{sections/k_closest_points_to_origin}
+% \input{sections/the_skyline_problem}

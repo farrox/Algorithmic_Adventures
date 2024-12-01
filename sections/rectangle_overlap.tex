@@ -1,0 +1,413 @@
+% filename: rectangle_overlap.tex
+
+\problemsection{Rectangle Overlap}
+\label{chap:Rectangle_Overlap}
+\marginnote{\href{https://leetcode.com/problems/rectangle-overlap/}{[LeetCode Link]}\index{LeetCode}}
+\marginnote{\href{https://www.geeksforgeeks.org/check-if-two-rectangles-overlap/}{[GeeksForGeeks Link]}\index{GeeksForGeeks}}
+\marginnote{\href{https://www.interviewbit.com/problems/rectangle-overlap/}{[InterviewBit Link]}\index{InterviewBit}}
+\marginnote{\href{https://app.codesignal.com/challenges/rectangle-overlap}{[CodeSignal Link]}\index{CodeSignal}}
+\marginnote{\href{https://www.codewars.com/kata/rectangle-overlap/train/python}{[Codewars Link]}\index{Codewars}}
+
+The \textbf{Rectangle Overlap} problem is a fundamental challenge in Computational Geometry that involves determining whether two axis-aligned rectangles overlap. This problem tests one's ability to understand geometric properties, implement conditional logic, and optimize for efficient computation. Mastery of this problem is essential for applications in computer graphics, collision detection, and spatial data analysis.
+
+\section*{Problem Statement}
+
+Given two axis-aligned rectangles in a 2D plane, determine if they overlap. Each rectangle is defined by its bottom-left and top-right coordinates.
+
+A rectangle is represented as a list of four integers \([x1, y1, x2, y2]\), where \((x1, y1)\) are the coordinates of the bottom-left corner, and \((x2, y2)\) are the coordinates of the top-right corner.
+
+\textbf{Function signature in Python:}
+\begin{lstlisting}[language=Python]
+def isRectangleOverlap(rec1: List[int], rec2: List[int]) -> bool:
+\end{lstlisting}
+
+\section*{Examples}
+
+\textbf{Example 1:}
+
+\begin{verbatim}
+Input: rec1 = [0,0,2,2], rec2 = [1,1,3,3]
+Output: True
+Explanation: The rectangles overlap in the area defined by [1,1,2,2].
+\end{verbatim}
+
+\textbf{Example 2:}
+
+\begin{verbatim}
+Input: rec1 = [0,0,1,1], rec2 = [1,0,2,1]
+Output: False
+Explanation: The rectangles touch at the edge but do not overlap.
+\end{verbatim}
+
+\textbf{Example 3:}
+
+\begin{verbatim}
+Input: rec1 = [0,0,1,1], rec2 = [2,2,3,3]
+Output: False
+Explanation: The rectangles are completely separate.
+\end{verbatim}
+
+\textbf{Example 4:}
+
+\begin{verbatim}
+Input: rec1 = [0,0,5,5], rec2 = [3,3,7,7]
+Output: True
+Explanation: The rectangles overlap in the area defined by [3,3,5,5].
+\end{verbatim}
+
+\textbf{Example 5:}
+
+\begin{verbatim}
+Input: rec1 = [0,0,0,0], rec2 = [0,0,0,0]
+Output: False
+Explanation: Both rectangles are degenerate points.
+\end{verbatim}
+
+\textbf{Constraints:}
+
+\begin{itemize}
+    \item All coordinates are integers in the range \([-10^9, 10^9]\).
+    \item For each rectangle, \(x1 < x2\) and \(y1 < y2\).
+\end{itemize}
+
+LeetCode link: \href{https://leetcode.com/problems/rectangle-overlap/}{Rectangle Overlap}\index{LeetCode}
+
+\section*{Algorithmic Approach}
+
+To determine whether two axis-aligned rectangles overlap, we can use the following logical conditions:
+
+1. **Non-Overlap Conditions:**
+   - One rectangle is to the left of the other.
+   - One rectangle is above the other.
+
+2. **Overlap Condition:**
+   - If neither of the non-overlap conditions is true, the rectangles must overlap.
+
+\subsection*{Steps:}
+
+1. **Extract Coordinates:**
+   - For both rectangles, extract the bottom-left and top-right coordinates.
+
+2. **Check Non-Overlap Conditions:**
+   - If the right side of the first rectangle is less than or equal to the left side of the second rectangle, they do not overlap.
+   - If the left side of the first rectangle is greater than or equal to the right side of the second rectangle, they do not overlap.
+   - If the top side of the first rectangle is less than or equal to the bottom side of the second rectangle, they do not overlap.
+   - If the bottom side of the first rectangle is greater than or equal to the top side of the second rectangle, they do not overlap.
+
+3. **Determine Overlap:**
+   - If none of the non-overlap conditions are met, the rectangles overlap.
+
+\marginnote{This approach provides an efficient \(O(1)\) time complexity solution by leveraging simple geometric comparisons.}
+
+\section*{Complexities}
+
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(1)\). The algorithm performs a constant number of comparisons regardless of input size.
+    
+    \item \textbf{Space Complexity:} \(O(1)\). Only a fixed amount of extra space is used for variables.
+\end{itemize}
+
+\section*{Python Implementation}
+
+\marginnote{Implementing the overlap check using coordinate comparisons ensures an optimal and straightforward solution.}
+
+Below is the complete Python code implementing the \texttt{isRectangleOverlap} function:
+
+\begin{fullwidth}
+\begin{lstlisting}[language=Python]
+from typing import List
+
+class Solution:
+    def isRectangleOverlap(self, rec1: List[int], rec2: List[int]) -> bool:
+        # Extract coordinates
+        left1, bottom1, right1, top1 = rec1
+        left2, bottom2, right2, top2 = rec2
+        
+        # Check non-overlapping conditions
+        if right1 <= left2 or right2 <= left1:
+            return False
+        if top1 <= bottom2 or top2 <= bottom1:
+            return False
+        
+        # If none of the above, rectangles overlap
+        return True
+
+# Example usage:
+solution = Solution()
+print(solution.isRectangleOverlap([0,0,2,2], [1,1,3,3]))  # Output: True
+print(solution.isRectangleOverlap([0,0,1,1], [1,0,2,1]))  # Output: False
+print(solution.isRectangleOverlap([0,0,1,1], [2,2,3,3]))  # Output: False
+print(solution.isRectangleOverlap([0,0,5,5], [3,3,7,7]))  # Output: True
+print(solution.isRectangleOverlap([0,0,0,0], [0,0,0,0]))  # Output: False
+\end{lstlisting}
+\end{fullwidth}
+
+This implementation efficiently checks for overlap by comparing the coordinates of the two rectangles. If any of the non-overlapping conditions are met, it returns \texttt{False}; otherwise, it returns \texttt{True}.
+
+\section*{Explanation}
+
+The \texttt{isRectangleOverlap} function determines whether two axis-aligned rectangles overlap by comparing their respective coordinates. Here's a detailed breakdown of the implementation:
+
+\subsection*{1. Extract Coordinates}
+
+\begin{itemize}
+    \item For each rectangle, extract the left (\(x1\)), bottom (\(y1\)), right (\(x2\)), and top (\(y2\)) coordinates.
+    \item This simplifies the comparison process by providing clear variables representing each side of the rectangles.
+\end{itemize}
+
+\subsection*{2. Check Non-Overlap Conditions}
+
+\begin{itemize}
+    \item **Horizontal Separation:**
+    \begin{itemize}
+        \item If the right side of the first rectangle (\(right1\)) is less than or equal to the left side of the second rectangle (\(left2\)), there is no horizontal overlap.
+        \item Similarly, if the right side of the second rectangle (\(right2\)) is less than or equal to the left side of the first rectangle (\(left1\)), there is no horizontal overlap.
+    \end{itemize}
+    
+    \item **Vertical Separation:**
+    \begin{itemize}
+        \item If the top side of the first rectangle (\(top1\)) is less than or equal to the bottom side of the second rectangle (\(bottom2\)), there is no vertical overlap.
+        \item Similarly, if the top side of the second rectangle (\(top2\)) is less than or equal to the bottom side of the first rectangle (\(bottom1\)), there is no vertical overlap.
+    \end{itemize}
+    
+    \item If any of these non-overlapping conditions are true, the rectangles do not overlap, and the function returns \texttt{False}.
+\end{itemize}
+
+\subsection*{3. Determine Overlap}
+
+\begin{itemize}
+    \item If none of the non-overlapping conditions are met, it implies that the rectangles overlap both horizontally and vertically.
+    \item The function returns \texttt{True} in this case.
+\end{itemize}
+
+\subsection*{4. Example Walkthrough}
+
+Consider the first example:
+\begin{verbatim}
+Input: rec1 = [0,0,2,2], rec2 = [1,1,3,3]
+Output: True
+\end{verbatim}
+
+\begin{enumerate}
+    \item Extract coordinates:
+    \begin{itemize}
+        \item rec1: left1 = 0, bottom1 = 0, right1 = 2, top1 = 2
+        \item rec2: left2 = 1, bottom2 = 1, right2 = 3, top2 = 3
+    \end{itemize}
+    
+    \item Check non-overlap conditions:
+    \begin{itemize}
+        \item \(right1 = 2\) is not less than or equal to \(left2 = 1\)
+        \item \(right2 = 3\) is not less than or equal to \(left1 = 0\)
+        \item \(top1 = 2\) is not less than or equal to \(bottom2 = 1\)
+        \item \(top2 = 3\) is not less than or equal to \(bottom1 = 0\)
+    \end{itemize}
+    
+    \item Since none of the non-overlapping conditions are met, the rectangles overlap.
+\end{enumerate}
+
+Thus, the function correctly returns \texttt{True}.
+
+\section*{Why This Approach}
+
+This approach is chosen for its simplicity and efficiency. By leveraging direct coordinate comparisons, the algorithm achieves constant time complexity without the need for complex data structures or iterative processes. It effectively handles all possible scenarios of rectangle positioning, ensuring accurate detection of overlaps.
+
+\section*{Alternative Approaches}
+
+\subsection*{1. Separating Axis Theorem (SAT)}
+
+The Separating Axis Theorem is a more generalized method for detecting overlaps between convex shapes. While it is not necessary for axis-aligned rectangles, understanding SAT can be beneficial for more complex geometric problems.
+
+\begin{lstlisting}[language=Python]
+def isRectangleOverlap(rec1: List[int], rec2: List[int]) -> bool:
+    # Using SAT for axis-aligned rectangles
+    return not (rec1[2] <= rec2[0] or rec1[0] >= rec2[2] or
+                rec1[3] <= rec2[1] or rec1[1] >= rec2[3])
+\end{lstlisting}
+
+\textbf{Note}: This implementation is functionally identical to the primary approach but leverages a more generalized geometric theorem.
+
+\subsection*{2. Area-Based Approach}
+
+Calculate the overlapping area between the two rectangles. If the overlapping area is positive, the rectangles overlap.
+
+\begin{lstlisting}[language=Python]
+def isRectangleOverlap(rec1: List[int], rec2: List[int]) -> bool:
+    # Calculate overlap in x and y dimensions
+    x_overlap = min(rec1[2], rec2[2]) - max(rec1[0], rec2[0])
+    y_overlap = min(rec1[3], rec2[3]) - max(rec1[1], rec2[1])
+    
+    # Overlap exists if both overlaps are positive
+    return x_overlap > 0 and y_overlap > 0
+\end{lstlisting}
+
+\textbf{Complexities:}
+\begin{itemize}
+    \item \textbf{Time Complexity:} \(O(1)\)
+    \item \textbf{Space Complexity:} \(O(1)\)
+\end{itemize}
+
+\subsection*{3. Using Rectangles Intersection Function}
+
+Utilize built-in or library functions that handle geometric intersections.
+
+\begin{lstlisting}[language=Python]
+from shapely.geometry import box
+
+def isRectangleOverlap(rec1: List[int], rec2: List[int]) -> bool:
+    rectangle1 = box(rec1[0], rec1[1], rec1[2], rec1[3])
+    rectangle2 = box(rec2[0], rec2[1], rec2[2], rec2[3])
+    return rectangle1.intersects(rectangle2) and not rectangle1.touches(rectangle2)
+\end{lstlisting}
+
+\textbf{Note}: This approach requires the \texttt{shapely} library and is more suitable for complex geometric operations.
+
+\section*{Similar Problems to This One}
+
+Several problems revolve around geometric overlap, intersection detection, and spatial reasoning, utilizing similar algorithmic strategies:
+
+\begin{itemize}
+    \item \textbf{Interval Overlap}: Determine if two intervals on a line overlap.
+    \item \textbf{Circle Overlap}: Determine if two circles overlap based on their radii and centers.
+    \item \textbf{Polygon Overlap}: Determine if two polygons overlap using algorithms like SAT.
+    \item \textbf{Closest Pair of Points}: Find the closest pair of points in a set.
+    \item \textbf{Convex Hull}: Compute the convex hull of a set of points.
+    \item \textbf{Intersection of Lines}: Find the intersection point of two lines.
+    \item \textbf{Point Inside Polygon}: Determine if a point lies inside a given polygon.
+\end{itemize}
+
+These problems reinforce the concepts of spatial reasoning, geometric property analysis, and efficient algorithm design in various contexts.
+
+\section*{Things to Keep in Mind and Tricks}
+
+When working with the \textbf{Rectangle Overlap} problem, consider the following tips and best practices to enhance efficiency and correctness:
+
+\begin{itemize}
+    \item \textbf{Understand Geometric Relationships}: Grasp the positional relationships between rectangles to simplify overlap detection.
+    \index{Geometric Relationships}
+    
+    \item \textbf{Leverage Coordinate Comparisons}: Use direct comparisons of rectangle coordinates to determine spatial relationships.
+    \index{Coordinate Comparisons}
+    
+    \item \textbf{Handle Edge Cases}: Consider cases where rectangles touch at edges or corners without overlapping.
+    \index{Edge Cases}
+    
+    \item \textbf{Optimize for Efficiency}: Aim for a constant time \(O(1)\) solution by avoiding unnecessary computations or iterations.
+    \index{Efficiency Optimization}
+    
+    \item \textbf{Avoid Floating-Point Precision Issues}: Since all coordinates are integers, floating-point precision is not a concern, simplifying the implementation.
+    \index{Floating-Point Precision}
+    
+    \item \textbf{Use Helper Functions}: Create helper functions to encapsulate repetitive tasks, such as extracting coordinates or checking specific conditions.
+    \index{Helper Functions}
+    
+    \item \textbf{Code Readability}: Maintain clear and readable code through meaningful variable names and structured logic.
+    \index{Code Readability}
+    
+    \item \textbf{Test Extensively}: Implement a wide range of test cases, including overlapping, non-overlapping, and edge-touching rectangles, to ensure robustness.
+    \index{Extensive Testing}
+    
+    \item \textbf{Understand Axis-Aligned Constraints}: Recognize that axis-aligned rectangles simplify overlap detection compared to rotated rectangles.
+    \index{Axis-Aligned Constraints}
+    
+    \item \textbf{Simplify Logical Conditions}: Combine multiple conditions logically to streamline the overlap detection process.
+    \index{Logical Conditions}
+\end{itemize}
+
+\section*{Corner and Special Cases to Test When Writing the Code}
+
+When implementing the solution for the \textbf{Rectangle Overlap} problem, it is crucial to consider and rigorously test various edge cases to ensure robustness and correctness:
+
+\begin{itemize}
+    \item \textbf{No Overlap}: Rectangles are completely separate.
+    \index{No Overlap}
+    
+    \item \textbf{Partial Overlap}: Rectangles overlap in one or more regions.
+    \index{Partial Overlap}
+    
+    \item \textbf{Edge Touching}: Rectangles touch exactly at one edge without overlapping.
+    \index{Edge Touching}
+    
+    \item \textbf{Corner Touching}: Rectangles touch exactly at one corner without overlapping.
+    \index{Corner Touching}
+    
+    \item \textbf{One Rectangle Inside Another}: One rectangle is entirely within the other.
+    \index{Rectangle Inside}
+    
+    \item \textbf{Identical Rectangles}: Both rectangles have the same coordinates.
+    \index{Identical Rectangles}
+    
+    \item \textbf{Degenerate Rectangles}: Rectangles with zero area (e.g., \(x1 = x2\) or \(y1 = y2\)).
+    \index{Degenerate Rectangles}
+    
+    \item \textbf{Large Coordinates}: Rectangles with very large coordinate values to test performance and integer handling.
+    \index{Large Coordinates}
+    
+    \item \textbf{Negative Coordinates}: Rectangles positioned in negative coordinate space.
+    \index{Negative Coordinates}
+    
+    \item \textbf{Mixed Overlapping Scenarios}: Combinations of the above cases to ensure comprehensive coverage.
+    \index{Mixed Overlapping Scenarios}
+    
+    \item \textbf{Minimum and Maximum Bounds}: Rectangles at the minimum and maximum limits of the coordinate range.
+    \index{Minimum and Maximum Bounds}
+\end{itemize}
+
+\section*{Implementation Considerations}
+
+When implementing the \texttt{isRectangleOverlap} function, keep in mind the following considerations to ensure robustness and efficiency:
+
+\begin{itemize}
+    \item \textbf{Data Type Selection}: Use appropriate data types that can handle the range of input values without overflow or underflow.
+    \index{Data Type Selection}
+    
+    \item \textbf{Optimizing Comparisons}: Structure logical conditions to short-circuit evaluations as soon as a non-overlapping condition is met.
+    \index{Optimizing Comparisons}
+    
+    \item \textbf{Language-Specific Constraints}: Be aware of how the programming language handles integer division and comparisons.
+    \index{Language-Specific Constraints}
+    
+    \item \textbf{Avoiding Redundant Calculations}: Ensure that each comparison contributes towards determining overlap without unnecessary repetitions.
+    \index{Avoiding Redundant Calculations}
+    
+    \item \textbf{Code Readability and Documentation}: Maintain clear and readable code through meaningful variable names and comprehensive comments to facilitate understanding and maintenance.
+    \index{Code Readability}
+    
+    \item \textbf{Edge Case Handling}: Implement checks for edge cases to prevent incorrect results or runtime errors.
+    \index{Edge Case Handling}
+    
+    \item \textbf{Testing and Validation}: Develop a comprehensive suite of test cases that cover all possible scenarios, including edge cases, to validate the correctness and efficiency of the implementation.
+    \index{Testing and Validation}
+    
+    \item \textbf{Scalability}: Design the algorithm to scale efficiently with increasing input sizes, maintaining performance and resource utilization.
+    \index{Scalability}
+    
+    \item \textbf{Using Helper Functions}: Consider creating helper functions for repetitive tasks, such as extracting and comparing coordinates, to enhance modularity and reusability.
+    \index{Helper Functions}
+    
+    \item \textbf{Consistent Naming Conventions}: Use consistent and descriptive naming conventions for variables to improve code clarity.
+    \index{Naming Conventions}
+    
+    \item \textbf{Handling Floating-Point Coordinates}: Although the problem specifies integer coordinates, ensure that the implementation can handle floating-point numbers if needed in extended scenarios.
+    \index{Floating-Point Coordinates}
+    
+    \item \textbf{Avoiding Floating-Point Precision Issues}: Since all coordinates are integers, floating-point precision is not a concern, simplifying the implementation.
+    \index{Floating-Point Precision}
+    
+    \item \textbf{Implementing Unit Tests}: Develop unit tests for each logical condition to ensure that all scenarios are correctly handled.
+    \index{Unit Tests}
+    
+    \item \textbf{Error Handling}: Incorporate error handling to manage invalid inputs gracefully.
+    \index{Error Handling}
+\end{itemize}
+
+\section*{Conclusion}
+
+The \textbf{Rectangle Overlap} problem exemplifies the application of fundamental geometric principles and conditional logic to solve spatial challenges efficiently. By leveraging simple coordinate comparisons, the algorithm achieves optimal time and space complexities, making it highly suitable for real-time applications such as collision detection in gaming, layout planning in graphics, and spatial data analysis. Understanding and implementing such techniques not only enhances problem-solving skills but also provides a foundation for tackling more complex Computational Geometry problems involving varied geometric shapes and interactions.
+
+\printindex
+
+% \input{sections/rectangle_overlap}
+% \input{sections/rectangle_area}
+% \input{sections/k_closest_points_to_origin}
+% \input{sections/the_skyline_problem}
